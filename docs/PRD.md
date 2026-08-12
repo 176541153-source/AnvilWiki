@@ -619,11 +619,15 @@ export const CONTENT_TYPES = NAVIGATION_CONFIG.map(n => n.key);
 - `footer` 新增 `faq` 键。
 - `faq` 数据保留在 `home.faq`，但由独立 `/faq` 页渲染（`FaqSection.astro`）。
 
-**4 种 displayType**（首页 explore 模块的渲染类型）：
+**6 种 displayType**（首页 explore 模块的渲染类型）：
 - `code-cards`：兑换码卡片（label + detail + badge）
 - `step-by-step`：步骤指引（label 是数字 1-6）
 - `tier-grid`：分级网格（label 是 S/A/B/C）
 - `card-list`：链接列表（label 是短文字，**去 emoji 化**）
+- `timeline`：垂直时间轴（label 是版本号/日期，detail 是事件，可选 badge）—— 字段语义详见 `src/components/home/modules/Timeline.astro` JSDoc
+- `video-grid`：视频缩略图网格（title + youtubeId + 可选 duration，首页不 embed，点击跳文章页）—— 字段语义详见 `src/components/home/modules/VideoGrid.astro` JSDoc
+
+> **字段真相源**：每种 displayType 的字段语义以对应组件的 JSDoc 为准（单一真相源，避免文档与代码失同步）。`src/locales/en.json` 的 demo 数据是最强学习样本。
 
 ### 6.6 i18n 路由配置（`src/i18n/routing.ts`）
 
@@ -1451,10 +1455,17 @@ describe('sitemap', () => {
 |---|---|---|---|
 | ~~v1.1~~ | ~~seoscout 格式自动转换脚本 + 文档~~ | ~~高~~ | ✅ 已实现（`scripts/convert-from-seoscout.ts` + `pnpm convert-seoscout`） |
 | v1.2 | 搜索功能（Pagefind 离线搜索，零运行时） | 中 | ✅ 已实现（`postbuild` 钩子 + `SearchButton.astro` `<dialog>` 模态，懒加载 pagefind-ui，Ctrl/Cmd+K 唤起，`data-pagefind-body` 精确索引文章正文） |
-| v1.3 | 更多 displayType（video-grid/timeline/comparison-table） | 中 | ⏳ |
+| v1.3 | 更多 displayType（video-grid/timeline/comparison-table） | 中 | 🔄 timeline + video-grid 实现中；comparison-table 待验证（见下） |
 | v1.4 | 评论系统（Giscus/Utterances，可选） | 低 | ⏳ |
 | v1.5 | 图片优化（Astro Image，自动 WebP/AVIF + 响应式 srcset） | 中 | ✅ 已实现（content schema `image()` loader + `ArticleCover.astro` + `image.responsiveStyles`，封面图自动 WebP/srcset，`content.config.ts` 迁至 `src/`） |
 | v2.0 | 可视化换皮 CLI（`pnpm skin <game-name>` 引导式换皮） | 高 | ✅ 已实现（`scripts/skin.ts` Part 1-3 自动化：hex→HSL 主题色、site/navigation/routing/ui/locales/manifest 重写，`--dry-run` / `--no-clear-content` flag） |
+
+**v1.3 范围说明**：
+- `timeline`：✅ 实现 —— 版本日志/活动时序，零副作用，商业价值正（老玩家点进 patch notes 文章页）。
+- `video-grid`：✅ 实现（缩略图 + 跳转，不 embed）—— 保住 Lighthouse 100，流量留站内变现（embed 会让用户看视频时广告曝光归 YouTube）。
+- `comparison-table`：⏸ 推迟 —— 广告变现模型下，对比表把信息完整呈现后用户无点击动力（信息已满足），ROI 为负。等真实换皮用户反馈「我首页需要对比表」再做，做时需重新设计「如何驱动用户点进文章页」。
+
+详见 `docs/superpowers/specs/2026-08-12-v1.3-display-types-design.md`。
 
 ### 14.3 「待验证清单」回填计划
 
