@@ -222,6 +222,32 @@
               "detail": "初期武器"
             }
           ]
+        },
+        {
+          "order": 5,
+          "name": "アップデート履歴",
+          "description": "主要なパッチとイベント、最新順。",
+          "href": "/updates",
+          "displayType": "timeline",
+          "highlights": [
+            { "label": "v2.5", "detail": "新レイド「シャドウフォージ」実装", "badge": "最新" },
+            { "label": "v2.4", "detail": "S tier 武器を全て調整" },
+            { "label": "v2.3", "detail": "ボス3体を追加" },
+            { "label": "v2.2", "detail": "シーズンパスシステムを実装" }
+          ]
+        },
+        {
+          "order": 6,
+          "name": "動画ガイド",
+          "description": "Anvil Quest の厳選プレイ動画とボス戦を視聴。",
+          "href": "/guides/video-walkthroughs",
+          "displayType": "video-grid",
+          "highlights": [
+            { "title": "初心者向けプレイガイド", "youtubeId": "dQw4w9WgXcQ", "duration": "12:34" },
+            { "title": "全ボス威力ランキング", "youtubeId": "aaaaaaaaaaa", "duration": "18:42" },
+            { "title": "スピードラン解説", "youtubeId": "bbbbbbbbbbb", "duration": "25:10" },
+            { "title": "隠し要素まとめ", "youtubeId": "ccccccccccc", "duration": "9:15" }
+          ]
         }
       ]
     },
