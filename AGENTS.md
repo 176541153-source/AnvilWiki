@@ -70,16 +70,19 @@ This is the core design principle inherited from the course template. **Respect 
 
 Each ad slot is a standalone HTML file in `public/ads/*.html` (each has its own `window.atOptions`), embedded via `<iframe>`. This prevents multi-ad `atOptions` collision. **Do not** replace with a global ad loader. See PRD §10.
 
-## Commands (intended, once code exists)
+## Commands
 
 ```bash
 pnpm install
 pnpm dev              # dev server, http://localhost:4321
 pnpm build            # includes Content schema validation — fails on bad frontmatter
-pnpm typecheck        # astro check (planned)
-pnpm lint             # ESLint + Prettier + eslint-plugin-astro (planned)
-pnpm test             # Vitest (planned)
-pnpm check-sitemap    # scripts/check-sitemap.ts — verify all sitemap URLs return 200 (planned)
+pnpm typecheck        # astro check (0 errors expected)
+pnpm lint             # ESLint + Prettier + eslint-plugin-astro
+pnpm test             # Vitest (18 tests: url + seo)
+pnpm check-sitemap    # scripts/check-sitemap.ts — verify all sitemap URLs return 200
+pnpm skin             # interactive skinning CLI (hex→HSL theme, rewrite config/locales)
+pnpm new-post         # interactive MDX article scaffold
+pnpm convert-seoscout # convert seoscout MDX format to YAML frontmatter
 ```
 
 ## Decisions to Confirm with User Before Deviating
