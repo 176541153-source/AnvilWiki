@@ -16,6 +16,7 @@ import { Icon } from 'astro-icon/components';
 import { render } from 'astro:content';
 import LocaleLayout from '~/components/layout/LocaleLayout.astro';
 import InContentAd from '~/components/ads/InContentAd.astro';
+import Comments from '~/components/article/Comments.astro';
 import WikiSidebar from '~/components/sidebar/WikiSidebar.astro';
 import { NAVIGATION_CONFIG } from '~/config/navigation';
 import { siteUrl } from '~/config/site';
@@ -144,6 +145,9 @@ const jsonLd = [
         </div>
       )
     }
+
+    {/* Comments — env empty = component renders nothing, no conditional needed */}
+    <Comments locale={locale} pathname={Astro.url.pathname} />
 
     {/* In-content ad before related articles */}
     <InContentAd type="banner-728x90" />
