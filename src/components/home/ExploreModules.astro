@@ -6,10 +6,12 @@
  * are rendered. We dispatch to the corresponding sub-component.
  *
  * Supported displayTypes (per PRD §6.5):
- *   - code-cards   → CodeCards (redeemable codes with badge)
- *   - step-by-step → StepByStep (numbered progression steps)
- *   - tier-grid    → TierGrid (S/A/B/C ranked items)
- *   - card-list    → CardList (simple labeled cards)
+ *   - code-cards      → CodeCards (redeemable codes with badge)
+ *   - step-by-step    → StepByStep (numbered progression steps)
+ *   - tier-grid       → TierGrid (S/A/B/C ranked items)
+ *   - card-list       → CardList (simple labeled cards)
+ *   - timeline        → Timeline (vertical timeline of dated events)
+ *   - video-grid      → VideoGrid (2-column video thumbnail grid)
  *
  * v0.2: each module card is now a single clickable <a> (block-level) with
  * hover border feedback, replacing the cramped "View" link that sat on the
@@ -21,6 +23,8 @@ import CodeCards from './modules/CodeCards.astro';
 import StepByStep from './modules/StepByStep.astro';
 import TierGrid from './modules/TierGrid.astro';
 import CardList from './modules/CardList.astro';
+import Timeline from './modules/Timeline.astro';
+import VideoGrid from './modules/VideoGrid.astro';
 import { type Locale } from '~/i18n/routing';
 import { localizePath } from '~/lib/url';
 
@@ -31,7 +35,10 @@ interface Props {
     description: string;
     href: string;
     displayType: string;
-    highlights: Array<{ label: string; detail: string; badge?: string }>;
+    // highlights 的字段结构由 displayType 决定(见各子组件 Props),
+    // dispatcher 不假设具体字段。类型安全由各子组件内部的 Props
+    // interface 保证(JSON 层不参与 TS 检查,见 spec §2.2)。
+    highlights: Array<any>;
   }>;
   locale: Locale;
 }
@@ -50,6 +57,8 @@ const { modules, locale } = Astro.props;
           {m.displayType === 'step-by-step' && <StepByStep highlights={m.highlights} />}
           {m.displayType === 'tier-grid' && <TierGrid highlights={m.highlights} />}
           {m.displayType === 'card-list' && <CardList highlights={m.highlights} />}
+          {m.displayType === 'timeline' && <Timeline highlights={m.highlights} />}
+          {m.displayType === 'video-grid' && <VideoGrid highlights={m.highlights} />}
         </div>
 
         <p class="mt-4 inline-flex items-center gap-1 text-xs font-medium text-foreground hover:text-nav">
