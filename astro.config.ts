@@ -6,6 +6,18 @@ import icon from 'astro-icon';
 
 import { locales, defaultLocale } from './src/i18n/routing';
 
+// TEMP DEBUG: print all process.env keys + PUBLIC_* values to build log.
+// This tells us exactly what Cloudflare injected into the build process.
+const __envKeys = Object.keys(process.env).sort();
+const __publicKeys = __envKeys.filter((k) => k.startsWith('PUBLIC_'));
+console.log('[ENV-DEBUG] process.env has', __envKeys.length, 'keys total');
+console.log('[ENV-DEBUG] PUBLIC_* keys:', JSON.stringify(__publicKeys));
+for (const k of __publicKeys) {
+  console.log(`[ENV-DEBUG]   ${k} = ${process.env[k]}`);
+}
+console.log('[ENV-DEBUG] GISCUS_REPO in process.env?', 'PUBLIC_GISCUS_REPO' in process.env);
+console.log('[ENV-DEBUG] SITE_URL =', process.env.SITE_URL);
+
 // https://astro.build/config
 export default defineConfig({
   site: process.env.SITE_URL || 'https://anvilwiki.pages.dev',
