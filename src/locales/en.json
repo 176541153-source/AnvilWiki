@@ -222,6 +222,61 @@
               "detail": "Starter weapons"
             }
           ]
+        },
+        {
+          "order": 5,
+          "name": "Update History",
+          "description": "Major patches and events, newest first.",
+          "href": "/updates",
+          "displayType": "timeline",
+          "highlights": [
+            {
+              "label": "v2.5",
+              "detail": "New raid: Shadowforge released",
+              "badge": "Latest"
+            },
+            {
+              "label": "v2.4",
+              "detail": "Rebalanced all S-tier weapons"
+            },
+            {
+              "label": "v2.3",
+              "detail": "Added 3 new bosses"
+            },
+            {
+              "label": "v2.2",
+              "detail": "Launched season pass system"
+            }
+          ]
+        },
+        {
+          "order": 6,
+          "name": "Video Guides",
+          "description": "Watch the best Anvil Quest walkthroughs and boss fights.",
+          "href": "/guides/video-walkthroughs",
+          "displayType": "video-grid",
+          "highlights": [
+            {
+              "title": "Beginner Walkthrough",
+              "youtubeId": "dQw4w9WgXcQ",
+              "duration": "12:34"
+            },
+            {
+              "title": "All Bosses Ranked",
+              "youtubeId": "aaaaaaaaaaa",
+              "duration": "18:42"
+            },
+            {
+              "title": "Speedrun Guide",
+              "youtubeId": "bbbbbbbbbbb",
+              "duration": "25:10"
+            },
+            {
+              "title": "Hidden Secrets",
+              "youtubeId": "ccccccccccc",
+              "duration": "9:15"
+            }
+          ]
         }
       ]
     },
