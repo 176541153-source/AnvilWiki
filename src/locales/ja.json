@@ -95,7 +95,7 @@
         },
         {
           "number": "4",
-          "title": "武器tier list",
+          "title": "武器ティアリスト",
           "description": "DPS、有用性、シナジーに基づく全武器のS～Cランク付け。",
           "icon": "lucide:list-ordered",
           "href": "/guides/weapon-tier-list"
@@ -111,7 +111,7 @@
           "href": "/bosses/gelum"
         },
         {
-          "label": "武器tier list",
+          "label": "武器ティアリスト",
           "href": "/guides/weapon-tier-list"
         },
         {
@@ -200,7 +200,7 @@
         },
         {
           "order": 4,
-          "name": "武器tier list",
+          "name": "武器ティアリスト",
           "description": "DPS、有用性、シナジーに基づく全武器のS～Cランク付け。",
           "href": "/guides/weapon-tier-list",
           "displayType": "tier-grid",
