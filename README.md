@@ -48,6 +48,7 @@ AnvilWiki 是一个**游戏 wiki 站点模板**——用来快速搭建围绕某
 - 🌍 **多语言开箱即用**：英文无前缀（SEO 最优），其他语言带前缀，缺失内容自动 fallback 英文
 - 🔍 **SEO 工程化**：sitemap / JSON-LD / hreflang / robots 全部代码自动生成
 - 🎯 **广告就绪**：内置 Adsterra iframe 隔离方案，填 key 即生效
+- 💬 **评论就绪**：内置 Giscus 评论（GitHub Discussions），默认关闭，填 env 即启用，见 [docs/comments.md](docs/comments.md)
 - 🔄 **换皮工程化**：4 阶段 7 Part 提示词流程，改配置不改框架
 - 🆓 **完全免费**：MIT 协议，Cloudflare Pages 免费部署
 - 📝 **类型安全**：Content Collections + Zod schema，构建时发现字段错误
@@ -115,6 +116,7 @@ Built on **Astro + Cloudflare Pages**: pure static output, zero adapters, free u
 - 🌍 **i18n out of the box**: Default locale (English) has no prefix (SEO optimal), others prefixed, missing content falls back to English
 - 🔍 **SEO engineering**: sitemap / JSON-LD / hreflang / robots all auto-generated
 - 🎯 **Ads ready**: Built-in Adsterra iframe isolation, just plug in keys
+- 💬 **Comments ready**: Built-in Giscus comments (GitHub Discussions), off by default, enable via env — see [docs/comments.md](docs/comments.md)
 - 🔄 **Skinning workflow**: 4-phase 7-part prompt process, change config not framework
 - 🆓 **Completely free**: MIT license, free Cloudflare Pages deployment
 - 📝 **Type-safe**: Content Collections + Zod schema, catch field errors at build time
@@ -152,6 +154,6 @@ See [`docs/deployment.md`](docs/deployment.md) for detailed guide.
 
 > **Status**: ✅ Live demo at **[anvilwiki.pages.dev](https://anvilwiki.pages.dev/)** — Lighthouse 4×100, CI green, fully deployed.
 >
-> **Features shipped**: Pagefind offline search · Astro Image (WebP/srcset) · Skinning CLI (`pnpm skin`) · Full i18n (en/ja) · SEO (hreflang, JSON-LD, sitemap) · Security headers
+> **Features shipped**: Pagefind offline search · Astro Image (WebP/srcset) · Skinning CLI (`pnpm skin`) · Full i18n (en/ja) · SEO (hreflang, JSON-LD, sitemap) · Security headers · Giscus comments (opt-in)
 >
 > 状态：✅ **[anvilwiki.pages.dev](https://anvilwiki.pages.dev/)** 已上线 — Lighthouse 全 100，CI 全绿。

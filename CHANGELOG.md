@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Comments system (Giscus, opt-in)**: `Comments.astro` component, env-gated (default off = zero JS, preserves Lighthouse 4×100). Official `<script async data-loading="lazy">` + dual MutationObserver dark-mode sync via postMessage. pathname mapping → different locales get independent threads. `data-lang` follows page locale. See `docs/comments.md`.
 - Image `decoding="async"` + explicit `width`/`height` to prevent CLS (ListPage covers, VideoSection thumbnails)
 - FAQ accessibility: `aria-expanded` sync on toggle + `data-faq-group` container
 - WikiSidebar now visible on tablet (md breakpoint, was lg-only)
@@ -16,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - PRD status updated: "设计中 · 待 review" → "已实现"
 - PRD §14.2: v1.1 (seoscout converter) marked as done
+- PRD §14.2: v1.4 (Giscus comments) marked as done — `Comments.astro` env-gated, default off
+- AGENTS.md: added Hard Rule 11 (comments env-empty = null render contract)
 - Demo `home.hero.videoId` cleared (was placeholder)
 
 ## [0.2.0] — 2026-08-12
