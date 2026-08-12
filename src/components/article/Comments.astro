@@ -24,11 +24,9 @@ import { getUi } from '~/i18n/ui';
 interface Props {
   /** Page locale — drives Giscus UI language (en/ja). */
   locale: Locale;
-  /** Current pathname — used as Giscus mapping term. */
-  pathname: string;
 }
 
-const { locale, pathname } = Astro.props;
+const { locale } = Astro.props;
 
 // Read Giscus config from env ( PUBLIC_ prefix exposes to client via import.meta.env).
 const env = import.meta.env as Record<string, string | undefined>;
