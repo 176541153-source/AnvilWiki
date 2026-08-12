@@ -663,7 +663,7 @@ echo "检查完成"
 □ sitemap URL 全部返回 200
 □ Google Rich Results Test 结构化数据有效
 □ Lighthouse Performance ≥ 95
-□ SITE_URL 环境变量已配为最终域名
+□ SITE_URL 环境变量已配为最终域名（**含 `https://` 协议**,改 `wrangler.toml` 或 dashboard,见 [deployment.md](./deployment.md)）
 ```
 
 ---

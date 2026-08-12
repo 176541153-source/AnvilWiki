@@ -55,9 +55,10 @@ This is the core design principle inherited from the course template. **Respect 
 6. **Article frontmatter starts at H2** — never write H1 in MDX body; `ArticlePage` renders `title` as H1.
 7. **og:image / twitter:image must be absolute URLs** — use `${SITE_URL}/...`, never relative.
 8. **Ad keys via env vars** — ad components `return null` when key empty. Never hardcode ad keys.
-9. **`SITE_URL` env var for domain** — never hardcode `*.wiki` domain in code.
+9. **`SITE_URL` env var for domain** — never hardcode `*.wiki` domain in code. **Must include `https://` protocol** (e.g. `https://anvilwiki.pages.dev`, NOT bare `anvilwiki.pages.dev`). Astro's `site:` config field validates it as a URL; a bare domain fails build with `Invalid url`.
 10. **No emoji in UI** — use lucide icons (`astro-icon` or inline SVG).
 11. **评论组件 env 空值 = 不渲染** — `Comments.astro` 在 `PUBLIC_GISCUS_REPO` / `PUBLIC_GISCUS_REPO_ID` / `PUBLIC_GISCUS_CATEGORY` / `PUBLIC_GISCUS_CATEGORY_ID` 任一为空时 `return null`。与广告组件同模式,默认关闭是模板的开箱契约(保 Lighthouse 4×100)。不要给这些 env 加默认值或硬编码 demo 配置。
+12. **`wrangler.toml` 接管 Cloudflare Pages env** — 当 `wrangler.toml` 存在时,它是 Pages 项目 env 的唯一真相源,dashboard 的 Environment variables UI 被完全忽略([官方文档](https://developers.cloudflare.com/pages/functions/wrangler-configuration/))。所有构建时 env 变量必须在 `wrangler.toml` 的 `[vars]` 段声明。fork 用户须知:要么改 `[vars]` 值,要么删 `wrangler.toml` 让 dashboard 接管。详见 `docs/deployment.md`。
 
 ## i18n Behavior (subtle, easy to get wrong)
 

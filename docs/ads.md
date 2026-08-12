@@ -31,7 +31,9 @@
 
 ### Step 3 — 配置环境变量
 
-在 Cloudflare Pages → Settings → Environment variables 加：
+> ⚠️ **先看 [`docs/deployment.md`](./deployment.md) 的 env 配置说明。** 如果你的项目里有 `wrangler.toml`,dashboard 的 Environment variables 会被忽略 —— 你需要改 `wrangler.toml` 的 `[vars]` 或删掉它。
+
+在 Cloudflare Pages → Settings → Environment variables 加（或改 `wrangler.toml`）：
 
 | 变量                        | 广告位                        | CPM 实测 | 收入占比 |
 | --------------------------- | ----------------------------- | -------- | -------- |
