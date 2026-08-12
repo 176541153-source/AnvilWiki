@@ -57,6 +57,7 @@ This is the core design principle inherited from the course template. **Respect 
 8. **Ad keys via env vars** — ad components `return null` when key empty. Never hardcode ad keys.
 9. **`SITE_URL` env var for domain** — never hardcode `*.wiki` domain in code.
 10. **No emoji in UI** — use lucide icons (`astro-icon` or inline SVG).
+11. **评论组件 env 空值 = 不渲染** — `Comments.astro` 在 `PUBLIC_GISCUS_REPO` / `PUBLIC_GISCUS_REPO_ID` / `PUBLIC_GISCUS_CATEGORY` / `PUBLIC_GISCUS_CATEGORY_ID` 任一为空时 `return null`。与广告组件同模式,默认关闭是模板的开箱契约(保 Lighthouse 4×100)。不要给这些 env 加默认值或硬编码 demo 配置。
 
 ## i18n Behavior (subtle, easy to get wrong)
 

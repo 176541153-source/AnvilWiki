@@ -1456,7 +1456,7 @@ describe('sitemap', () => {
 | ~~v1.1~~ | ~~seoscout 格式自动转换脚本 + 文档~~ | ~~高~~ | ✅ 已实现（`scripts/convert-from-seoscout.ts` + `pnpm convert-seoscout`） |
 | v1.2 | 搜索功能（Pagefind 离线搜索，零运行时） | 中 | ✅ 已实现（`postbuild` 钩子 + `SearchButton.astro` `<dialog>` 模态，懒加载 pagefind-ui，Ctrl/Cmd+K 唤起，`data-pagefind-body` 精确索引文章正文） |
 | v1.3 | 更多 displayType（video-grid/timeline/comparison-table） | 中 | ✅ 已实现 timeline + video-grid（缩略图跳转,首页不 embed YouTube,保 Lighthouse 4×100）;comparison-table 待验证（见下） |
-| v1.4 | 评论系统（Giscus/Utterances，可选） | 低 | ⏳ |
+| v1.4 | 评论系统（Giscus，默认关闭，env 驱动） | 低 | ✅ 已实现（`Comments.astro` env 门控 + 官方 `<script data-loading="lazy">` + 双 MutationObserver 暗色同步；详见 `docs/comments.md`） |
 | v1.5 | 图片优化（Astro Image，自动 WebP/AVIF + 响应式 srcset） | 中 | ✅ 已实现（content schema `image()` loader + `ArticleCover.astro` + `image.responsiveStyles`，封面图自动 WebP/srcset，`content.config.ts` 迁至 `src/`） |
 | v2.0 | 可视化换皮 CLI（`pnpm skin <game-name>` 引导式换皮） | 高 | ✅ 已实现（`scripts/skin.ts` Part 1-3 自动化：hex→HSL 主题色、site/navigation/routing/ui/locales/manifest 重写，`--dry-run` / `--no-clear-content` flag） |
 
