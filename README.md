@@ -9,6 +9,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Astro](https://img.shields.io/badge/Astro-5.x-FF5D01?logo=astro&logoColor=white)](https://astro.build)
 [![Cloudflare Pages](https://img.shields.io/badge/Cloudflare-Pages-F38020?logo=cloudflare&logoColor=white)](https://pages.cloudflare.com)
+[![Release](https://img.shields.io/github/v/release/PNGTRID/AnvilWiki?label=Release&color=brightgreen)](https://github.com/PNGTRID/AnvilWiki/releases)
 [![Live Demo](https://img.shields.io/badge/Demo-anvilwiki.pages.dev-brightgreen)](https://anvilwiki.pages.dev/)
 
 <table>
@@ -44,7 +45,7 @@ AnvilWiki 是一个**游戏 wiki 站点模板**——用来快速搭建围绕某
 
 - ⚡ **极快**：Astro 零 JS 优先，Lighthouse 全 100（Performance / Accessibility / Best Practices / SEO）
 - 🌐 **Cloudflare 原生**：纯静态输出，零适配器，免费无限带宽
-- 🎨 **JSON 驱动首页**：模块化布局，换游戏只改 JSON 不改组件
+- 🎨 **JSON 驱动首页**：6 种 displayType 模块化布局，换游戏只改 JSON 不改组件
 - 🌍 **多语言开箱即用**：英文无前缀（SEO 最优），其他语言带前缀，缺失内容自动 fallback 英文
 - 🔍 **SEO 工程化**：sitemap / JSON-LD / hreflang / robots 全部代码自动生成
 - 🎯 **广告就绪**：内置 Adsterra iframe 隔离方案，填 key 即生效
@@ -68,6 +69,8 @@ pnpm dev
 # 访问 http://localhost:4321
 
 # 4. 改配置层（site.ts / navigation.ts / globals.css）+ 替换内容层（src/content/ / locales/）
+#    或用交互式换皮 CLI 自动化 Part 1-3：
+pnpm skin
 
 # 5. 部署到 Cloudflare Pages
 #    cloudflare.com → Pages → Create a project → Connect to Git → 选仓库
@@ -86,6 +89,7 @@ pnpm dev
 | [docs/content-format.md](docs/content-format.md)               | MDX 文章格式规范                                            |
 | [docs/seo.md](docs/seo.md)                                     | SEO 工程化说明                                              |
 | [docs/ads.md](docs/ads.md)                                     | Adsterra 广告接入指南                                       |
+| [docs/comments.md](docs/comments.md)                           | Giscus 评论系统接入指南                                     |
 | [docs/migration-from-nextjs.md](docs/migration-from-nextjs.md) | 从 Next.js 模板迁移指南                                     |
 
 ### 技术栈
@@ -94,7 +98,7 @@ pnpm dev
 | ------------------------------------------------------------------------------ | ------------------- |
 | [Astro 5](https://astro.build)                                                 | 静态优先框架        |
 | [Content Collections](https://docs.astro.build/en/guides/content-collections/) | 类型安全的内容管理  |
-| [Tailwind CSS 4](https://tailwindcss.com)                                      | 原子化样式          |
+| [Tailwind CSS 3](https://tailwindcss.com)                                      | 原子化样式          |
 | [Cloudflare Pages](https://pages.cloudflare.com)                               | 免费部署 + 无限带宽 |
 | [pnpm](https://pnpm.io)                                                        | 包管理              |
 
@@ -112,7 +116,7 @@ Built on **Astro + Cloudflare Pages**: pure static output, zero adapters, free u
 
 - ⚡ **Blazing fast**: Astro zero-JS by default, Lighthouse 4×100 (Performance / Accessibility / Best Practices / SEO)
 - 🌐 **Cloudflare native**: Pure static output, zero adapters, free unlimited bandwidth
-- 🎨 **JSON-driven homepage**: 8 modules, swap games by editing JSON only
+- 🎨 **JSON-driven homepage**: 6 displayTypes, swap games by editing JSON only
 - 🌍 **i18n out of the box**: Default locale (English) has no prefix (SEO optimal), others prefixed, missing content falls back to English
 - 🔍 **SEO engineering**: sitemap / JSON-LD / hreflang / robots all auto-generated
 - 🎯 **Ads ready**: Built-in Adsterra iframe isolation, just plug in keys
