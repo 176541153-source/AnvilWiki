@@ -18,8 +18,8 @@ compatibility_date = "2026-08-11"
 pages_build_output_dir = "dist"
 
 [vars]
-# Site
-SITE_URL = "anvilwiki.pages.dev"
+# Site (must include protocol — Astro validates this as a URL)
+SITE_URL = "https://anvilwiki.pages.dev"
 # Giscus comments (demo config — anvilwiki.pages.dev points at PNGTRID/AnvilWiki Discussions)
 PUBLIC_GISCUS_REPO = "PNGTRID/AnvilWiki"
 PUBLIC_GISCUS_REPO_ID = "R_kgDOT1aRPQ"
