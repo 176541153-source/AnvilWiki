@@ -7,7 +7,22 @@
 # This file is optional — Cloudflare Pages auto-detects Astro when you
 # connect your GitHub repo via the dashboard. Use this only for local
 # preview or `wrangler pages deploy`.
+#
+# IMPORTANT: When this file exists, it becomes the source of truth for the
+# Pages project — the Cloudflare dashboard's "Environment variables" UI is
+# IGNORED. All build-time env vars must be declared in [vars] below.
+# See https://developers.cloudflare.com/pages/functions/wrangler-configuration/
 
 name = "anvilwiki"
 compatibility_date = "2026-08-11"
 pages_build_output_dir = "dist"
+
+[vars]
+# Site
+SITE_URL = "anvilwiki.pages.dev"
+# Giscus comments (demo config — anvilwiki.pages.dev points at PNGTRID/AnvilWiki Discussions)
+PUBLIC_GISCUS_REPO = "PNGTRID/AnvilWiki"
+PUBLIC_GISCUS_REPO_ID = "R_kgDOT1aRPQ"
+PUBLIC_GISCUS_CATEGORY = "Announcements"
+PUBLIC_GISCUS_CATEGORY_ID = "DIC_kwDOT1aRPc4DDODo"
+PUBLIC_GISCUS_MAPPING = "pathname"

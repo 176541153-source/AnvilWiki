@@ -36,10 +36,6 @@ const category = env.PUBLIC_GISCUS_CATEGORY;
 const categoryId = env.PUBLIC_GISCUS_CATEGORY_ID;
 const mapping = env.PUBLIC_GISCUS_MAPPING || 'pathname';
 
-// TEMP DEBUG PROBE — remove after diagnosing Cloudflare env injection
-const __probeKeys = Object.keys(import.meta.env).filter((k) => k.includes('GISCUS'));
-const __probeProcessRepo = (typeof process !== 'undefined' && process.env && process.env.PUBLIC_GISCUS_REPO) || null;
-
 // 4 required business fields — any one empty = disabled (no half-rendered iframe).
 const enabled = Boolean(repo && repoId && category && categoryId);
 
@@ -52,9 +48,6 @@ const ui = getUi(locale);
 const shared = ui.shared as Record<string, string>;
 const heading = shared.commentsHeading ?? 'Comments';
 ---
-{/* TEMP DEBUG PROBE — shows what env Cloudflare passed to the build. Safe to delete. */}
-{/* eslint-disable-next-line */}
-<Fragment set:html={`<!-- GISCUS-PROBE import.meta.env keys: ${JSON.stringify(__probeKeys)} | process.env.PUBLIC_GISCUS_REPO: ${JSON.stringify(__probeProcessRepo)} | repo: ${JSON.stringify(repo)} | enabled: ${enabled} -->`} />
 {enabled && (
   <section class="mt-12 border-t border-border pt-8">
     <h2 class="text-xl font-bold">{heading}</h2>
