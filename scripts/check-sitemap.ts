@@ -22,6 +22,31 @@ interface Result {
   ok: boolean;
 }
 
+/**
+ * Rewrite the host of an absolute URL to match `baseUrl`, keeping the path.
+ *
+ * Why: @astrojs/sitemap emits child sitemap URLs as absolute URLs using the
+ * configured `site` (e.g. https://anvilwiki.pages.dev/sitemap-0.xml). When
+ * running this script against a local preview (http://localhost:4321), we
+ * must fetch the local copy of the child sitemap, not the production one —
+ * otherwise we'd be testing production URLs, and on offline/dev machines
+ * the fetch fails entirely ("Sitemap contained no URLs").
+ *
+ * For relative URLs (already rooted at host), return as-is.
+ */
+function rewriteHost(url: string, baseUrl: string): string {
+  try {
+    const parsed = new URL(url);
+    const base = new URL(baseUrl);
+    parsed.protocol = base.protocol;
+    parsed.host = base.host;
+    return parsed.toString();
+  } catch {
+    // Not an absolute URL — return unchanged.
+    return url;
+  }
+}
+
 async function fetchSitemapUrls(baseUrl: string): Promise<string[]> {
   // Try sitemap-index.xml first (what @astrojs/sitemap generates), then sitemap-0.xml.
   const candidates = [`${baseUrl}/sitemap-index.xml`, `${baseUrl}/sitemap.xml`];
@@ -36,7 +61,7 @@ async function fetchSitemapUrls(baseUrl: string): Promise<string[]> {
       // Collect every <loc> value, then recursively expand child sitemaps.
       const locs = Array.from(xml.matchAll(/<loc>([^<]+)<\/loc>/g)).map((m) => m[1].trim());
 
-      // If locs point to other .xml files, fetch those.
+      // If locs point to other .xml files, fetch those (rewriting host to baseUrl).
       const xmlLocs = locs.filter((u) => u.endsWith('.xml'));
       const urlLocs = locs.filter((u) => !u.endsWith('.xml'));
 
@@ -48,7 +73,7 @@ async function fetchSitemapUrls(baseUrl: string): Promise<string[]> {
       const childUrls: string[] = [];
       for (const child of xmlLocs) {
         try {
-          const childRes = await fetch(child);
+          const childRes = await fetch(rewriteHost(child, baseUrl));
           if (!childRes.ok) continue;
           const childXml = await childRes.text();
           const childLocs = Array.from(childXml.matchAll(/<loc>([^<]+)<\/loc>/g)).map((m) =>
@@ -70,9 +95,14 @@ async function fetchSitemapUrls(baseUrl: string): Promise<string[]> {
   );
 }
 
-async function checkUrl(url: string): Promise<Result> {
+async function checkUrl(url: string, baseUrl: string): Promise<Result> {
+  // Rewrite the host to baseUrl — @astrojs/sitemap emits absolute URLs using
+  // the configured `site` (e.g. https://anvilwiki.pages.dev/about), but we
+  // want to check the server at baseUrl (e.g. local preview). The path is
+  // what matters; the host is just the server being tested.
+  const localUrl = rewriteHost(url, baseUrl);
   try {
-    const res = await fetch(url, { method: 'GET', redirect: 'follow' });
+    const res = await fetch(localUrl, { method: 'GET', redirect: 'follow' });
     return { url, status: res.status, ok: res.ok };
   } catch {
     return {
@@ -98,7 +128,7 @@ async function main() {
   const results: Result[] = [];
   // Sequential to avoid hammering the server (and to keep logs readable).
   for (const url of urls) {
-    const r = await checkUrl(url);
+    const r = await checkUrl(url, BASE_URL);
     results.push(r);
     const mark = r.ok ? '✅' : '❌';
     console.log(`  ${mark}  ${r.status}  ${url}`);
