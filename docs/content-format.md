@@ -107,7 +107,7 @@ pnpm tsx scripts/convert-from-seoscout.ts <input-dir> <output-dir>
 - 删除 `export const metadata` 行
 - 其余正文不变
 
-> 脚本尚未实现（v1.1 计划）。当前手动转换：把 JS export 改成 YAML frontmatter 即可。
+> 已有自动转换脚本：`pnpm convert-seoscout <file>`（详见 `scripts/convert-from-seoscout.ts`）。
 
 ---
 
@@ -158,7 +158,7 @@ pnpm new-post
 # 自动生成带 frontmatter 的 MDX 模板
 ```
 
-> 脚本尚未实现（v1.1 计划）。当前手动复制现有文章改即可。
+> 已实现（`scripts/new-post.ts`）。运行 `pnpm new-post` 交互式生成。
 
 ---
 
