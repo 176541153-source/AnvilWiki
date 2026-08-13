@@ -521,7 +521,7 @@ export const CONTENT_TYPES = NAVIGATION_CONFIG.map(n => n.key);
 
 ### 6.5 首页 JSON schema（`src/locales/en.json` 的 `home` 命名空间）
 
-**首页 JSON 结构**（v0.2 重构后，覆盖 hero / updates / start / popular / explore / finalCta 六大区块；FAQ 保留在 JSON 但由 `/faq` 独立页渲染）：
+**首页 JSON 结构**（v0.2 重构后，覆盖 hero / updates / start / popular / explore / closingCta 六大区块；FAQ 保留在 JSON 但由 `/faq` 独立页渲染）：
 
 ```json
 {
@@ -544,23 +544,23 @@ export const CONTENT_TYPES = NAVIGATION_CONFIG.map(n => n.key);
   "home": {
     "meta": { "title": "...", "description": "..." },
     "hero": {
-      "eyebrow": "...",
+      "badge": "...",
       "title": "Anvil Quest Wiki",
       "description": "...",
-      "primaryCta": "...",
-      "secondaryCta": "...",
+      "ctaPrimary": "...",
+      "ctaSecondary": "...",
       "videoId": ""
     },
     "updates": { "title": "...", "browse": "..." },
     "start": {
-      "eyebrow": "Start Here",
+      "badge": "Start Here",
       "title": "Your Anvil Quest Journey",
       "cards": [
         { "number": "1", "title": "...", "description": "...", "icon": "lucide:book-open", "href": "/guides/beginner-guide" }
       ]
     },
     "popular": {
-      "eyebrow": "Trending Now",
+      "badge": "Trending Now",
       "title": "Most Read This Week",
       "quickLinks": [{ "label": "...", "href": "/bosses/emberfang" }]
     },
@@ -583,10 +583,10 @@ export const CONTENT_TYPES = NAVIGATION_CONFIG.map(n => n.key);
       "description": "...",
       "items": [{ "question": "What is Anvil Quest?", "answer": "..." }]
     },
-    "finalCta": { "title": "...", "description": "...", "primary": "...", "secondary": "..." },
+    "closingCta": { "title": "...", "description": "...", "primary": "...", "secondary": "..." },
     "_archived": {
       "_comment": "v0.2 重构移出首页的区块，保留数据以便回滚。HomePage.astro 不渲染。",
-      "aboutGame": { "...": "见 git 历史 / _archived 命名空间" }
+      "gameInfo": { "...": "见 git 历史 / _archived 命名空间" }
     }
   },
   "footer": {
@@ -611,9 +611,9 @@ export const CONTENT_TYPES = NAVIGATION_CONFIG.map(n => n.key);
 ```
 
 **v0.2 schema 变化**：
-- `hero.stats`、`hero.tertiaryCta` 已删除（首屏做减法）。
+- `hero.stats`、`hero.ctaTertiary` 已删除（首屏做减法）。
 - `start.cards[]` 新增 `icon`（lucide 图标名）和 `href`（链接）字段，支撑 QuickStart 大卡片。
-- `aboutGame` 整块移入 `home._archived`（不渲染，保留数据）。
+- `gameInfo` 整块移入 `home._archived`（不渲染，保留数据）。
 - `explore.modules` 建议固定 4 项（Codes / Bosses / Progression / Tier List）。
 - `footer` 新增 `faq` 键。
 - `faq` 数据保留在 `home.faq`，但由独立 `/faq` 页渲染（`FaqSection.astro`）。
@@ -661,13 +661,13 @@ export const defaultLocale: Locale = 'en';
    └─ 紧跟 Hero，对标竞品"quick actions"模式
 5. RecentUpdates + Trending（两栏：左 2/3 最近更新卡片网格 + 右 1/3 热门链接列表）
 6. ExploreModules（4 个核心模块，2×2 网格，整卡可点击）
-7. FinalCta（底部 CTA）
+7. ClosingCta（底部 CTA）
 8. SiteFooter（含 FAQ 链接）
 ```
 
 **v0.2 重构说明**（相比 v0.1）：
 - 首页从 8 区块压缩到 5 区块，页面长度从 ~7 屏压到 ~4 屏。
-- **删除** AboutGame（stats 与 Hero 信息重复；文案移至 `/about` 页）。
+- **删除** GameInfo（stats 与 Hero 信息重复；文案移至 `/about` 页）。
 - **删除** 首页 FAQ（移至独立 `/faq` 页，FAQPage JSON-LD 随之迁移）。
 - **合并** TrendingNow 独立 section → RecentUpdates 右栏（节省 1 屏）。
 - **砍减** Explore 模块 8→4（Codes / Bosses / Progression / Tier List；其余在导航已有入口）。

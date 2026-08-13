@@ -3,9 +3,9 @@
 @tailwind utilities;
 
 /**
- * Theme color variables — the ONLY place to change colors when skinning.
+ * Theme color variables — the ONLY place to change colors when re-theming.
  *
- * 👉 SKINNING: Change ONLY these 4 lines (2 in :root, 2 in .dark).
+ * 👉 RE-THEME: Change ONLY these 4 lines (2 in :root, 2 in .dark).
  * All other CSS variables and all components reference these via var().
  * Do NOT hardcode hex/rgba/Tailwind color classes elsewhere.
  */
@@ -28,7 +28,7 @@
   }
 }
 
-/* Other design tokens — these reference --brand, so they auto-follow skinning. */
+/* Other design tokens — these reference --brand, so they auto-follow theme changes. */
 @layer base {
   :root {
     --background: 0 0% 100%;
