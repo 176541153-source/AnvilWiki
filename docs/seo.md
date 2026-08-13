@@ -59,7 +59,7 @@
     "@type": "ItemList",
     "name": "All Bosses",
     "itemListElement": [
-      { "position": 1, "name": "Gelum Boss Guide", "url": "..." },
+      { "position": 1, "name": "Emberfang Boss Guide", "url": "..." },
       ...
     ]
   }
@@ -68,12 +68,12 @@
 
 **title 来自**：`en.json` 的 `overview.bosses.overviewTitle`。
 
-### 文章页（如 /bosses/gelum）
+### 文章页（如 /bosses/emberfang）
 
 ```html
-<title>Gelum Boss Guide - Complete Strategy — Anvil Quest Wiki</title>
+<title>Emberfang Boss Guide - Complete Strategy — Anvil Quest Wiki</title>
 <meta property="og:type" content="article" />
-<meta property="og:image" content="https://domain/images/gelum.jpg" />
+<meta property="og:image" content="https://domain/images/emberfang.jpg" />
 <meta name="twitter:card" content="summary_large_image" />
 
 <script type="application/ld+json">
@@ -92,7 +92,7 @@
     "itemListElement": [
       { "position": 1, "name": "Home" },
       { "position": 2, "name": "All Bosses" },
-      { "position": 3, "name": "Gelum Boss Guide" }
+      { "position": 3, "name": "Emberfang Boss Guide" }
     ]
   }
 </script>
@@ -109,9 +109,9 @@
 每个页面 `<head>` 自动注入所有语言版本的 alternate：
 
 ```html
-<link rel="alternate" hreflang="en" href="https://domain/bosses/gelum" />
-<link rel="alternate" hreflang="ja" href="https://domain/ja/bosses/gelum" />
-<link rel="alternate" hreflang="x-default" href="https://domain/bosses/gelum" />
+<link rel="alternate" hreflang="en" href="https://domain/bosses/emberfang" />
+<link rel="alternate" hreflang="ja" href="https://domain/ja/bosses/emberfang" />
+<link rel="alternate" hreflang="x-default" href="https://domain/bosses/emberfang" />
 ```
 
 `x-default` 指向英文版（默认语言）。

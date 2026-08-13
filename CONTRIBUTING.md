@@ -23,7 +23,7 @@ pnpm dev          # → http://localhost:4321
    ```bash
    git checkout -b feat/your-feature
    ```
-2. **Make your changes.** See [AGENTS.md](./AGENTS.md) for architecture rules and gotchas — especially the three-layer separation (don't touch framework code for per-game changes) and the Astro 5 Content Layer quirks.
+2. **Make your changes.** See [AGENTS.md](./AGENTS.md) for architecture rules and gotchas — especially the code/config/content separation (don't touch framework code for per-game changes) and the Astro 5 Content Layer quirks.
 3. **Verify before committing:**
    ```bash
    pnpm lint        # ESLint
@@ -42,7 +42,7 @@ pnpm dev          # → http://localhost:4321
 Read the [PRD](./docs/PRD.md) for the full design. The short version:
 
 ```
-框架层 (src/pages, src/components, src/lib)      — framework code, shared across all sites
+代码层 (src/pages, src/components, src/lib)      — framework code, shared across all sites
 配置层 (src/config, src/i18n/routing.ts, globals.css) — per-game configuration
 内容层 (src/content/wiki, src/locales)            — per-game content
 ```
@@ -53,7 +53,7 @@ Read the [PRD](./docs/PRD.md) for the full design. The short version:
 
 - **TypeScript strict mode** — no `any` without justification.
 - **Pure Astro components** — do not introduce React/Vue/Svelte runtime unless absolutely necessary (see PRD ADR-002).
-- **CSS variables for theming** — never hardcode hex colors in components; use `var(--nav-theme)`.
+- **CSS variables for theming** — never hardcode hex colors in components; use `var(--brand)`.
 - **JSON-driven UI text** — all user-facing strings come from `src/locales/*.json`, not hardcoded in components.
 - **Prettier + ESLint** — run `pnpm format` to auto-format.
 

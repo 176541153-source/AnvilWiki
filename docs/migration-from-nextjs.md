@@ -32,7 +32,7 @@
 
 ```mdx
 export const metadata = {
-  title: 'Gelum Boss Guide',
+  title: 'Emberfang Boss Guide',
   description: '...',
   category: 'bosses',
   date: '2026-08-11',
@@ -45,7 +45,7 @@ export const metadata = {
 
 ```mdx
 ---
-title: 'Gelum Boss Guide'
+title: 'Emberfang Boss Guide'
 description: '...'
 category: 'bosses'
 date: 2026-08-11

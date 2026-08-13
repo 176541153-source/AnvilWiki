@@ -120,7 +120,7 @@ AnvilWiki 面向「游戏 wiki 站点」这一特定场景，在框架、部署�
 | 首页模块 | JSON 驱动（v0.2：6 区块 / 4 explore 模块） | 文案与组件解耦，换游戏只改 JSON，组件零改动。 |
 | SEO 工程化 | 完整（sitemap/JSON-LD/hreflang/robots） | sitemap / JSON-LD（Organization/WebSite/Article/BreadcrumbList/ItemList/FAQPage）/ hreflang / robots 全部代码自动生成。 |
 | 广告系统 | Adsterra iframe 隔离 | 每个广告位独立 html，避免 atOptions 串号；环境变量驱动，新手填 key 即生效。 |
-| 套用模板流程 | 结构化四步流程 | 换游戏只改配置层 + 替换内容层，框架层不动。 |
+| 套用模板流程 | 结构化四步流程 | 换游戏只改配置层 + 替换内容层，代码层不动。 |
 | 游戏站适配 | 专为游戏站设计 | 内置游戏站特定的 SEO（ItemList/Breadcrumb）+ 兑换码/tier list 专用 displayType。 |
 
 ### 3.2 技术栈选型
@@ -132,7 +132,7 @@ AnvilWiki 面向「游戏 wiki 站点」这一特定场景，在框架、部署�
 | **内容** | Content Layer API + `glob()` loader | 内置 | 类型安全，Zod schema 校验，构建时发现字段错误。配合 YAML frontmatter，替代 `export const metadata = {}` 方案。 |
 | **MDX** | `@astrojs/mdx` | latest | 支持 MDX 组件 + YAML frontmatter，兼容标准 MDX 内容。 |
 | **样式** | Tailwind CSS | 4.x | 原子化 CSS，零运行时，主题色与组件样式解耦。 |
-| **主题色** | CSS 变量 `--nav-theme` + `--nav-theme-light` | — | 改主题色只需 4 行（`:root` 2 行 + `.dark` 2 行），其他变量通过 `var()` 自动跟随。 |
+| **主题色** | CSS 变量 `--brand` + `--brand-light` | — | 改主题色只需 4 行（`:root` 2 行 + `.dark` 2 行），其他变量通过 `var()` 自动跟随。 |
 | **图标** | lucide（通过 `astro-icon` 或 inline SVG） | latest | 兼容「禁止 emoji」规则。 |
 | **UI 组件** | **纯 Astro 原生组件**（`.astro`） | — | 不引入 React/Vue runtime。FAQ 用原生 `<details>`，移动端菜单用 `<details>` 或极少 JS。 |
 | **i18n** | Astro 内置 i18n + 自建 fallback 封装 | — | `routing.prefixDefaultLocale: false` 实现 as-needed 前缀。 |
@@ -186,13 +186,13 @@ Cloudflare 同时提供 Pages（静态托管）和 Workers（边缘计算）两�
 
 ## 第 4 章 整体架构
 
-### 4.1 三层架构
+### 4.1 分层架构
 
-AnvilWiki 采用**三层分离**的架构设计：
+AnvilWiki 采用**分层设计**的架构设计：
 
 ```
 ┌─────────────────────────────────────────────────┐
-│  框架层（固定，跨项目复用，fork 后不动）              │
+│  代码层（固定，跨项目复用，fork 后不动）              │
 │  ├── Astro 路由结构（src/pages/）                  │
 │  ├── Content Collections 内容引擎                  │
 │  ├── i18n 系统（as-needed 前缀 + fallback）        │
@@ -217,7 +217,7 @@ AnvilWiki 采用**三层分离**的架构设计：
 **核心原则**：
 - 改内容不动代码，改配置不重写框架。
 - 换游戏 = 改配置层（~5 个文件） + 替换内容层（content/ 和 locales/）。
-- 框架层 fork 后永不改动（除非升级 AnvilWiki 版本）。
+- 代码层 fork 后永不改动（除非升级 AnvilWiki 版本）。
 
 ### 4.2 数据流
 
@@ -251,7 +251,7 @@ Cloudflare Pages（连 GitHub 自动部署）
 |---|---|---|
 | 首页 `/` | **静态（build-time）** | 构建时从 locales/en.json 读 home 命名空间渲染。 |
 | 列表页 `/bosses` | **静态** | 构建时从 Content Collection 查询该分类所有文章。 |
-| 文章页 `/bosses/gelum` | **静态** | 构建时从 Content Collection 取该文章 + fallback 逻辑。 |
+| 文章页 `/bosses/emberfang` | **静态** | 构建时从 Content Collection 取该文章 + fallback 逻辑。 |
 | 法律页 `/about` 等 | **静态** | 硬编码英文正文（不翻译），复用 [locale] layout。 |
 | sitemap.xml | **静态 endpoint** | 构建时生成。 |
 | robots.txt | **静态 endpoint** | 构建时生成。 |
@@ -308,13 +308,13 @@ anvilwiki/
 │   ├── content/                  # ⭐ 内容层：MDX 文章
 │   │   ├── en/
 │   │   │   ├── bosses/
-│   │   │   │   └── gelum.mdx     # → /bosses/gelum
+│   │   │   │   └── emberfang.mdx     # → /bosses/emberfang
 │   │   │   └── guides/
 │   │   │       └── beginner.mdx  # → /guides/beginner
 │   │   └── ja/                   # 日文版（可选）
 │   │       └── bosses/
-│   │           └── gelum.mdx     # → /ja/bosses/gelum
-│   ├── pages/                    # ⭐ 框架层：路由
+│   │           └── emberfang.mdx     # → /ja/bosses/emberfang
+│   ├── pages/                    # ⭐ 代码层：路由
 │   │   ├── index.astro           # 根路径 → redirect 到默认语言首页
 │   │   ├── [locale]/             # 语言前缀路由（英文无前缀由 prefixDefaultLocale:false 实现）
 │   │   │   ├── index.astro       # 首页（JSON 驱动，v0.2：6 区块 / 4 explore 模块）
@@ -328,7 +328,7 @@ anvilwiki/
 │   │   ├── robots.txt.ts         # 动态 robots（sitemap 由 @astrojs/sitemap 集成自动生成）
 │   │   ├── robots.txt.ts         # 动态 robots
 │   │   └── ads/                  # 广告 iframe 占位（如需 SSR 注入 key，否则用 public/ads/*.html）
-│   ├── components/               # ⭐ 框架层：纯 Astro 组件
+│   ├── components/               # ⭐ 代码层：纯 Astro 组件
 │   │   ├── layout/
 │   │   │   ├── BaseLayout.astro  # <html>/<head>/global meta/Organization JSON-LD
 │   │   │   └── LocaleLayout.astro # [locale] 公共外壳（Header + Footer + 主内容）
@@ -364,7 +364,7 @@ anvilwiki/
 │   ├── config/                   # ⭐ 配置层
 │   │   ├── site.ts               # 站点信息（name/domain/social/gameMeta）
 │   │   └── navigation.ts         # ⭐ NAVIGATION_CONFIG 单一真相源
-│   ├── i18n/                     # ⭐ 框架层 + 配置层
+│   ├── i18n/                     # ⭐ 代码层 + 配置层
 │   │   ├── routing.ts            # ⭐ 语言列表唯一源（locales/defaultLocale）
 │   │   ├── ui.ts                 # UI 文案加载器（deepMerge fallback）
 │   │   └── content.ts            # ⭐ 文章加载封装（getEntryWithFallback 等）
@@ -372,7 +372,7 @@ anvilwiki/
 │   │   ├── en.json               # home.* / nav / footer / 分类 overview*
 │   │   └── ja.json               # （deepMerge en，缺 key 自动回退）
 │   ├── styles/
-│   │   └── globals.css           # ⭐ --nav-theme / --nav-theme-light（4 行改主题色）
+│   │   └── globals.css           # ⭐ --brand / --brand-light（4 行改主题色）
 │   └── lib/
 │       ├── content.ts            # Content Collections 查询封装
 │       ├── navigation.ts         # getDynamicNavigation()（扫描 content 生成分组）
@@ -442,12 +442,12 @@ export const collections = { wiki };
 
 ```mdx
 ---
-title: "Gelum Boss Guide - Complete Strategy"
-description: "Complete strategy guide for defeating Gelum, including attack patterns, weaknesses, and recommended loadouts."
+title: "Emberfang Boss Guide - Complete Strategy"
+description: "Complete strategy guide for defeating Emberfang, including attack patterns, weaknesses, and recommended loadouts."
 category: "bosses"
 date: 2026-08-11
 lastModified: 2026-08-12
-image: "/images/gelum-cover.jpg"
+image: "/images/emberfang-cover.jpg"
 tags: ["boss", "ice", "early-game"]
 ---
 
@@ -562,7 +562,7 @@ export const CONTENT_TYPES = NAVIGATION_CONFIG.map(n => n.key);
     "popular": {
       "eyebrow": "Trending Now",
       "title": "Most Read This Week",
-      "quickLinks": [{ "label": "...", "href": "/bosses/gelum" }]
+      "quickLinks": [{ "label": "...", "href": "/bosses/emberfang" }]
     },
     "explore": {
       "title": "...",
@@ -695,7 +695,7 @@ export const defaultLocale: Locale = 'en';
 
 ### 7.3 详情页（ArticlePage）
 
-**路由**：`/[locale]/[contentType]/[slug]`（如 `/bosses/gelum`）。
+**路由**：`/[locale]/[contentType]/[slug]`（如 `/bosses/emberfang`）。
 **数据源**：`lib/content.ts` 的 `getEntryWithFallback(contentType, slug, locale)`。
 **渲染**：
 - H1 = `entry.data.title`（MDX 正文不写 H1）。
@@ -706,7 +706,7 @@ export const defaultLocale: Locale = 'en';
 **SEO**：Article + BreadcrumbList JSON-LD。
 
 **关键约束**：
-- **单篇文章 fallback 英文**——访问 `/ja/bosses/gelum` 若无日文版，显示英文版（metadata 也是英文），**不 404**。
+- **单篇文章 fallback 英文**——访问 `/ja/bosses/emberfang` 若无日文版，显示英文版（metadata 也是英文），**不 404**。
 - 这与列表页的「不 fallback」看似矛盾，实则合理：列表保证准确性（不展示没有的内容），详情保证可达性（直接 URL 访问不 404）。
 
 ### 7.4 侧边栏（WikiSidebar）
@@ -808,7 +808,7 @@ export async function GET() {
   
   // 2. 为每个 entry × 每个语言生成 URL（含 hreflang alternate）
   const urls = entries.flatMap(entry => {
-    // entry.id 格式：'en/bosses/gelum' 或 'ja/bosses/gelum'
+    // entry.id 格式：'en/bosses/emberfang' 或 'ja/bosses/emberfang'
     const [locale, contentType, ...slugParts] = entry.id.split('/');
     const slug = slugParts.join('/');
     return locales.map(loc => ({
@@ -842,9 +842,9 @@ export async function GET() {
 
 每页 `<head>` 注入：
 ```html
-<link rel="alternate" hreflang="en" href="https://domain.com/bosses/gelum" />
-<link rel="alternate" hreflang="ja" href="https://domain.com/ja/bosses/gelum" />
-<link rel="alternate" hreflang="x-default" href="https://domain.com/bosses/gelum" />
+<link rel="alternate" hreflang="en" href="https://domain.com/bosses/emberfang" />
+<link rel="alternate" hreflang="ja" href="https://domain.com/ja/bosses/emberfang" />
+<link rel="alternate" hreflang="x-default" href="https://domain.com/bosses/emberfang" />
 ```
 
 由 `lib/url.ts` 的 `languageAlternates(contentType, slug)` 生成，遍历 `routing.locales`。
@@ -886,8 +886,8 @@ export async function GET() {
 
 ### 9.1 策略：as-needed 前缀
 
-**英文（默认）无前缀**：`/bosses/gelum`
-**其他语言带前缀**：`/ja/bosses/gelum`、`/ru/bosses/gelum`
+**英文（默认）无前缀**：`/bosses/emberfang`
+**其他语言带前缀**：`/ja/bosses/emberfang`、`/ru/bosses/emberfang`
 
 **Astro 配置**：
 ```javascript
@@ -914,7 +914,7 @@ export default defineConfig({
 - `slug.length > 1` → 详情页（`slug[0]` 是 contentType，`slug.slice(1).join('/')` 是文章 slug）。
 
 **英文无前缀的处理**：
-- Astro 的 `prefixDefaultLocale: false` 会自动让 `/bosses/gelum`（无 `/en`）也能匹配到 `[locale]` 路由（locale 被解析为 `en`）。
+- Astro 的 `prefixDefaultLocale: false` 会自动让 `/bosses/emberfang`（无 `/en`）也能匹配到 `[locale]` 路由（locale 被解析为 `en`）。
 - 若某些版本不自动处理，fallback 方案：`src/pages/[...slug].astro`（顶层）+ `src/pages/[locale]/[...slug].astro`（带前缀）双路由，或用 middleware 重写。详见 deployment.md 的「i18n 路由陷阱」章节。
 
 ### 9.3 文章 fallback 机制
@@ -1128,39 +1128,29 @@ AnvilWiki 把套用过程拆成四步串行执行，每步有明确的改动范�
 
 ### 11.4 AI 辅助套用的任务格式
 
-如果用 AI 编程助手（Cursor / Claude Code 等）来执行套用，建议每个任务按以下结构描述，让 AI 明确边界：
+如果用 AI 编程助手（Cursor / Claude Code 等）来执行套用，建议每个任务按以下结构描述，让 AI 明确改动范围和验收标准：
 
 ```
 # 任务：<标题>
 
-## 目标
-<改完后站点变成什么样>
-
-## 参照
-- 数据来源：<REQUIREMENTS_DIR>/<文件> 的 <区块>
-- 真相源优先级：site.ts > 00基础信息.md > 模板残留
-
-## 修改范围
+## 改什么
 - <文件 1>：<改什么、怎么改>
 - <文件 2>：<改什么、怎么改>
+- 数据来源：<REQUIREMENTS_DIR>/<文件>
 
-## ⚠️ 硬性约束
-- <容易踩的坑 + 正确做法>
-
-## 禁止修改
-- <白名单外的文件/key>
-
-## 验证方法
+## 怎么验证
 ```bash
-<grep/ls/file 命令，配中文注释>
+<grep/ls/file 命令>
 ```
+
+⚠️ 注意事项（容易踩的坑 + 不要碰的文件）
 ```
 
 ### 11.5 关键约束
 
 | 约束 | 说明 |
 |---|---|
-| **主题色只改 4 行** | `--nav-theme` + `--nav-theme-light`（`:root` 2 行 + `.dark` 2 行），其他变量通过 `var()` 自动跟随。 |
+| **主题色只改 4 行** | `--brand` + `--brand-light`（`:root` 2 行 + `.dark` 2 行），其他变量通过 `var()` 自动跟随。 |
 | **分类 key 三处同步** | `navigation.ts` 的 key = `locales/en.json` 的 `nav.<key>` = `src/content/<locale>/<key>/` 目录名。 |
 | **sitemap 禁止硬编码** | 必须扫描实际 MDX，禁止从 `NAVIGATION_CONFIG` 或手写列表生成 URL。 |
 | **og:image 绝对路径** | 必须 `${SITE_URL}/images/hero.webp`，相对路径社交平台抓不到。 |
@@ -1316,7 +1306,7 @@ describe('Content Collections', () => {
 // tests/i18n.test.ts
 describe('i18n fallback', () => {
   it('单篇文章缺失时 fallback 英文不 404', async () => {
-    const result = await getEntryWithFallback('bosses', 'gelum', 'ja');
+    const result = await getEntryWithFallback('bosses', 'emberfang', 'ja');
     expect(result).not.toBeNull();
     expect(result.isFallback).toBe(true);  // 日文无，回退英文
   });
@@ -1366,10 +1356,10 @@ describe('sitemap', () => {
 | 里程碑 | 交付物 | 验收标准 | 预计工时 |
 |---|---|---|---|
 | **MVP-0**：骨架 | Astro 项目初始化 + Content Collection 配置 + 单篇示例 MDX + 首页/列表页/详情页三页跑通 + Cloudflare Pages 部署成功 | 访问 `*.pages.dev` 能看到三页，Lighthouse Performance ≥ 95 | 1-2 天 |
-| **MVP-1**：多语言 | as-needed 前缀（`prefixDefaultLocale: false`）+ 文章 fallback + 语言切换器 + UI 文案 deepMerge | 加 `ja` 语言，访问 `/ja/bosses/gelum`（无 ja 版）回退英文 | 1 天 |
+| **MVP-1**：多语言 | as-needed 前缀（`prefixDefaultLocale: false`）+ 文章 fallback + 语言切换器 + UI 文案 deepMerge | 加 `ja` 语言，访问 `/ja/bosses/emberfang`（无 ja 版）回退英文 | 1 天 |
 | **MVP-2**：首页模块 | JSON 驱动 + 4 种 displayType（code-cards/step-by-step/tier-grid/card-list）+ Hero/QuickStart/Explore/CTA/Footer/Video/RecentUpdates+Trending（v0.2 结构） | 换 en.json 数据，首页无组件改动即生效 | 1-2 天 |
 | **MVP-3**：SEO | sitemap 动态 + JSON-LD 全套（Organization/WebSite/Article/Breadcrumb/ItemList/FAQPage）+ hreflang + robots | Google Rich Results Test 全通过 | 1 天 |
-| **MVP-4**：主题换肤 | CSS 变量双变量（`--nav-theme` + `--nav-theme-light`）+ 暗色模式 + 主题切换器 | 改 globals.css 4 行整站变色 | 0.5 天 |
+| **MVP-4**：主题换肤 | CSS 变量双变量（`--brand` + `--brand-light`）+ 暗色模式 + 主题切换器 | 改 globals.css 4 行整站变色 | 0.5 天 |
 | **MVP-5**：广告系统 | Adsterra iframe 隔离（6 种广告位）+ Sticky 320×50 + 环境变量驱动 + 关闭按钮 | 移动端 + 桌面端广告正常显示不串号 | 1 天 |
 | **MVP-6**：套用模板文档 | 套用模板四步指南（适配 Astro 路径）+ 新手 README + docs/ 全套 | 新手照 README 30 分钟内部署上线 | 1-2 天 |
 | **v1.0**：基准实测与发布 | ✅ 已完成 — demo 站 `anvilwiki.pages.dev` 已上线，Lighthouse 全 100（Performance / Accessibility / Best Practices / SEO） | 性能目标全部达成，demo 站可访问 | 1 天 |
@@ -1406,7 +1396,7 @@ describe('sitemap', () => {
 | 4 | shadcn/ui 在 Astro 下的体验 | — | ❌ 决策不用（采用纯 Astro 原生组件，见 ADR-002） |
 | 5 | 多语言 sitemap/hreflang 自动生成 | MVP-3 | ✅ 已验证（`@astrojs/sitemap` 自动生成 26 URL + en/ja hreflang alternate） |
 | 6 | 侧边栏动态导航 | MVP-2 | ✅ 已实现（`WikiSidebar` 组件 + `getDynamicNavigation()` 扫描 MDX 生成分组） |
-| 7 | 主题色方案落地 | MVP-4 | ✅ 已验证（`--nav-theme` / `--nav-theme-light` 4 行改主题色 + 暗色模式 + 主题切换器） |
+| 7 | 主题色方案落地 | MVP-4 | ✅ 已验证（`--brand` / `--brand-light` 4 行改主题色 + 暗色模式 + 主题切换器） |
 | 8 | 性能基准实测 | v1.0 | ✅ 已实测（`anvilwiki.pages.dev` Lighthouse 全 100：Performance / Accessibility / Best Practices / SEO） |
 | 9 | 迁移成本核算 | v1.0 | ✅ 已总结（fork → `pnpm apply-template` → 部署，全流程 30 分钟内） |
 
@@ -1611,7 +1601,7 @@ PUBLIC_GA_ID=
 | **hreflang** | 多语言页面 alternate 链接，告诉搜索引擎各语言版本位置 |
 | **iframe 隔离** | 每个广告用独立 iframe，避免 atOptions 串号 |
 | **Sticky 广告** | 粘在屏幕固定位置的广告，曝光时长更长，CPM 更高 |
-| **三层架构** | 框架层 / 配置层 / 内容层 分离，套用模板只改后两层 |
+| **分层架构** | 代码层 / 配置层 / 内容层 分离，套用模板只改后两层 |
 | **homepage-only 模式** | 只上线首页，无文章内容，后续慢慢补 |
 | **dogfooding** | 自己用自己的产品（AnvilWiki 文档站用 AnvilWiki 构建） |
 

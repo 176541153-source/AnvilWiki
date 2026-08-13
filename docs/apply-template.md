@@ -2,7 +2,7 @@
 
 > 把 AnvilWiki 从 demo 站（虚构游戏 "Anvil Quest"）换成你的目标游戏站点。
 >
-> **套用模板 = 改配置层（~5 个文件）+ 替换内容层（content/ 和 locales/）。框架层一行不动。**
+> **套用模板 = 改配置层（~5 个文件）+ 替换内容层（content/ 和 locales/）。代码层一行不动。**
 >
 > 这是 AnvilWiki 自有的模板套用流程文档。
 
@@ -37,12 +37,12 @@ requirements/
 
 ---
 
-## 三层架构回顾
+## 分层架构回顾
 
 套用模板时请牢记**哪些能改、哪些不能碰**：
 
 ```
-框架层（绝对不动）—— src/pages/, src/components/, src/lib/
+代码层（绝对不动）—— src/pages/, src/components/, src/lib/
 配置层（改这里）   —— src/config/, src/i18n/routing.ts, src/styles/globals.css, public/
 内容层（全替换）   —— src/content/wiki/, src/locales/
 ```
@@ -64,32 +64,25 @@ requirements/
 
 ## AI 辅助套用的任务格式
 
-如果你用 AI 编程助手（Cursor / Claude Code 等）来套用模板，建议每个任务按以下结构描述，让 AI 明确边界：
+如果你用 AI 编程助手（Cursor / Claude Code 等）来套用模板，建议每个任务按以下结构描述，让 AI 明确改动范围和验收标准：
 
 ```
 # 任务：标题
 
-## 目标
-改完后站点变成什么样
-
-## 参照
-- 数据来源：requirements/<文件> 的 <区块>
-
-## 修改范围
+## 改什么
 - 文件 1：改什么、怎么改
 - 文件 2：改什么、怎么改
+- 数据来源：requirements/<文件>
 
-## ⚠️ 硬性约束
-- 容易踩的坑 + 正确做法
-
-## 禁止修改
-- 白名单外的文件/key
-
-## 验证方法
-grep/ls/file 命令，配中文注释
+## 怎么验证
+```bash
+grep/ls/file 命令
 ```
 
-下面按四步给出完整的任务说明和可直接复制的提示词。把 `{{游戏名}}` / `{{PROJECT_PATH}}` 等占位符替换成你的实际值后，发给 AI 执行。
+⚠️ 注意事项（容易踩的坑）
+```
+
+下面按四步给出完整的操作说明。把 `{{游戏名}}` 等占位符替换成你的实际值后执行。
 
 ---
 
@@ -106,10 +99,10 @@ grep/ls/file 命令，配中文注释
 
 参考：requirements/00基础信息.md 的主题色（hex 值）
 只更新 src/styles/globals.css 里的 4 行：
-- `:root` 下的 `--nav-theme`（亮色主色）
-- `:root` 下的 `--nav-theme-light`（亮色浅色变体）
-- `.dark` 下的 `--nav-theme`（暗色主色）
-- `.dark` 下的 `--nav-theme-light`（暗色浅色变体）
+- `:root` 下的 `--brand`（亮色主色）
+- `:root` 下的 `--brand-light`（亮色浅色变体）
+- `.dark` 下的 `--brand`（暗色主色）
+- `.dark` 下的 `--brand-light`（暗色浅色变体）
 
 把 hex 转成 HSL 格式（如 #f97316 → 22 90% 52%），用 https://www.w3schools.com/colors/colors_hsl.asp 转换。
 其他 CSS 变量（--background / --foreground / --border 等）不要改。
@@ -134,15 +127,12 @@ grep/ls/file 命令，配中文注释
 ⚠️ 模板自带的 hero.svg 可能是占位文件，必须用真实图覆盖。
 ⚠️ 同时把 BaseLayout.astro 里的 og:image 默认值从 /images/hero.svg 改成 /images/hero.webp（如果用了 webp）。
 
-## 禁止修改
-- src/components/ 下的任何组件
-- src/lib/ 下的任何工具函数
-- src/pages/ 下的路由
+⚠️ 不要碰：src/components/、src/lib/、src/pages/ 下的文件（这些是代码层，套用模板时不改）。
 
-## 验证方法
+## 怎么验证
 ```bash
 # 验证主题色已更新（应显示你的 hex 对应的 HSL 值）
-grep "nav-theme" src/styles/globals.css
+grep "brand" src/styles/globals.css
 
 # 验证无硬编码颜色残留（应该没有 hex 色值在组件里）
 grep -rn "#[0-9a-fA-F]\{6\}" src/components/ | grep -v node_modules
@@ -192,12 +182,9 @@ file public/images/hero.*
 ⚠️ 域名不要硬编码在组件里——所有绝对 URL 走 SITE_URL 环境变量。
 ⚠️ 本步骤只改 site.ts + en.json 的上述 key，不要改 nav / overview / home.explore / home.faq（那些在步骤 2.1）。
 
-## 禁止修改
-- src/components/ 下的组件
-- src/pages/ 下的路由
-- src/locales/en.json 的 nav / overview / home.explore / home.faq / home.start / home.popular / home.updates
+⚠️ 不要碰：src/components/、src/pages/、en.json 的 nav / overview / home.explore / home.faq / home.start / home.popular / home.updates。
 
-## 验证方法
+## 怎么验证
 ```bash
 # 验证无 demo 游戏名残留
 grep -ri "Anvil Quest\|AnvilQuest\|anvil" src/config/ src/locales/ public/manifest.json
@@ -279,12 +266,9 @@ rm -rf src/content/wiki/ja
 
 清空 en.json 的 nav 和 overview 对象（留空 {}），后续步骤 2/3 再填。
 
-## 禁止修改
-- src/pages/ 下的路由
-- src/components/ 下的组件
-- src/lib/ 下的工具函数
+⚠️ 不要碰：src/pages/、src/components/、src/lib/ 下的文件。
 
-## 验证方法
+## 怎么验证
 ```bash
 # 验证 content 下无 demo 残留
 find src/content/wiki -name '*.mdx' | wc -l
@@ -368,12 +352,9 @@ pnpm dev
 - 禁止 emoji，所有图标走 lucide
 - 禁止"信息可能不准确"之类的描述
 
-## 禁止修改
-- src/components/home/ 下的渲染组件（只改 JSON 数据）
-- src/config/site.ts（步骤 1.2 已改）
-- src/config/navigation.ts（步骤 1.3 已改）
+⚠️ 不要碰：src/components/home/（只改 JSON 数据）、site.ts（步骤 1.2 已改）、navigation.ts（步骤 1.3 已改）。
 
-## 验证方法
+## 怎么验证
 ```bash
 # 验证无 demo 游戏名残留
 grep -i "Anvil Quest" src/locales/en.json
@@ -433,7 +414,7 @@ cp -r requirements/articles/ja/* src/content/wiki/ja/ 2>/dev/null || true
 ```
 
 ⚠️ 文章目录的子目录名必须与 navigation.ts 的 key 一致：
-  src/content/wiki/en/bosses/gelum.mdx → key=bosses → /bosses/gelum
+  src/content/wiki/en/bosses/emberfang.mdx → key=bosses → /bosses/emberfang
 
 ⚠️ MDX frontmatter 格式（AnvilWiki 用 YAML frontmatter，不是 export const metadata）：
 ```mdx
@@ -465,12 +446,9 @@ tags: ["boss", "ice"]
   - overviewTitle: "All Bosses" / "All Guides" / "All Codes" 等
   - overviewDescription: 该分类的描述（含游戏名 + 关键词）
 
-## 禁止修改
-- src/components/（渲染组件不动）
-- src/lib/（工具函数不动）
-- src/pages/（路由不动）
+⚠️ 不要碰：src/components/、src/lib/、src/pages/。
 
-## 验证方法
+## 怎么验证
 ```bash
 # 验证文章已复制
 find src/content/wiki -name '*.mdx' | wc -l
@@ -498,7 +476,7 @@ for key in nav:
 
 # 启动 dev，逐个访问列表页和文章页
 pnpm dev
-# 访问 /bosses（列表页）、/bosses/gelum（文章页）确认正常
+# 访问 /bosses（列表页）、/bosses/emberfang（文章页）确认正常
 ```
 ````
 
@@ -543,14 +521,14 @@ find src/locales -maxdepth 1 -type f -name '*.json' ! -name 'en.json' -exec sh -
 ```bash
 # 把英文文章复制到对应语言目录，翻译正文
 mkdir -p src/content/wiki/ja/bosses
-cp src/content/wiki/en/bosses/gelum.mdx src/content/wiki/ja/bosses/gelum.mdx
+cp src/content/wiki/en/bosses/emberfang.mdx src/content/wiki/ja/bosses/emberfang.mdx
 # 然后翻译 ja 版的 frontmatter + 正文
 ```
 
 ⚠️ deepMerge 机制保证：非英文 JSON 缺 key 会自动回退英文，不会崩溃。
    所以可以只翻译部分 key，剩下的自动显示英文。
 
-## 验证方法
+## 怎么验证
 ```bash
 # 验证所有语言文件合法
 for f in src/locales/*.json; do

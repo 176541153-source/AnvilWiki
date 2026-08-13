@@ -122,7 +122,7 @@ const placeholder = search.placeholder ?? 'Search...';
 
   /* Root container */
   :global(#search-modal-inner .pagefind-ui) {
-    --pagefind-ui-primary: hsl(var(--nav-theme));
+    --pagefind-ui-primary: hsl(var(--brand));
     --pagefind-ui-text: hsl(var(--foreground));
     --pagefind-ui-background: hsl(var(--card));
     --pagefind-ui-border: hsl(var(--border));
@@ -315,7 +315,7 @@ const placeholder = search.placeholder ?? 'Search...';
     transition: color 0.12s !important;
   }
   :global(#search-modal .pagefind-ui__result:hover .pagefind-ui__result-link) {
-    color: hsl(var(--nav-theme)) !important;
+    color: hsl(var(--brand)) !important;
   }
 
   /* Excerpt */
@@ -330,8 +330,8 @@ const placeholder = search.placeholder ?? 'Search...';
 
   /* Highlight mark */
   :global(#search-modal mark) {
-    background: hsl(var(--nav-theme) / 0.14) !important;
-    color: hsl(var(--nav-theme)) !important;
+    background: hsl(var(--brand) / 0.14) !important;
+    color: hsl(var(--brand)) !important;
     border-radius: 3px !important;
     padding: 1px 3px !important;
     font-weight: 600 !important;
@@ -356,7 +356,7 @@ const placeholder = search.placeholder ?? 'Search...';
     color: hsl(var(--muted-foreground)) !important;
   }
   :global(#search-modal .pagefind-ui__result-tag) {
-    color: hsl(var(--nav-theme)) !important;
+    color: hsl(var(--brand)) !important;
     font-weight: 500 !important;
   }
 
@@ -464,7 +464,7 @@ const placeholder = search.placeholder ?? 'Search...';
               },
             });
             // processResult covers main results, but sub-results (nested
-            // anchors like /bosses/gelum/#section) are rendered separately
+            // anchors like /bosses/emberfang/#section) are rendered separately
             // and still carry trailing slashes. Intercept all clicks inside
             // the results area and rewrite the href on the fly.
             target.addEventListener('click', (e) => {
@@ -473,8 +473,8 @@ const placeholder = search.placeholder ?? 'Search...';
               const href = link.getAttribute('href');
               if (!href) return;
               // Normalize: strip trailing slash before a #anchor or at end.
-              // "/bosses/gelum/" → "/bosses/gelum"
-              // "/bosses/gelum/#anchor" → "/bosses/gelum#anchor"
+              // "/bosses/emberfang/" → "/bosses/emberfang"
+              // "/bosses/emberfang/#anchor" → "/bosses/emberfang#anchor"
               const fixed = href
                 .replace(/\/+(#|$)/, '$1')  // "/.../#anchor" → "/...#anchor", "/.../"  → "/..."
                 || '/';

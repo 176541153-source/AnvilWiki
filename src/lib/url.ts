@@ -33,7 +33,7 @@ export function listPath(category: string, locale: Locale): string {
   return localizePath(`/${category}`, locale);
 }
 
-/** Article detail URL. e.g. detailPath('bosses', 'gelum', 'en') -> '/bosses/gelum' */
+/** Article detail URL. e.g. detailPath('bosses', 'emberfang', 'en') -> '/bosses/emberfang' */
 export function detailPath(category: string, slug: string, locale: Locale): string {
   return localizePath(`/${category}/${slug}`, locale);
 }

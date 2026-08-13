@@ -30,7 +30,7 @@ AnvilWiki 内置可选的评论系统，基于 [Giscus](https://giscus.app) —�
 
 ## 验证
 
-访问 `http://localhost:4321/bosses/gelum`（或你的任一文章页）。正文 + 标签下方应出现评论区。点「Sign in with GitHub」登录后可发表评论。
+访问 `http://localhost:4321/bosses/emberfang`（或你的任一文章页）。正文 + 标签下方应出现评论区。点「Sign in with GitHub」登录后可发表评论。
 
 ## 多语言行为
 
@@ -38,8 +38,8 @@ AnvilWiki 内置可选的评论系统，基于 [Giscus](https://giscus.app) —�
 
 | URL | 评论区 |
 |---|---|
-| `/bosses/gelum`（英文） | Discussion A |
-| `/ja/bosses/gelum`（日文） | Discussion B（与 A 互不影响） |
+| `/bosses/emberfang`（英文） | Discussion A |
+| `/ja/bosses/emberfang`（日文） | Discussion B（与 A 互不影响） |
 
 这是 `mapping=pathname` 的自然结果，符合「日文用户用日文讨论、英文用户用英文讨论」的预期。Giscus 的界面语言（按钮、提示）会自动跟随页面 locale（en/ja）。
 

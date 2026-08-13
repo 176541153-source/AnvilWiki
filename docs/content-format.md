@@ -9,9 +9,9 @@
 文章放在 `src/content/wiki/<locale>/<category>/<slug>.mdx`：
 
 ```
-src/content/wiki/en/bosses/gelum.mdx           → /bosses/gelum
+src/content/wiki/en/bosses/emberfang.mdx           → /bosses/emberfang
 src/content/wiki/en/guides/beginner-guide.mdx  → /guides/beginner-guide
-src/content/wiki/ja/bosses/gelum.mdx           → /ja/bosses/gelum（日文版）
+src/content/wiki/ja/bosses/emberfang.mdx           → /ja/bosses/emberfang（日文版）
 ```
 
 > `category` 必须与 `src/config/navigation.ts` 的 `key` 一致。
@@ -24,12 +24,12 @@ src/content/wiki/ja/bosses/gelum.mdx           → /ja/bosses/gelum（日文版�
 
 ```mdx
 ---
-title: 'Gelum Boss Guide - Complete Strategy'
-description: 'Complete strategy guide for defeating Gelum, including attack patterns and weaknesses.'
+title: 'Emberfang Boss Guide - Complete Strategy'
+description: 'Complete strategy guide for defeating Emberfang, including attack patterns and weaknesses.'
 category: 'bosses'
 date: 2026-08-11
 lastModified: 2026-08-12
-image: '/images/gelum-cover.jpg'
+image: '/images/emberfang-cover.jpg'
 tags: ['boss', 'ice', 'early-game']
 noindex: false
 ---
@@ -67,7 +67,7 @@ date: '上周二' # ❌ 不是 ISO 格式，Zod 解析失败
 
 ```mdx
 ---
-title: 'Gelum Boss Guide'
+title: 'Emberfang Boss Guide'
 ---
 
 ## Boss Overview ← ✅ 第一个标题是 H2
@@ -84,7 +84,7 @@ title: 'Gelum Boss Guide'
 - 表格（GitHub Flavored Markdown）
 - 代码块（```语法高亮）
 - 引用（`>`）
-- 链接（相对路径用 `/bosses/gelum`，绝对路径用完整 URL）
+- 链接（相对路径用 `/bosses/emberfang`，绝对路径用完整 URL）
 - 图片（`![alt](/images/xxx.jpg)`）
 
 ### MDX 扩展（可选）
@@ -142,16 +142,16 @@ tags: ["guide"]
 
 ```
 src/content/wiki/
-├── en/bosses/gelum.mdx     → /bosses/gelum
-└── ja/bosses/gelum.mdx     → /ja/bosses/gelum
+├── en/bosses/emberfang.mdx     → /bosses/emberfang
+└── ja/bosses/emberfang.mdx     → /ja/bosses/emberfang
 ```
 
 ### Fallback 行为
 
 | 场景                                         | 行为                                                         |
 | -------------------------------------------- | ------------------------------------------------------------ |
-| 访问 `/ja/bosses/gelum` 且**有日文版**       | 显示日文                                                     |
-| 访问 `/ja/bosses/gelum` 但**无日文版**       | **自动回退英文**（不 404），页面显示 "English fallback" 标记 |
+| 访问 `/ja/bosses/emberfang` 且**有日文版**       | 显示日文                                                     |
+| 访问 `/ja/bosses/emberfang` 但**无日文版**       | **自动回退英文**（不 404），页面显示 "English fallback" 标记 |
 | 访问 `/ja/bosses/`（列表页）且**无日文文章** | 显示空状态（**不回退英文**）                                 |
 
 > 这种不对称是设计决策：详情页保证 URL 可达（不 404），列表页保证准确性（不展示没有的内容）。
@@ -163,13 +163,13 @@ src/content/wiki/
 slug（文件名）= URL 最后一段：
 
 ```
-src/content/wiki/en/bosses/gelum-boss-guide.mdx → /bosses/gelum-boss-guide
+src/content/wiki/en/bosses/emberfang-boss-guide.mdx → /bosses/emberfang-boss-guide
 ```
 
 **规则**：
 
 - 全小写
-- 单词用连字符分隔（`gelum-boss-guide`，不是 `GelumBossGuide` 或 `gelum_boss_guide`）
+- 单词用连字符分隔（`emberfang-boss-guide`，不是 `EmberfangBossGuide` 或 `emberfang_boss_guide`）
 - 不含特殊字符（`?:/`)
 - 建议：与目标关键词一致（SEO）
 

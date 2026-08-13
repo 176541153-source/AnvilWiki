@@ -227,7 +227,7 @@ curl -I https://<你的域名>/ja/   # 日文首页
 curl -I https://<你的域名>/bosses/  # 英文列表页
 
 # 5. 文章页正常
-curl -I https://<你的域名>/bosses/gelum/
+curl -I https://<你的域名>/bosses/emberfang/
 # 期望: 200，不是 404
 
 # 6. 法律页可访问

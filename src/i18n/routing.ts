@@ -7,8 +7,8 @@
  *   3. src/content/<locale>/ — directory must exist (can be empty)
  *
  * URL strategy (as-needed prefix):
- *   - English (default) has NO prefix: /bosses/gelum
- *   - Other locales ARE prefixed:     /ja/bosses/gelum
+ *   - English (default) has NO prefix: /bosses/emberfang
+ *   - Other locales ARE prefixed:     /ja/bosses/emberfang
  *
  * This is configured in astro.config.ts via `i18n.routing.prefixDefaultLocale: false`.
  */

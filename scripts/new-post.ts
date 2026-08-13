@@ -86,7 +86,7 @@ async function main() {
     if (proceed !== 'y') process.exit(0);
   }
 
-  const titleInput = (await rl.question('Article title (e.g. "Gelum Boss Guide"): ')).trim();
+  const titleInput = (await rl.question('Article title (e.g. "Emberfang Boss Guide"): ')).trim();
   if (!titleInput) {
     console.error('❌ Title is required.');
     process.exit(1);

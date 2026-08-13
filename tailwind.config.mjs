@@ -11,18 +11,18 @@ export default {
     extend: {
       colors: {
         // Design tokens — driven by CSS variables in src/styles/globals.css.
-        // This lets re-theming work by changing only the 4 --nav-theme lines.
+        // This lets re-theming work by changing only the 4 --brand lines.
         border: 'hsl(var(--border))',
         input: 'hsl(var(--border))',
-        ring: 'hsl(var(--nav-theme))',
+        ring: 'hsl(var(--brand))',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         nav: {
-          DEFAULT: 'hsl(var(--nav-theme))',
-          light: 'hsl(var(--nav-theme-light))',
+          DEFAULT: 'hsl(var(--brand))',
+          light: 'hsl(var(--brand-light))',
         },
         primary: {
-          DEFAULT: 'hsl(var(--nav-theme))',
+          DEFAULT: 'hsl(var(--brand))',
           foreground: 'hsl(var(--background))',
         },
         secondary: {

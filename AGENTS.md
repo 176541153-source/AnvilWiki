@@ -31,14 +31,14 @@ Goal: let beginners deploy a game wiki site to Cloudflare Pages for free (unlimi
 | Pkg manager | pnpm 11                                         | **`allowBuilds:` in `pnpm-workspace.yaml`** (NOT `onlyBuiltDependencies` — that's pnpm 10, dead in v11). esbuild + sharp need build approval or `astro build` fails during its pre-build dep check. |
 | Node        | 20 LTS                                          |                                                                                                                                                                                                     |
 
-## Architecture: Three-Layer Separation (critical)
+## Architecture: Code/Config/Content Separation (critical)
 
-This is the core design principle inherited from the course template. **Respect it in every edit:**
+This is the core design principle of AnvilWiki. **Respect it in every edit:**
 
 ```
-框架层 (src/pages, src/components, src/lib)      — fork-once, never edit per-game
-配置层 (src/config, src/i18n/routing.ts, globals.css, public/) — edit once per game
-内容层 (src/content, src/locales)                — fully replace per game
+Code layer   (src/pages, src/components, src/lib)          — fork-once, never edit per-game
+Config layer (src/config, src/i18n/routing.ts, globals.css, public/) — edit once per game
+Content layer (src/content, src/locales)                   — fully replace per game
 ```
 
 - Changing content must not touch framework code.
@@ -48,7 +48,7 @@ This is the core design principle inherited from the course template. **Respect 
 ## Hard Rules (from PRD — these are non-negotiable)
 
 1. **All UI text comes from JSON** (`src/locales/<locale>.json`), never hardcoded in components.
-2. **Theme color = 4 lines only**: `--nav-theme` + `--nav-theme-light` in `:root` (2 lines) + `.dark` (2 lines) in `src/styles/globals.css`. All other color vars reference via `var(--nav-theme)`. **No hardcoded hex/rgba/Tailwind color classes** in components.
+2. **Theme color = 4 lines only**: `--brand` + `--brand-light` in `:root` (2 lines) + `.dark` (2 lines) in `src/styles/globals.css`. All other color vars reference via `var(--brand)`. **No hardcoded hex/rgba/Tailwind color classes** in components.
 3. **sitemap must scan actual MDX files** — never generate URLs from hardcoded arrays (e.g. `NAVIGATION_CONFIG`). Reason: list pages may show items without MDX, producing 404 sitemap entries.
 4. **Category `key` must be identical in 3 places**: `src/config/navigation.ts` (`NAVIGATION_CONFIG[].key`) == `src/locales/en.json` (`nav.<key>`) == `src/content/<locale>/<key>/` directory name.
 5. **`locales` array must be synced in 3 places**: `src/i18n/routing.ts` == actual files in `src/locales/*.json` == directories in `src/content/<locale>/`.
@@ -95,7 +95,7 @@ pnpm new-post         # interactive MDX article scaffold
 
 These behaviors are NOT obvious from the docs and cost significant debugging time. They are all real, verified against astro@5.18.2:
 
-1. **`entry.id` includes `.mdx`, but `getEntry()` does NOT want it.** `getCollection()` returns ids like `en/bosses/gelum.mdx`; `getEntry('wiki', 'en/bosses/gelum.mdx')` returns `null`; `getEntry('wiki', 'en/bosses/gelum')` returns the entry. `src/i18n/content.ts` strips the extension in `parseEntryId` and queries without it in `getEntryWithFallback`.
+1. **`entry.id` includes `.mdx`, but `getEntry()` does NOT want it.** `getCollection()` returns ids like `en/bosses/emberfang.mdx`; `getEntry('wiki', 'en/bosses/emberfang.mdx')` returns `null`; `getEntry('wiki', 'en/bosses/emberfang')` returns the entry. `src/i18n/content.ts` strips the extension in `parseEntryId` and queries without it in `getEntryWithFallback`.
 
 2. **`entry.render()` does NOT exist in Content Layer API.** Use the standalone `render` function: `import { render } from 'astro:content'; const { Content } = await render(entry);`. The old method-based API is gone.
 

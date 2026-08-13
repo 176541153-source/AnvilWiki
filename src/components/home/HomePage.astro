@@ -48,7 +48,7 @@ const updates = home.updates ?? { title: 'Recent Updates' };
 const start = home.start ?? { cards: [] };
 const popular = home.popular ?? { title: 'Trending Now', quickLinks: [] };
 const explore = home.explore ?? { modules: [] };
-const finalCta = home.finalCta ?? {};
+const closingCta = home.closingCta ?? {};
 
 // QuickLink may be a string or { label, href } — normalize for the sidebar list.
 type QuickLink = string | { label: string; href: string };
@@ -85,7 +85,7 @@ function trendingLabel(link: QuickLink): string {
     </span>
 
     <div class="relative mx-auto w-full max-w-7xl px-4 py-16 md:py-24">
-      <p class="text-sm font-semibold uppercase tracking-wider text-foreground">{hero.eyebrow}</p>
+      <p class="text-sm font-semibold uppercase tracking-wider text-foreground">{hero.badge}</p>
       <h1
         class="mt-3 max-w-3xl bg-gradient-to-r from-foreground to-foreground/60 bg-clip-text text-4xl font-black tracking-tight text-transparent sm:text-5xl md:text-6xl lg:text-7xl"
       >
@@ -94,7 +94,7 @@ function trendingLabel(link: QuickLink): string {
       <p class="mt-5 max-w-xl text-base text-muted-foreground md:text-lg">{hero.description}</p>
       <div class="mt-8 flex flex-wrap gap-3">
         {
-          hero.primaryCta && (
+          hero.ctaPrimary && (
             <a
               href={site.social.official}
               target="_blank"
@@ -102,14 +102,14 @@ function trendingLabel(link: QuickLink): string {
               class="btn-primary"
             >
               <Icon name="lucide:play" class="mr-2 h-4 w-4" />
-              {hero.primaryCta}
+              {hero.ctaPrimary}
             </a>
           )
         }
         {
-          hero.secondaryCta && (
+          hero.ctaSecondary && (
             <a href={listPath(NAVIGATION_CONFIG[1]?.key ?? 'guides', locale)} class="btn-outline">
-              {hero.secondaryCta}
+              {hero.ctaSecondary}
             </a>
           )
         }
@@ -123,7 +123,7 @@ function trendingLabel(link: QuickLink): string {
   {/* ───────────────────────────── Quick Start ────────────────────────── */}
   <QuickStart
     locale={locale}
-    eyebrow={start.eyebrow}
+    badge={start.badge}
     title={start.title}
     cards={start.cards}
   />
@@ -167,7 +167,7 @@ function trendingLabel(link: QuickLink): string {
       {/* Trending — 1/3 width sidebar list. */}
       {trendingLinks.length > 0 && (
         <aside>
-          <p class="text-sm font-semibold uppercase tracking-wider text-foreground">{popular.eyebrow}</p>
+          <p class="text-sm font-semibold uppercase tracking-wider text-foreground">{popular.badge}</p>
           <h2 class="mt-1 text-2xl font-bold">{popular.title}</h2>
           <ul class="mt-4 space-y-2">
             {trendingLinks.map((link: QuickLink) => {
@@ -213,11 +213,11 @@ function trendingLabel(link: QuickLink): string {
 
   {/* ─────────────────────────────── Final CTA ────────────────────────── */}
   {
-    finalCta.title && (
+    closingCta.title && (
       <section class="section border-t border-border">
         <div class="rounded-xl border bg-card p-8 text-center md:p-12">
-          <h2 class="text-2xl font-bold md:text-3xl">{finalCta.title}</h2>
-          <p class="mx-auto mt-2 max-w-xl text-muted-foreground">{finalCta.description}</p>
+          <h2 class="text-2xl font-bold md:text-3xl">{closingCta.title}</h2>
+          <p class="mx-auto mt-2 max-w-xl text-muted-foreground">{closingCta.description}</p>
           <div class="mt-6 flex justify-center gap-3">
             <a
               href={site.social.official}
@@ -225,16 +225,16 @@ function trendingLabel(link: QuickLink): string {
               rel="noopener noreferrer"
               class="btn-primary"
             >
-              {finalCta.primary}
+              {closingCta.primary}
             </a>
-            {finalCta.secondary && site.social.discord && (
+            {closingCta.secondary && site.social.discord && (
               <a
                 href={site.social.discord}
                 target="_blank"
                 rel="noopener noreferrer"
                 class="btn-outline"
               >
-                {finalCta.secondary}
+                {closingCta.secondary}
               </a>
             )}
           </div>

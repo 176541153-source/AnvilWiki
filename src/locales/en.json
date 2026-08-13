@@ -58,11 +58,11 @@
       "description": "The most complete Anvil Quest wiki. Boss strategies, active codes, item locations, tier lists, and beginner guides. Updated daily by the community."
     },
     "hero": {
-      "eyebrow": "Fan-Made Community Wiki",
+      "badge": "Fan-Made Community Wiki",
       "title": "Anvil Quest Wiki",
       "description": "Your complete guide to Anvil Quest. Boss strategies, active codes, item locations, tier lists, and everything you need to master the forge.",
-      "primaryCta": "Play Anvil Quest",
-      "secondaryCta": "Browse Guides",
+      "ctaPrimary": "Play Anvil Quest",
+      "ctaSecondary": "Browse Guides",
       "videoId": ""
     },
     "updates": {
@@ -70,7 +70,7 @@
       "browse": "Browse all guides"
     },
     "start": {
-      "eyebrow": "Start Here",
+      "badge": "Start Here",
       "title": "Your Anvil Quest Journey",
       "cards": [
         {
@@ -104,12 +104,12 @@
       ]
     },
     "popular": {
-      "eyebrow": "Trending Now",
+      "badge": "Trending Now",
       "title": "Most Read This Week",
       "quickLinks": [
         {
-          "label": "Gelum Boss Guide",
-          "href": "/bosses/gelum"
+          "label": "Emberfang Boss Guide",
+          "href": "/bosses/emberfang"
         },
         {
           "label": "Best Weapons Tier List",
@@ -161,7 +161,7 @@
           "displayType": "card-list",
           "highlights": [
             {
-              "label": "Gelum",
+              "label": "Emberfang",
               "detail": "Frost warden, early-game gatekeeper"
             },
             {
@@ -307,7 +307,7 @@
         }
       ]
     },
-    "finalCta": {
+    "closingCta": {
       "title": "Ready to Master the Forge?",
       "description": "Bookmark this wiki and check back daily for new codes, boss guides, and tier list updates.",
       "primary": "Play Anvil Quest",
@@ -315,7 +315,7 @@
     },
     "_archived": {
       "_comment": "Sections removed from the homepage during the v0.2 layout refactor. Kept here so data is not lost; not rendered by HomePage.astro.",
-      "aboutGame": {
+      "gameInfo": {
         "title": "What is Anvil Quest?",
         "paragraphs": [
           "Anvil Quest is a fantasy RPG on Roblox developed by Forge Studios. Players take on the role of a blacksmith-apprentice-turned-hero, forging weapons, recruiting companions, and battling through progressively harder boss encounters across the Shattered Isles.",

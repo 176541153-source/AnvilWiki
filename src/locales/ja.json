@@ -58,11 +58,11 @@
       "description": "Anvil Questの最も完全なWiki。ボス攻略、有効なコード、アイテムの場所、tier list、初心者ガイドを毎日更新。"
     },
     "hero": {
-      "eyebrow": "ファン制作コミュニティWiki",
+      "badge": "ファン制作コミュニティWiki",
       "title": "Anvil Quest Wiki",
       "description": "Anvil Questの完全攻略サイト。ボス攻略、有効なコード、アイテムの場所、tier list、鍛冶を極めるために必要なすべてが揃っています。",
-      "primaryCta": "Anvil Questをプレイ",
-      "secondaryCta": "ガイドを見る",
+      "ctaPrimary": "Anvil Questをプレイ",
+      "ctaSecondary": "ガイドを見る",
       "videoId": ""
     },
     "updates": {
@@ -70,7 +70,7 @@
       "browse": "全ガイドを見る"
     },
     "start": {
-      "eyebrow": "ここから始める",
+      "badge": "ここから始める",
       "title": "Anvil Questの旅",
       "cards": [
         {
@@ -104,12 +104,12 @@
       ]
     },
     "popular": {
-      "eyebrow": "トレンド",
+      "badge": "トレンド",
       "title": "今週の人気記事",
       "quickLinks": [
         {
-          "label": "Gelumボス攻略",
-          "href": "/bosses/gelum"
+          "label": "Emberfangボス攻略",
+          "href": "/bosses/emberfang"
         },
         {
           "label": "武器ティアリスト",
@@ -161,7 +161,7 @@
           "displayType": "card-list",
           "highlights": [
             {
-              "label": "Gelum",
+              "label": "Emberfang",
               "detail": "フロスト・ワーデン、序盤の門番"
             },
             {
@@ -278,7 +278,7 @@
         }
       ]
     },
-    "finalCta": {
+    "closingCta": {
       "title": "鍛冶を極める準備はできましたか？",
       "description": "このWikiをブックマークして、新しいコード、ボス攻略、tier listの更新を毎日チェックしましょう。",
       "primary": "Anvil Questをプレイ",

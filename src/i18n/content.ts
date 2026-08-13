@@ -29,7 +29,7 @@ export interface ResolvedEntry {
 }
 
 /**
- * Parse an entry id like "en/bosses/gelum" or "ja/bosses/sub/gelum" into parts.
+ * Parse an entry id like "en/bosses/emberfang" or "ja/bosses/sub/emberfang" into parts.
  * Returns null if the id doesn't match `<locale>/<category>/<...slug>`.
  */
 export function parseEntryId(

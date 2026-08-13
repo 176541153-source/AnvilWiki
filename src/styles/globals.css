@@ -12,23 +12,23 @@
 @layer base {
   :root {
     /* Light mode theme color — Anvil orange (forge fire). */
-    --nav-theme: 22 90% 52%;
-    --nav-theme-light: 22 90% 62%;
+    --brand: 22 90% 52%;
+    --brand-light: 22 90% 62%;
     /* Split H/S for derived shades (e.g. darker button backgrounds). */
-    --nav-theme-h: 22;
-    --nav-theme-s: 90%;
+    --brand-h: 22;
+    --brand-s: 90%;
   }
 
   .dark {
     /* Dark mode theme color — slightly deeper. */
-    --nav-theme: 22 85% 48%;
-    --nav-theme-light: 22 85% 58%;
-    --nav-theme-h: 22;
-    --nav-theme-s: 85%;
+    --brand: 22 85% 48%;
+    --brand-light: 22 85% 58%;
+    --brand-h: 22;
+    --brand-s: 85%;
   }
 }
 
-/* Other design tokens — these reference --nav-theme, so they auto-follow skinning. */
+/* Other design tokens — these reference --brand, so they auto-follow skinning. */
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -78,13 +78,13 @@
   .btn-primary {
     @apply inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2;
     /* Button background needs white text contrast ≥ 4.5:1 (WCAG AA).
-       --nav-theme (52% lightness) gives only 3.1:1, so we darken it
-       to ~40% for button backgrounds. This does NOT change --nav-theme
+       --brand (52% lightness) gives only 3.1:1, so we darken it
+       to ~40% for button backgrounds. This does NOT change --brand
        itself — it's a derived value for buttons only. */
-    background-color: hsl(var(--nav-theme-h) var(--nav-theme-s) 40%);
+    background-color: hsl(var(--brand-h) var(--brand-s) 40%);
   }
   .btn-primary:hover {
-    background-color: hsl(var(--nav-theme-h) var(--nav-theme-s) 35%);
+    background-color: hsl(var(--brand-h) var(--brand-s) 35%);
   }
 
   .btn-outline {

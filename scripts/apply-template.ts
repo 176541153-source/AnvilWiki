@@ -214,14 +214,14 @@ function rewriteGlobalsCss(input: SkinInput): string {
   const darkAlt = `${c.h} ${Math.max(0, c.s - 5)}% ${Math.max(0, c.l - 4 + 10)}%`;
   const newVars = `  :root {
     /* Light mode theme color. */
-    --nav-theme: ${lightMain};
-    --nav-theme-light: ${lightAlt};
+    --brand: ${lightMain};
+    --brand-light: ${lightAlt};
   }
 
   .dark {
     /* Dark mode theme color — slightly deeper. */
-    --nav-theme: ${darkMain};
-    --nav-theme-light: ${darkAlt};
+    --brand: ${darkMain};
+    --brand-light: ${darkAlt};
   }`;
   // The original :root and .dark blocks live inside @layer base { ... }.
   // Replace from the first `:root {` through the closing of `.dark { ... }`.
