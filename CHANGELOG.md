@@ -13,7 +13,7 @@ _No changes yet._
 
 **AnvilWiki v1.0 — 正式发布 / First stable release.**
 
-This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) is now ✅, the demo site ships Lighthouse 4×100, and optional features (search, ads, comments, image optimization, skinning CLI) are all production-ready.
+This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) is now ✅, the demo site ships Lighthouse 4×100, and optional features (search, ads, comments, image optimization, apply-template CLI) are all production-ready.
 
 ### Added
 - **Comments system (Giscus, opt-in)**: `Comments.astro` component, env-gated (default off = zero JS, preserves Lighthouse 4×100). Official `<script async data-loading="lazy">` + dual MutationObserver dark-mode sync via postMessage. pathname mapping → different locales get independent threads. `data-lang` follows page locale. See `docs/comments.md`.
@@ -24,7 +24,7 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 
 ### Changed
 - PRD status updated: "设计中 · 待 review" → "已实现"
-- PRD §14.2: v1.1 (seoscout converter) marked as done
+- PRD §14.2: v1.1 (frontmatter migration guide) marked as done
 - PRD §14.2: v1.4 (Giscus comments) marked as done — `Comments.astro` env-gated, default off
 - AGENTS.md: Hard Rule 9 now requires `SITE_URL` to include `https://` protocol (bare domain fails Astro build with `Invalid url`)
 - AGENTS.md: added Hard Rule 11 (comments env-empty = null render contract)
@@ -40,7 +40,7 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 ### Added
 - `scripts/check-sitemap.ts` — verifies every sitemap URL returns 200
 - `scripts/new-post.ts` — interactive MDX article scaffold
-- `scripts/convert-from-seoscout.ts` — converts seoscout MDX format to YAML frontmatter
+- `docs/content-format.md` — frontmatter format spec + migration guide from JS metadata format
 - ESLint flat config (`eslint.config.js`) + Prettier config (`.prettierrc` + `.prettierignore`)
 - `VideoSection` component — lazy-loaded YouTube embed (zero JS until click)
 - `WikiSidebar` component — dynamic article navigation (auto-generated from MDX files)
@@ -62,11 +62,11 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - i18n: as-needed prefix (English no prefix, others prefixed) with single-article English fallback
 - Homepage: 8 JSON-driven modules with 4 displayTypes (code-cards / step-by-step / tier-grid / card-list)
 - SEO: Organization / WebSite / Article / BreadcrumbList / ItemList / FAQPage JSON-LD, hreflang, dynamic sitemap, robots.txt
-- Theme: CSS variable skinning (4 lines to reskin) + dark mode with no-FOUC
+- Theme: CSS variable theming (4 lines to re-theme) + dark mode with no-FOUC
 - Ads: Adsterra iframe isolation (6 slots), Sticky 320×50 with dismiss button, env-var gated
 - Legal pages: about / privacy-policy / terms-of-service / copyright
 - Demo content: fictional "Anvil Quest" game (5 MDX articles, en + ja)
-- Docs: PRD (1600+ lines), deployment, skinning (4-phase 7-part), content-format, seo, ads, migration-from-nextjs
+- Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
 [Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v0.2.0...HEAD

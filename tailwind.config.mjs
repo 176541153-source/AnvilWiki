@@ -11,7 +11,7 @@ export default {
     extend: {
       colors: {
         // Design tokens — driven by CSS variables in src/styles/globals.css.
-        // This lets skinning work by changing only the 4 --nav-theme lines.
+        // This lets re-theming work by changing only the 4 --nav-theme lines.
         border: 'hsl(var(--border))',
         input: 'hsl(var(--border))',
         ring: 'hsl(var(--nav-theme))',

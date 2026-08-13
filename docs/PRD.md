@@ -20,7 +20,7 @@
 - [第 8 章 SEO 工程化](#第-8-章-seo-工程化)
 - [第 9 章 多语言（i18n）](#第-9-章-多语言i18n)
 - [第 10 章 广告系统](#第-10-章-广告系统)
-- [第 11 章 换皮工作流](#第-11-章-换皮工作流)
+- [第 11 章 套用模板指南](#第-11-章-套用模板指南)
 - [第 12 章 部署方案](#第-12-章-部署方案)
 - [第 13 章 测试与质量保障](#第-13-章-测试与质量保障)
 - [第 14 章 开发路线图](#第-14-章-开发路线图)
@@ -42,7 +42,7 @@
 - **纯内容站**——无登录、无数据库、无实时数据，本质是 MDX/Markdown 文章 + 静态页面。
 - **SEO 是生命线**——title / description / JSON-LD / sitemap / hreflang / 内链结构必须工程化自动生成。
 - **多语言**——英文为主（SEO 最优），按热度补日/俄/葡/西等语言，缺失内容要能 fallback 英文不报错。
-- **批量换皮**——同一套框架服务几十上百个不同游戏，换游戏只改配置和内容，不动框架代码。
+- **批量套用**——同一套框架服务几十上百个不同游戏，换游戏只改配置和内容，不动框架代码。
 - **免费部署 + 高带宽**——单个站流量周期 2-3 个月，流量峰值可能很高，需要免费且不限带宽的部署方案。
 
 ### 1.2 设计目标
@@ -53,14 +53,14 @@ AnvilWiki 围绕游戏 wiki 站点的技术特征，确立以下设计目标：
 - **高性能**：静态优先架构，零 JS by default，目标 Lighthouse Performance ≥ 95，Core Web Vitals 全绿。
 - **SEO 工程化**：sitemap / JSON-LD / hreflang / robots / 内链结构全部由代码自动生成，填内容即生效。
 - **多语言**：as-needed 前缀策略（英文无前缀），文章单篇 fallback 英文不 404，列表不 fallback。
-- **批量换皮**：同一套框架服务几十上百个不同游戏，换游戏只改配置和内容，不动框架代码。
-- **新手友好**：连 GitHub 仓库自动部署，无需理解适配器/middleware，30 分钟内完成 fork → 换皮 → 部署上线全流程。
+- **批量套用**：同一套框架服务几十上百个不同游戏，换游戏只改配置和内容，不动框架代码。
+- **新手友好**：连 GitHub 仓库自动部署，无需理解适配器/middleware，30 分钟内完成 fork → 套用模板 → 部署上线全流程。
 
 > AnvilWiki 选择纯静态输出，部署到 Cloudflare Pages 无需适配器，直接托管 `dist/` 静态文件即可。
 
 ### 1.3 AnvilWiki 的定位
 
-**AnvilWiki 是一个开源（MIT）的游戏 wiki 站点模板**，用 Astro + Cloudflare Pages 技术栈，让新手零成本免费部署上线，且与现有工具生态（seoscout 内容生成、same.new UI 克隆、换皮提示词工作流）保持兼容。
+**AnvilWiki 是一个开源（MIT）的游戏 wiki 站点模板**，用 Astro + Cloudflare Pages 技术栈，让新手零成本免费部署上线。模板只负责消费标准 YAML frontmatter 的 MDX 文章，不绑定特定内容生成工具链。
 
 > **命名由来**：Anvil（铁砧）——锻造装备的基础工具，寓意这是「锻造游戏 wiki 站的基础模板」。
 
@@ -75,10 +75,10 @@ AnvilWiki 围绕游戏 wiki 站点的技术特征，确立以下设计目标：
 | G1 | **Cloudflare 原生部署** | 纯静态输出，零适配器，部署到 Cloudflare Pages 无需任何额外配置。 |
 | G2 | **免费无限带宽** | 利用 Cloudflare Pages 静态站无限带宽，单站流量再大也不产生费用。 |
 | G3 | **高性能** | Lighthouse Performance ≥ 95，Core Web Vitals（LCP/FID/CLS）全绿。 |
-| G4 | **新手友好** | 新手照 README 30 分钟内完成 fork → 换皮 → 部署上线全流程。 |
+| G4 | **新手友好** | 新手照 README 30 分钟内完成 fork → 套用模板 → 部署上线全流程。 |
 | G5 | **SEO 工程化** | sitemap / JSON-LD / hreflang / robots / 内链全部由代码自动生成，填内容即生效。 |
 | G6 | **多语言开箱即用** | as-needed 前缀策略（英文无前缀），文章单篇 fallback 英文不 404，列表不 fallback。 |
-| G7 | **换皮工程化** | 4 阶段 7 Part 提示词流程，改配置不改框架代码。 |
+| G7 | **模板套用工程化** | 结构化套用流程（见 docs/apply-template.md），改配置不改框架代码。 |
 | G8 | **广告就绪** | 内置 Adsterra iframe 隔离广告系统，环境变量驱动，新手填 key 即生效。 |
 | G9 | **开源** | MIT 协议，中英双语 README，完整文档，欢迎社区贡献。 |
 
@@ -88,7 +88,7 @@ AnvilWiki 围绕游戏 wiki 站点的技术特征，确立以下设计目标：
 |---|---|---|
 | N1 | **不做服务端动态能力** | 无登录、无数据库、无实时数据。需要这些的场景请用 Next.js / SvelteKit。 |
 | N2 | **不做可视化后台/CMS** | 内容靠 MDX 文件 + Git，文件系统即数据库。需要 CMS 的用户自行接 Astro DB / Decap CMS。 |
-| N3 | **不做自动化内容生成** | 内容生成（seoscout 等）是独立工具链，AnvilWiki 只负责消费 MDX。但会提供格式适配说明。 |
+| N3 | **不做自动化内容生成** | 内容生成是独立工具链，AnvilWiki 只负责消费标准 MDX 文章。提供 frontmatter 格式说明，不绑定特定生成工具。 |
 | N4 | **不做 React/Vue/Svelte 全栈** | 交互组件用纯 Astro 原生 + 极少 vanilla JS。不为单一组件引入整个 framework runtime。 |
 | N5 | **不绑定特定广告平台** | 默认接 Adsterra（社区主流），但广告组件抽象为通用 iframe 方案，可替换为任何广告网络。 |
 | N6 | **不做内容运营教学** | AnvilWiki 是模板，不是教程。文档聚焦「怎么用模板」，不教选词/SEO 策略/外链建设。 |
@@ -97,7 +97,7 @@ AnvilWiki 围绕游戏 wiki 站点的技术特征，确立以下设计目标：
 
 | 画像 | 特征 | AnvilWiki 如何服务 |
 |---|---|---|
-| **P1：有建站经验的开发者** | 有游戏 wiki 建站经验，会用 Cursor/Claude Code，想搭一套自己的站。 | 兼容现有工具生态（seoscout/same.new/换皮提示词），fork 即用，工具链无需切换。 |
+| **P1：有建站经验的开发者** | 有游戏 wiki 建站经验，会用 Cursor/Claude Code，想搭一套自己的站。 | 标准的 MDX + YAML frontmatter 格式，兼容任何内容生成工具链，fork 即用。 |
 | **P2：独立开发者** | 有前端基础，想快速做内容站变现。 | 提供完整文档 + 示例 demo，fork 即用。 |
 | **P3：完全新手** | 无代码基础，只会按教程操作。 | README 写到截图级，Cloudflare Pages 零配置部署，5 分钟上线。 |
 
@@ -120,7 +120,7 @@ AnvilWiki 面向「游戏 wiki 站点」这一特定场景，在框架、部署�
 | 首页模块 | JSON 驱动（v0.2：6 区块 / 4 explore 模块） | 文案与组件解耦，换游戏只改 JSON，组件零改动。 |
 | SEO 工程化 | 完整（sitemap/JSON-LD/hreflang/robots） | sitemap / JSON-LD（Organization/WebSite/Article/BreadcrumbList/ItemList/FAQPage）/ hreflang / robots 全部代码自动生成。 |
 | 广告系统 | Adsterra iframe 隔离 | 每个广告位独立 html，避免 atOptions 串号；环境变量驱动，新手填 key 即生效。 |
-| 换皮流程 | 4 阶段 7 Part 提示词 | 换游戏只改配置层 + 替换内容层，框架层不动。 |
+| 套用模板流程 | 结构化四步流程 | 换游戏只改配置层 + 替换内容层，框架层不动。 |
 | 游戏站适配 | 专为游戏站设计 | 内置游戏站特定的 SEO（ItemList/Breadcrumb）+ 兑换码/tier list 专用 displayType。 |
 
 ### 3.2 技术栈选型
@@ -130,9 +130,9 @@ AnvilWiki 面向「游戏 wiki 站点」这一特定场景，在框架、部署�
 | **框架** | Astro | 5.x（最新稳定） | 静态优先，岛屿架构（只在交互处 hydrate），零 JS by default，Cloudflare 原生友好。 |
 | **输出模式** | `output: 'static'` | — | 纯静态 HTML，无需 adapter，直接部署 Cloudflare Pages。 |
 | **内容** | Content Layer API + `glob()` loader | 内置 | 类型安全，Zod schema 校验，构建时发现字段错误。配合 YAML frontmatter，替代 `export const metadata = {}` 方案。 |
-| **MDX** | `@astrojs/mdx` | latest | 支持 MDX 组件，兼容 seoscout 输出。 |
+| **MDX** | `@astrojs/mdx` | latest | 支持 MDX 组件 + YAML frontmatter，兼容标准 MDX 内容。 |
 | **样式** | Tailwind CSS | 4.x | 原子化 CSS，零运行时，主题色与组件样式解耦。 |
-| **主题色** | CSS 变量 `--nav-theme` + `--nav-theme-light` | — | 换皮改 4 行（`:root` 2 行 + `.dark` 2 行），其他变量通过 `var()` 自动跟随。 |
+| **主题色** | CSS 变量 `--nav-theme` + `--nav-theme-light` | — | 改主题色只需 4 行（`:root` 2 行 + `.dark` 2 行），其他变量通过 `var()` 自动跟随。 |
 | **图标** | lucide（通过 `astro-icon` 或 inline SVG） | latest | 兼容「禁止 emoji」规则。 |
 | **UI 组件** | **纯 Astro 原生组件**（`.astro`） | — | 不引入 React/Vue runtime。FAQ 用原生 `<details>`，移动端菜单用 `<details>` 或极少 JS。 |
 | **i18n** | Astro 内置 i18n + 自建 fallback 封装 | — | `routing.prefixDefaultLocale: false` 实现 as-needed 前缀。 |
@@ -281,10 +281,9 @@ anvilwiki/
 ├── docs/
 │   ├── PRD.md                    # ⭐ 本文档
 │   ├── deployment.md             # Cloudflare Pages 部署详细指南
-│   ├── skinning.md               # 换皮工作流（4 阶段 7 Part）
+│   ├── apply-template.md          # 套用模板指南（四步流程）
 │   ├── content-format.md         # MDX 文章格式规范
 │   ├── seo.md                    # SEO 工程化说明
-│   ├── ads.md                    # 广告接入指南
 │   └── migration-from-nextjs.md  # 从传统 Next.js 模板迁移指南
 ├── public/
 │   ├── images/
@@ -373,7 +372,7 @@ anvilwiki/
 │   │   ├── en.json               # home.* / nav / footer / 分类 overview*
 │   │   └── ja.json               # （deepMerge en，缺 key 自动回退）
 │   ├── styles/
-│   │   └── globals.css           # ⭐ --nav-theme / --nav-theme-light（4 行换皮）
+│   │   └── globals.css           # ⭐ --nav-theme / --nav-theme-light（4 行改主题色）
 │   └── lib/
 │       ├── content.ts            # Content Collections 查询封装
 │       ├── navigation.ts         # getDynamicNavigation()（扫描 content 生成分组）
@@ -383,7 +382,7 @@ anvilwiki/
 ├── scripts/
 │   ├── new-post.ts               # 脚手架：生成新文章 MDX 模板
 │   ├── check-sitemap.ts          # 检查 sitemap 所有 URL 返回 200
-│   └── convert-from-seoscout.ts  # seoscout MDX → AnvilWiki MDX 格式转换
+
 └── .github/
     ├── workflows/
     │   └── ci.yml                # PR 检查（lint + typecheck + build）
@@ -397,7 +396,7 @@ anvilwiki/
 
 1. **`src/content/` 而非根目录 `content/`**：Astro 5 的 Content Layer API 用 `glob({ base: './src/content' })` 显式指定，内容统一收敛在 `src/` 下，不污染项目根目录。
 2. **`content.config.ts` 在根目录**：Astro 5 的约定（取代老的 `src/content/config.ts`）。
-3. **配置文件集中在 `src/config/`**：新手换皮时只关注这一个目录 + `globals.css` + `locales/`。
+3. **配置文件集中在 `src/config/`**：新手套用模板时只关注这一个目录 + `globals.css` + `locales/`。
 4. **`scripts/` 提供脚手架**：降低新手写 MDX 的门槛。
 5. **`docs/` 完整文档**：每个关注点一个文件，README 只做导航。
 
@@ -487,7 +486,7 @@ export interface SiteConfig {
 export const site: SiteConfig = {
   name: "Anvil Quest Wiki",
   shortName: "AQ Wiki",
-  // ...用户换皮时改这里
+  // ...用户套用模板时改这里
 };
 ```
 
@@ -775,7 +774,7 @@ export const defaultLocale: Locale = 'en';
 #### FAQ 页（`/faq`，v0.2 新增）
 - **title**：`home.faq.title`。
 - **JSON-LD**：`FAQPage`（从 `home.faq.items` 构造）。
-  > ⚠️ **2026-05-07 起 Google 已废弃 FAQ 富媒体结果**（SERP 折叠不再产生）。但 `FAQPage` schema 仍建议保留——AI Overviews 与其他 AI 爬虫会解析它来理解问答结构。详见 [§8.7 Schema 状态](#87-结构化数据-schema-状态2026)。
+  > ⚠️ **2026-05-07 起 Google 已废弃 FAQ 富媒体结果**（SERP 折叠不再产生）。但 `FAQPage` schema 仍建议保留——AI Overviews 与其他 AI 爬虫会解析它来理解问答结构。详见 [§8.6 Schema 状态](#86-结构化数据-schema-状态2026)。
 
 #### 列表页
 - **title**：`${overviewTitle} — ${site.name}` 或 fallback `${ContentType 大写} — ${site.name}`。
@@ -856,66 +855,7 @@ export async function GET() {
 
 由 `SITE_URL` 环境变量拼接，**禁止硬编码域名**。
 
-### 8.6 网站布局与架构 SEO 原则（2026）
-
-> 本节基于 2026 年 Google 算法趋势（核心更新、AI Overviews、E-E-A-T）整理的布局原则。AnvilWiki 的三层架构天然满足其中多数要求；本节明确「应当刻意保持」与「需要主动落实」的点。
-
-#### 8.6.1 主题聚簇（Content Clustering）
-2026 算法偏好「聚簇优于孤立页面」——相关内容分组能信号主题深度与领域所有权，孤立页面缺乏上下文支撑而难排名。
-
-**AnvilWiki 的天然优势**：`src/content/wiki/<locale>/<contentType>/` 的目录结构本身就是主题聚簇。每个 `contentType`（bosses / items / guides …）= 一个聚簇。
-
-**需要主动落实**：
-- 每个 `contentType` 的列表页（`ListPage`）扮演 **hub page**，应链接到该分类下的所有文章。
-- 文章之间通过「相关文章」内部链接串联，**避免孤儿页面**（无任何内部链接指向的文章）。
-- 权重应从首页 → 列表页 → 文章页逐层流动；重要文章应从相关文章获得更多内部链接。
-
-#### 8.6.2 BLUF 布局（Bottom-Line-Up-Front）
-2026 年 AI Overviews 与 Featured Snippets 抓取偏好「结论前置」的页面结构。
-
-**对 wiki 文章的指导**：
-- 文章开头先用 1–2 句**直接回答**用户最可能的查询（例如 boss 页开头直接给「弱点、推荐配装、掉落」摘要）。
-- 用清晰的 H2/H3 标题切分**可扫描的区块**，每节先给结论再展开细节。
-- `description` frontmatter 应是该篇直接答案的精炼版（也用于 SERP snippet）。
-
-#### 8.6.3 Core Web Vitals 2026 阈值
-Google 官方「Good」阈值（[来源](https://developers.google.com/search/docs/appearance/core-web-vitals)）：
-
-| 指标 | 全称 | Good 阈值 | 与布局的关系 |
-|---|---|---|---|
-| **LCP** | Largest Contentful Paint | ≤ **2.5s** | 首屏主内容（hero 图/标题块）须快速加载 |
-| **INP** | Interaction to Next Paint | ≤ **200ms** | 减少主线程阻塞脚本（主题切换、菜单等） |
-| **CLS** | Cumulative Layout Shift | ≤ **0.1** | **最与布局相关** |
-
-**CLS 的布局实现要点**（本模板必须遵守）：
-- 所有 `<img>` / `<video>` / 广告 iframe 必须设置显式 `width`/`height` 或 CSS `aspect-ratio`。
-- 广告位（§10）必须**预留固定空间**，避免晚加载的广告把内容向下推——这正是本模板用独立 iframe + 固定尺寸的原因之一。
-- 字体加载避免 FOIT/FOUT 引起的布局跳动（用 `font-display: swap` + 预设 fallback 字体尺寸）。
-- 不要在已有内容上方动态注入 DOM 元素（如晚加载的 banner）。
-
-#### 8.6.4 Entity SEO（实体化组织）
-2026 年 Google 围绕**清晰实体**（人、地、概念、物品）而非关键词字符串来理解相关性。Entity-rich 内容更易被 AI Overviews 引用。
-
-**对 wiki 的指导**：
-- 每篇文章聚焦一个明确实体（一个 boss、一件物品、一个机制）。
-- `Article` + `BreadcrumbList` JSON-LD（§8.2）让 AI 爬虫可解析实体关系。
-- 文章间用锚文本描述实体关系（例如「Gelum 的弱点见 [Gelum]」而非「点击这里」）。
-
-#### 8.6.5 内容质量 > 数量
-2026 年 3 月核心更新后，「内容修剪与合并」成为主流策略。
-
-- **修剪薄弱页**：低质量/过短的文章应扩充或删除。
-- **删除离题页**：偏离站点核心专业的内容会被降权（站点声誉滥用打击）。
-- **完整 > 篇幅**：Google 官方明确「无最小长度标准」，页面应**完整**满足用户意图而非堆字数。
-
-#### 8.6.6 E-E-A-T 信号（Experience / Expertise / Authoritativeness / Trustworthiness）
-> 注：Google 官方说明 E-E-A-T **不是直接排名因子**，但它是质量评估系统的核心信号，尤其对 YMYL 类站点。
-
-- **具名作者**优于匿名发布——wiki 类站点可在 `site.ts` 配置站点作者/团队信息。
-- **第一手经验**内容 > AI 批量生产——游戏 wiki 的攻略应体现真实游玩经验。
-- **About 页**（法律页之一）是建立 Trust 的关键载体，应说明站点运营者与内容来源。
-
-### 8.7 结构化数据 Schema 状态（2026）
+### 8.6 结构化数据 Schema 状态（2026）
 
 > Schema 类型有效性随 Google 政策变化。本节记录 2026 年各 Schema 的 SERP 富媒体结果状态，以及 AnvilWiki 的实施优先级。
 
@@ -1043,19 +983,19 @@ export function getUi(locale: Locale) {
 
 **核心**：iframe 隔离——每个广告位一个独立 html 文件，避免多个 `window.atOptions` 串号。
 
-### 10.2 广告位清单（按 CPM 从高到低）
+### 10.2 广告位清单
 
-| 广告类型 | 尺寸 | CPM 实测 | 收入占比 | 必配 |
-|---|---|---|---|---|
-| Banner Sticky | 320×50 | $3.25 | ~50% | ✅ 收入主力 |
-| Sidebar Sticky | 160×300 | $1.85 | ~15% | ✅ 桌面端 |
-| Sidebar Sticky | 160×600 | $1.50 | ~10% | ✅ 桌面端 |
-| Banner | 728×90 | $1.31 | ~5% | ✅ |
-| Banner | 300×250 | $0.84 | ~5% | ✅ |
-| Native Banner | — | $0.65 | ~11% | ✅ 靠走量 |
-| Banner | 468×60 | $0.75 | ~3% | 可选 |
+| 广告类型 | 尺寸 | 必配 | 说明 |
+|---|---|---|---|
+| Banner Sticky | 320×50 | ✅ | 粘顶横幅，曝光时长最高 |
+| Sidebar Sticky | 160×300 | ✅ | 桌面端侧边栏半高 |
+| Sidebar Sticky | 160×600 | ✅ | 桌面端侧边栏竖幅 |
+| Banner | 728×90 | ✅ | 页内大横幅 |
+| Banner | 300×250 | ✅ | 页内中等矩形 |
+| Native Banner | — | ✅ | 原生横幅 |
+| Banner | 468×60 | 可选 | 经典横幅 |
 
-**不挂**：Popunder（伤体验）、Social Bar（高 CTR 陷阱，收入仅 2%）、Smartlink（未实测）。
+> 具体每个广告位的 CPM 取决于流量地区、广告尺寸和广告网络填充率，因站而异。在 Adsterra 后台用 Group by 功能按广告位/国家/设备查看。
 
 ### 10.3 iframe 隔离方案
 
@@ -1098,7 +1038,7 @@ if (!adKey) return null;  // key 为空不渲染
 ></iframe>
 ```
 
-### 10.4 Sticky 320×50（收入主力）
+### 10.4 Sticky 320×50（粘顶横幅组件）
 
 ```astro
 ---
@@ -1136,44 +1076,38 @@ const adKey = import.meta.env.PUBLIC_AD_MOBILE_320X50;
 
 环境变量清单见 [附录 A](#附录-a-环境变量清单)。
 
-### 10.6 广告部署流程（新手指南）
+### 10.6 广告部署流程
 
-1. 注册 Adsterra Publisher 账号。
+1. 注册 [Adsterra Publisher](https://publishers.adsterra.com/) 账号。
 2. Add Website → 填域名 → 选 Games 分类 → 选广告格式。
-3. 审核通过（1-3 分钟）后，创建各广告单元拿 key。
-4. 在 Cloudflare Pages 项目 Settings → Environment variables 填入各 key。
+3. 审核通过后，创建各广告单元拿 key。
+4. 在 Cloudflare Pages 项目 Settings → Environment variables 填入各 key（或改 `wrangler.toml` 的 `[vars]`）。
 5. 重新部署，广告自动出现。
 
-详见 `docs/ads.md`。
+> 广告接入的详细操作参考 [Adsterra 官方文档](https://publishers.adsterra.com/)。
 
 ---
 
-## 第 11 章 换皮工作流
+## 第 11 章 套用模板指南
 
 ### 11.1 概述
 
-**换皮**（skinning）= 把通用 AnvilWiki 模板变成特定游戏的站点。
+**套用模板** = 把通用 AnvilWiki 模板变成特定游戏的站点。
 
-AnvilWiki 采用「4 阶段 7 Part」换皮方法论，提示词遵循「目标+参照+约束+禁止+验证」六要素结构，把换皮过程拆成可复现的步骤。
+AnvilWiki 把套用过程拆成四步串行执行，每步有明确的改动范围和验证标准。完整的操作指南见 [`docs/apply-template.md`](./apply-template.md)。
 
-### 11.2 4 阶段 7 Part 流程
+### 11.2 四步流程
 
 ```
-阶段 1：基础换皮 ──→ Part 1 基础配置（主题色/favicon/hero/logo）
-                    Part 2 元数据与 SEO（法律页/全局 meta/CTA/Footer）
-                    Part 3 多语言与导航（语言列表/清空旧内容/导航配置）
-
-阶段 2：首页内容 ──→ Part 4 首页模块（v0.2：6 区块 JSON + Hero/QuickStart/Explore/CTA）
-
-阶段 3：内容与导航 ─→ Part 5 文章与导航（MDX 接入/分类配置/overview 文案）
-
-阶段 4：翻译与验证 ─→ Part 6 多语言翻译（UI 文案 + 文章翻译）
-                    Part 7 Sitemap URL 检查与自动修复
+第 1 步：基础配置 → 主题色 / favicon / hero / 元数据 / 多语言 / 导航
+第 2 步：首页内容 → 首页各模块文案与数据（v0.2：6 区块 JSON）
+第 3 步：内容接入 → MDX 文章 + 分类配置 + overview 文案
+第 4 步：翻译与验证 → 多语言翻译 + sitemap URL 检查
 ```
 
-### 11.3 换皮改动对象与 AnvilWiki 路径对照
+### 11.3 套用模板改动对象与 AnvilWiki 路径对照
 
-下表列出换皮时需要改动的对象及其在 AnvilWiki 中的位置（`docs/migration-from-nextjs.md` 提供 Next.js 结构的迁移映射，供从 Next.js 项目迁移过来的用户参考）：
+下表列出套用模板时需要改动的对象及其在 AnvilWiki 中的位置（`docs/migration-from-nextjs.md` 提供 Next.js 结构的迁移映射，供从 Next.js 项目迁移过来的用户参考）：
 
 | 改动对象 | AnvilWiki 路径（Astro） |
 |---|---|
@@ -1192,10 +1126,12 @@ AnvilWiki 采用「4 阶段 7 Part」换皮方法论，提示词遵循「目标+
 | 列表/详情路由 | `src/pages/[locale]/[...slug].astro` |
 | YouTube video ID | `src/config/site.ts` 或 `locales/en.json` 的 `home.hero.videoId` |
 
-### 11.4 提示词骨架（每个 Part 都遵循）
+### 11.4 AI 辅助套用的任务格式
+
+如果用 AI 编程助手（Cursor / Claude Code 等）来执行套用，建议每个任务按以下结构描述，让 AI 明确边界：
 
 ```
-# Part N：<标题>
+# 任务：<标题>
 
 ## 目标
 <改完后站点变成什么样>
@@ -1220,7 +1156,7 @@ AnvilWiki 采用「4 阶段 7 Part」换皮方法论，提示词遵循「目标+
 ```
 ```
 
-### 11.5 关键换皮约束
+### 11.5 关键约束
 
 | 约束 | 说明 |
 |---|---|
@@ -1234,24 +1170,15 @@ AnvilWiki 采用「4 阶段 7 Part」换皮方法论，提示词遵循「目标+
 | **card-list label 去 emoji 化** | `card-list` 的 `highlights.label` 必须是英文短词，不是 emoji（违反「禁止 emoji」规则）。 |
 | **域名不硬编码** | 所有 URL 走 `SITE_URL` 环境变量，禁止在代码里写死 `xxx.wiki`。 |
 
-### 11.6 完整换皮提示词
+### 11.6 完整操作指南
 
-各 Part 的完整提示词原文放在 `docs/skinning.md`（开发阶段补全）。骨架统一遵循六要素结构，路径为 Astro 结构。
+四步套用的完整步骤、可直接复制的 AI 提示词、验证命令，全部放在 [`docs/apply-template.md`](./apply-template.md)。
 
-### 11.7 seoscout 内容适配
+### 11.7 从其他格式迁移文章
 
-seoscout 输出的 MDX 格式是 `export const metadata = {...}`（JS export 格式）。AnvilWiki 用 YAML frontmatter。
+如果你的文章用的是 JS 元数据写法（`export const metadata = { ... }`，常见于 Next.js / MDX 项目），需要手动改成 AnvilWiki 使用的 YAML frontmatter 格式。
 
-**适配方案**：
-1. **脚本转换**（推荐）：`scripts/convert-from-seoscout.ts` 一行命令把 seoscout 输出转为 AnvilWiki 格式。
-   ```bash
-   pnpm convert-seoscout <input-dir> <output-dir>
-   ```
-   正则匹配 `export const metadata = { ... }` → 转 YAML frontmatter。
-2. **seoscout 适配**：若 seoscout 可配置输出格式，加一个「AnvilWiki / YAML frontmatter」选项。
-3. **手动**：复制粘贴后改头部（少量文章时）。
-
-详见 `docs/migration-from-nextjs.md`。
+迁移方法见 [`docs/content-format.md`](./content-format.md#从其他格式迁移文章)——frontmatter 字段少、格式简单，手动或 AI 辅助转换即可。从 Next.js 项目迁移的完整对照表见 [`docs/migration-from-nextjs.md`](./migration-from-nextjs.md)。
 
 ---
 
@@ -1444,7 +1371,7 @@ describe('sitemap', () => {
 | **MVP-3**：SEO | sitemap 动态 + JSON-LD 全套（Organization/WebSite/Article/Breadcrumb/ItemList/FAQPage）+ hreflang + robots | Google Rich Results Test 全通过 | 1 天 |
 | **MVP-4**：主题换肤 | CSS 变量双变量（`--nav-theme` + `--nav-theme-light`）+ 暗色模式 + 主题切换器 | 改 globals.css 4 行整站变色 | 0.5 天 |
 | **MVP-5**：广告系统 | Adsterra iframe 隔离（6 种广告位）+ Sticky 320×50 + 环境变量驱动 + 关闭按钮 | 移动端 + 桌面端广告正常显示不串号 | 1 天 |
-| **MVP-6**：换皮文档 | 重写 4 阶段 7 Part 提示词（适配 Astro 路径）+ 新手 README + docs/ 全套 | 新手照 README 30 分钟内部署上线 | 1-2 天 |
+| **MVP-6**：套用模板文档 | 套用模板四步指南（适配 Astro 路径）+ 新手 README + docs/ 全套 | 新手照 README 30 分钟内部署上线 | 1-2 天 |
 | **v1.0**：基准实测与发布 | ✅ 已完成 — demo 站 `anvilwiki.pages.dev` 已上线，Lighthouse 全 100（Performance / Accessibility / Best Practices / SEO） | 性能目标全部达成，demo 站可访问 | 1 天 |
 
 **总计**：约 **7-10 天**可交付 v1.0。
@@ -1453,17 +1380,17 @@ describe('sitemap', () => {
 
 | 版本 | 功能 | 优先级 | 状态 |
 |---|---|---|---|
-| ~~v1.1~~ | ~~seoscout 格式自动转换脚本 + 文档~~ | ~~高~~ | ✅ 已实现（`scripts/convert-from-seoscout.ts` + `pnpm convert-seoscout`） |
+| ~~v1.1~~ | ~~frontmatter 格式迁移指南~~ | ~~高~~ | ✅ 已实现（`docs/content-format.md` 提供从 JS metadata 到 YAML frontmatter 的迁移说明） |
 | v1.2 | 搜索功能（Pagefind 离线搜索，零运行时） | 中 | ✅ 已实现（`postbuild` 钩子 + `SearchButton.astro` `<dialog>` 模态，懒加载 pagefind-ui，Ctrl/Cmd+K 唤起，`data-pagefind-body` 精确索引文章正文） |
 | v1.3 | 更多 displayType（video-grid/timeline/comparison-table） | 中 | ✅ 已实现 timeline + video-grid（缩略图跳转,首页不 embed YouTube,保 Lighthouse 4×100）;comparison-table 待验证（见下） |
 | v1.4 | 评论系统（Giscus，默认关闭，env 驱动） | 低 | ✅ 已实现（`Comments.astro` env 门控 + 官方 `<script data-loading="lazy">` + 双 MutationObserver 暗色同步；详见 `docs/comments.md`） |
 | v1.5 | 图片优化（Astro Image，自动 WebP/AVIF + 响应式 srcset） | 中 | ✅ 已实现（content schema `image()` loader + `ArticleCover.astro` + `image.responsiveStyles`，封面图自动 WebP/srcset，`content.config.ts` 迁至 `src/`） |
-| v2.0 | 可视化换皮 CLI（`pnpm skin <game-name>` 引导式换皮） | 高 | ✅ 已实现（`scripts/skin.ts` Part 1-3 自动化：hex→HSL 主题色、site/navigation/routing/ui/locales/manifest 重写，`--dry-run` / `--no-clear-content` flag） |
+| v2.0 | 套用模板 CLI（`pnpm apply-template` 引导式配置） | 高 | ✅ 已实现（`scripts/apply-template.ts` 步骤 1 自动化：hex→HSL 主题色、site/navigation/routing/ui/locales/manifest 重写，`--dry-run` / `--no-clear-content` flag） |
 
 **v1.3 范围说明**：
 - `timeline`：✅ 实现 —— 版本日志/活动时序，零副作用，商业价值正（老玩家点进 patch notes 文章页）。
 - `video-grid`：✅ 实现（缩略图 + 跳转，不 embed）—— 保住 Lighthouse 100，流量留站内变现（embed 会让用户看视频时广告曝光归 YouTube）。
-- `comparison-table`：⏸ 推迟 —— 广告变现模型下，对比表把信息完整呈现后用户无点击动力（信息已满足），ROI 为负。等真实换皮用户反馈「我首页需要对比表」再做，做时需重新设计「如何驱动用户点进文章页」。
+- `comparison-table`：⏸ 推迟 —— 广告变现模型下，对比表把信息完整呈现后用户无点击动力（信息已满足），ROI 为负。等真实用户反馈「我首页需要对比表」再做，做时需重新设计「如何驱动用户点进文章页」。
 
 详见 `docs/superpowers/specs/2026-08-12-v1.3-display-types-design.md`。
 
@@ -1475,13 +1402,13 @@ describe('sitemap', () => {
 |---|---|---|---|
 | 1 | i18n as-needed 路由策略 | MVP-1 | ✅ 已确认（`prefixDefaultLocale: false`） |
 | 2 | 文章语言 fallback | MVP-1 | ✅ 已验证（`/ja/bosses/pyra` 无日文版时回退英文，构建实测通过） |
-| 3 | seoscout MDX 格式适配 | v0.1 | ✅ 已实现（`scripts/convert-from-seoscout.ts` 转换脚本） |
+| 3 | 从 JS metadata 格式迁移文章 | v0.1 | ✅ 已实现（`docs/content-format.md` 提供 `export const metadata` → YAML frontmatter 迁移指南） |
 | 4 | shadcn/ui 在 Astro 下的体验 | — | ❌ 决策不用（采用纯 Astro 原生组件，见 ADR-002） |
 | 5 | 多语言 sitemap/hreflang 自动生成 | MVP-3 | ✅ 已验证（`@astrojs/sitemap` 自动生成 26 URL + en/ja hreflang alternate） |
 | 6 | 侧边栏动态导航 | MVP-2 | ✅ 已实现（`WikiSidebar` 组件 + `getDynamicNavigation()` 扫描 MDX 生成分组） |
-| 7 | 主题色方案落地 | MVP-4 | ✅ 已验证（`--nav-theme` / `--nav-theme-light` 4 行换皮 + 暗色模式 + 主题切换器） |
+| 7 | 主题色方案落地 | MVP-4 | ✅ 已验证（`--nav-theme` / `--nav-theme-light` 4 行改主题色 + 暗色模式 + 主题切换器） |
 | 8 | 性能基准实测 | v1.0 | ✅ 已实测（`anvilwiki.pages.dev` Lighthouse 全 100：Performance / Accessibility / Best Practices / SEO） |
-| 9 | 迁移成本核算 | v1.0 | ✅ 已总结（fork → `pnpm skin` → 部署，全流程 30 分钟内） |
+| 9 | 迁移成本核算 | v1.0 | ✅ 已总结（fork → `pnpm apply-template` → 部署，全流程 30 分钟内） |
 
 ---
 
@@ -1502,10 +1429,9 @@ describe('sitemap', () => {
 | README.md（中英双语） | 所有用户，新手入门 | 仓库根目录 |
 | docs/PRD.md | 贡献者、想深入了解设计的人 | 本文档 |
 | docs/deployment.md | 新手，部署指南 | docs/ |
-| docs/skinning.md | 换皮用户，4 阶段 7 Part | docs/ |
+| docs/apply-template.md | 套用模板用户，四步流程 | docs/ |
 | docs/content-format.md | 内容创作者，MDX 格式 | docs/ |
 | docs/seo.md | 进阶用户，SEO 调优 | docs/ |
-| docs/ads.md | 变现用户，广告接入 | docs/ |
 | docs/migration-from-nextjs.md | 传统 Next.js 模板用户，迁移指南 | docs/ |
 
 ### 15.3 Demo 站策略
@@ -1520,7 +1446,7 @@ describe('sitemap', () => {
 | 渠道 | 用途 |
 |---|---|
 | GitHub Issues | bug 报告、功能建议 |
-| GitHub Discussions | 问答、换皮案例分享、showcase |
+| GitHub Discussions | 问答、模板套用案例分享、showcase |
 | CONTRIBUTING.md | 贡献指南（开发环境、PR 规范、代码风格） |
 | CHANGELOG.md | 版本变更记录 |
 | （可选）Discord | 实时交流（社区长大后开） |
@@ -1546,7 +1472,7 @@ describe('sitemap', () => {
 
 | 变量名 | 广告类型 |
 |---|---|
-| `PUBLIC_AD_MOBILE_320X50` | Sticky 小横幅（收入主力） |
+| `PUBLIC_AD_MOBILE_320X50` | Sticky 粘顶横幅 |
 | `PUBLIC_AD_SIDEBAR_160X300` | 侧边栏半高 |
 | `PUBLIC_AD_SIDEBAR_160X600` | 侧边栏竖幅 |
 | `PUBLIC_AD_BANNER_728X90` | 大横幅 |
@@ -1674,7 +1600,7 @@ PUBLIC_GA_ID=
 | 术语 | 含义 |
 |---|---|
 | **wiki 站** | 围绕某游戏/主题的攻略内容站，靠 SEO 获取流量 |
-| **换皮** | 把通用模板变成特定游戏站点的过程 |
+| **套用模板** | 把通用模板变成特定游戏站点的过程 |
 | **MDX** | Markdown + JSX，支持在 Markdown 中使用组件 |
 | **Content Collections** | Astro 的内容管理机制，类型安全 + schema 校验 |
 | **Content Layer API** | Astro 5 引入的内容层 API，支持 glob/file/API loader |
@@ -1685,7 +1611,7 @@ PUBLIC_GA_ID=
 | **hreflang** | 多语言页面 alternate 链接，告诉搜索引擎各语言版本位置 |
 | **iframe 隔离** | 每个广告用独立 iframe，避免 atOptions 串号 |
 | **Sticky 广告** | 粘在屏幕固定位置的广告，曝光时长更长，CPM 更高 |
-| **三层架构** | 框架层 / 配置层 / 内容层 分离，换皮只改后两层 |
+| **三层架构** | 框架层 / 配置层 / 内容层 分离，套用模板只改后两层 |
 | **homepage-only 模式** | 只上线首页，无文章内容，后续慢慢补 |
 | **dogfooding** | 自己用自己的产品（AnvilWiki 文档站用 AnvilWiki 构建） |
 
@@ -1697,8 +1623,8 @@ PUBLIC_GA_ID=
 |---|---|---|
 | 2026-08-11 | v0.1 | PRD 初稿；技术事实已通过 Astro 官方文档核实 |
 | 2026-08-12 | v0.2 | MVP 全部实现（MVP-0 至 MVP-5 + P0-P3）；更新待验证清单状态 |
-| 2026-08-12 | v0.3 | SEO 章节更新：补充 2026 Google 网站布局/架构原则（§8.6）、Schema 状态（§8.7）、FAQ rich results 废弃说明、INP 阈值修正为 ≤ 200ms |
-| 2026-08-12 | v1.0 | demo 站 `anvilwiki.pages.dev` 上线；Lighthouse 全 100；v1.2 Pagefind 搜索 + v1.5 Astro Image + v2.0 换皮 CLI 全部实现；完整日语翻译；SEO 修复（hreflang / og:image / prefetch / breadcrumb / security headers） |
+| 2026-08-12 | v0.3 | SEO 章节更新：Schema 状态（§8.6）、FAQ rich results 废弃说明、INP 阈值修正为 ≤ 200ms |
+| 2026-08-12 | v1.0 | demo 站 `anvilwiki.pages.dev` 上线；Lighthouse 全 100；v1.2 Pagefind 搜索 + v1.5 Astro Image + v2.0 套用模板 CLI 全部实现；完整日语翻译；SEO 修复（hreflang / og:image / prefetch / breadcrumb / security headers） |
 
 ---
 

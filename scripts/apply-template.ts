@@ -1,20 +1,20 @@
 /**
- * skin.ts
+ * apply-template.ts
  *
- * Interactive skinning CLI — automates Part 1-3 of docs/skinning.md.
+ * Interactive template-apply CLI — automates Step 1 of docs/apply-template.md.
  *
- *   pnpm skin                   interactive: prompts for game metadata, theme color,
+ *   pnpm apply-template                   interactive: prompts for game metadata, theme color,
  *                               locales, and categories; rewrites the CONFIG LAYER
  *                               (site.ts, navigation.ts, globals.css, routing.ts,
  *                               ui.ts, locales/*.json, manifest.json) and clears
  *                               the demo CONTENT LAYER (src/content/wiki/* MDX).
- *   pnpm skin --dry-run         print every planned change, write nothing.
- *   pnpm skin --no-clear-content  keep demo MDX files in place.
+ *   pnpm apply-template --dry-run         print every planned change, write nothing.
+ *   pnpm apply-template --no-clear-content  keep demo MDX files in place.
  *
- * What this does NOT do (left for the user / later parts of skinning.md):
- *   - Part 4: homepage modules (home.hero / start / explore / faq in locales)
- *   - Part 5: real article MDX + nav/overview labels per category
- *   - Part 6: translation of non-English locale JSON
+ * What this does NOT do (left for the user / later steps of apply-template.md):
+ *   - Step 2: homepage modules (home.hero / start / explore / faq in locales)
+ *   - Step 3: article MDX + nav/overview labels per category
+ *   - Step 4: translation of non-English locale JSON
  *   - favicon / hero image files (binary assets, user-provided)
  *
  * Conventions match scripts/new-post.ts: only node builtins, readline/prompts
@@ -315,7 +315,7 @@ function rewriteLocaleJson(input: SkinInput, locale: string, existing?: string):
   };
   obj.footer = obj.footer ?? {};
   (obj.footer as Record<string, unknown>).copyrightText = `© ${new Date().getFullYear()} ${input.gameName} Wiki. All rights reserved.`;
-  // Clear nav + overview so the user re-fills them in Part 5 once categories are known.
+  // Clear nav + overview so the user re-fills them in Step 3 once categories are known.
   obj.nav = {};
   obj.overview = {};
   return JSON.stringify(obj, null, 2) + '\n';
@@ -367,7 +367,7 @@ function clearDemoContent() {
 
 async function main() {
   console.log(
-    `\n🎨 AnvilWiki skinning CLI — Part 1-3 (base metadata, theme, nav, locales)${DRY_RUN ? ' [DRY RUN]' : ''}\n`,
+    `\n🎨 AnvilWiki apply-template CLI — Step 1 (base metadata, theme, nav, locales)${DRY_RUN ? ' [DRY RUN]' : ''}\n`,
   );
 
   const rl = readline.createInterface({ input, output });
@@ -557,17 +557,17 @@ async function main() {
 
   // --- Next steps --------------------------------------------------------
   console.log('\n' + '━'.repeat(60));
-  console.log('✅ Base skinning (Part 1-3) complete.');
+  console.log('✅ Base setup (Step 1) complete.');
   console.log('━'.repeat(60));
-  console.log('\n📌 Manual steps remaining (see docs/skinning.md):');
-  console.log('   Part 1: Replace favicon files in public/ and hero.webp / hero.svg.');
+  console.log('\n📌 Manual steps remaining (see docs/apply-template.md):');
+  console.log('   Step 1: Replace favicon files in public/ and hero.webp / hero.svg.');
   console.log('           (CLI cannot generate binary assets.)');
-  console.log('   Part 4: Fill homepage modules in src/locales/<locale>.json');
+  console.log('   Step 2: Fill homepage modules in src/locales/<locale>.json');
   console.log('           (home.hero / start / explore / faq / updates).');
-  console.log('   Part 5: Add real article MDX under src/content/wiki/<locale>/<category>/.');
+  console.log('   Step 3: Add article MDX under src/content/wiki/<locale>/<category>/.');
   console.log('           Then fill nav.<key> + overview.<key> in locale JSONs.');
-  console.log('   Part 6: Translate non-English locale JSONs + copy MDX bodies.');
-  console.log('   Part 7: After deploy, run `pnpm check-sitemap` to verify all URLs.');
+  console.log('   Step 4: Translate non-English locale JSONs + copy MDX bodies.');
+  console.log('   Step 5: After deploy, run `pnpm check-sitemap` to verify all URLs.');
   console.log('\n   Then: pnpm dev    (preview)');
   console.log('         pnpm build  (verify production build)\n');
 }

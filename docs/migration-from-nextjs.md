@@ -88,7 +88,7 @@ pnpm dev  # 确认 demo 能跑
 
 ### Step 2 — 复制配置层
 
-按 [换皮工作流 Part 1-3](./skinning.md#阶段-1基础换皮) 把你现有的游戏配置搬过来：
+按 [套用模板指南 步骤 1](./apply-template.md#第-1-步基础配置) 把你现有的游戏配置搬过来：
 
 - 主题色（`globals.css` 4 行直接复制）
 - `site.ts`（对应你 Next.js 的站点信息）
@@ -132,7 +132,7 @@ pnpm dev    # 逐页访问确认正常
 | **2. 站点信息** | 把旧模板的 `site info` 搬到 `src/config/site.ts` | 10 分钟 |
 | **3. 导航分类** | `navigation.ts` 结构一致，icon 加 `lucide:` 前缀 | 10 分钟 |
 | **4. 首页文案** | `en.json` 的 `home` 命名空间结构相同，大部分可直接复制；4 种 displayType 的 highlights 需检查 | 20-30 分钟 |
-| **5. 文章格式转换** | `export const metadata` → YAML frontmatter（可用 `pnpm convert-seoscout` 批量转）；文件移到 `src/content/wiki/<locale>/` | 15 分钟（50 篇内） |
+| **5. 文章格式转换** | `export const metadata` → YAML frontmatter（手动改或 AI 辅助）；文件移到 `src/content/wiki/<locale>/` | 15 分钟（50 篇内） |
 | **6. 语言配置** | `routing.ts` locales 数组复制；`ui.ts` import + 注册 | 10 分钟 |
 | **7. 删除不再需要的文件** | `middleware.ts` / `netlify.toml` / `next.config` / `next-on-pages` 等 Next.js 专属文件 | 5 分钟 |
 | **8. 构建验证** | `pnpm build` + `pnpm check-sitemap` 修复格式错误 | 15-30 分钟 |
@@ -154,7 +154,7 @@ pnpm dev    # 逐页访问确认正常
 
 ## 下一步
 
-- [换皮工作流](./skinning.md)
+- [套用模板指南](./apply-template.md)
 - [部署指南](./deployment.md)
 - [PRD](./PRD.md)（完整设计文档）
 - 回到 [README](../README.md)

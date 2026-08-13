@@ -1,8 +1,10 @@
-# 换皮工作流
+# 套用模板指南
 
 > 把 AnvilWiki 从 demo 站（虚构游戏 "Anvil Quest"）换成你的目标游戏站点。
 >
-> **换皮 = 改配置层（~5 个文件）+ 替换内容层（content/ 和 locales/）。框架层一行不动。**
+> **套用模板 = 改配置层（~5 个文件）+ 替换内容层（content/ 和 locales/）。框架层一行不动。**
+>
+> 这是 AnvilWiki 自有的模板套用流程文档。
 
 ---
 
@@ -14,7 +16,7 @@
 
 ---
 
-## 换皮前的准备
+## 开始前的准备
 
 在开始改代码之前，先准备好这些**游戏数据**（建议用一个 `requirements/` 文件夹存放）：
 
@@ -31,13 +33,13 @@ requirements/
 └── hero.webp           # Hero 图
 ```
 
-> 这些数据怎么采集？参考课程第三课（首页数据采集 P1）和第四课（关键词挖掘 + seoscout 批量生成文章）。
+> 数据采集不在本模板范围内。AnvilWiki 只负责消费 MDX 文章——关键词挖掘和批量文章生成请使用你自己的工具链或 AI 编辑器完成。首页各区块需要的数据结构见 [PRD §6.5](./PRD.md#65-首页-home-命名空间)。
 
 ---
 
 ## 三层架构回顾
 
-换皮时请牢记**哪些能改、哪些不能碰**：
+套用模板时请牢记**哪些能改、哪些不能碰**：
 
 ```
 框架层（绝对不动）—— src/pages/, src/components/, src/lib/
@@ -47,31 +49,25 @@ requirements/
 
 ---
 
-## 4 阶段 7 Part 流程
+## 套用模板四步走
 
 ```
-阶段 1：基础换皮 → Part 1 基础配置
-                    Part 2 元数据与 SEO
-                    Part 3 多语言与导航
-
-阶段 2：首页内容 → Part 4 首页模块
-
-阶段 3：内容接入 → Part 5 文章与导航
-
-阶段 4：翻译验证 → Part 6 多语言翻译
-                    Part 7 Sitemap URL 检查
+第 1 步：基础配置 → 主题色 / favicon / hero / 元数据 / 多语言 / 导航
+第 2 步：首页内容 → 首页各模块文案与数据
+第 3 步：内容接入 → MDX 文章 + 分类配置
+第 4 步：翻译与验证 → 多语言翻译 + sitemap URL 检查
 ```
 
-**每个 Part 之间串行**——前一个完成并验证通过后，才进入下一个。
+**四步之间串行**——前一步完成并验证通过后，才进入下一步。
 
 ---
 
-## 提示词骨架（每个 Part 都遵循）
+## AI 辅助套用的任务格式
 
-每个 Part 的提示词套用这个固定结构：
+如果你用 AI 编程助手（Cursor / Claude Code 等）来套用模板，建议每个任务按以下结构描述，让 AI 明确边界：
 
 ```
-# Part N：标题
+# 任务：标题
 
 ## 目标
 改完后站点变成什么样
@@ -93,18 +89,20 @@ requirements/
 grep/ls/file 命令，配中文注释
 ```
 
-下面逐 Part 给出完整提示词。把 `{{游戏名}}` / `{{PROJECT_PATH}}` 等占位符替换成你的实际值后，发给 AI 执行。
+下面按四步给出完整的任务说明和可直接复制的提示词。把 `{{游戏名}}` / `{{PROJECT_PATH}}` 等占位符替换成你的实际值后，发给 AI 执行。
 
 ---
 
-## 阶段 1：基础换皮
+---
 
-### Part 1：基础配置
+## 第 1 步：基础配置（主题色/favicon/hero/元数据/导航）
+
+### 1.1 基础配置（主题色/favicon/hero）
 
 **目标**：改完这 4 样，站点视觉上就不像 demo 了——主题色、favicon、hero 图、logo。
 
 ````text
-# Part 1：基础配置
+# 步骤 1.1：基础配置（主题色/favicon/hero）
 
 参考：requirements/00基础信息.md 的主题色（hex 值）
 只更新 src/styles/globals.css 里的 4 行：
@@ -159,12 +157,12 @@ file public/images/hero.*
 
 ---
 
-### Part 2：元数据与 SEO
+### 1.2 元数据与 SEO
 
 **目标**：所有站点级元数据（站点信息、社交链接、法律页）换成新游戏。
 
 ````text
-# Part 2：元数据与 SEO
+# 步骤 1.2：元数据与 SEO
 
 参考：requirements/00基础信息.md 的游戏名称、域名、平台、社群信息
 更新 src/config/site.ts 的所有字段：
@@ -192,7 +190,7 @@ file public/images/hero.*
 - home.finalCta.title / description / primary / secondary
 
 ⚠️ 域名不要硬编码在组件里——所有绝对 URL 走 SITE_URL 环境变量。
-⚠️ 本 Part 只改 site.ts + en.json 的上述 key，不要改 nav / overview / home.explore / home.faq（那些在 Part 4）。
+⚠️ 本步骤只改 site.ts + en.json 的上述 key，不要改 nav / overview / home.explore / home.faq（那些在步骤 2.1）。
 
 ## 禁止修改
 - src/components/ 下的组件
@@ -218,12 +216,12 @@ python3 -c "import json; json.load(open('src/locales/en.json')); print('✅ JSON
 
 ---
 
-### Part 3：多语言与导航
+### 1.3 多语言与导航
 
 **目标**：配置目标语言列表、清空 demo 内容、设置导航分类。
 
 ````text
-# Part 3：多语言与导航
+# 步骤 1.3：多语言与导航
 
 ## A. 语言配置
 
@@ -279,7 +277,7 @@ rm -rf src/content/wiki/ja
 3. src/locales/en.json 的 overview.<key>.overviewTitle / overviewDescription
 4. src/content/wiki/<locale>/<key>/ 目录名
 
-清空 en.json 的 nav 和 overview 对象（留空 {}），后续 Part 4/5 再填。
+清空 en.json 的 nav 和 overview 对象（留空 {}），后续步骤 2/3 再填。
 
 ## 禁止修改
 - src/pages/ 下的路由
@@ -312,14 +310,16 @@ pnpm dev
 
 ---
 
-## 阶段 2：首页内容
+---
 
-### Part 4：首页模块
+## 第 2 步：首页内容
+
+### 2.1 首页模块
 
 **目标**：把首页模块的文案和数据全部换成新游戏（v0.2 结构：6 区块 / 4 explore 模块）。
 
 ````text
-# Part 4：首页模块
+# 步骤 2.1：首页模块
 
 参考：requirements/00首页模块.md（首页模块完整数据）
 更新 src/locales/en.json 的 home 命名空间下以下 section：
@@ -370,8 +370,8 @@ pnpm dev
 
 ## 禁止修改
 - src/components/home/ 下的渲染组件（只改 JSON 数据）
-- src/config/site.ts（Part 2 已改）
-- src/config/navigation.ts（Part 3 已改）
+- src/config/site.ts（步骤 1.2 已改）
+- src/config/navigation.ts（步骤 1.3 已改）
 
 ## 验证方法
 ```bash
@@ -410,14 +410,16 @@ pnpm dev
 
 ---
 
-## 阶段 3：内容接入
+---
 
-### Part 5：文章与导航
+## 第 3 步：内容接入
+
+### 3.1 文章与导航
 
 **目标**：把 AI 生成的 MDX 文章接入项目、配置分类文案。
 
 ````text
-# Part 5：文章与导航
+# 步骤 3.1：文章与导航
 
 ## A. 拉取文章到项目
 
@@ -449,10 +451,7 @@ tags: ["boss", "ice"]
 不写 H1，ArticlePage 自动用 title 渲染 H1。
 ```
 
-如果你的文章是 seoscout 生成的（export const metadata 格式），用转换脚本：
-```bash
-pnpm tsx scripts/convert-from-seoscout.ts requirements/articles/ src/content/wiki/
-```
+如果你的文章用的是 `export const metadata` 格式（JS 元数据写法），需要手动改成 YAML frontmatter。详见 [内容格式](./content-format.md#从其他格式迁移文章) 的迁移说明。
 
 ⚠️ homepage-only 模式：允许没有文章——站点可以先只上线首页，后续补文章。
 
@@ -505,16 +504,18 @@ pnpm dev
 
 ---
 
-## 阶段 4：翻译与验证
+---
 
-### Part 6：多语言翻译
+## 第 4 步：翻译与验证
+
+### 4.1 多语言翻译
 
 **目标**：把英文版翻译成所有目标语言。
 
 ````text
-# Part 6：多语言翻译
+# 步骤 4.1：多语言翻译
 
-前提：Part 1-5 已完成，英文版构建通过、SEO 检查通过。
+前提：步骤 1-3 已完成，英文版构建通过、SEO 检查通过。
 
 翻译 src/locales/ 下除 en.json 外的所有 JSON 文件。
 
@@ -569,14 +570,14 @@ pnpm dev
 
 ---
 
-### Part 7：Sitemap URL 检查
+### 4.2 Sitemap URL 检查
 
 **目标**：部署后验证所有 URL 返回 200，修复所有 500/404。
 
 ````text
-# Part 7：Sitemap URL 检查与自动修复
+# 步骤 4.2：Sitemap URL 检查与自动修复
 
-前提：Part 1-6 完成，已部署到 Cloudflare Pages（或本地 dev server 运行中）。
+前提：步骤 1-4.1 完成，已部署到 Cloudflare Pages（或本地 dev server 运行中）。
 
 ## Step 1：确认 BASE_URL
 
@@ -649,7 +650,7 @@ echo "检查完成"
 
 ---
 
-## 换皮检查清单（上线前必查）
+## 上线检查清单（上线前必查）
 
 ```
 □ site.ts 所有字段已换成新游戏

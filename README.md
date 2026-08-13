@@ -48,9 +48,9 @@ AnvilWiki 是一个**游戏 wiki 站点模板**——用来快速搭建围绕某
 - 🎨 **JSON 驱动首页**：6 种 displayType 模块化布局，换游戏只改 JSON 不改组件
 - 🌍 **多语言开箱即用**：英文无前缀（SEO 最优），其他语言带前缀，缺失内容自动 fallback 英文
 - 🔍 **SEO 工程化**：sitemap / JSON-LD / hreflang / robots 全部代码自动生成
-- 🎯 **广告就绪**：内置 Adsterra iframe 隔离方案，填 key 即生效
+- 🎯 **广告就绪**：内置广告组件（Adsterra iframe 隔离，env 驱动，参考 [Adsterra 官方文档](https://publishers.adsterra.com/) 接入）
 - 💬 **评论就绪**：内置 Giscus 评论（GitHub Discussions），默认关闭，填 env 即启用，见 [docs/comments.md](docs/comments.md)
-- 🔄 **换皮工程化**：4 阶段 7 Part 提示词流程，改配置不改框架
+- 🔄 **套用模板**：结构化四步流程，改配置不改框架
 - 🆓 **完全免费**：MIT 协议，Cloudflare Pages 免费部署
 - 📝 **类型安全**：Content Collections + Zod schema，构建时发现字段错误
 
@@ -69,8 +69,8 @@ pnpm dev
 # 访问 http://localhost:4321
 
 # 4. 改配置层（site.ts / navigation.ts / globals.css）+ 替换内容层（src/content/ / locales/）
-#    或用交互式换皮 CLI 自动化 Part 1-3：
-pnpm skin
+#    或用交互式套用模板 CLI 自动化步骤 1：
+pnpm apply-template
 
 # 5. 部署到 Cloudflare Pages
 #    cloudflare.com → Pages → Create a project → Connect to Git → 选仓库
@@ -85,10 +85,9 @@ pnpm skin
 | -------------------------------------------------------------- | ----------------------------------------------------------- |
 | [docs/PRD.md](docs/PRD.md)                                     | ⭐ **完整产品设计文档**（架构、数据模型、模块设计、路线图） |
 | [docs/deployment.md](docs/deployment.md)                       | Cloudflare Pages 部署详细指南                               |
-| [docs/skinning.md](docs/skinning.md)                           | 换皮工作流（4 阶段 7 Part 提示词）                          |
+| [docs/apply-template.md](docs/apply-template.md)               | 套用模板指南（四步流程）                                    |
 | [docs/content-format.md](docs/content-format.md)               | MDX 文章格式规范                                            |
 | [docs/seo.md](docs/seo.md)                                     | SEO 工程化说明                                              |
-| [docs/ads.md](docs/ads.md)                                     | Adsterra 广告接入指南                                       |
 | [docs/comments.md](docs/comments.md)                           | Giscus 评论系统接入指南                                     |
 | [docs/migration-from-nextjs.md](docs/migration-from-nextjs.md) | 从 Next.js 模板迁移指南                                     |
 
@@ -121,7 +120,7 @@ Built on **Astro + Cloudflare Pages**: pure static output, zero adapters, free u
 - 🔍 **SEO engineering**: sitemap / JSON-LD / hreflang / robots all auto-generated
 - 🎯 **Ads ready**: Built-in Adsterra iframe isolation, just plug in keys
 - 💬 **Comments ready**: Built-in Giscus comments (GitHub Discussions), off by default, enable via env — see [docs/comments.md](docs/comments.md)
-- 🔄 **Skinning workflow**: 4-phase 7-part prompt process, change config not framework
+- 🔄 **Apply template**: Structured 4-step workflow, change config not framework
 - 🆓 **Completely free**: MIT license, free Cloudflare Pages deployment
 - 📝 **Type-safe**: Content Collections + Zod schema, catch field errors at build time
 
@@ -140,8 +139,8 @@ pnpm dev
 # Visit http://localhost:4321
 
 # 4. Edit config layer (site.ts / navigation.ts / globals.css) + replace content layer (src/content/ / locales/)
-#    Or run the interactive skinning CLI to automate Part 1-3:
-pnpm skin
+#    Or run the interactive apply-template CLI to automate Step 1:
+pnpm apply-template
 
 # 5. Deploy to Cloudflare Pages
 #    cloudflare.com → Pages → Create a project → Connect to Git → select repo
@@ -158,6 +157,6 @@ See [`docs/deployment.md`](docs/deployment.md) for detailed guide.
 
 > **Status**: ✅ Live demo at **[anvilwiki.pages.dev](https://anvilwiki.pages.dev/)** — Lighthouse 4×100, CI green, fully deployed.
 >
-> **Features shipped**: Pagefind offline search · Astro Image (WebP/srcset) · Skinning CLI (`pnpm skin`) · Full i18n (en/ja) · SEO (hreflang, JSON-LD, sitemap) · Security headers · Giscus comments (opt-in)
+> **Features shipped**: Pagefind offline search · Astro Image (WebP/srcset) · Apply-template CLI (`pnpm apply-template`) · Full i18n (en/ja) · SEO (hreflang, JSON-LD, sitemap) · Security headers · Giscus comments (opt-in)
 >
 > 状态：✅ **[anvilwiki.pages.dev](https://anvilwiki.pages.dev/)** 已上线 — Lighthouse 全 100，CI 全绿。

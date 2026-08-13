@@ -80,9 +80,8 @@ pnpm typecheck        # astro check (0 errors expected)
 pnpm lint             # ESLint + Prettier + eslint-plugin-astro
 pnpm test             # Vitest (18 tests: url + seo)
 pnpm check-sitemap    # scripts/check-sitemap.ts — verify all sitemap URLs return 200
-pnpm skin             # interactive skinning CLI (hex→HSL theme, rewrite config/locales)
+pnpm apply-template   # interactive template-apply CLI (hex→HSL theme, rewrite config/locales)
 pnpm new-post         # interactive MDX article scaffold
-pnpm convert-seoscout # convert seoscout MDX format to YAML frontmatter
 ```
 
 ## Decisions to Confirm with User Before Deviating

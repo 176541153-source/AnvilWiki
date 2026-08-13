@@ -1,7 +1,7 @@
 /**
  * Site configuration — the single source of truth for game-specific metadata.
  *
- * 👉 SKINNING: Change every field here when building a new game wiki.
+ * 👉 APPLY TEMPLATE: Change every field here when building a new game wiki.
  * This is part of the CONFIG LAYER — framework code reads from here, never the reverse.
  */
 

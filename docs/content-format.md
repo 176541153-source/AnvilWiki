@@ -93,21 +93,46 @@ MDX 支持 JSX 组件，但 AnvilWiki 默认不引入 React 组件。如果你�
 
 ---
 
-## 从 seoscout 输出转换
+## 从其他格式迁移文章
 
-如果你的文章是 seoscout 生成的（`export const metadata` 格式），需要转成 YAML frontmatter：
+如果你手上的文章用的是 JS 元数据写法（常见于 Next.js / MDX 项目）：
 
-```bash
-pnpm tsx scripts/convert-from-seoscout.ts <input-dir> <output-dir>
+```mdx
+export const metadata = {
+  title: "文章标题",
+  description: "描述",
+  category: "bosses",
+  date: "2026-08-01",
+  tags: ["guide"]
+};
+
+## 正文从 H2 开始
+...
 ```
 
-转换规则：
+AnvilWiki 用 YAML frontmatter，需要手动改成：
 
-- `export const metadata = { title: "X" }` → `title: "X"`
-- 删除 `export const metadata` 行
-- 其余正文不变
+```mdx
+---
+title: "文章标题"
+description: "描述"
+category: "bosses"
+date: 2026-08-01
+tags: ["guide"]
+---
 
-> 已有自动转换脚本：`pnpm convert-seoscout <file>`（详见 `scripts/convert-from-seoscout.ts`）。
+## 正文从 H2 开始
+...
+```
+
+**迁移步骤**：
+1. 删除 `export const metadata = { ... };` 整块（连同末尾分号和空行）
+2. 在文件最顶部加 `---` 包裹的 YAML frontmatter，字段一一对应
+3. YAML 里字符串值用双引号包裹，数组用 `[...]` 语法，日期不加引号
+4. 其余正文内容不变
+5. 运行 `pnpm build` 验证 frontmatter 通过 Zod schema 校验
+
+> 批量迁移时，可以用 AI 编辑器（Cursor / Claude Code）的正则替换功能，或写一个简单的 Node 脚本完成转换。模板不内置转换脚本——frontmatter 字段少、格式简单，手动或 AI 辅助转换即可。
 
 ---
 
@@ -164,6 +189,6 @@ pnpm new-post
 
 ## 下一步
 
-- [换皮工作流](./skinning.md)
+- [套用模板指南](./apply-template.md)
 - [SEO 说明](./seo.md)
 - 回到 [README](../README.md)

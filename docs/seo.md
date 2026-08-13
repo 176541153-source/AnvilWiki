@@ -100,6 +100,8 @@
 
 **数据来自**：文章的 frontmatter（title / description / image / date / lastModified）。
 
+> **JSON-LD 类型参考**：[schema.org](https://schema.org/)（[Organization](https://schema.org/Organization) / [WebSite](https://schema.org/WebSite) / [Article](https://schema.org/Article) / [BreadcrumbList](https://schema.org/BreadcrumbList) / [ItemList](https://schema.org/ItemList) / [FAQPage](https://schema.org/FAQPage)）、[Google 结构化数据入门](https://developers.google.com/search/docs/appearance/structured-data/intro-structured-data)
+
 ---
 
 ## hreflang 多语言链接
@@ -113,6 +115,8 @@
 ```
 
 `x-default` 指向英文版（默认语言）。
+
+> **参考**：[Google 多语言版本指南](https://developers.google.com/search/docs/specialty/international/localized-versions)（hreflang + x-default 用法）、[Astro i18n 文档](https://docs.astro.build/en/guides/internationalization/)
 
 ---
 
@@ -130,6 +134,8 @@
 
 **为什么不能硬编码**：列表页可能展示 28 个 boss 卡片，但只有 3 个有 MDX 攻略。如果 sitemap 从卡片数组生成，会产生 25 个指向 404 的 URL，严重损害 SEO。
 
+> **参考**：[sitemaps.org 协议规范](https://www.sitemaps.org/protocol.html)、[Google sitemap 指南](https://developers.google.com/search/docs/crawling-indexing/sitemaps/overview)
+
 ---
 
 ## og:image 绝对路径（强制）
@@ -145,6 +151,8 @@
 ```
 
 由 `SITE_URL` 环境变量拼接，**禁止硬编码域名**。
+
+> **参考**：[Open Graph 协议（ogp.me）](https://ogp.me/)（og:image 必须是绝对 URL）、[Google 搜索结果摘要指南](https://developers.google.com/search/docs/appearance/snippet)
 
 ---
 
@@ -163,6 +171,8 @@
 □ 移动端适配正常
 □ Lighthouse SEO 分数 ≥ 95
 ```
+
+> **检查清单依据**：[Google title 标签指南](https://developers.google.com/search/docs/appearance/title-element)（title 长度建议）、[Google 搜索结果摘要指南](https://developers.google.com/search/docs/appearance/snippet)（description）、[Google 语义 HTML 指南](https://developers.google.com/search/docs/appearances/semantic-html)（H1 单一性、标题层级）、[MDN 标题元素](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Heading_Elements)
 
 ### 用 Google Rich Results Test 验证
 
@@ -187,5 +197,5 @@
 ## 下一步
 
 - [内容格式](./content-format.md)
-- [换皮工作流](./skinning.md)
+- [套用模板指南](./apply-template.md)
 - 回到 [README](../README.md)

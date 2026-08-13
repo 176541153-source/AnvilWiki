@@ -11,7 +11,7 @@
 - 一个 [GitHub](https://github.com) 账号（免费）
 - 一个 [Cloudflare](https://cloudflare.com) 账号（免费）
 - 本地已安装 Node.js 20+ 和 pnpm
-- 已经 fork 了 AnvilWiki 仓库并改好了配置层（见 [skinning.md](./skinning.md)）
+- 已经 fork 了 AnvilWiki 仓库并改好了配置层（见 [apply-template.md](./apply-template.md)）
 
 > 还没 fork？看 [快速开始](../README.md#5-分钟快速开始)。
 
@@ -296,7 +296,6 @@ A: 这是设计行为，不是 bug。参见 [PRD §9.3](./PRD.md#93-文章-fallb
 
 ## 下一步
 
-- [换皮工作流](./skinning.md)：把 demo 站换成真实游戏
+- [套用模板指南](./apply-template.md)：把 demo 站换成真实游戏
 - [内容格式](./content-format.md)：怎么写 MDX 文章
-- [广告接入](./ads.md)：怎么接 Adsterra 赚钱
 - 回到 [README](../README.md)

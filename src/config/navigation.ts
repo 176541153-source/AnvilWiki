@@ -1,7 +1,7 @@
 /**
  * Navigation configuration — the single source of truth for content categories.
  *
- * 👉 SKINNING: Change this array when a new game has different content categories.
+ * 👉 APPLY TEMPLATE: Change this array when a new game has different content categories.
  *
  * The `key` MUST be identical in THREE places (rule enforced across the codebase):
  *   1. Here — NAVIGATION_CONFIG[].key

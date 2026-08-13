@@ -1,7 +1,7 @@
 /**
  * i18n routing — the single source of truth for supported locales.
  *
- * 👉 SKINNING: When adding/removing a language, sync THREE places:
+ * 👉 APPLY TEMPLATE: When adding/removing a language, sync THREE places:
  *   1. Here — locales array
  *   2. src/locales/<locale>.json — actual file must exist (can be `{}` to start)
  *   3. src/content/<locale>/ — directory must exist (can be empty)
