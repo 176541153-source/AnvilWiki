@@ -134,7 +134,7 @@
           "name": "Anvil Questコード",
           "description": "有効なコードで無料コイン、ジェム、限定アイテムを入手。毎日更新。",
           "href": "/codes",
-          "displayType": "code-cards",
+          "displayType": "badge-list",
           "highlights": [
             {
               "label": "WELCOME2026",
@@ -158,14 +158,14 @@
           "name": "ボス攻略",
           "description": "全ボスの攻略ガイド。攻撃パターンと弱点を完全解説。",
           "href": "/bosses",
-          "displayType": "card-list",
+          "displayType": "labeled-cards",
           "highlights": [
             {
               "label": "Emberfang",
               "detail": "フロスト・ワーデン、序盤の門番"
             },
             {
-              "label": "Pyra",
+              "label": "Stormcaller",
               "detail": "ファイアタイタン、中盤のDPSチェック"
             },
             {
@@ -179,7 +179,7 @@
           "name": "進行ガイド",
           "description": "レベリングルート、クラスビルド、エンドゲーム準備。",
           "href": "/guides",
-          "displayType": "step-by-step",
+          "displayType": "steps",
           "highlights": [
             {
               "label": "1",
@@ -204,7 +204,7 @@
           "name": "武器ティアリスト",
           "description": "DPS、有用性、シナジーに基づく全武器のS～Cランク付け。",
           "href": "/guides/weapon-tier-list",
-          "displayType": "tier-grid",
+          "displayType": "ranked-grid",
           "highlights": [
             {
               "label": "S",

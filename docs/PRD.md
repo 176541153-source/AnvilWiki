@@ -215,7 +215,7 @@ AnvilWiki 采用**分层设计**的架构设计：
 ```
 
 **核心原则**：
-- 改内容不动代码，改配置不重写框架。
+- 内容和配置的修改不需要触及代码层。
 - 换游戏 = 改配置层（~5 个文件） + 替换内容层（content/ 和 locales/）。
 - 代码层 fork 后永不改动（除非升级 AnvilWiki 版本）。
 
@@ -348,10 +348,10 @@ anvilwiki/
 │   │   │   ├── ExploreModules.astro  # ⭐ 4 模块容器，整卡可点击，按 displayType 分发
 │   │   │   ├── FaqSection.astro      # 原生 <details> 手风琴（v0.2 起由 /faq 独立页调用）
 │   │   │   └── modules/
-│   │   │       ├── CodeCards.astro   # displayType: code-cards
-│   │   │       ├── StepByStep.astro  # displayType: step-by-step
-│   │   │       ├── TierGrid.astro    # displayType: tier-grid
-│   │   │       └── CardList.astro    # displayType: card-list
+│   │   │       ├── CodeCards.astro   # displayType: badge-list
+│   │   │       ├── StepByStep.astro  # displayType: steps
+│   │   │       ├── TierGrid.astro    # displayType: ranked-grid
+│   │   │       └── CardList.astro    # displayType: labeled-cards
 │   │   ├── article/
 │   │   │   ├── ArticlePage.astro  # 详情页主体（H1 + MDX body + 面包屑 + 相关文章）
 │   │   │   └── ListPage.astro     # 列表页主体（分类标题 + 文章卡片列表）
@@ -573,7 +573,7 @@ export const CONTENT_TYPES = NAVIGATION_CONFIG.map(n => n.key);
           "name": "Anvil Quest Codes",
           "description": "...",
           "href": "/codes",
-          "displayType": "code-cards",
+          "displayType": "badge-list",
           "highlights": [{ "label": "WELCOME", "detail": "...", "badge": "Active" }]
         }
       ]
@@ -619,10 +619,10 @@ export const CONTENT_TYPES = NAVIGATION_CONFIG.map(n => n.key);
 - `faq` 数据保留在 `home.faq`，但由独立 `/faq` 页渲染（`FaqSection.astro`）。
 
 **6 种 displayType**（首页 explore 模块的渲染类型）：
-- `code-cards`：兑换码卡片（label + detail + badge）
-- `step-by-step`：步骤指引（label 是数字 1-6）
-- `tier-grid`：分级网格（label 是 S/A/B/C）
-- `card-list`：链接列表（label 是短文字，**去 emoji 化**）
+- `badge-list`：兑换码卡片（label + detail + badge）
+- `steps`：步骤指引（label 是数字 1-6）
+- `ranked-grid`：分级网格（label 是 S/A/B/C）
+- `labeled-cards`：链接列表（label 是短文字，**去 emoji 化**）
 - `timeline`：垂直时间轴（label 是版本号/日期，detail 是事件，可选 badge）—— 字段语义详见 `src/components/home/modules/Timeline.astro` JSDoc
 - `video-grid`：视频缩略图网格（title + youtubeId + 可选 duration，首页不 embed，点击跳文章页）—— 字段语义详见 `src/components/home/modules/VideoGrid.astro` JSDoc
 
@@ -1014,7 +1014,7 @@ export function getUi(locale: Locale) {
       'params': {}
     };
   </script>
-  <script src="//www.highperformanceformat.com/YOUR_AD_KEY/invoke.js"></script>
+  <script src="//YOUR_AD_NETWORK_DOMAIN/YOUR_AD_KEY/invoke.js"></script>
 </body>
 </html>
 ```
@@ -1142,7 +1142,7 @@ const adKey = import.meta.env.PUBLIC_AD_MOBILE_320X50;
 | **hero.webp 不能是空文件** | 模板自带的可能是 0 字节占位，必须下载真实图覆盖。 |
 | **删 MDX 不删目录** | `src/content/` 目录必须保留（空目录也行），删了会导致 Content Collection 构建失败。 |
 | **article 从 H2 开始** | 不写 H1，ArticlePage 自动用 title 渲染 H1，避免双 H1。 |
-| **card-list label 去 emoji 化** | `card-list` 的 `highlights.label` 必须是英文短词，不是 emoji（违反「禁止 emoji」规则）。 |
+| **labeled-cards label 去 emoji 化** | `labeled-cards` 的 `highlights.label` 必须是英文短词，不是 emoji（违反「禁止 emoji」规则）。 |
 | **域名不硬编码** | 所有 URL 走 `SITE_URL` 环境变量，禁止在代码里写死 `xxx.wiki`。 |
 
 ### 11.4 从其他格式迁移文章
@@ -1338,7 +1338,7 @@ describe('sitemap', () => {
 |---|---|---|---|
 | **MVP-0**：骨架 | Astro 项目初始化 + Content Collection 配置 + 单篇示例 MDX + 首页/列表页/详情页三页跑通 + Cloudflare Pages 部署成功 | 访问 `*.pages.dev` 能看到三页，Lighthouse Performance ≥ 95 | 1-2 天 |
 | **MVP-1**：多语言 | as-needed 前缀（`prefixDefaultLocale: false`）+ 文章 fallback + 语言切换器 + UI 文案 deepMerge | 加 `ja` 语言，访问 `/ja/bosses/emberfang`（无 ja 版）回退英文 | 1 天 |
-| **MVP-2**：首页模块 | JSON 驱动 + 4 种 displayType（code-cards/step-by-step/tier-grid/card-list）+ Hero/QuickStart/Explore/CTA/Footer/Video/RecentUpdates+Trending（v0.2 结构） | 换 en.json 数据，首页无组件改动即生效 | 1-2 天 |
+| **MVP-2**：首页模块 | JSON 驱动 + 4 种 displayType（badge-list/steps/ranked-grid/labeled-cards）+ Hero/QuickStart/Explore/CTA/Footer/Video/RecentUpdates+Trending（v0.2 结构） | 换 en.json 数据，首页无组件改动即生效 | 1-2 天 |
 | **MVP-3**：SEO | sitemap 动态 + JSON-LD 全套（Organization/WebSite/Article/Breadcrumb/ItemList/FAQPage）+ hreflang + robots | Google Rich Results Test 全通过 | 1 天 |
 | **MVP-4**：主题换肤 | CSS 变量双变量（`--brand` + `--brand-light`）+ 暗色模式 + 主题切换器 | 改 globals.css 4 行整站变色 | 0.5 天 |
 | **MVP-5**：广告系统 | 广告 iframe 隔离（6 种广告位）+ Sticky 320×50 + 环境变量驱动 + 关闭按钮 | 移动端 + 桌面端广告正常显示不串号 | 1 天 |
@@ -1372,7 +1372,7 @@ describe('sitemap', () => {
 | # | 待验证项 | 验证里程碑 | 状态 |
 |---|---|---|---|
 | 1 | i18n as-needed 路由策略 | MVP-1 | ✅ 已确认（`prefixDefaultLocale: false`） |
-| 2 | 文章语言 fallback | MVP-1 | ✅ 已验证（`/ja/bosses/pyra` 无日文版时回退英文，构建实测通过） |
+| 2 | 文章语言 fallback | MVP-1 | ✅ 已验证（`/ja/bosses/stormcaller` 无日文版时回退英文，构建实测通过） |
 | 3 | 从 JS metadata 格式迁移文章 | v0.1 | ✅ 已实现（`docs/content-format.md` 提供 `export const metadata` → YAML frontmatter 迁移指南） |
 | 4 | shadcn/ui 在 Astro 下的体验 | — | ❌ 决策不用（采用纯 Astro 原生组件，见 ADR-002） |
 | 5 | 多语言 sitemap/hreflang 自动生成 | MVP-3 | ✅ 已验证（`@astrojs/sitemap` 自动生成 26 URL + en/ja hreflang alternate） |
@@ -1504,7 +1504,7 @@ PUBLIC_GA_ID=
 □ src/content/ 下有至少 1 篇 MDX（或保持 homepage-only 模式）
 □ 所有 MDX frontmatter 通过 Zod schema 校验
 □ 文章正文从 H2 开始（不写 H1）
-□ card-list 的 highlights.label 已去 emoji
+□ labeled-cards 的 highlights.label 已去 emoji
 ```
 
 ### B.3 SEO
@@ -1560,7 +1560,7 @@ PUBLIC_GA_ID=
 □ 移动端 + 桌面端广告正常显示不破版
 □ 320×50 Sticky 正常，有关闭按钮
 □ 桌面端侧边栏广告 fixed 正常
-□ 无自动弹窗 / 跳转（有则关 Popunder/Social Bar）
+□ 无自动弹窗 / 跳转（有则检查广告设置）
 □ 广告网络后台 impression 数在涨
 ```
 
@@ -1577,7 +1577,7 @@ PUBLIC_GA_ID=
 | **Content Layer API** | Astro 5 引入的内容层 API，支持 glob/file/API loader |
 | **as-needed 前缀** | 多语言 URL 策略：默认语言无前缀，其他语言带前缀 |
 | **fallback** | 某语言内容缺失时自动回退到默认语言（英文） |
-| **displayType** | 首页模块的渲染类型（code-cards/step-by-step/tier-grid/card-list） |
+| **displayType** | 首页模块的渲染类型（badge-list/steps/ranked-grid/labeled-cards） |
 | **JSON-LD** | 结构化数据格式，告诉搜索引擎页面内容类型 |
 | **hreflang** | 多语言页面 alternate 链接，告诉搜索引擎各语言版本位置 |
 | **iframe 隔离** | 每个广告用独立 iframe，避免 atOptions 串号 |

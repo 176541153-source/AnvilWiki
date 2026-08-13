@@ -45,30 +45,30 @@ Content layer (src/content, src/locales)                   — fully replace per
 - Changing config must not rewrite framework.
 - Framework layer should have **zero** game-specific strings.
 
-## Hard Rules (from PRD — these are non-negotiable)
+## Engineering Constraints
 
-1. **All UI text comes from JSON** (`src/locales/<locale>.json`), never hardcoded in components.
-2. **Theme color = 4 lines only**: `--brand` + `--brand-light` in `:root` (2 lines) + `.dark` (2 lines) in `src/styles/globals.css`. All other color vars reference via `var(--brand)`. **No hardcoded hex/rgba/Tailwind color classes** in components.
-3. **sitemap must scan actual MDX files** — never generate URLs from hardcoded arrays (e.g. `NAVIGATION_CONFIG`). Reason: list pages may show items without MDX, producing 404 sitemap entries.
-4. **Category `key` must be identical in 3 places**: `src/config/navigation.ts` (`NAVIGATION_CONFIG[].key`) == `src/locales/en.json` (`nav.<key>`) == `src/content/<locale>/<key>/` directory name.
-5. **`locales` array must be synced in 3 places**: `src/i18n/routing.ts` == actual files in `src/locales/*.json` == directories in `src/content/<locale>/`.
-6. **Article frontmatter starts at H2** — never write H1 in MDX body; `ArticlePage` renders `title` as H1.
-7. **og:image / twitter:image must be absolute URLs** — use `${SITE_URL}/...`, never relative.
-8. **Ad keys via env vars** — ad components `return null` when key empty. Never hardcode ad keys.
-9. **`SITE_URL` env var for domain** — never hardcode `*.wiki` domain in code. **Must include `https://` protocol** (e.g. `https://anvilwiki.pages.dev`, NOT bare `anvilwiki.pages.dev`). Astro's `site:` config field validates it as a URL; a bare domain fails build with `Invalid url`.
-10. **No emoji in UI** — use lucide icons (`astro-icon` or inline SVG).
+1. **UI 文案全部走 JSON** (`src/locales/<locale>.json`),组件里不硬编码文字。
+2. **主题色只管 `--brand` / `--brand-light`**(`:root` 2 行 + `.dark` 2 行,共 4 行),组件里所有颜色引用 `var(--brand)`,禁止硬编码 hex/rgba。
+3. **sitemap 扫描实际 MDX 文件**——不从配置数组生成 URL,因为列表页展示的条目可能还没有对应文章。
+4. **分类 key 在 3 个位置保持一致**:`navigation.ts` 的 `NAVIGATION_CONFIG[].key` = `en.json` 的 `nav.<key>` = `src/content/<locale>/<key>/` 目录名。
+5. **语言列表在 3 个位置保持一致**:`routing.ts` 的 `locales` = `src/locales/*.json` 文件 = `src/content/<locale>/` 目录。
+6. **文章正文从 H2 起**——不写 H1,`ArticlePage` 用 frontmatter 的 `title` 渲染 H1。
+7. **og:image / twitter:image 用绝对路径**——`${SITE_URL}/...`,不用相对路径。
+8. **广告 key 走 env 变量**——key 为空时组件不渲染,不硬编码。
+9. **域名走 `SITE_URL` 环境变量**——不在代码里写死域名。`SITE_URL` 必须含 `https://` 协议(Astro 的 `site:` 配置会校验 URL 格式,裸域名构建报错)。
+10. **UI 不用 emoji**——图标用 lucide(`astro-icon` 或 inline SVG)。
 11. **评论组件 env 空值 = 不渲染** — `Comments.astro` 在 `PUBLIC_GISCUS_REPO` / `PUBLIC_GISCUS_REPO_ID` / `PUBLIC_GISCUS_CATEGORY` / `PUBLIC_GISCUS_CATEGORY_ID` 任一为空时 `return null`。与广告组件同模式,默认关闭是模板的开箱契约(保 Lighthouse 4×100)。不要给这些 env 加默认值或硬编码 demo 配置。
 12. **`wrangler.toml` 接管 Cloudflare Pages env** — 当 `wrangler.toml` 存在时,它是 Pages 项目 env 的唯一真相源,dashboard 的 Environment variables UI 被完全忽略([官方文档](https://developers.cloudflare.com/pages/functions/wrangler-configuration/))。所有构建时 env 变量必须在 `wrangler.toml` 的 `[vars]` 段声明。fork 用户须知:要么改 `[vars]` 值,要么删 `wrangler.toml` 让 dashboard 接管。详见 `docs/deployment.md`。
 
-## i18n Behavior (subtle, easy to get wrong)
+## i18n Fallback Rules
 
-- **Single article**: if a locale version is missing, **fall back to English** (do NOT 404). Metadata also falls back.
-- **List page**: does **NOT** fall back — if locale has no articles, show empty state (`shared.noArticles`).
-- This asymmetry is intentional: list = accuracy (don't show what doesn't exist); detail = reachability (direct URL never 404).
+- **文章详情页**:请求的语言版本不存在时,回退到英文(不返回 404)。frontmatter 也回退。
+- **列表页**:不回退——该语言没有文章就显示空状态(`shared.noArticles`)。
+- 这个不对称是有意的:列表追求准确(不展示不存在的内容),详情追求可达(直接 URL 永远能打开)。
 
-## Ads: iframe Isolation (do not refactor)
+## Ads: Each Slot Is Isolated
 
-Each ad slot is a standalone HTML file in `public/ads/*.html` (each has its own `window.atOptions`), embedded via `<iframe>`. This prevents multi-ad `atOptions` collision. **Do not** replace with a global ad loader. See PRD §10.
+每个广告位是 `public/ads/` 下的独立 HTML 文件(各自独立的 `window` 作用域),通过 `<iframe>` 嵌入。不要改成全局加载器——多个广告共享 `window` 会导致配置冲突。详见 PRD §10。
 
 ## Commands
 

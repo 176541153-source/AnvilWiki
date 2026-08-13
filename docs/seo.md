@@ -1,8 +1,8 @@
 # SEO 工程化
 
-> AnvilWiki 的 SEO 设计原则：**你只管填内容，SEO 全交给代码自动生成**。
+> AnvilWiki 的 SEO 设计原则：**填好内容，SEO 标签由构建流程自动生成**。
 >
-> 写文章填好 frontmatter，改首页填好 en.json，剩下的 title / 结构化数据 / sitemap / 多语言链接全部自动产出。
+> 文章写好 frontmatter，首页改好 en.json，构建时自动产出 title / 结构化数据 / sitemap / 多语言 alternate 链接。
 
 ---
 
@@ -132,7 +132,7 @@
 4. 输出 dist/sitemap-0.xml + dist/sitemap-index.xml
 ```
 
-**为什么不能硬编码**：列表页可能展示 28 个 boss 卡片，但只有 3 个有 MDX 攻略。如果 sitemap 从卡片数组生成，会产生 25 个指向 404 的 URL，严重损害 SEO。
+**为什么不能硬编码**：列表页的卡片数据（en.json 里的 highlights）可能包含尚未写成文章的条目。如果 sitemap 从卡片数组生成，会产生指向 404 的 URL，损害 SEO。
 
 > **参考**：[sitemaps.org 协议规范](https://www.sitemaps.org/protocol.html)、[Google sitemap 指南](https://developers.google.com/search/docs/crawling-indexing/sitemaps/overview)
 

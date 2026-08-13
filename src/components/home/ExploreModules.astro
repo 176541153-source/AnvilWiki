@@ -6,10 +6,10 @@
  * are rendered. We dispatch to the corresponding sub-component.
  *
  * Supported displayTypes (per PRD §6.5):
- *   - code-cards      → CodeCards (redeemable codes with badge)
- *   - step-by-step    → StepByStep (numbered progression steps)
- *   - tier-grid       → TierGrid (S/A/B/C ranked items)
- *   - card-list       → CardList (simple labeled cards)
+ *   - badge-list      → CodeCards (redeemable codes with badge)
+ *   - steps    → StepByStep (numbered progression steps)
+ *   - ranked-grid       → TierGrid (S/A/B/C ranked items)
+ *   - labeled-cards       → CardList (simple labeled cards)
  *   - timeline        → Timeline (vertical timeline of dated events)
  *   - video-grid      → VideoGrid (2-column video thumbnail grid)
  *
@@ -53,10 +53,10 @@ const { modules, locale } = Astro.props;
         <p class="mt-1 text-sm text-muted-foreground">{m.description}</p>
 
         <div class="mt-4">
-          {m.displayType === 'code-cards' && <CodeCards highlights={m.highlights} />}
-          {m.displayType === 'step-by-step' && <StepByStep highlights={m.highlights} />}
-          {m.displayType === 'tier-grid' && <TierGrid highlights={m.highlights} />}
-          {m.displayType === 'card-list' && <CardList highlights={m.highlights} />}
+          {m.displayType === 'badge-list' && <CodeCards highlights={m.highlights} />}
+          {m.displayType === 'steps' && <StepByStep highlights={m.highlights} />}
+          {m.displayType === 'ranked-grid' && <TierGrid highlights={m.highlights} />}
+          {m.displayType === 'labeled-cards' && <CardList highlights={m.highlights} />}
           {m.displayType === 'timeline' && <Timeline highlights={m.highlights} />}
           {m.displayType === 'video-grid' && <VideoGrid highlights={m.highlights} />}
         </div>

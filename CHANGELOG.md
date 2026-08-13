@@ -60,7 +60,7 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Astro 5 static site (`output: 'static'`, zero adapter, Cloudflare Pages native)
 - Content Layer API + Zod schema for type-safe MDX articles
 - i18n: as-needed prefix (English no prefix, others prefixed) with single-article English fallback
-- Homepage: 8 JSON-driven modules with 4 displayTypes (code-cards / step-by-step / tier-grid / card-list)
+- Homepage: 8 JSON-driven modules with 4 displayTypes (badge-list / steps / ranked-grid / labeled-cards)
 - SEO: Organization / WebSite / Article / BreadcrumbList / ItemList / FAQPage JSON-LD, hreflang, dynamic sitemap, robots.txt
 - Theme: CSS variable theming (4 lines to re-theme) + dark mode with no-FOUC
 - Ads: 广告 iframe isolation (6 slots), Sticky 320×50 with dismiss button, env-var gated
