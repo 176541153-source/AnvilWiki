@@ -186,5 +186,20 @@ export function pageTitle(title: string): string {
   return `${title} — ${site.name}`;
 }
 
+/** VideoGame JSON-LD — injected on the homepage for game entity recognition. */
+export function videoGameJsonLd() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'VideoGame',
+    name: site.game.name,
+    description: site.description,
+    url: siteUrl,
+    genre: site.game.genre,
+    gamePlatform: site.game.platform,
+    publisher: { '@type': 'Organization', name: site.game.developer },
+    ...(site.game.releaseDate ? { datePublished: site.game.releaseDate } : {}),
+  };
+}
+
 /** Available locales for hreflang generation (imported by pages). */
 export const allLocales: readonly Locale[] = locales;

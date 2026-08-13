@@ -30,6 +30,10 @@ const wiki = defineCollection({
       image: image().optional(),
       tags: z.array(z.string()).default([]),
       noindex: z.boolean().default(false),
+      /** Quick-answer summary shown before the article body (AI Overviews / featured snippet). */
+      summary: z.string().max(200).optional(),
+      /** Article author name (E-E-A-T signal). Falls back to site.defaultAuthor. */
+      author: z.string().optional(),
     }),
 });
 

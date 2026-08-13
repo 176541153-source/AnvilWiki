@@ -45,6 +45,8 @@ export interface SiteConfig {
    */
   ogImageWidth: number;
   ogImageHeight: number;
+  /** Default author name for articles without an explicit `author` in frontmatter (E-E-A-T signal). */
+  defaultAuthor?: string;
 }
 
 export const site: SiteConfig = {

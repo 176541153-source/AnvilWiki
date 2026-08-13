@@ -6,7 +6,7 @@
 import { site } from '~/config/site';
 
 interface Props {
-  page: 'about' | 'privacy-policy' | 'terms-of-service' | 'copyright';
+  page: 'about' | 'privacy-policy' | 'terms-of-service' | 'copyright' | 'contact';
 }
 const { page } = Astro.props;
 const game = site.game.name;
@@ -166,6 +166,55 @@ const year = new Date().getFullYear();
       </p>
       <h2>Fan-Made Notice</h2>
       <p>{site.legalNotice}</p>
+    </>
+  )
+}
+
+{
+  page === 'contact' && (
+    <>
+      <h1>Contact {site.name}</h1>
+      <p>
+        {site.name} is a community-run wiki. The fastest way to reach us or contribute is through
+        our community channels below.
+      </p>
+      <h2>Community</h2>
+      <ul>
+        {site.social.discord && (
+          <li>
+            <strong>Discord:</strong>{' '}
+            <a href={site.social.discord} target="_blank" rel="noopener noreferrer">
+              Join our server
+            </a>
+          </li>
+        )}
+        {site.social.reddit && (
+          <li>
+            <strong>Reddit:</strong>{' '}
+            <a href={site.social.reddit} target="_blank" rel="noopener noreferrer">
+              r/{site.game.name}
+            </a>
+          </li>
+        )}
+        {site.social.youtube && (
+          <li>
+            <strong>YouTube:</strong>{' '}
+            <a href={site.social.youtube} target="_blank" rel="noopener noreferrer">
+              {site.name} channel
+            </a>
+          </li>
+        )}
+      </ul>
+      <h2>Contributing</h2>
+      <p>
+        Found a typo or outdated info? Want to add a guide? This wiki is open source — submit changes
+        via pull requests or reach out on Discord.
+      </p>
+      <h2>Reporting Issues</h2>
+      <p>
+        For copyright or takedown requests, see our{' '}
+        <a href="/copyright">Copyright page</a>.
+      </p>
     </>
   )
 }

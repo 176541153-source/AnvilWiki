@@ -17,6 +17,7 @@ import { render } from 'astro:content';
 import LocaleLayout from '~/components/layout/LocaleLayout.astro';
 import InContentAd from '~/components/ads/InContentAd.astro';
 import Comments from '~/components/article/Comments.astro';
+import TableOfContents from '~/components/article/TableOfContents.astro';
 import WikiSidebar from '~/components/sidebar/WikiSidebar.astro';
 import { NAVIGATION_CONFIG } from '~/config/navigation';
 import { siteUrl } from '~/config/site';
@@ -25,6 +26,7 @@ import { getUi } from '~/i18n/ui';
 import { getRelatedEntries, parseEntryId, type WikiEntry, type ResolvedEntry } from '~/lib/content';
 import { articleJsonLd, breadcrumbJsonLd, pageTitle } from '~/lib/seo';
 import { listPath, detailPath } from '~/lib/url';
+import { site } from '~/config/site';
 
 interface Props {
   locale: Locale;
@@ -51,7 +53,10 @@ const coverUrl = entry.data.image
 
 const related = await getRelatedEntries(entry, locale, 3);
 
-const { Content } = await render(entry);
+const { Content, headings } = await render(entry);
+
+const author = entry.data.author ?? site.defaultAuthor;
+const summary = entry.data.summary;
 
 const jsonLd = [
   articleJsonLd({
@@ -105,6 +110,12 @@ const jsonLd = [
           <Icon name="lucide:calendar" class="h-3.5 w-3.5" />
           {entry.data.date.toLocaleDateString(locale)}
         </span>
+        {author && (
+          <span class="inline-flex items-center gap-1">
+            <Icon name="lucide:user" class="h-3.5 w-3.5" />
+            {author}
+          </span>
+        )}
         {
           entry.data.lastModified && (
             <span class="inline-flex items-center gap-1">
@@ -123,6 +134,24 @@ const jsonLd = [
         }
       </div>
     </header>
+
+    {/* Quick Answer / TL;DR — answer-first for AI Overviews & featured snippets */}
+    {summary && (
+      <aside class="mt-6 rounded-lg border-l-4 border-nav bg-nav/5 p-4">
+        <div class="flex items-start gap-2">
+          <Icon name="lucide:lightbulb" class="mt-0.5 h-4 w-4 shrink-0 text-nav" />
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-wider text-nav">Quick Answer</p>
+            <p class="mt-1 text-sm text-foreground">{summary}</p>
+          </div>
+        </div>
+      </aside>
+    )}
+
+    {/* Mobile TOC (collapsible) — desktop TOC is sticky in the sidebar area */}
+    <div class="mt-6 lg:hidden">
+      <TableOfContents headings={headings} />
+    </div>
 
     {/* Body */}
     <div
@@ -173,6 +202,12 @@ const jsonLd = [
       )
     }
   </article>
-    <WikiSidebar locale={locale} currentPath={Astro.url.pathname} />
+    {/* Desktop TOC — sticky, between article and sidebar */}
+    <div class="hidden w-56 shrink-0 lg:block xl:w-64">
+      <div class="sticky top-20 space-y-6">
+        <TableOfContents headings={headings} />
+        <WikiSidebar locale={locale} currentPath={Astro.url.pathname} compact={true} />
+      </div>
+    </div>
   </div>
 </LocaleLayout>
