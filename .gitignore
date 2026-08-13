@@ -30,3 +30,9 @@ pnpm-debug.log*
 
 # Cloudflare
 .wrangler/
+
+# Playwright MCP
+.playwright-mcp/
+
+# Superpowers
+.superpowers/

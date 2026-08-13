@@ -312,24 +312,6 @@
       "description": "Bookmark this wiki and check back daily for new codes, boss guides, and tier list updates.",
       "primary": "Play Anvil Quest",
       "secondary": "Join Our Discord"
-    },
-    "_archived": {
-      "_comment": "Sections removed from the homepage during the v0.2 layout refactor. Kept here so data is not lost; not rendered by HomePage.astro.",
-      "gameInfo": {
-        "title": "What is Anvil Quest?",
-        "paragraphs": [
-          "Anvil Quest is a fantasy RPG on Roblox developed by Forge Studios. Players take on the role of a blacksmith-apprentice-turned-hero, forging weapons, recruiting companions, and battling through progressively harder boss encounters across the Shattered Isles.",
-          "The game launched in January 2026 and quickly grew to over 12 million visits thanks to its deep crafting system, regular content updates, and a thriving competitive speedrun community."
-        ],
-        "stats": [
-          { "label": "Developer", "value": "Forge Studios" },
-          { "label": "Platform", "value": "Roblox" },
-          { "label": "Genre", "value": "Fantasy RPG" },
-          { "label": "Visits", "value": "12.6M+" },
-          { "label": "Active Players", "value": "45K daily" }
-        ],
-        "cta": "Explore All Guides"
-      }
     }
   },
   "footer": {

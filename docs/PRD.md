@@ -583,11 +583,7 @@ export const CONTENT_TYPES = NAVIGATION_CONFIG.map(n => n.key);
       "description": "...",
       "items": [{ "question": "What is Anvil Quest?", "answer": "..." }]
     },
-    "closingCta": { "title": "...", "description": "...", "primary": "...", "secondary": "..." },
-    "_archived": {
-      "_comment": "v0.2 重构移出首页的区块，保留数据以便回滚。HomePage.astro 不渲染。",
-      "gameInfo": { "...": "见 git 历史 / _archived 命名空间" }
-    }
+    "closingCta": { "title": "...", "description": "...", "primary": "...", "secondary": "..." }
   },
   "footer": {
     "playGame": "Play Anvil Quest",
@@ -613,7 +609,7 @@ export const CONTENT_TYPES = NAVIGATION_CONFIG.map(n => n.key);
 **v0.2 schema 变化**：
 - `hero.stats`、`hero.ctaTertiary` 已删除（首屏做减法）。
 - `start.cards[]` 新增 `icon`（lucide 图标名）和 `href`（链接）字段，支撑 QuickStart 大卡片。
-- `gameInfo` 整块移入 `home._archived`（不渲染，保留数据）。
+- `gameInfo` 已删除（v0.2 重构时移除，游戏介绍放 `/about` 页）。
 - `explore.modules` 建议固定 4 项（Codes / Bosses / Progression / Tier List）。
 - `footer` 新增 `faq` 键。
 - `faq` 数据保留在 `home.faq`，但由独立 `/faq` 页渲染（`FaqSection.astro`）。
