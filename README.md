@@ -47,10 +47,10 @@ AnvilWiki 是一个**游戏 wiki 站点模板**——用来快速搭建围绕某
 - 🌐 **Cloudflare 原生**：纯静态输出，零适配器，免费无限带宽
 - 🎨 **JSON 驱动首页**：6 种 displayType 模块化布局，换游戏只改 JSON 不改组件
 - 🌍 **多语言开箱即用**：英文无前缀（SEO 最优），其他语言带前缀，缺失内容自动 fallback 英文
-- 🔍 **SEO 工程化**：sitemap / JSON-LD / hreflang / robots 全部代码自动生成
-- 🎯 **广告就绪**：内置广告组件（广告 iframe 隔离，env 驱动，参考你的广告网络文档接入）
+- 🔍 **SEO 工程化**：sitemap / JSON-LD（含 VideoGame）/ hreflang / robots / 文章 TOC / Quick Answer 摘要块，全部代码自动生成
+- 🎯 **广告就绪**：内置广告组件（iframe 隔离 + Google AdSense 双方案，env 驱动，默认关闭）
 - 💬 **评论就绪**：内置 Giscus 评论（GitHub Discussions），默认关闭，填 env 即启用，见 [docs/comments.md](docs/comments.md)
-- 🔄 **套用模板**：按文件组织的配置参考手册，改配置不改框架
+- 🔄 **套用模板**：按文件组织的配置参考手册 + 交互式 CLI（`pnpm apply-template`）
 - 🆓 **完全免费**：MIT 协议，Cloudflare Pages 免费部署
 - 📝 **类型安全**：Content Collections + Zod schema，构建时发现字段错误
 
@@ -69,7 +69,7 @@ pnpm dev
 # 访问 http://localhost:4321
 
 # 4. 改配置层（site.ts / navigation.ts / globals.css）+ 替换内容层（src/content/ / locales/）
-#    或用交互式套用模板 CLI 自动化步骤 1：
+#    或用交互式 CLI 自动化基础配置：
 pnpm apply-template
 
 # 5. 部署到 Cloudflare Pages
@@ -117,10 +117,10 @@ Built on **Astro + Cloudflare Pages**: pure static output, zero adapters, free u
 - 🌐 **Cloudflare native**: Pure static output, zero adapters, free unlimited bandwidth
 - 🎨 **JSON-driven homepage**: 6 displayTypes, swap games by editing JSON only
 - 🌍 **i18n out of the box**: Default locale (English) has no prefix (SEO optimal), others prefixed, missing content falls back to English
-- 🔍 **SEO engineering**: sitemap / JSON-LD / hreflang / robots all auto-generated
-- 🎯 **Ads ready**: Built-in 广告 iframe isolation, just plug in keys
+- 🔍 **SEO engineering**: sitemap / JSON-LD (incl. VideoGame) / hreflang / robots / article TOC / Quick Answer summary blocks — all auto-generated
+- 🎯 **Ads ready**: Built-in ad components (iframe isolation + Google AdSense dual setup, env-driven, off by default)
 - 💬 **Comments ready**: Built-in Giscus comments (GitHub Discussions), off by default, enable via env — see [docs/comments.md](docs/comments.md)
-- 🔄 **Apply template**: File-organized config reference, change config not framework
+- 🔄 **Apply template**: File-organized config reference + interactive CLI (`pnpm apply-template`)
 - 🆓 **Completely free**: MIT license, free Cloudflare Pages deployment
 - 📝 **Type-safe**: Content Collections + Zod schema, catch field errors at build time
 
@@ -139,7 +139,7 @@ pnpm dev
 # Visit http://localhost:4321
 
 # 4. Edit config layer (site.ts / navigation.ts / globals.css) + replace content layer (src/content/ / locales/)
-#    Or run the interactive apply-template CLI to automate Step 1:
+#    Or run the interactive CLI to automate base config:
 pnpm apply-template
 
 # 5. Deploy to Cloudflare Pages
@@ -157,6 +157,14 @@ See [`docs/deployment.md`](docs/deployment.md) for detailed guide.
 
 > **Status**: ✅ Live demo at **[anvilwiki.pages.dev](https://anvilwiki.pages.dev/)** — Lighthouse 4×100, CI green, fully deployed.
 >
-> **Features shipped**: Pagefind offline search · Astro Image (WebP/srcset) · Apply-template CLI (`pnpm apply-template`) · Full i18n (en/ja) · SEO (hreflang, JSON-LD, sitemap) · Security headers · Giscus comments (opt-in)
+> **Features shipped**: Pagefind offline search · Astro Image (WebP/srcset) · Apply-template CLI · Full i18n (en/ja) · SEO (hreflang, JSON-LD incl. VideoGame, sitemap, article TOC, Quick Answer) · AdSense + iframe ad isolation · Security headers · Giscus comments (opt-in) · Contact page
 >
 > 状态：✅ **[anvilwiki.pages.dev](https://anvilwiki.pages.dev/)** 已上线 — Lighthouse 全 100，CI 全绿。
+
+---
+
+## Design Notes
+
+AnvilWiki's information architecture follows the industry-standard game wiki layout (Hero → QuickStart → Explore → CTA; article page with content + sticky aside), consistent with public sites and UI libraries. Visual design, code implementation, and all UI text are original. Built with Astro, Tailwind CSS, and Content Collections — no third-party framework runtime.
+
+AnvilWiki 的信息架构遵循游戏 wiki 站的行业通行布局（首页 Hero → 快速入口 → 内容模块 → CTA；文章页正文 + 侧边栏）。视觉设计、代码实现和全部 UI 文案均为原创。基于 Astro、Tailwind CSS 和 Content Collections 构建，无第三方框架运行时。

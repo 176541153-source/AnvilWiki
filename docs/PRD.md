@@ -1450,7 +1450,7 @@ describe('sitemap', () => {
 | `PUBLIC_AD_BANNER_300X250` | 中等矩形 |
 | `PUBLIC_AD_BANNER_468X60` | 经典横幅 |
 | `PUBLIC_AD_NATIVE_BANNER` | Native Banner |
-| `PUBLIC_GOOGLE_ADSENSE_ID` | AdSense 自动广告（可选） |
+| `PUBLIC_ADSENSE_CLIENT` | AdSense 自动广告（可选） |
 
 > 所有广告变量为空时，对应广告组件 `return null` 不渲染。新手部署时不填也能正常上线。
 
@@ -1476,7 +1476,7 @@ PUBLIC_AD_BANNER_728X90=
 PUBLIC_AD_BANNER_300X250=
 PUBLIC_AD_BANNER_468X60=
 PUBLIC_AD_NATIVE_BANNER=
-PUBLIC_GOOGLE_ADSENSE_ID=
+PUBLIC_ADSENSE_CLIENT=
 
 # 分析（可选）
 PUBLIC_GA_ID=

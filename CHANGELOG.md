@@ -7,7 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-_No changes yet._
+### Added
+- **Article TOC**: Auto-generated table of contents from H2/H3 headings. Sticky on desktop, collapsible `<details>` on mobile (`TableOfContents.astro`).
+- **Quick Answer summary block**: Optional `summary` frontmatter field rendered as a callout above the article body — optimized for AI Overviews and featured snippets.
+- **Article author byline**: Optional `author` frontmatter field (falls back to `site.defaultAuthor`). E-E-A-T signal.
+- **VideoGame JSON-LD**: Injected on the homepage for game entity recognition (`videoGameJsonLd()` in `seo.ts`).
+- **Contact page**: New legal page at `/contact` with community links. E-E-A-T trust signal.
+- **Google AdSense support**: `AdSenseSlot.astro` component + `PUBLIC_ADSENSE_CLIENT` env var. Coexists with the iframe ad isolation setup.
+
+### Changed
+- Homepage `displayType` enum renamed to generic names (`code-cards`→`badge-list`, etc.).
+- CSS theme variable renamed: `--nav-theme` → `--brand`.
+- Homepage JSON field names renamed (`eyebrow`→`badge`, `primaryCta`→`ctaPrimary`, etc.).
+- Demo boss renamed: `gelum`→`emberfang`, `pyra`→`stormcaller`.
+- `skinning.md` → `apply-template.md` (restructured as file-organized config reference).
+- Ad HTML templates: ad network domain changed to placeholder.
+- SEO docs: all knowledge claims cite public authoritative sources.
 
 ## [1.0.0] — 2026-08-13
 
