@@ -42,9 +42,10 @@ const {
 const fullTitle = title.includes(site.name) ? title : `${title} — ${site.name}`;
 const orgJsonLd = organizationJsonLd();
 
-// Optional analytics / verification (env-var gated — empty = not injected).
+// Optional analytics / verification / ads (env-var gated — empty = not injected).
 const gaId = import.meta.env.PUBLIC_GA_ID as string | undefined;
 const gscVerification = import.meta.env.PUBLIC_GSC_VERIFICATION as string | undefined;
+const adsenseClient = import.meta.env.PUBLIC_ADSENSE_CLIENT as string | undefined;
 ---
 
 <!doctype html>
@@ -110,6 +111,16 @@ const gscVerification = import.meta.env.PUBLIC_GSC_VERIFICATION as string | unde
     {/* JSON-LD: Organization (global) + any page-specific */}
     <JsonLd data={orgJsonLd} />
     {jsonLd.map((d) => <JsonLd data={d} />)}
+
+    {/* Google AdSense loader (optional, env-var gated) */}
+    {adsenseClient && (
+      <script
+        is:inline
+        async
+        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClient}`}
+        crossorigin="anonymous"
+      />
+    )}
 
     {/* No-FOUC theme init — runs before first paint. */}
     <script is:inline>

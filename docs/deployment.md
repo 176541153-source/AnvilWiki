@@ -63,7 +63,7 @@ Cloudflare 会自动检测 Astro，但请确认以下设置：
 | ------------------------- | ----------------------------- | -------------------------------------- |
 | `NODE_VERSION`            | `20`                          | 确保 Node 版本                         |
 | `SITE_URL`                | `https://<project>.pages.dev` | **先用临时域名**，必须含 `https://` 前缀 |
-| `PUBLIC_AD_MOBILE_320X50` | （你的 Adsterra key）         | 可选，留空则不显示广告                 |
+| `PUBLIC_AD_MOBILE_320X50` | （你的 广告 key）         | 可选，留空则不显示广告                 |
 
 > ⚠️ **`SITE_URL` 必须含 `https://` 前缀**（如 `https://anvilquestwiki.wiki`，不是裸域名 `anvilquestwiki.wiki`）。Astro 把它当 URL 解析，裸域名会让 build 报 `Invalid url`。它影响 sitemap、og:image、robots.txt 里所有绝对 URL 的生成。
 
@@ -191,7 +191,7 @@ AnvilWiki 是纯静态站点（`dist/`），可以部署到任何静态托管：
 | --------------------------- | ---- | ------------------------------------------------------ |
 | `SITE_URL`                  | ✅   | 站点绝对 URL（无尾斜杠），影响 sitemap/og:image/robots |
 | `NODE_VERSION`              | ✅   | 固定 `20`                                              |
-| `PUBLIC_AD_MOBILE_320X50`   | 可选 | Adsterra 320×50 Sticky 广告 key                        |
+| `PUBLIC_AD_MOBILE_320X50`   | 可选 | 广告网络 320×50 Sticky 广告 key                        |
 | `PUBLIC_AD_SIDEBAR_160X600` | 可选 | 侧边栏竖幅 key                                         |
 | `PUBLIC_AD_SIDEBAR_160X300` | 可选 | 侧边栏半高 key                                         |
 | `PUBLIC_AD_BANNER_728X90`   | 可选 | 大横幅 key                                             |

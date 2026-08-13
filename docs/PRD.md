@@ -35,7 +35,7 @@
 
 ### 1.1 问题陈述
 
-游戏 wiki 站点（game wiki site）是一种以搜索引擎为主要流量来源的内容站：围绕某款游戏（尤其是 Roblox、Steam 新游）的攻略、兑换码、tier list 等关键词，批量生产结构化文章，通过 SEO 获取自然流量，再通过广告（Adsterra / AdSense）变现。
+游戏 wiki 站点（game wiki site）是一种以搜索引擎为主要流量来源的内容站：围绕某款游戏（尤其是 Roblox、Steam 新游）的攻略、兑换码、tier list 等关键词，批量生产结构化文章，通过 SEO 获取自然流量，再通过广告（广告网络 / AdSense）变现。
 
 这类站点的技术特征非常明确：
 
@@ -79,7 +79,7 @@ AnvilWiki 围绕游戏 wiki 站点的技术特征，确立以下设计目标：
 | G5 | **SEO 工程化** | sitemap / JSON-LD / hreflang / robots / 内链全部由代码自动生成，填内容即生效。 |
 | G6 | **多语言开箱即用** | as-needed 前缀策略（英文无前缀），文章单篇 fallback 英文不 404，列表不 fallback。 |
 | G7 | **模板套用工程化** | 结构化套用流程（见 docs/apply-template.md），改配置不改框架代码。 |
-| G8 | **广告就绪** | 内置 Adsterra iframe 隔离广告系统，环境变量驱动，新手填 key 即生效。 |
+| G8 | **广告就绪** | 内置 广告 iframe 隔离广告系统，环境变量驱动，新手填 key 即生效。 |
 | G9 | **开源** | MIT 协议，中英双语 README，完整文档，欢迎社区贡献。 |
 
 ### 2.2 非目标（明确不做）
@@ -90,7 +90,7 @@ AnvilWiki 围绕游戏 wiki 站点的技术特征，确立以下设计目标：
 | N2 | **不做可视化后台/CMS** | 内容靠 MDX 文件 + Git，文件系统即数据库。需要 CMS 的用户自行接 Astro DB / Decap CMS。 |
 | N3 | **不做自动化内容生成** | 内容生成是独立工具链，AnvilWiki 只负责消费标准 MDX 文章。提供 frontmatter 格式说明，不绑定特定生成工具。 |
 | N4 | **不做 React/Vue/Svelte 全栈** | 交互组件用纯 Astro 原生 + 极少 vanilla JS。不为单一组件引入整个 framework runtime。 |
-| N5 | **不绑定特定广告平台** | 默认接 Adsterra（社区主流），但广告组件抽象为通用 iframe 方案，可替换为任何广告网络。 |
+| N5 | **不绑定特定广告平台** | 默认接 广告网络（如 AdSense/其他广告网络 等），但广告组件抽象为通用 iframe 方案，可替换为任何广告网络。 |
 | N6 | **不做内容运营教学** | AnvilWiki 是模板，不是教程。文档聚焦「怎么用模板」，不教选词/SEO 策略/外链建设。 |
 
 ### 2.3 目标用户画像
@@ -119,7 +119,7 @@ AnvilWiki 面向「游戏 wiki 站点」这一特定场景，在框架、部署�
 | 多语言 | Astro i18n as-needed | `prefixDefaultLocale: false` 实现默认语言（英文）无前缀。 |
 | 首页模块 | JSON 驱动（v0.2：6 区块 / 4 explore 模块） | 文案与组件解耦，换游戏只改 JSON，组件零改动。 |
 | SEO 工程化 | 完整（sitemap/JSON-LD/hreflang/robots） | sitemap / JSON-LD（Organization/WebSite/Article/BreadcrumbList/ItemList/FAQPage）/ hreflang / robots 全部代码自动生成。 |
-| 广告系统 | Adsterra iframe 隔离 | 每个广告位独立 html，避免 atOptions 串号；环境变量驱动，新手填 key 即生效。 |
+| 广告系统 | 广告 iframe 隔离 | 每个广告位独立 html，避免 atOptions 串号；环境变量驱动，新手填 key 即生效。 |
 | 套用模板流程 | 配置参考手册 | 换游戏只改配置层 + 替换内容层，代码层不动。 |
 | 游戏站适配 | 专为游戏站设计 | 内置游戏站特定的 SEO（ItemList/Breadcrumb）+ 兑换码/tier list 专用 displayType。 |
 
@@ -296,7 +296,7 @@ anvilwiki/
 │   ├── android-chrome-512x512.png
 │   ├── manifest.json             # PWA manifest
 │   ├── ads.txt                   # 广告授权
-│   ├── ads/                      # ⭐ Adsterra iframe 隔离广告模板
+│   ├── ads/                      # ⭐ 广告 iframe 隔离广告模板
 │   │   ├── banner-320x50.html
 │   │   ├── banner-300x250.html
 │   │   ├── banner-728x90.html
@@ -995,7 +995,7 @@ export function getUi(locale: Locale) {
 | Native Banner | — | ✅ | 原生横幅 |
 | Banner | 468×60 | 可选 | 经典横幅 |
 
-> 具体每个广告位的 CPM 取决于流量地区、广告尺寸和广告网络填充率，因站而异。在 Adsterra 后台用 Group by 功能按广告位/国家/设备查看。
+> 具体每个广告位的 CPM 取决于流量地区、广告尺寸和广告网络填充率，因站而异。在 广告网络后台用 Group by 功能按广告位/国家/设备查看。
 
 ### 10.3 iframe 隔离方案
 
@@ -1078,13 +1078,27 @@ const adKey = import.meta.env.PUBLIC_AD_MOBILE_320X50;
 
 ### 10.6 广告部署流程
 
-1. 注册 [Adsterra Publisher](https://publishers.adsterra.com/) 账号。
+1. 注册你的广告网络 Publisher 账号。
 2. Add Website → 填域名 → 选 Games 分类 → 选广告格式。
 3. 审核通过后，创建各广告单元拿 key。
 4. 在 Cloudflare Pages 项目 Settings → Environment variables 填入各 key（或改 `wrangler.toml` 的 `[vars]`）。
 5. 重新部署，广告自动出现。
 
-> 广告接入的详细操作参考 [Adsterra 官方文档](https://publishers.adsterra.com/)。
+> 广告接入的详细操作参考你的广告网络文档。
+
+### 10.7 Google AdSense（可选）
+
+除了 iframe 隔离方案（§10.3），AnvilWiki 也支持 Google AdSense。
+
+**配置步骤**：
+
+1. 在 [Google AdSense](https://adsense.google.com/) 注册并审核通过你的站点。
+2. 拿到 Publisher ID（格式 `ca-pub-XXXXXXXXXXXXXXXX`）。
+3. 填到环境变量 `PUBLIC_ADSENSE_CLIENT`。
+4. 在需要放广告的页面引入 `<AdSenseSlot slot="你的slot ID" />`。
+5. BaseLayout 会自动在 `<head>` 注入 AdSense 加载脚本（仅当 `PUBLIC_ADSENSE_CLIENT` 有值时）。
+
+**两种方案可以共存**：iframe 隔离方案和 AdSense 各自独立，互不干扰。填哪个的 env，哪个就生效。
 
 ---
 
@@ -1327,7 +1341,7 @@ describe('sitemap', () => {
 | **MVP-2**：首页模块 | JSON 驱动 + 4 种 displayType（code-cards/step-by-step/tier-grid/card-list）+ Hero/QuickStart/Explore/CTA/Footer/Video/RecentUpdates+Trending（v0.2 结构） | 换 en.json 数据，首页无组件改动即生效 | 1-2 天 |
 | **MVP-3**：SEO | sitemap 动态 + JSON-LD 全套（Organization/WebSite/Article/Breadcrumb/ItemList/FAQPage）+ hreflang + robots | Google Rich Results Test 全通过 | 1 天 |
 | **MVP-4**：主题换肤 | CSS 变量双变量（`--brand` + `--brand-light`）+ 暗色模式 + 主题切换器 | 改 globals.css 4 行整站变色 | 0.5 天 |
-| **MVP-5**：广告系统 | Adsterra iframe 隔离（6 种广告位）+ Sticky 320×50 + 环境变量驱动 + 关闭按钮 | 移动端 + 桌面端广告正常显示不串号 | 1 天 |
+| **MVP-5**：广告系统 | 广告 iframe 隔离（6 种广告位）+ Sticky 320×50 + 环境变量驱动 + 关闭按钮 | 移动端 + 桌面端广告正常显示不串号 | 1 天 |
 | **MVP-6**：套用模板文档 | 配置参考手册（按文件组织）+ 新手 README + docs/ 全套 | 新手照 README 30 分钟内部署上线 | 1-2 天 |
 | **v1.0**：基准实测与发布 | ✅ 已完成 — demo 站 `anvilwiki.pages.dev` 已上线，Lighthouse 全 100（Performance / Accessibility / Best Practices / SEO） | 性能目标全部达成，demo 站可访问 | 1 天 |
 
@@ -1425,7 +1439,7 @@ describe('sitemap', () => {
 |---|---|---|---|
 | `SITE_URL` | 站点绝对 URL（sitemap/og:image/robots 拼接用） | `https://anvilquestwiki.wiki` | ✅ |
 
-### A.2 广告 key（Adsterra）
+### A.2 广告 key（广告网络）
 
 | 变量名 | 广告类型 |
 |---|---|
@@ -1541,13 +1555,13 @@ PUBLIC_GA_ID=
 ### B.7 广告（上线 2-3 天后）
 
 ```
-□ Adsterra 账号已注册，网站已审核通过
+□ 广告网络账号已注册，网站已审核通过
 □ 各广告 key 已配到 Cloudflare 环境变量
 □ 移动端 + 桌面端广告正常显示不破版
 □ 320×50 Sticky 正常，有关闭按钮
 □ 桌面端侧边栏广告 fixed 正常
 □ 无自动弹窗 / 跳转（有则关 Popunder/Social Bar）
-□ Adsterra 后台 impression 数在涨
+□ 广告网络后台 impression 数在涨
 ```
 
 ---

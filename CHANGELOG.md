@@ -63,7 +63,7 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Homepage: 8 JSON-driven modules with 4 displayTypes (code-cards / step-by-step / tier-grid / card-list)
 - SEO: Organization / WebSite / Article / BreadcrumbList / ItemList / FAQPage JSON-LD, hreflang, dynamic sitemap, robots.txt
 - Theme: CSS variable theming (4 lines to re-theme) + dark mode with no-FOUC
-- Ads: Adsterra iframe isolation (6 slots), Sticky 320×50 with dismiss button, env-var gated
+- Ads: 广告 iframe isolation (6 slots), Sticky 320×50 with dismiss button, env-var gated
 - Legal pages: about / privacy-policy / terms-of-service / copyright
 - Demo content: fictional "Anvil Quest" game (5 MDX articles, en + ja)
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs

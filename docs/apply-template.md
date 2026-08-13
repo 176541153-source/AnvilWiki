@@ -19,7 +19,7 @@
 | 所有 UI 文案（首页、导航、页脚） | [src/locales/en.json](#5-ui文案) |
 | favicon / Hero 图 / PWA | [public/](#6-静态资源) |
 | 文章内容 | [src/content/wiki/](#7-mdx-文章) |
-| 广告 key | Cloudflare 环境变量 `PUBLIC_AD_*`（参考 [Adsterra 官方文档](https://publishers.adsterra.com/)） |
+| 广告 key | Cloudflare 环境变量 `PUBLIC_AD_*`（参考你的广告网络文档） |
 
 > 想自动化基础配置？运行 `pnpm apply-template`，它会交互式引导你完成 site.ts / navigation.ts / globals.css / routing.ts / locales 的修改。
 
