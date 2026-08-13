@@ -50,7 +50,7 @@ AnvilWiki 是一个**游戏 wiki 站点模板**——用来快速搭建围绕某
 - 🔍 **SEO 工程化**：sitemap / JSON-LD / hreflang / robots 全部代码自动生成
 - 🎯 **广告就绪**：内置广告组件（Adsterra iframe 隔离，env 驱动，参考 [Adsterra 官方文档](https://publishers.adsterra.com/) 接入）
 - 💬 **评论就绪**：内置 Giscus 评论（GitHub Discussions），默认关闭，填 env 即启用，见 [docs/comments.md](docs/comments.md)
-- 🔄 **套用模板**：结构化四步流程，改配置不改框架
+- 🔄 **套用模板**：按文件组织的配置参考手册，改配置不改框架
 - 🆓 **完全免费**：MIT 协议，Cloudflare Pages 免费部署
 - 📝 **类型安全**：Content Collections + Zod schema，构建时发现字段错误
 
@@ -85,7 +85,7 @@ pnpm apply-template
 | -------------------------------------------------------------- | ----------------------------------------------------------- |
 | [docs/PRD.md](docs/PRD.md)                                     | ⭐ **完整产品设计文档**（架构、数据模型、模块设计、路线图） |
 | [docs/deployment.md](docs/deployment.md)                       | Cloudflare Pages 部署详细指南                               |
-| [docs/apply-template.md](docs/apply-template.md)               | 套用模板指南（四步流程）                                    |
+| [docs/apply-template.md](docs/apply-template.md)               | 配置参考手册（按文件组织）                                  |
 | [docs/content-format.md](docs/content-format.md)               | MDX 文章格式规范                                            |
 | [docs/seo.md](docs/seo.md)                                     | SEO 工程化说明                                              |
 | [docs/comments.md](docs/comments.md)                           | Giscus 评论系统接入指南                                     |
@@ -120,7 +120,7 @@ Built on **Astro + Cloudflare Pages**: pure static output, zero adapters, free u
 - 🔍 **SEO engineering**: sitemap / JSON-LD / hreflang / robots all auto-generated
 - 🎯 **Ads ready**: Built-in Adsterra iframe isolation, just plug in keys
 - 💬 **Comments ready**: Built-in Giscus comments (GitHub Discussions), off by default, enable via env — see [docs/comments.md](docs/comments.md)
-- 🔄 **Apply template**: Structured 4-step workflow, change config not framework
+- 🔄 **Apply template**: File-organized config reference, change config not framework
 - 🆓 **Completely free**: MIT license, free Cloudflare Pages deployment
 - 📝 **Type-safe**: Content Collections + Zod schema, catch field errors at build time
 

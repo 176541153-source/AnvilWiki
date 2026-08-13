@@ -120,7 +120,7 @@ AnvilWiki 面向「游戏 wiki 站点」这一特定场景，在框架、部署�
 | 首页模块 | JSON 驱动（v0.2：6 区块 / 4 explore 模块） | 文案与组件解耦，换游戏只改 JSON，组件零改动。 |
 | SEO 工程化 | 完整（sitemap/JSON-LD/hreflang/robots） | sitemap / JSON-LD（Organization/WebSite/Article/BreadcrumbList/ItemList/FAQPage）/ hreflang / robots 全部代码自动生成。 |
 | 广告系统 | Adsterra iframe 隔离 | 每个广告位独立 html，避免 atOptions 串号；环境变量驱动，新手填 key 即生效。 |
-| 套用模板流程 | 结构化四步流程 | 换游戏只改配置层 + 替换内容层，代码层不动。 |
+| 套用模板流程 | 配置参考手册 | 换游戏只改配置层 + 替换内容层，代码层不动。 |
 | 游戏站适配 | 专为游戏站设计 | 内置游戏站特定的 SEO（ItemList/Breadcrumb）+ 兑换码/tier list 专用 displayType。 |
 
 ### 3.2 技术栈选型
@@ -281,7 +281,7 @@ anvilwiki/
 ├── docs/
 │   ├── PRD.md                    # ⭐ 本文档
 │   ├── deployment.md             # Cloudflare Pages 部署详细指南
-│   ├── apply-template.md          # 套用模板指南（四步流程）
+│   ├── apply-template.md          # 配置参考手册（按文件组织）
 │   ├── content-format.md         # MDX 文章格式规范
 │   ├── seo.md                    # SEO 工程化说明
 │   └── migration-from-nextjs.md  # 从传统 Next.js 模板迁移指南
@@ -1092,20 +1092,11 @@ const adKey = import.meta.env.PUBLIC_AD_MOBILE_320X50;
 
 ### 11.1 概述
 
-**套用模板** = 把通用 AnvilWiki 模板变成特定游戏的站点。
+**套用模板** = 把通用 AnvilWiki 模板变成特定游戏的站点。只改配置层和内容层，代码层不动。
 
-AnvilWiki 把套用过程拆成四步串行执行，每步有明确的改动范围和验证标准。完整的操作指南见 [`docs/apply-template.md`](./apply-template.md)。
+完整的配置参考见 [`docs/apply-template.md`](./apply-template.md)——按文件组织，你要改什么就查对应章节。也可用 `pnpm apply-template` CLI 自动完成基础配置。
 
-### 11.2 四步流程
-
-```
-第 1 步：基础配置 → 主题色 / favicon / hero / 元数据 / 多语言 / 导航
-第 2 步：首页内容 → 首页各模块文案与数据（v0.2：6 区块 JSON）
-第 3 步：内容接入 → MDX 文章 + 分类配置 + overview 文案
-第 4 步：翻译与验证 → 多语言翻译 + sitemap URL 检查
-```
-
-### 11.3 套用模板改动对象与 AnvilWiki 路径对照
+### 11.2 改动对象与 AnvilWiki 路径对照
 
 下表列出套用模板时需要改动的对象及其在 AnvilWiki 中的位置（`docs/migration-from-nextjs.md` 提供 Next.js 结构的迁移映射，供从 Next.js 项目迁移过来的用户参考）：
 
@@ -1126,27 +1117,7 @@ AnvilWiki 把套用过程拆成四步串行执行，每步有明确的改动范�
 | 列表/详情路由 | `src/pages/[locale]/[...slug].astro` |
 | YouTube video ID | `src/config/site.ts` 或 `locales/en.json` 的 `home.hero.videoId` |
 
-### 11.4 AI 辅助套用的任务格式
-
-如果用 AI 编程助手（Cursor / Claude Code 等）来执行套用，建议每个任务按以下结构描述，让 AI 明确改动范围和验收标准：
-
-```
-# 任务：<标题>
-
-## 改什么
-- <文件 1>：<改什么、怎么改>
-- <文件 2>：<改什么、怎么改>
-- 数据来源：<REQUIREMENTS_DIR>/<文件>
-
-## 怎么验证
-```bash
-<grep/ls/file 命令>
-```
-
-⚠️ 注意事项（容易踩的坑 + 不要碰的文件）
-```
-
-### 11.5 关键约束
+### 11.3 关键约束
 
 | 约束 | 说明 |
 |---|---|
@@ -1160,11 +1131,7 @@ AnvilWiki 把套用过程拆成四步串行执行，每步有明确的改动范�
 | **card-list label 去 emoji 化** | `card-list` 的 `highlights.label` 必须是英文短词，不是 emoji（违反「禁止 emoji」规则）。 |
 | **域名不硬编码** | 所有 URL 走 `SITE_URL` 环境变量，禁止在代码里写死 `xxx.wiki`。 |
 
-### 11.6 完整操作指南
-
-四步套用的完整步骤、可直接复制的 AI 提示词、验证命令，全部放在 [`docs/apply-template.md`](./apply-template.md)。
-
-### 11.7 从其他格式迁移文章
+### 11.4 从其他格式迁移文章
 
 如果你的文章用的是 JS 元数据写法（`export const metadata = { ... }`，常见于 Next.js / MDX 项目），需要手动改成 AnvilWiki 使用的 YAML frontmatter 格式。
 
@@ -1361,7 +1328,7 @@ describe('sitemap', () => {
 | **MVP-3**：SEO | sitemap 动态 + JSON-LD 全套（Organization/WebSite/Article/Breadcrumb/ItemList/FAQPage）+ hreflang + robots | Google Rich Results Test 全通过 | 1 天 |
 | **MVP-4**：主题换肤 | CSS 变量双变量（`--brand` + `--brand-light`）+ 暗色模式 + 主题切换器 | 改 globals.css 4 行整站变色 | 0.5 天 |
 | **MVP-5**：广告系统 | Adsterra iframe 隔离（6 种广告位）+ Sticky 320×50 + 环境变量驱动 + 关闭按钮 | 移动端 + 桌面端广告正常显示不串号 | 1 天 |
-| **MVP-6**：套用模板文档 | 套用模板四步指南（适配 Astro 路径）+ 新手 README + docs/ 全套 | 新手照 README 30 分钟内部署上线 | 1-2 天 |
+| **MVP-6**：套用模板文档 | 配置参考手册（按文件组织）+ 新手 README + docs/ 全套 | 新手照 README 30 分钟内部署上线 | 1-2 天 |
 | **v1.0**：基准实测与发布 | ✅ 已完成 — demo 站 `anvilwiki.pages.dev` 已上线，Lighthouse 全 100（Performance / Accessibility / Best Practices / SEO） | 性能目标全部达成，demo 站可访问 | 1 天 |
 
 **总计**：约 **7-10 天**可交付 v1.0。
@@ -1419,7 +1386,7 @@ describe('sitemap', () => {
 | README.md（中英双语） | 所有用户，新手入门 | 仓库根目录 |
 | docs/PRD.md | 贡献者、想深入了解设计的人 | 本文档 |
 | docs/deployment.md | 新手，部署指南 | docs/ |
-| docs/apply-template.md | 套用模板用户，四步流程 | docs/ |
+| docs/apply-template.md | 套用模板用户，配置参考 | docs/ |
 | docs/content-format.md | 内容创作者，MDX 格式 | docs/ |
 | docs/seo.md | 进阶用户，SEO 调优 | docs/ |
 | docs/migration-from-nextjs.md | 传统 Next.js 模板用户，迁移指南 | docs/ |

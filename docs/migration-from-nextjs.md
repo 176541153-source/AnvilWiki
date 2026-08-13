@@ -88,7 +88,7 @@ pnpm dev  # 确认 demo 能跑
 
 ### Step 2 — 复制配置层
 
-按 [套用模板指南 步骤 1](./apply-template.md#第-1-步基础配置) 把你现有的游戏配置搬过来：
+按 [配置参考手册](./apply-template.md) 把你现有的游戏配置搬过来：
 
 - 主题色（`globals.css` 4 行直接复制）
 - `site.ts`（对应你 Next.js 的站点信息）
