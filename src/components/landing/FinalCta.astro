@@ -4,27 +4,32 @@
  * Big heading + subtitle + 2 CTA buttons.
  */
 import { Icon } from 'astro-icon/components';
-import { landing } from '~/config/landing';
+import { type LandingContent } from '~/config/landing';
+
+interface Props {
+  t: LandingContent;
+}
+const { t } = Astro.props;
 ---
 
 <section class="section border-t border-border">
   <div class="mx-auto max-w-2xl text-center">
     <h2 class="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
-      {landing.finalCta.title}
+      {t.finalCta.title}
     </h2>
-    <p class="mt-3 text-lg text-muted-foreground">{landing.finalCta.subtitle}</p>
+    <p class="mt-3 text-lg text-muted-foreground">{t.finalCta.subtitle}</p>
     <div class="mt-7 flex flex-wrap justify-center gap-3">
-      <a href={landing.finalCta.primaryCta.href} class="btn-primary inline-flex items-center gap-1.5">
+      <a href={t.finalCta.primaryCta.href} class="btn-primary inline-flex items-center gap-1.5">
         <Icon name="lucide:rocket" class="h-4 w-4" />
-        {landing.finalCta.primaryCta.label}
+        {t.finalCta.primaryCta.label}
       </a>
       <a
-        href={landing.finalCta.secondaryCta.href}
+        href={t.finalCta.secondaryCta.href}
         class="btn-outline inline-flex items-center gap-1.5"
         target="_blank"
         rel="noopener"
       >
-        {landing.finalCta.secondaryCta.label}
+        {t.finalCta.secondaryCta.label}
       </a>
     </div>
   </div>

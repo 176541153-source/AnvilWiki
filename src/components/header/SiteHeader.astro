@@ -12,6 +12,7 @@ import { localizePath } from '~/lib/url';
 import ThemeToggle from './ThemeToggle.astro';
 import LanguageSwitcher from './LanguageSwitcher.astro';
 import SearchButton from './SearchButton.astro';
+import { landingLinkEnabled } from '~/config/project';
 
 interface Props {
   locale: Locale;
@@ -65,6 +66,16 @@ const samePagePathFor = (loc: Locale) => {
 
     {/* Right actions */}
     <div class="ml-auto flex items-center gap-1">
+      {landingLinkEnabled && (
+        <a
+          href="/landing"
+          class="inline-flex h-9 w-9 items-center justify-center rounded-md text-muted-foreground transition hover:bg-muted hover:text-nav"
+          aria-label="About the AnvilWiki template"
+          title="About the AnvilWiki template"
+        >
+          <Icon name="lucide:hammer" class="h-5 w-5" />
+        </a>
+      )}
       <SearchButton locale={locale} />
       <ThemeToggle />
       <LanguageSwitcher locale={locale} pathFor={samePagePathFor} />
@@ -116,6 +127,15 @@ const samePagePathFor = (loc: Locale) => {
               ))
             }
           </div>
+          {landingLinkEnabled && (
+            <a
+              href="/landing"
+              class="mt-1 flex items-center gap-2 border-t border-border px-3 py-2 text-sm text-muted-foreground transition hover:bg-muted hover:text-nav"
+            >
+              <Icon name="lucide:hammer" class="h-4 w-4" />
+              <span>AnvilWiki Template</span>
+            </a>
+          )}
         </div>
       </details>
     </div>

@@ -545,6 +545,7 @@ const LANDING_PATHS = [
   'src/components/landing', // directory (8 components)
   'src/config/landing.ts',
   'src/pages/landing.astro',
+  'src/pages/zh/landing.astro',
 ];
 
 function removeLandingPage(): number {
@@ -558,6 +559,17 @@ function removeLandingPage(): number {
       removed += fs.readdirSync(abs).length;
     } else {
       if (!DRY_RUN) fs.unlinkSync(abs);
+      removed++;
+    }
+  }
+  // Also disable the demo header's "back to landing" link so the removal is
+  // complete (the flag lives in project.ts, which survives this CLI).
+  const projectPath = path.resolve(ROOT, 'src/config/project.ts');
+  if (fs.existsSync(projectPath)) {
+    const src = read('src/config/project.ts');
+    const flipped = src.replace('landingLinkEnabled = true', 'landingLinkEnabled = false');
+    if (flipped !== src) {
+      if (!DRY_RUN) fs.writeFileSync(projectPath, flipped, 'utf8');
       removed++;
     }
   }

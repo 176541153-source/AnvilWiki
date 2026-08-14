@@ -1,6 +1,7 @@
 /**
- * Landing page configuration — text content for the project landing page
- * at /landing (introduces the AnvilWiki template itself, NOT the demo game).
+ * Landing page configuration — text content for the project landing pages
+ * at /landing (English) and /zh/landing (中文). They introduce the AnvilWiki
+ * template itself, NOT the demo game.
  *
  * This is separate from site.ts (which holds the DEMO GAME config).
  * The landing page represents the PROJECT, so its copy lives here.
@@ -9,25 +10,70 @@
  *    don't need to touch it. It describes the AnvilWiki open-source project.
  */
 
-export const landing = {
-  /** Project name (shown in header logo, footer, title suffix). */
-  projectName: 'AnvilWiki',
+/** Keep in sync with package.json "version" (used by the announcement bar). */
+export const PROJECT_VERSION = '1.3.0';
 
-  /** URLs */
-  githubUrl: 'https://github.com/PNGTRID/AnvilWiki',
-  demoUrl: '/',
-  docsBaseUrl: 'https://github.com/PNGTRID/AnvilWiki/blob/main/docs',
+export type LandingLocale = 'en' | 'zh';
 
-  /**
-   * Optional announcement bar (top of landing page). Set to null to hide.
-   * Keep it to ONE line — its job is a single fresh signal, not news.
-   */
+export interface LandingContent {
+  htmlLang: string;
+  title: string;
+  description: string;
+  announcement: { text: string; href: string } | null;
+  hero: {
+    badge: string;
+    title: string;
+    subtitle: string;
+    primaryCta: { label: string; href: string };
+    secondaryCta: { label: string; href: string };
+    tertiaryCta: { label: string; href: string };
+    installCommand: string;
+    screenshotCaption: string;
+  };
+  socialProof: {
+    lighthouse: { label: string; score: number }[];
+    poweredBy: string;
+  };
+  features: { icon: string; title: string; description: string }[];
+  compare: {
+    title: string;
+    subtitle: string;
+    columns: string[];
+    rows: { label: string; values: string[] }[];
+  };
+  showcase: {
+    title: string;
+    subtitle: string;
+    points: string[];
+    cta: { label: string; href: string };
+    browserUrl: string;
+    mobileCaption: string;
+  };
+  docsEntry: {
+    title: string;
+    cards: { icon: string; title: string; description: string; href: string }[];
+    readLabel: string;
+  };
+  finalCta: {
+    title: string;
+    subtitle: string;
+    primaryCta: { label: string; href: string };
+    secondaryCta: { label: string; href: string };
+  };
+  footer: { tagline: string; license: string; madeWith: string };
+}
+
+const RELEASES = 'https://github.com/PNGTRID/AnvilWiki/releases';
+
+const en: LandingContent = {
+  htmlLang: 'en',
+  title: 'AnvilWiki — Open-Source Game Wiki Template for Cloudflare',
+  description:
+    'An open-source Astro + Cloudflare Pages template for building SEO-driven game content sites. Free to deploy, Lighthouse 4×100, 100% ad revenue yours.',
   announcement: {
-    text: 'v1.2 shipped — boss stat cards, codes copy blocks, AI-search (llms.txt) & consent-gated analytics.',
-    href: 'https://github.com/PNGTRID/AnvilWiki/releases',
+    text: `v${PROJECT_VERSION} shipped — codes copy blocks, reading-experience suite, new-locale scaffolding & homepage presets.`,
+    href: RELEASES,
   },
-
-  /** Hero section */
   hero: {
     badge: 'Open Source · MIT · Cloudflare Pages',
     title: 'The game wiki template that keeps 100% of your ad revenue',
@@ -39,9 +85,8 @@ export const landing = {
     installCommand: `git clone https://github.com/PNGTRID/AnvilWiki.git
 cd anvilwiki
 pnpm install && pnpm dev`,
+    screenshotCaption: 'The live demo — a complete wiki for the fictional game "Anvil Quest"',
   },
-
-  /** Social proof bar */
   socialProof: {
     lighthouse: [
       { label: 'Performance', score: 100 },
@@ -51,20 +96,18 @@ pnpm install && pnpm dev`,
     ],
     poweredBy: 'Powered by Astro + Cloudflare Pages — free unlimited bandwidth',
   },
-
-  /** Feature cards (6) — first card must carry the revenue narrative */
   features: [
     {
       icon: 'lucide:dollar-sign',
       title: '100% Your Revenue',
       description:
-        'Built-in Google AdSense ad slots. No platform cut, no revenue sharing — unlike hosted wiki farms that eat your earnings.',
+        'Built-in ad slots (AdSense, env-driven). No platform cut, no revenue sharing — unlike hosted wiki farms that eat your earnings.',
     },
     {
       icon: 'lucide:search',
       title: 'SEO Engineering',
       description:
-        'Sitemap, JSON-LD (incl. VideoGame), hreflang, robots, article TOC, Quick Answer blocks — all auto-generated from your MDX frontmatter.',
+        'Sitemap with lastmod, JSON-LD (incl. VideoGame), hreflang, robots, article TOC, Quick Answer blocks, llms.txt — all auto-generated from MDX frontmatter.',
     },
     {
       icon: 'lucide:zap',
@@ -88,11 +131,9 @@ pnpm install && pnpm dev`,
       icon: 'lucide:wand-2',
       title: '30-Minute Setup',
       description:
-        'JSON-driven config. Swap games by editing the config + content layers — framework code stays untouched. Interactive CLI included.',
+        'JSON-driven config with an interactive CLI: homepage presets, theme color, locales — framework code stays untouched.',
     },
   ],
-
-  /** Comparison table */
   compare: {
     title: 'Why AnvilWiki?',
     subtitle: 'How it compares to other options for game content sites.',
@@ -128,8 +169,6 @@ pnpm install && pnpm dev`,
       },
     ],
   },
-
-  /** Showcase section */
   showcase: {
     title: 'See it in action',
     subtitle:
@@ -141,9 +180,9 @@ pnpm install && pnpm dev`,
       'Working ad slots, search, comments — all env-gated, off by default',
     ],
     cta: { label: 'View live demo →', href: '/' },
+    browserUrl: 'anvilwiki.pages.dev/bosses/emberfang',
+    mobileCaption: 'Mobile-first: clean first screen, scrollable tables, tap-to-copy codes.',
   },
-
-  /** Docs entry cards */
   docsEntry: {
     title: 'Get started in minutes',
     cards: [
@@ -166,22 +205,176 @@ pnpm install && pnpm dev`,
         href: 'https://github.com/PNGTRID/AnvilWiki/blob/main/docs/seo.md',
       },
     ],
+    readLabel: 'Read',
   },
-
-  /** Final CTA */
   finalCta: {
     title: 'Ready to launch your game wiki?',
     subtitle: 'Fork, configure, deploy — all in 30 minutes, completely free.',
     primaryCta: { label: 'Get Started', href: '#docs' },
     secondaryCta: { label: 'Read the Docs', href: 'https://github.com/PNGTRID/AnvilWiki#readme' },
   },
-
-  /** Footer */
   footer: {
     tagline: 'Open-source game wiki site template. Free, fast, beginner-friendly.',
     license: 'MIT License',
     madeWith: 'Built with Astro · Deployed on Cloudflare Pages',
   },
-} as const;
+};
 
-export type LandingConfig = typeof landing;
+const zh: LandingContent = {
+  htmlLang: 'zh',
+  title: 'AnvilWiki — 开源游戏 Wiki 模板(Cloudflare 原生)',
+  description:
+    '基于 Astro + Cloudflare Pages 的开源游戏内容站模板。免费部署、Lighthouse 4×100、广告收入 100% 归你。',
+  announcement: {
+    text: `v${PROJECT_VERSION} 发布 —— 兑换码一键复制、阅读体验全家桶、多语言脚手架与首页预设。`,
+    href: RELEASES,
+  },
+  hero: {
+    badge: '开源 · MIT 协议 · Cloudflare Pages',
+    title: '广告收入 100% 归你的游戏 wiki 模板',
+    subtitle:
+      '基于 Astro + Cloudflare Pages 的开源模板,专为游戏 SEO 内容站打造。Fork、放入你的游戏攻略、免费部署(无限带宽)——每一分广告收入都归你。',
+    primaryCta: { label: '快速开始', href: '#docs' },
+    secondaryCta: { label: 'GitHub 加星', href: 'https://github.com/PNGTRID/AnvilWiki' },
+    tertiaryCta: { label: '查看 Demo', href: '/' },
+    installCommand: `git clone https://github.com/PNGTRID/AnvilWiki.git
+cd anvilwiki
+pnpm install && pnpm dev`,
+    screenshotCaption: '在线 Demo —— 虚构游戏「Anvil Quest」的完整 wiki',
+  },
+  socialProof: {
+    lighthouse: [
+      { label: '性能', score: 100 },
+      { label: '无障碍', score: 100 },
+      { label: '最佳实践', score: 100 },
+      { label: 'SEO', score: 100 },
+    ],
+    poweredBy: '基于 Astro + Cloudflare Pages —— 免费无限带宽',
+  },
+  features: [
+    {
+      icon: 'lucide:dollar-sign',
+      title: '广告收入 100% 归你',
+      description:
+        '内置 AdSense 广告位(env 驱动)。无平台抽成、无收入分成——和托管 wiki 农场完全不同。',
+    },
+    {
+      icon: 'lucide:search',
+      title: 'SEO 工程化',
+      description:
+        'sitemap(含 lastmod)、JSON-LD(含 VideoGame)、hreflang、robots、文章 TOC、Quick Answer、llms.txt——全部从 MDX frontmatter 自动生成。',
+    },
+    {
+      icon: 'lucide:zap',
+      title: '极致性能',
+      description:
+        'Astro 零 JS 优先,Lighthouse 四项全 100(性能/无障碍/最佳实践/SEO)。',
+    },
+    {
+      icon: 'lucide:globe',
+      title: '多语言开箱即用',
+      description:
+        '英文在根路径(SEO 最优无前缀),其他语言带前缀。缺失内容自动回退英文——直链永不 404。',
+    },
+    {
+      icon: 'lucide:cloud',
+      title: '永久免费',
+      description:
+        '零配置部署到 Cloudflare Pages:免费无限带宽 + 全球 CDN + SSL。永远没有服务器账单。',
+    },
+    {
+      icon: 'lucide:wand-2',
+      title: '30 分钟套用',
+      description:
+        'JSON 驱动配置 + 交互式 CLI:首页预设、主题色、多语言一步到位——框架代码零改动。',
+    },
+  ],
+  compare: {
+    title: '为什么选择 AnvilWiki?',
+    subtitle: '与其他游戏内容站方案的对比。',
+    columns: ['AnvilWiki', 'Fandom', 'Starlight', 'Next.js 自建'],
+    rows: [
+      {
+        label: '适用场景',
+        values: ['游戏 SEO 内容站', '社区协作 wiki', '产品文档', '定制应用'],
+      },
+      {
+        label: '广告收入',
+        values: ['100% 归你', '平台分成', '无广告', '自己接'],
+      },
+      {
+        label: '托管成本',
+        values: ['免费无限带宽', '免费(平台托管)', '自付', '自付'],
+      },
+      {
+        label: 'SEO 内置',
+        values: ['全套', '平台控制', '文档向', '自建'],
+      },
+      {
+        label: '性能',
+        values: ['Lighthouse 4×100', '中等', '高', '取决于实现'],
+      },
+      {
+        label: '上手时间',
+        values: ['30 分钟', '注册即用', '1 小时', '数天起'],
+      },
+      {
+        label: '完全拥有',
+        values: ['是(MIT)', '否', '是', '是'],
+      },
+    ],
+  },
+  showcase: {
+    title: '看看实际效果',
+    subtitle: '用 AnvilWiki 构建的在线 Demo——虚构游戏「Anvil Quest」的完整 wiki 站。',
+    points: [
+      '真实的游戏 wiki 布局(Hero → 快速入口 → 内容模块 → CTA)',
+      '完整内容站实测 Lighthouse 性能 100',
+      '真实多语言:英文根路径 + 日文带前缀 + 自动回退',
+      '广告位 / 搜索 / 评论全部可用(env 驱动,默认关闭)',
+    ],
+    cta: { label: '查看在线 Demo →', href: '/' },
+    browserUrl: 'anvilwiki.pages.dev/bosses/emberfang',
+    mobileCaption: '移动优先:首屏干净、表格横滑、兑换码点击即复制。',
+  },
+  docsEntry: {
+    title: '几分钟即可上手',
+    cards: [
+      {
+        icon: 'lucide:rocket',
+        title: '快速开始',
+        description: 'Fork、配置、5 分钟内部署到 Cloudflare Pages。',
+        href: 'https://github.com/PNGTRID/AnvilWiki/blob/main/docs/deployment.md',
+      },
+      {
+        icon: 'lucide:palette',
+        title: '套用模板',
+        description: '把 demo 游戏换成你的——配置、主题、内容、多语言。',
+        href: 'https://github.com/PNGTRID/AnvilWiki/blob/main/docs/apply-template.md',
+      },
+      {
+        icon: 'lucide:search',
+        title: 'SEO 指南',
+        description: 'AnvilWiki 如何处理 sitemap、JSON-LD、hreflang 等。',
+        href: 'https://github.com/PNGTRID/AnvilWiki/blob/main/docs/seo.md',
+      },
+    ],
+    readLabel: '阅读',
+  },
+  finalCta: {
+    title: '准备好上线你的游戏 wiki 了吗?',
+    subtitle: 'Fork、配置、部署——30 分钟搞定,完全免费。',
+    primaryCta: { label: '快速开始', href: '#docs' },
+    secondaryCta: { label: '阅读文档', href: 'https://github.com/PNGTRID/AnvilWiki#readme' },
+  },
+  footer: {
+    tagline: '开源游戏 wiki 站点模板。免费、快速、新手友好。',
+    license: 'MIT 协议',
+    madeWith: '基于 Astro 构建 · 部署于 Cloudflare Pages',
+  },
+};
+
+export const landingContent: Record<LandingLocale, LandingContent> = { en, zh };
+
+/** Landing-page routes per locale (for language switching + hreflang). */
+export const landingPath = (locale: LandingLocale) => (locale === 'en' ? '/landing' : `/zh/landing`);

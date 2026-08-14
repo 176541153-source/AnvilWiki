@@ -4,16 +4,21 @@
  * Links to the GitHub docs (no in-site docs subdomain for MVP).
  */
 import { Icon } from 'astro-icon/components';
-import { landing } from '~/config/landing';
+import { type LandingContent } from '~/config/landing';
+
+interface Props {
+  t: LandingContent;
+}
+const { t } = Astro.props;
 ---
 
 <section id="docs" class="section border-t border-border">
   <div class="mx-auto max-w-5xl">
     <h2 class="text-center text-3xl font-extrabold tracking-tight text-foreground">
-      {landing.docsEntry.title}
+      {t.docsEntry.title}
     </h2>
     <div class="mt-8 grid gap-4 sm:grid-cols-3">
-      {landing.docsEntry.cards.map((card) => (
+      {t.docsEntry.cards.map((card) => (
         <a
           href={card.href}
           class="card group flex flex-col p-5"
@@ -26,7 +31,7 @@ import { landing } from '~/config/landing';
           <h3 class="mt-3 font-semibold text-foreground">{card.title}</h3>
           <p class="mt-1 text-sm text-muted-foreground">{card.description}</p>
           <span class="mt-3 inline-flex items-center gap-1 text-xs font-medium text-nav">
-            <span class="border-b border-transparent transition group-hover:border-nav">Read</span>
+            <span class="border-b border-transparent transition group-hover:border-nav">{t.docsEntry.readLabel}</span>
             <Icon name="lucide:arrow-right" class="h-3 w-3 transition group-hover:translate-x-0.5" />
           </span>
         </a>

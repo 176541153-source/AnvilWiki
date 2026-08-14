@@ -1,16 +1,11 @@
 ---
 /**
- * Landing page (/landing, English) — introduces the AnvilWiki open-source
- * project. NOT the demo game site (that's at /). 中文版在 /zh/landing。
+ * Landing page 中文版 (/zh/landing) — 项目官网的中文版本。
+ * English version lives at /landing.
  *
- * Sections (top to bottom):
- *   1. Hero (title + CTAs + install command)
- *   2. SocialProofBar (Lighthouse 4×100)
- *   3. FeatureGrid (6 cards)
- *   4. CompareTable (vs Fandom / Starlight / DIY)
- *   5. Showcase (demo screenshots)
- *   6. DocsEntry (3 doc cards)
- *   7. FinalCta
+ * NOTE: this route is intentionally outside the wiki i18n system (locales
+ * en/ja are the DEMO GAME's content languages). The landing page speaks for
+ * the PROJECT, so it ships its own en/zh pair via src/config/landing.ts.
  */
 import LandingLayout from '~/components/landing/LandingLayout.astro';
 import LandingHero from '~/components/landing/LandingHero.astro';
@@ -23,14 +18,14 @@ import FinalCta from '~/components/landing/FinalCta.astro';
 import { landingContent } from '~/config/landing';
 import { siteUrl } from '~/config/site';
 
-const t = landingContent.en;
+const t = landingContent.zh;
 const alternates = [
   { hreflang: 'en', href: `${siteUrl}/landing` },
   { hreflang: 'zh', href: `${siteUrl}/zh/landing` },
 ];
 ---
 
-<LandingLayout locale="en" alternates={alternates}>
+<LandingLayout locale="zh" alternates={alternates}>
   <LandingHero t={t} />
   <SocialProofBar t={t} />
   <FeatureGrid t={t} />

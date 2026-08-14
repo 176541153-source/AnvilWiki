@@ -1,68 +1,83 @@
 ---
 /**
- * LandingLayout — the shell for the project landing page (/landing).
+ * LandingLayout — the shell for the project landing pages (/landing, /zh/landing).
  *
- * Wraps BaseLayout with a minimal header (logo + GitHub + theme toggle)
- * and a simplified footer. Does NOT use SiteHeader (that's the demo game's
- * navigation) or StickyBanner (ads) — the landing page is about the project,
- * not the demo game.
+ * Wraps BaseLayout with a minimal header (logo + language toggle + GitHub +
+ * theme toggle) and a simplified footer. Does NOT use SiteHeader (that's the
+ * demo game's navigation) or StickyBanner (ads) — the landing page is about
+ * the project, not the demo game.
  */
-import '~/styles/globals.css';
 import BaseLayout from '~/components/layout/BaseLayout.astro';
 import ThemeToggle from '~/components/header/ThemeToggle.astro';
-import JsonLd from '~/components/seo/JsonLd.astro';
 import { Icon } from 'astro-icon/components';
-import { siteUrl } from '~/config/site';
-import { landing } from '~/config/landing';
+import {
+  landingContent,
+  landingPath,
+  type LandingContent,
+  type LandingLocale,
+} from '~/config/landing';
 import { websiteJsonLd } from '~/lib/seo';
+import { defaultLocale, type Locale } from '~/i18n/routing';
 
 interface Props {
-  title: string;
-  description: string;
+  locale: LandingLocale;
+  /** hreflang alternates (built by the route page). */
+  alternates?: Array<{ hreflang: string; href: string }>;
 }
-const { title, description } = Astro.props;
-
-const jsonLd = [websiteJsonLd('en')];
+const { locale, alternates = [] } = Astro.props;
+const t = landingContent[locale];
+const other: LandingLocale = locale === 'en' ? 'zh' : 'en';
+const jsonLd = [websiteJsonLd((locale === 'en' ? defaultLocale : 'zh') as Locale)];
+const title = t.title;
+const description = t.description;
 ---
 
 <BaseLayout
   title={title}
   description={description}
-  locale="en"
-  titleSuffix={landing.projectName}
+  locale={t.htmlLang}
+  titleSuffix="AnvilWiki"
   jsonLd={jsonLd}
+  alternates={alternates}
 >
   {/* Announcement bar (optional — see landing.ts) */}
-  {landing.announcement && (
+  {t.announcement && (
     <a
-      href={landing.announcement.href}
+      href={t.announcement.href}
       class="block bg-nav/10 px-4 py-1.5 text-center text-xs font-medium text-nav transition hover:bg-nav/15"
     >
-      {landing.announcement.text}
+      {t.announcement.text}
     </a>
   )}
 
-  {/* Minimal header — logo + GitHub link + theme toggle */}
+  {/* Minimal header — logo + language + GitHub + theme toggle */}
   <header class="sticky top-0 z-40 w-full border-b border-border bg-background/80 backdrop-blur">
     <div class="mx-auto flex h-14 max-w-7xl items-center gap-4 px-4">
-      <a href="/landing" class="flex items-center gap-2 font-bold text-foreground">
+      <a href={landingPath(locale)} class="flex items-center gap-2 font-bold text-foreground">
         <Icon name="lucide:hammer" class="h-6 w-6 text-nav" />
-        <span>{landing.projectName}</span>
+        <span>AnvilWiki</span>
       </a>
       <div class="ml-auto flex items-center gap-3">
         <a
-          href={landing.githubUrl}
+          href={landingPath(other)}
+          hreflang={other}
+          class="rounded-md border border-border px-2 py-1 text-xs font-medium text-muted-foreground transition hover:text-nav"
+        >
+          {other === 'zh' ? '中文' : 'EN'}
+        </a>
+        <a
+          href="https://github.com/PNGTRID/AnvilWiki"
           class="hidden items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium text-foreground/70 transition hover:bg-muted hover:text-foreground sm:inline-flex"
         >
           <Icon name="lucide:star" class="h-4 w-4" />
           <span>GitHub</span>
         </a>
         <a
-          href={landing.demoUrl}
+          href="/"
           class="hidden items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium text-foreground/70 transition hover:bg-muted hover:text-foreground sm:inline-flex"
         >
           <Icon name="lucide:external-link" class="h-4 w-4" />
-          <span>Demo</span>
+          <span>{locale === 'zh' ? 'Demo' : 'Demo'}</span>
         </a>
         <ThemeToggle />
       </div>
@@ -80,27 +95,28 @@ const jsonLd = [websiteJsonLd('en')];
         <div class="flex items-center gap-2">
           <Icon name="lucide:hammer" class="h-5 w-5 text-nav" />
           <div>
-            <p class="font-bold text-foreground">{landing.projectName}</p>
-            <p class="text-xs text-muted-foreground">{landing.footer.tagline}</p>
+            <p class="font-bold text-foreground">AnvilWiki</p>
+            <p class="text-xs text-muted-foreground">{t.footer.tagline}</p>
           </div>
         </div>
         <div class="flex items-center gap-4 text-sm">
-          <a href={landing.githubUrl} class="text-foreground/70 transition hover:text-foreground">
-            GitHub
-          </a>
-          <a href={landing.demoUrl} class="text-foreground/70 transition hover:text-foreground">
-            Demo
-          </a>
           <a
-            href={`${landing.githubUrl}/blob/main/LICENSE`}
+            href="https://github.com/PNGTRID/AnvilWiki"
             class="text-foreground/70 transition hover:text-foreground"
           >
-            {landing.footer.license}
+            GitHub
+          </a>
+          <a href="/" class="text-foreground/70 transition hover:text-foreground">Demo</a>
+          <a
+            href="https://github.com/PNGTRID/AnvilWiki/blob/main/LICENSE"
+            class="text-foreground/70 transition hover:text-foreground"
+          >
+            {t.footer.license}
           </a>
         </div>
       </div>
       <p class="mt-6 text-center text-xs text-muted-foreground sm:text-left">
-        {landing.footer.madeWith} · © 2026 {landing.projectName} Contributors
+        {t.footer.madeWith} · © 2026 AnvilWiki Contributors
       </p>
     </div>
   </footer>

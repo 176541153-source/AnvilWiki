@@ -92,7 +92,7 @@ const consentLabels = {
     <link
       rel="alternate"
       hreflang="x-default"
-      href={`${siteUrl}${Astro.url.pathname.replace(/^\/(en|ja)/, '')}`}
+      href={`${siteUrl}${Astro.url.pathname.replace(/^\/(en|ja|zh)(?=\/)/, '')}`}
     />
 
     {/* Open Graph */}

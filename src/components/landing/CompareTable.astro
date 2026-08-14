@@ -4,22 +4,27 @@
  * AnvilWiki column is highlighted. Wrapped in overflow-x-auto for mobile
  * (fixes the mobile table overflow issue flagged by the UX expert).
  */
-import { landing } from '~/config/landing';
+import { type LandingContent } from '~/config/landing';
+
+interface Props {
+  t: LandingContent;
+}
+const { t } = Astro.props;
 ---
 
 <section class="section border-t border-border">
   <div class="mx-auto max-w-4xl">
     <h2 class="text-center text-3xl font-extrabold tracking-tight text-foreground">
-      {landing.compare.title}
+      {t.compare.title}
     </h2>
-    <p class="mt-2 text-center text-muted-foreground">{landing.compare.subtitle}</p>
+    <p class="mt-2 text-center text-muted-foreground">{t.compare.subtitle}</p>
 
     <div class="mt-8 overflow-x-auto">
       <table class="w-full border-collapse text-sm">
         <thead>
           <tr class="border-b border-border">
             <th class="p-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground"></th>
-            {landing.compare.columns.map((col, i) => (
+            {t.compare.columns.map((col, i) => (
               <th
                 class:list={[
                   'p-3 text-center font-semibold',
@@ -34,7 +39,7 @@ import { landing } from '~/config/landing';
           </tr>
         </thead>
         <tbody>
-          {landing.compare.rows.map((row) => (
+          {t.compare.rows.map((row) => (
             <tr class="border-b border-border/50">
               <td class="p-3 text-left font-medium text-muted-foreground">{row.label}</td>
               {row.values.map((value, i) => (

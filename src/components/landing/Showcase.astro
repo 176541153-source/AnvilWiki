@@ -5,7 +5,12 @@
  * Links to the live demo at /.
  */
 import { Icon } from 'astro-icon/components';
-import { landing } from '~/config/landing';
+import { type LandingContent } from '~/config/landing';
+
+interface Props {
+  t: LandingContent;
+}
+const { t } = Astro.props;
 ---
 
 <section class="section border-t border-border bg-muted/30">
@@ -13,11 +18,11 @@ import { landing } from '~/config/landing';
     {/* Left: text */}
     <div>
       <h2 class="text-3xl font-extrabold tracking-tight text-foreground">
-        {landing.showcase.title}
+        {t.showcase.title}
       </h2>
-      <p class="mt-2 text-muted-foreground">{landing.showcase.subtitle}</p>
+      <p class="mt-2 text-muted-foreground">{t.showcase.subtitle}</p>
       <ul class="mt-5 space-y-3">
-        {landing.showcase.points.map((point) => (
+        {t.showcase.points.map((point) => (
           <li class="flex items-start gap-2 text-sm text-foreground/80">
             <Icon name="lucide:check-circle-2" class="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600 dark:text-green-400" />
             <span>{point}</span>
@@ -25,10 +30,10 @@ import { landing } from '~/config/landing';
         ))}
       </ul>
       <a
-        href={landing.showcase.cta.href}
+        href={t.showcase.cta.href}
         class="btn-primary mt-6 inline-flex items-center gap-1.5"
       >
-        {landing.showcase.cta.label}
+        {t.showcase.cta.label}
       </a>
     </div>
 
@@ -40,7 +45,7 @@ import { landing } from '~/config/landing';
           <span class="h-2.5 w-2.5 rounded-full bg-yellow-400"></span>
           <span class="h-2.5 w-2.5 rounded-full bg-green-400"></span>
           <span class="ml-3 truncate rounded bg-background px-3 py-0.5 text-xs text-muted-foreground">
-            anvilwiki.pages.dev/bosses/emberfang
+            {t.showcase.browserUrl}
           </span>
         </div>
         <img
@@ -64,7 +69,7 @@ import { landing } from '~/config/landing';
           class="w-32 rounded-lg border border-border shadow-md sm:w-40"
         />
         <p class="max-w-40 text-xs text-muted-foreground">
-          Mobile-first: clean first screen, scrollable tables, tap-to-copy codes.
+          {t.showcase.mobileCaption}
         </p>
       </div>
     </div>
