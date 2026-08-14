@@ -161,10 +161,16 @@ const consentLabels = {
     {/* No-FOUC theme init — runs before first paint. */}
     <script is:inline>
       (() => {
-        const stored = localStorage.getItem('theme');
+        let stored = null;
+        try {
+          stored = localStorage.getItem('theme');
+        } catch {
+          /* storage unavailable */
+        }
         const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        if (stored === 'dark' || (!stored && prefersDark)) {
+        if (stored === 'dark' || stored === 'black' || (!stored && prefersDark)) {
           document.documentElement.classList.add('dark');
+          if (stored === 'black') document.documentElement.classList.add('black');
         }
       })();
     </script>

@@ -158,6 +158,115 @@ interface SkinInput {
   categories: { key: string; icon: string }[];
   clearContent: boolean;
   clearLanding: boolean;
+  /** Homepage preset: 'codes' | 'guides' | 'keep' */
+  homePreset: 'codes' | 'guides' | 'keep';
+}
+
+/**
+ * Build a starter `home` namespace skeleton for a preset.
+ * All copy uses the game name the user entered — placeholders to refine,
+ * not demo-game leftovers. Module hrefs point at the categories they chose.
+ */
+function buildHomePreset(input: SkinInput): Record<string, unknown> | null {
+  if (input.homePreset === 'keep') return null;
+  const cats = input.categories.map((c) => c.key);
+  const first = cats[0] ?? 'guides';
+
+  const common = {
+    meta: { watermark: input.gameName },
+    updates: { badge: 'Fresh', title: 'Recent updates' },
+    popular: {
+      badge: 'Popular',
+      title: 'Most read',
+      quickLinks: cats.slice(0, 3).map((c) => ({ label: c, href: `/${c}` })),
+    },
+    closingCta: {
+      title: `Start your ${input.gameName} journey`,
+      description: `Bookmark this wiki and check back after every game update.`,
+      primary: { label: 'Browse all', href: `/${first}` },
+      secondary: { label: 'Official site', href: input.officialUrl },
+    },
+  };
+
+  if (input.homePreset === 'codes') {
+    return {
+      ...common,
+      hero: {
+        badge: 'Updated daily',
+        title: `${input.gameName} Codes`,
+        description: `All working ${input.gameName} codes, tested daily. Plus guides and tier lists.`,
+        ctaPrimary: { label: 'All codes', href: '/codes' },
+        ctaSecondary: { label: 'Guides', href: '/guides' },
+      },
+      start: {
+        badge: 'Quick start',
+        title: 'Jump straight in',
+        cards: [
+          { title: 'Codes', description: 'Free gold, XP, cosmetics', icon: 'lucide:gift', href: '/codes' },
+          { title: 'Bosses', description: 'Phase-by-phase strategy', icon: 'lucide:swords', href: '/bosses' },
+          { title: 'Tier list', description: 'Best weapons ranked', icon: 'lucide:bar-chart-3', href: `/${cats.find((c) => c !== 'codes') ?? first}` },
+        ],
+      },
+      explore: {
+        title: 'Explore',
+        description: 'The essentials',
+        modules: [
+          {
+            order: 1,
+            name: 'Active codes',
+            description: 'Redeem before they expire',
+            href: '/codes',
+            displayType: 'badge-list',
+            highlights: [
+              { label: 'CODE-PLACEHOLDER', detail: 'Tap to copy on the codes page', badge: 'NEW' },
+            ],
+          },
+        ],
+      },
+      faq: { title: 'FAQ', description: 'Common questions', items: [] },
+    };
+  }
+
+  // 'guides' preset
+  return {
+    ...common,
+    hero: {
+      badge: input.gameName,
+      title: `${input.gameName} Wiki`,
+      description: `Complete ${input.gameName} guides — bosses, items, and progression.`,
+      ctaPrimary: { label: 'Beginner guide', href: '/guides' },
+      ctaSecondary: { label: 'Browse all', href: `/${first}` },
+    },
+    start: {
+      badge: 'Quick start',
+      title: 'New here?',
+      cards: cats.slice(0, 4).map((c) => ({
+        title: c[0].toUpperCase() + c.slice(1),
+        description: `Browse ${c}`,
+        icon: 'lucide:book-open',
+        href: `/${c}`,
+      })),
+    },
+    explore: {
+      title: 'Explore',
+      description: 'Content modules',
+      modules: [
+        {
+          order: 1,
+          name: 'Getting started',
+          description: 'Step-by-step progression',
+          href: '/guides',
+          displayType: 'steps',
+          highlights: [
+            { label: 'Step 1', detail: 'Finish the tutorial', badge: '5 min' },
+            { label: 'Step 2', detail: 'Claim starter codes', badge: '1 min' },
+            { label: 'Step 3', detail: 'First boss run', badge: '15 min' },
+          ],
+        },
+      ],
+    },
+    faq: { title: 'FAQ', description: 'Common questions', items: [] },
+  };
 }
 
 function rewriteSiteTs(input: SkinInput): string {
@@ -218,25 +327,51 @@ function rewriteGlobalsCss(input: SkinInput): string {
   const lightAlt = hslStr(c, 10);
   const darkMain = `${c.h} ${Math.max(0, c.s - 5)}% ${Math.max(0, c.l - 4)}%`;
   const darkAlt = `${c.h} ${Math.max(0, c.s - 5)}% ${Math.max(0, c.l - 4 + 10)}%`;
-  const newVars = `  :root {
-    /* Light mode theme color. */
-    --brand: ${lightMain};
-    --brand-light: ${lightAlt};
-  }
 
-  .dark {
-    /* Dark mode theme color — slightly deeper. */
-    --brand: ${darkMain};
-    --brand-light: ${darkAlt};
-  }`;
-  // The original :root and .dark blocks live inside @layer base { ... }.
-  // Replace from the first `:root {` through the closing of `.dark { ... }`.
-  const themeRe = /  :root \{[\s\S]*?\.dark \{[\s\S]*?\n  \}/;
-  if (!themeRe.test(src)) {
-    console.error(`❌ Could not locate :root/.dark theme block in ${filePath}. Aborting.`);
+  // Replace ONLY the 4 --brand / --brand-light value lines, line-wise, so the
+  // rewrite still works if the user has added custom variables or changed
+  // indentation inside :root / .dark (previous whole-block regex broke then).
+  const lines = src.split('\n');
+  let block: 'root' | 'dark' | null = null;
+  let replaced = 0;
+  const out = lines.map((line) => {
+    if (/^\s*:root\s*\{/.test(line)) block = 'root';
+    else if (/^\s*\.dark\s*\{/.test(line)) block = 'dark';
+    else if (block && /^\s*\}/.test(line)) block = null;
+    else if (block === 'root' && /^\s*--brand:/.test(line)) {
+      replaced++;
+      return line.replace(/(--brand:\s*)[^;]+;/, `$1${lightMain};`);
+    } else if (block === 'root' && /^\s*--brand-light:/.test(line)) {
+      replaced++;
+      return line.replace(/(--brand-light:\s*)[^;]+;/, `$1${lightAlt};`);
+    } else if (block === 'root' && /^\s*--brand-h:/.test(line)) {
+      replaced++;
+      return line.replace(/(--brand-h:\s*)[^;]+;/, `$1${c.h};`);
+    } else if (block === 'root' && /^\s*--brand-s:/.test(line)) {
+      replaced++;
+      return line.replace(/(--brand-s:\s*)[^;]+;/, `$1${c.s}%;`);
+    } else if (block === 'dark' && /^\s*--brand:/.test(line)) {
+      replaced++;
+      return line.replace(/(--brand:\s*)[^;]+;/, `$1${darkMain};`);
+    } else if (block === 'dark' && /^\s*--brand-light:/.test(line)) {
+      replaced++;
+      return line.replace(/(--brand-light:\s*)[^;]+;/, `$1${darkAlt};`);
+    } else if (block === 'dark' && /^\s*--brand-h:/.test(line)) {
+      replaced++;
+      return line.replace(/(--brand-h:\s*)[^;]+;/, `$1${c.h};`);
+    } else if (block === 'dark' && /^\s*--brand-s:/.test(line)) {
+      replaced++;
+      return line.replace(/(--brand-s:\s*)[^;]+;/, `$1${Math.max(0, c.s - 5)}%;`);
+    }
+    return line;
+  });
+  if (replaced < 6) {
+    console.error(
+      `❌ Expected 6+ --brand/--brand-light/--brand-h/--brand-s lines in ${filePath}, found ${replaced}. Aborting.`,
+    );
     process.exit(1);
   }
-  return src.replace(themeRe, newVars);
+  return out.join('\n');
 }
 
 function rewriteRoutingTs(input: SkinInput): string {
@@ -324,7 +459,41 @@ function rewriteLocaleJson(input: SkinInput, locale: string, existing?: string):
   // Clear nav + overview so the user re-fills them once categories are known.
   obj.nav = {};
   obj.overview = {};
+  // Homepage preset skeleton (unless 'keep').
+  const home = buildHomePreset(input);
+  if (home) obj.home = home;
   return JSON.stringify(obj, null, 2) + '\n';
+}
+
+/**
+ * Reset wrangler.toml [vars] for the forker's own site.
+ *
+ * Why: when wrangler.toml exists it is the SOLE source of truth for the
+ * Cloudflare Pages project env (dashboard UI is ignored). The shipped file
+ * carries the DEMO site's Giscus config — an unedited fork would silently
+ * point its comment section at the original repo's GitHub Discussions.
+ * We rewrite SITE_URL to the forker's domain and blank the Giscus values.
+ */
+function rewriteWranglerVars(input: SkinInput): string | null {
+  const filePath = 'wrangler.toml';
+  if (!fs.existsSync(path.resolve(ROOT, filePath))) return null;
+  const src = read(filePath);
+  const newVars = `[vars]
+# Site (must include https:// protocol — Astro validates this as a URL)
+SITE_URL = "https://${input.domain}"
+# Giscus comments — blank = comments disabled until you fill your own values.
+# See docs/comments.md for how to get these from giscus.app.
+PUBLIC_GISCUS_REPO = ""
+PUBLIC_GISCUS_REPO_ID = ""
+PUBLIC_GISCUS_CATEGORY = ""
+PUBLIC_GISCUS_CATEGORY_ID = ""
+PUBLIC_GISCUS_MAPPING = "pathname"`;
+  const varsRe = /\[vars\][\s\S]*?(?=\n*\[|\n*$)/;
+  if (!varsRe.test(src)) {
+    console.warn(`⚠️ Could not find [vars] section in ${filePath} — edit it manually.`);
+    return null;
+  }
+  return src.replace(varsRe, newVars);
 }
 
 function rewriteManifest(input: SkinInput): string {
@@ -497,6 +666,16 @@ async function main() {
     clearContent = await askBool(rl, 'Clear demo content?', false);
   }
 
+  console.log('\n' + '━'.repeat(60));
+  console.log('🏠  Homepage preset');
+  console.log('━'.repeat(60));
+  console.log('   1) codes     — hero "All Codes", badge-list codes module (codes-driven sites)');
+  console.log('   2) guides    — hero wiki-style, steps module (guide-driven sites)');
+  console.log('   3) keep      — keep the demo homepage JSON as a starting point');
+  const presetAnswer = (await ask(rl, 'Preset [1/2/3]', '1')).trim();
+  const homePreset: 'codes' | 'guides' | 'keep' =
+    presetAnswer === '2' ? 'guides' : presetAnswer === '3' ? 'keep' : 'codes';
+
   let clearLanding = false;
   if (!KEEP_LANDING) {
     console.log('\n' + '━'.repeat(60));
@@ -527,6 +706,7 @@ async function main() {
     categories,
     clearContent,
     clearLanding,
+    homePreset,
   };
 
   console.log('\n' + '━'.repeat(60));
@@ -548,6 +728,7 @@ async function main() {
   console.log('     - src/i18n/ui.ts');
   console.log(`     - src/locales/{${uniqueLocales.join(',')}}.json`);
   console.log('     - public/manifest.json');
+  console.log('     - wrangler.toml ([vars] reset to your domain, demo Giscus cleared)');
 
   if (!DRY_RUN) {
     const proceed = await (async () => {
@@ -595,6 +776,12 @@ async function main() {
 
   write('public/manifest.json', rewriteManifest(skinInput));
   console.log('   ✅ public/manifest.json');
+
+  const wrangler = rewriteWranglerVars(skinInput);
+  if (wrangler !== null) {
+    write('wrangler.toml', wrangler);
+    console.log('   ✅ wrangler.toml ([vars] reset — demo Giscus config cleared)');
+  }
 
   if (clearContent) {
     const n = clearDemoContent();

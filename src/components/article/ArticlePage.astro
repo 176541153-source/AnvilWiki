@@ -26,7 +26,8 @@ import { NAVIGATION_CONFIG } from '~/config/navigation';
 import { siteUrl } from '~/config/site';
 import { type Locale } from '~/i18n/routing';
 import { getUi } from '~/i18n/ui';
-import { getRelatedEntries, parseEntryId, type WikiEntry, type ResolvedEntry } from '~/lib/content';
+import { getRelatedEntries, getEntriesByCategory, isPossiblyOutdated, parseEntryId, type WikiEntry, type ResolvedEntry } from '~/lib/content';
+import VideoSection from '~/components/home/VideoSection.astro';
 import { articleJsonLd, breadcrumbJsonLd, pageTitle } from '~/lib/seo';
 import { listPath, detailPath } from '~/lib/url';
 import { site } from '~/config/site';
@@ -60,6 +61,22 @@ const { Content, headings } = await render(entry);
 
 const author = entry.data.author ?? site.defaultAuthor;
 const summary = entry.data.summary;
+const outdated = isPossiblyOutdated(category, entry.data.lastModified, entry.data.date);
+
+// Reading time estimate: ~200 wpm for space-separated languages,
+// ~400 chars/min for CJK (no spaces). Author-facing, purely informational.
+const bodyText = entry.body ?? '';
+const readMinutes =
+  locale === 'ja'
+    ? Math.max(1, Math.ceil(bodyText.replace(/\s+/g, '').length / 400))
+    : Math.max(1, Math.ceil(bodyText.trim().split(/\s+/).filter(Boolean).length / 200));
+
+// Prev/next within the same category (newest-first list → newer = idx-1).
+const categoryEntries = await getEntriesByCategory(category, locale);
+const currentIdx = categoryEntries.findIndex((e) => parseEntryId(e.id)?.slug === slug);
+const newerEntry = currentIdx > 0 ? categoryEntries[currentIdx - 1] : null;
+const olderEntry =
+  currentIdx >= 0 && currentIdx < categoryEntries.length - 1 ? categoryEntries[currentIdx + 1] : null;
 
 const jsonLd = [
   articleJsonLd({
@@ -92,6 +109,11 @@ const jsonLd = [
   jsonLd={jsonLd}
   noindex={entry.data.noindex}
 >
+  {/* Reading progress bar (top edge) */}
+  <div class="pointer-events-none fixed inset-x-0 top-0 z-50 h-0.5" aria-hidden="true">
+    <div id="reading-progress" class="h-full bg-nav opacity-80" style="width: 0%"></div>
+  </div>
+
   <div class="flex gap-8">
     <article class="mx-auto min-w-0 max-w-3xl flex-1">
     {/* Breadcrumb */}
@@ -136,6 +158,10 @@ const jsonLd = [
             </span>
           )
         }
+        <span class="inline-flex items-center gap-1">
+          <Icon name="lucide:clock" class="h-3.5 w-3.5" />
+          {readMinutes} {shared.minuteRead}
+        </span>
         <span class="ml-auto">
           <ShareButton
             title={entry.data.title}
@@ -154,11 +180,33 @@ const jsonLd = [
       <aside class="mt-6 rounded-lg border-l-4 border-nav bg-nav/5 p-4">
         <div class="flex items-start gap-2">
           <Icon name="lucide:lightbulb" class="mt-0.5 h-4 w-4 shrink-0 text-nav" />
-          <div>
-            <p class="text-xs font-semibold uppercase tracking-wider text-nav">Quick Answer</p>
-            <p class="mt-1 text-sm text-foreground">{summary}</p>
+          <div class="min-w-0 flex-1">
+            <div class="flex items-center gap-2">
+              <p class="text-xs font-semibold uppercase tracking-wider text-nav">Quick Answer</p>
+              <button
+                type="button"
+                data-copy-summary
+                class="text-nav transition hover:opacity-70"
+                aria-label="Copy quick answer"
+                title="Copy quick answer"
+              >
+                <Icon name="lucide:copy" class="h-3 w-3" />
+              </button>
+            </div>
+            <p class="mt-1 text-sm text-foreground" data-summary-text>{summary}</p>
           </div>
         </div>
+      </aside>
+    )}
+
+    {/* Stale-content notice — time-sensitive categories older than 90 days */}
+    {outdated && (
+      <aside class="mt-4 flex items-start gap-2 rounded-lg border border-amber-500/40 bg-amber-500/10 p-3 text-sm text-foreground" role="note">
+        <Icon name="lucide:alert-triangle" class="mt-0.5 h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
+        <p>
+          {shared.possiblyOutdated} {(entry.data.lastModified ?? entry.data.date).toLocaleDateString(locale)}
+          {shared.outdatedNote}
+        </p>
       </aside>
     )}
 
@@ -224,6 +272,58 @@ const jsonLd = [
         </section>
       )
     }
+    {/* Prev / Next within the same category */}
+    {(olderEntry || newerEntry) && (
+      <nav class="mt-10 grid gap-3 sm:grid-cols-2" aria-label="Article pagination">
+        {olderEntry && (
+          <a href={detailPath(category, parseEntryId(olderEntry.id)?.slug ?? '', locale)} class="card p-4">
+            <p class="flex items-center gap-1 text-xs text-muted-foreground">
+              <Icon name="lucide:arrow-left" class="h-3 w-3" />
+              {shared.prevArticle}
+            </p>
+            <p class="mt-1 text-sm font-semibold leading-snug">{olderEntry.data.title}</p>
+          </a>
+        )}
+        {newerEntry && (
+          <a
+            href={detailPath(category, parseEntryId(newerEntry.id)?.slug ?? '', locale)}
+            class="card p-4 sm:text-right"
+          >
+            <p class="flex items-center gap-1 text-xs text-muted-foreground sm:justify-end">
+              {shared.nextArticle}
+              <Icon name="lucide:arrow-right" class="h-3 w-3" />
+            </p>
+            <p class="mt-1 text-sm font-semibold leading-snug">{newerEntry.data.title}</p>
+          </a>
+        )}
+      </nav>
+    )}
+
+    {/* Related videos — lazy YouTube embeds, zero JS until click */}
+    {entry.data.videos && entry.data.videos.length > 0 && (
+      <section class="mt-10 border-t border-border pt-8">
+        <h2 class="text-xl font-bold">{shared.relatedVideos}</h2>
+        <div class="mt-4 grid gap-4">
+          {entry.data.videos.map((videoId: string) => (
+            <VideoSection videoId={videoId} title={entry.data.title} />
+          ))}
+        </div>
+      </section>
+    )}
+
+    {/* Helpful feedback — no backend; thanks message + nudge to comments */}
+    <div class="mt-10 flex flex-col items-center gap-2 border-t border-border pt-6 text-center" data-helpful-root>
+      <p class="text-sm text-muted-foreground">{shared.wasThisHelpful}</p>
+      <div class="flex gap-2" data-helpful-buttons>
+        <button type="button" data-helpful-yes class="btn-outline inline-flex items-center gap-1.5 px-3 py-1.5 text-xs" aria-label="Yes">
+          <Icon name="lucide:thumbs-up" class="h-3.5 w-3.5" />
+        </button>
+        <button type="button" data-helpful-no class="btn-outline inline-flex items-center gap-1.5 px-3 py-1.5 text-xs" aria-label="No">
+          <Icon name="lucide:thumbs-down" class="h-3.5 w-3.5" />
+        </button>
+      </div>
+      <p class="hidden text-sm font-medium text-nav" data-helpful-thanks>{shared.feedbackThanks}</p>
+    </div>
   </article>
     {/* Desktop TOC — sticky, between article and sidebar */}
     <div class="hidden w-56 shrink-0 lg:block xl:w-64">
@@ -237,3 +337,68 @@ const jsonLd = [
   {/* Floating back-to-top (appears after 600px of scroll) */}
   <BackToTop />
 </LocaleLayout>
+
+<script>
+  // Reading progress bar — article scroll depth as a top-edge bar.
+  (() => {
+    const bar = document.getElementById('reading-progress');
+    if (!bar) return;
+    const onScroll = () => {
+      const doc = document.documentElement;
+      const scrollable = doc.scrollHeight - doc.clientHeight;
+      const pct = scrollable > 0 ? Math.min(100, (window.scrollY / scrollable) * 100) : 0;
+      bar.style.width = pct + '%';
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  })();
+
+  // Quick Answer copy button.
+  (() => {
+    const btn = document.querySelector('[data-copy-summary]');
+    const text = document.querySelector('[data-summary-text]');
+    if (!btn || !text) return;
+    btn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(text.textContent ?? '');
+        btn.setAttribute('title', 'Copied!');
+        setTimeout(() => btn.removeAttribute('title'), 1500);
+      } catch {
+        /* clipboard unavailable */
+      }
+    });
+  })();
+
+  // Helpful feedback — no backend; swap buttons for a thank-you message.
+  // Choice persists in localStorage so repeat visitors aren't re-asked.
+  (() => {
+    const root = document.querySelector('[data-helpful-root]');
+    if (!root) return;
+    const buttons = root.querySelector('[data-helpful-buttons]');
+    const thanks = root.querySelector('[data-helpful-thanks]');
+    if (!buttons || !thanks) return;
+    const KEY = 'aw-feedback-' + location.pathname;
+    let stored: string | null = null;
+    try {
+      stored = localStorage.getItem(KEY);
+    } catch {
+      /* ignore */
+    }
+    if (stored) {
+      buttons.classList.add('hidden');
+      thanks.classList.remove('hidden');
+      return;
+    }
+    const answer = () => {
+      try {
+        localStorage.setItem(KEY, '1');
+      } catch {
+        /* ignore */
+      }
+      buttons.classList.add('hidden');
+      thanks.classList.remove('hidden');
+    };
+    root.querySelector('[data-helpful-yes]')?.addEventListener('click', answer);
+    root.querySelector('[data-helpful-no]')?.addEventListener('click', answer);
+  })();
+</script>

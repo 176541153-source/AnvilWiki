@@ -49,6 +49,16 @@
     --card: 222 47% 10%;
     --card-foreground: 210 40% 98%;
   }
+
+  /* AMOLED black (html.dark.black) — pure-black surfaces for OLED phones:
+     saves battery and many players prefer it. Only overrides surface tones;
+     brand/foreground inherit from .dark. */
+  .black {
+    --background: 0 0% 0%;
+    --muted: 0 0% 10%;
+    --border: 0 0% 16%;
+    --card: 0 0% 4%;
+  }
 }
 
 @layer base {
@@ -108,6 +118,30 @@
     display: block;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Print styles — readers printing long guides get clean content only:
+   no header/footer/ads/TOC/floating buttons, full-width article. */
+@media print {
+  header,
+  footer,
+  .toc-nav,
+  #back-to-top,
+  #reading-progress,
+  #cookie-consent,
+  #sticky-banner,
+  [data-helpful-root],
+  [data-share-root] {
+    display: none !important;
+  }
+  main {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+  .prose table {
+    display: table;
+    overflow: visible;
   }
 }
 

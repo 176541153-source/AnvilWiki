@@ -15,6 +15,9 @@ export {
   getRecentEntries,
   getRelatedEntries,
   parseEntryId,
+  isPossiblyOutdated,
+  STALE_AFTER_DAYS,
+  STALE_CATEGORIES,
   type WikiEntry,
   type ResolvedEntry,
 } from '~/i18n/content';

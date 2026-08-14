@@ -1,16 +1,19 @@
 # AnvilWiki ⚒️
 
-> 一个开源的、为 Cloudflare Pages 原生优化的游戏 wiki 站点模板。
-> 让新手零成本免费部署上线，性能好，适配 wiki 游戏站。
+> 广告收入 100% 归你的游戏 wiki 模板。
+> 开源、Cloudflare Pages 原生优化、零成本免费部署上线。
 >
-> An open-source game wiki site template, natively optimized for Cloudflare Pages.
-> Free to deploy, beginner-friendly, fast, and built for game wikis.
+> The game wiki template that keeps 100% of your ad revenue.
+> Open source, natively optimized for Cloudflare Pages, free to deploy.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Astro](https://img.shields.io/badge/Astro-5.x-FF5D01?logo=astro&logoColor=white)](https://astro.build)
 [![Cloudflare Pages](https://img.shields.io/badge/Cloudflare-Pages-F38020?logo=cloudflare&logoColor=white)](https://pages.cloudflare.com)
 [![Release](https://img.shields.io/github/v/release/PNGTRID/AnvilWiki?label=Release&color=brightgreen)](https://github.com/PNGTRID/AnvilWiki/releases)
 [![Live Demo](https://img.shields.io/badge/Demo-anvilwiki.pages.dev-brightgreen)](https://anvilwiki.pages.dev/)
+[![Project page](https://img.shields.io/badge/Project_page-/landing-8b5cf6)](https://anvilwiki.pages.dev/landing)
+
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/PNGTRID/AnvilWiki)
 
 > Lighthouse 4×100 — 实测于 [anvilwiki.pages.dev](https://anvilwiki.pages.dev/)（2026-08-12）
 <table>
@@ -36,22 +39,24 @@
 
 ### 这是什么？
 
-AnvilWiki 是一个**游戏 wiki 站点模板**——用来快速搭建围绕某款游戏（Roblox、Steam 新游等）的攻略内容站，通过 SEO 获取流量，通过广告变现。
+AnvilWiki 是一个**游戏 SEO 内容站模板**——用来快速搭建围绕某款游戏（Roblox、Steam 新游等）的攻略内容站，通过 SEO 获取流量，通过广告变现。**广告收入 100% 归你**：无平台抽成、无收入分成（对比 Fandom 等托管 wiki 的平台分成模式）。
 
 技术栈是 **Astro + Cloudflare Pages**：纯静态输出、零适配器、免费无限带宽、全球 CDN、零 JS 优先（首屏极快）。
 
 ### 核心特性
 
+- 💰 **广告收入 100% 归你**：内置 Google AdSense 广告位（3 个位置，env 驱动，默认关闭）——无平台抽成，和托管 wiki 农场完全不同
+- 🔍 **SEO 工程化**：sitemap（含 lastmod）/ JSON-LD（含 VideoGame）/ hreflang / robots / 文章 TOC / Quick Answer 摘要块 / llms.txt（AI 搜索），全部代码自动生成
 - ⚡ **极快**：Astro 零 JS 优先，Lighthouse 全 100（Performance / Accessibility / Best Practices / SEO）
 - 🌐 **Cloudflare 原生**：纯静态输出，零适配器，免费无限带宽
-- 🎨 **JSON 驱动首页**：6 种 displayType 模块化布局，换游戏只改 JSON 不改组件
 - 🌍 **多语言开箱即用**：英文无前缀（SEO 最优），其他语言带前缀，缺失内容自动 fallback 英文
-- 🔍 **SEO 工程化**：sitemap / JSON-LD（含 VideoGame）/ hreflang / robots / 文章 TOC / Quick Answer 摘要块，全部代码自动生成
-- 🎯 **广告就绪**：内置 Google AdSense 广告组件（3 个广告位，env 驱动，默认关闭）
+- 🎮 **wiki 级内容呈现**：Boss 数据卡（frontmatter 驱动）、代码一键复制、TOC 滚动高亮、移动端表格横滑
+- 📡 **内容分发**：RSS feed + 分享按钮 + llms.txt，多渠道触达
 - 💬 **评论就绪**：内置 Giscus 评论（GitHub Discussions），默认关闭，填 env 即启用，见 [docs/comments.md](docs/comments.md)
-- 🔄 **套用模板**：按文件组织的配置参考手册 + 交互式 CLI（`pnpm apply-template`）
+- 🔄 **套用模板**：按文件组织的配置参考手册 + 交互式 CLI（`pnpm apply-template`）+ `pnpm new-locale` 语言脚手架
+- 🛡️ **隐私合规**：Cookie consent 真门控（同意后才加载 GA/AdSense）
 - 🆓 **完全免费**：MIT 协议，Cloudflare Pages 免费部署
-- 📝 **类型安全**：Content Collections + Zod schema，构建时发现字段错误
+- 📝 **类型安全**：Content Collections + Zod schema，构建时发现字段错误 + `pnpm check-config` 三处一致性校验
 
 ### 5 分钟快速开始
 
@@ -112,16 +117,18 @@ Built on **Astro + Cloudflare Pages**: pure static output, zero adapters, free u
 
 ### Key Features
 
+- 💰 **100% your ad revenue**: Built-in Google AdSense slots (3 positions, env-driven, off by default) — no platform cut, unlike hosted wiki farms
+- 🔍 **SEO engineering**: sitemap (with lastmod) / JSON-LD (incl. VideoGame) / hreflang / robots / article TOC / Quick Answer blocks / llms.txt (AI search) — all auto-generated
 - ⚡ **Blazing fast**: Astro zero-JS by default, Lighthouse 4×100 (Performance / Accessibility / Best Practices / SEO)
 - 🌐 **Cloudflare native**: Pure static output, zero adapters, free unlimited bandwidth
-- 🎨 **JSON-driven homepage**: 6 displayTypes, swap games by editing JSON only
 - 🌍 **i18n out of the box**: Default locale (English) has no prefix (SEO optimal), others prefixed, missing content falls back to English
-- 🔍 **SEO engineering**: sitemap / JSON-LD (incl. VideoGame) / hreflang / robots / article TOC / Quick Answer summary blocks — all auto-generated
-- 🎯 **Ads ready**: Built-in Google AdSense ad components (3 ad positions, env-driven, off by default)
+- 🎮 **Wiki-grade content**: boss stat cards (frontmatter-driven), one-tap code copy, TOC scrollspy, mobile-friendly tables
+- 📡 **Content distribution**: RSS feed + share buttons + llms.txt
 - 💬 **Comments ready**: Built-in Giscus comments (GitHub Discussions), off by default, enable via env — see [docs/comments.md](docs/comments.md)
-- 🔄 **Apply template**: File-organized config reference + interactive CLI (`pnpm apply-template`)
+- 🔄 **Apply template**: File-organized config reference + interactive CLI (`pnpm apply-template`) + `pnpm new-locale` scaffolding
+- 🛡️ **Privacy-compliant**: cookie consent that actually gates GA/AdSense loading
 - 🆓 **Completely free**: MIT license, free Cloudflare Pages deployment
-- 📝 **Type-safe**: Content Collections + Zod schema, catch field errors at build time
+- 📝 **Type-safe**: Content Collections + Zod schema + `pnpm check-config` consistency checks
 
 ### Quick Start (5 min)
 

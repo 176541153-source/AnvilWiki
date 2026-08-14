@@ -126,12 +126,23 @@ category: "${category}"
 date: ${today}
 lastModified: ${today}
 tags: []
+summary: "One-sentence direct answer (40-60 words). This becomes the Quick
+  Answer card and the AI Overviews / featured snippet candidate."
 ---
 
-## Overview
+## How do I …? ← write section headings as QUESTIONS
 
-Start writing here. The first heading should be H2 (the H1 is rendered
-automatically from the title above — do not add an H1 in the body).
+Answer the question directly in the FIRST paragraph after the heading,
+in 40-60 words. Then expand into details. AI search engines (Google AI
+Overviews, ChatGPT, Perplexity) preferentially cite question-shaped
+headings followed by a concise direct answer.
+
+## Next question-shaped heading
+
+- Use native Markdown tables for stats (drop rates, loadouts) — they are
+  mobile-scrollable and AI-parseable.
+- Use ordered lists for step-by-step instructions.
+- Do NOT write an H1 in the body — it is rendered from the title above.
 `;
 
   fs.writeFileSync(filePath, template, 'utf8');

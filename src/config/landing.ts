@@ -18,6 +18,15 @@ export const landing = {
   demoUrl: '/',
   docsBaseUrl: 'https://github.com/PNGTRID/AnvilWiki/blob/main/docs',
 
+  /**
+   * Optional announcement bar (top of landing page). Set to null to hide.
+   * Keep it to ONE line — its job is a single fresh signal, not news.
+   */
+  announcement: {
+    text: 'v1.2 shipped — boss stat cards, codes copy blocks, AI-search (llms.txt) & consent-gated analytics.',
+    href: 'https://github.com/PNGTRID/AnvilWiki/releases',
+  },
+
   /** Hero section */
   hero: {
     badge: 'Open Source · MIT · Cloudflare Pages',

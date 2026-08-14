@@ -32,26 +32,40 @@ import { landing } from '~/config/landing';
       </a>
     </div>
 
-    {/* Right: stylized preview card */}
-    <div class="overflow-hidden rounded-xl border border-border bg-card shadow-lg">
-      <div class="flex items-center gap-2 border-b border-border bg-muted px-4 py-3">
-        <span class="h-3 w-3 rounded-full bg-red-400"></span>
-        <span class="h-3 w-3 rounded-full bg-yellow-400"></span>
-        <span class="h-3 w-3 rounded-full bg-green-400"></span>
-        <span class="ml-3 truncate rounded bg-background px-3 py-0.5 text-xs text-muted-foreground">
-          anvilwiki.pages.dev
-        </span>
-      </div>
-      <div class="space-y-3 p-6">
-        <div class="h-6 w-2/3 rounded bg-muted"></div>
-        <div class="h-3 w-full rounded bg-muted/60"></div>
-        <div class="h-3 w-4/5 rounded bg-muted/60"></div>
-        <div class="grid grid-cols-3 gap-3 pt-2">
-          <div class="h-16 rounded-lg border border-border bg-nav/5"></div>
-          <div class="h-16 rounded-lg border border-border bg-muted/40"></div>
-          <div class="h-16 rounded-lg border border-border bg-muted/40"></div>
+    {/* Right: real screenshots — article page (desktop) + homepage (mobile) */}
+    <div class="space-y-4">
+      <div class="overflow-hidden rounded-xl border border-border bg-card shadow-lg">
+        <div class="flex items-center gap-2 border-b border-border bg-muted px-4 py-2.5">
+          <span class="h-2.5 w-2.5 rounded-full bg-red-400"></span>
+          <span class="h-2.5 w-2.5 rounded-full bg-yellow-400"></span>
+          <span class="h-2.5 w-2.5 rounded-full bg-green-400"></span>
+          <span class="ml-3 truncate rounded bg-background px-3 py-0.5 text-xs text-muted-foreground">
+            anvilwiki.pages.dev/bosses/emberfang
+          </span>
         </div>
-        <div class="h-20 rounded-lg border border-border bg-muted/30"></div>
+        <img
+          src="/images/showcase/demo-article.png"
+          alt="Boss guide article — Quick Answer card and structured Boss Overview data card"
+          width="1280"
+          height="800"
+          loading="lazy"
+          decoding="async"
+          class="w-full"
+        />
+      </div>
+      <div class="flex items-end justify-center gap-4">
+        <img
+          src="/images/showcase/demo-mobile.png"
+          alt="Mobile view of the demo homepage"
+          width="195"
+          height="360"
+          loading="lazy"
+          decoding="async"
+          class="w-32 rounded-lg border border-border shadow-md sm:w-40"
+        />
+        <p class="max-w-40 text-xs text-muted-foreground">
+          Mobile-first: clean first screen, scrollable tables, tap-to-copy codes.
+        </p>
       </div>
     </div>
   </div>

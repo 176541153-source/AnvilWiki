@@ -1,4 +1,5 @@
 {
+  "$schema": "../../docs/home.schema.json",
   "site": {
     "name": "Anvil Quest Wiki",
     "shortName": "AQ Wiki",
@@ -47,7 +48,15 @@
       "resistant": "Resistant",
       "location": "Location",
       "level": "Rec. Level"
-    }
+    },
+    "possiblyOutdated": "This guide was last checked on",
+    "outdatedNote": "— the game may have changed since. Some details could be out of date.",
+    "prevArticle": "Previous",
+    "nextArticle": "Next",
+    "minuteRead": "min read",
+    "wasThisHelpful": "Was this helpful?",
+    "feedbackThanks": "Thanks for the feedback!",
+    "relatedVideos": "Related videos"
   },
   "overview": {
     "bosses": {

@@ -64,12 +64,20 @@ Below 33% HP, Emberfang enters enrage: movement speed +30%, bolt volley becomes 
 
 ## Rewards
 
+import StatBar from '~/components/article/StatBar.astro';
+
 | Drop                        | Drop Rate | Notes                            |
 | --------------------------- | --------- | -------------------------------- |
 | Emberfang Shard             | 100%      | Quest item, always drops         |
 | Molten Gem                  | 35%       | Used to craft Emberweave weapons |
 | Emberfang's Helm (cosmetic) | 5%        | Rare cosmetic, no stats          |
 | 850 coins                   | 100%      | Flat reward                      |
+
+Drop rates at a glance:
+
+<StatBar label="Emberfang Shard" value={100} note="guaranteed" />
+<StatBar label="Molten Gem" value={35} />
+<StatBar label="Emberfang's Helm" value={5} note="1 in 20 runs" />
 
 ## TL;DR
 

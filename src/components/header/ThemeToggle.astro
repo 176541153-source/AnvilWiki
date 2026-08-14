@@ -1,8 +1,11 @@
 ---
 /**
- * Theme toggle — switches between light and dark.
- * Pure vanilla JS (5 lines). No framework runtime.
- * The .dark class is toggled on <html>; globals.css handles the variable swap.
+ * Theme toggle — cycles light → dark → AMOLED black.
+ * Pure vanilla JS, no framework runtime. Classes live on <html>:
+ *   light: (none) · dark: .dark · black: .dark.black (black = dark vars
+ *   overridden with pure-black surfaces in globals.css for OLED phones).
+ * The stored value ('light'|'dark'|'black') is re-applied pre-paint in
+ * BaseLayout's no-FOUC script.
  */
 import { Icon } from 'astro-icon/components';
 ---
@@ -10,19 +13,49 @@ import { Icon } from 'astro-icon/components';
 <button
   id="theme-toggle"
   type="button"
-  aria-label="Toggle theme"
+  aria-label="Cycle theme (light / dark / AMOLED black)"
+  title="Light / Dark / AMOLED black"
   class="inline-flex h-9 w-9 items-center justify-center rounded-md text-foreground transition hover:bg-muted"
 >
-  <Icon name="lucide:sun" class="h-5 w-5 dark:hidden" />
-  <Icon name="lucide:moon" class="hidden h-5 w-5 dark:block" />
+  <Icon name="lucide:sun" data-theme-icon="light" class="h-5 w-5" />
+  <Icon name="lucide:moon" data-theme-icon="dark" class="h-5 w-5" />
+  <Icon name="lucide:contrast" data-theme-icon="black" class="h-5 w-5" />
 </button>
+
+<style is:global>
+  /* Show only the icon matching the current theme state. */
+  [data-theme-icon] {
+    display: none;
+  }
+  html:not(.dark) [data-theme-icon='light'] {
+    display: inline-flex;
+  }
+  html.dark:not(.black) [data-theme-icon='dark'] {
+    display: inline-flex;
+  }
+  html.black [data-theme-icon='black'] {
+    display: inline-flex;
+  }
+</style>
+
 <script is:inline>
   (() => {
     const btn = document.getElementById('theme-toggle');
     btn?.addEventListener('click', () => {
       const html = document.documentElement;
-      const isDark = html.classList.toggle('dark');
-      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      const current = html.classList.contains('black')
+        ? 'black'
+        : html.classList.contains('dark')
+          ? 'dark'
+          : 'light';
+      const next = current === 'light' ? 'dark' : current === 'dark' ? 'black' : 'light';
+      html.classList.toggle('dark', next !== 'light');
+      html.classList.toggle('black', next === 'black');
+      try {
+        localStorage.setItem('theme', next);
+      } catch {
+        /* storage unavailable — session-only theme */
+      }
     });
   })();
 </script>

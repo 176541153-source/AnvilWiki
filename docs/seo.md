@@ -194,6 +194,36 @@
 
 ---
 
+## AI 搜索时代：让内容被 AI Overviews / ChatGPT 引用
+
+2025-2026 年 Google AI Overviews 导致出版商搜索流量普遍下降（问答型查询首当其冲——而游戏 wiki 的"怎么打 X""最新 codes"正是问答型）。AnvilWiki 内置了应对这套打法的基础设施，你写作时按下面的规则做即可最大化被引用概率。
+
+### 模板已内置的部分（自动生效）
+
+| 能力 | 作用 |
+|---|---|
+| `summary` frontmatter + Quick Answer 卡片 | 40-60 词直答块，AI Overviews / featured snippet 抓取的最爱 |
+| `llms.txt`（`/llms.txt`） | 给 ChatGPT/Perplexity/Claude 的站点内容索引，构建时自动生成 |
+| `boss` frontmatter 数据卡 | 结构化键值对（HP/弱点/位置），AI 倾向引用结构化答案 |
+| Article / FAQPage JSON-LD | 语义化结构，AI 爬虫仍解析（FAQ rich result 虽废弃） |
+| sitemap `<lastmod>` | Google 唯一信任的调度字段，更新后重新抓取得更及时 |
+| RSS feed（`/rss.xml`） | 内容分发的去中心化管道，配合聚合器/IFTTT 自动推送 |
+
+### 写作规则（你需要做的）
+
+1. **H2 用问题句式**：写 `## How do I beat Emberfang in phase 1?` 而非 `## 第一阶段打法`。用户的搜索词就是问题，AI 匹配问题标题。
+2. **答案紧跟标题，40-60 词**：H2 下面第一段直接给答案，再展开细节。不要铺垫。
+3. **用原生表格/有序列表呈现数据**：掉落率、配装、tier list 用 Markdown 表格（模板已做移动端横滑优化），AI 解析表格的准确率远高于散文。
+4. **每篇必填 `summary`**：这是你的"AI 摘要候选人"字段。
+5. **时效内容标注日期**：codes/patch notes 类文章的 `lastModified` 保持更新——AI 引用偏好新鲜内容，模板超 90 天会自动显示过期提示。
+
+### 参考（公开权威来源）
+
+- Google 官方：[优化生成式 AI 功能指南](https://developers.google.com/search/docs/fundamentals/ai-optimization-guide)
+- [llms.txt 规范](https://llmstxt.org/)
+
+---
+
 ## 下一步
 
 - [内容格式](./content-format.md)

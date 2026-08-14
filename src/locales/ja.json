@@ -1,4 +1,5 @@
 {
+  "$schema": "../../docs/home.schema.json",
   "site": {
     "name": "Anvil Quest Wiki",
     "shortName": "AQ Wiki",
@@ -47,7 +48,15 @@
       "resistant": "耐性",
       "location": "場所",
       "level": "推奨Lv"
-    }
+    },
+    "possiblyOutdated": "この攻略の最終確認日:",
+    "outdatedNote": "— その後のゲーム更新で内容が変わっている可能性があります。",
+    "prevArticle": "前の攻略",
+    "nextArticle": "次の攻略",
+    "minuteRead": "分で読める",
+    "wasThisHelpful": "この攻略は役に立ちましたか?",
+    "feedbackThanks": "フィードバックありがとうございます!",
+    "relatedVideos": "関連動画"
   },
   "overview": {
     "bosses": {

@@ -43,10 +43,35 @@ noindex: false
 | `description`  | string   | ✅   | 40-165 字符                          | meta description + 文章副标题            |
 | `category`     | string   | ✅   | 必须在 `navigation.ts` 的 key 列表里 | 决定 URL 路径和列表页归属                |
 | `date`         | date     | ✅   | ISO 格式（YYYY-MM-DD）               | 发布日期 + Article JSON-LD datePublished |
-| `lastModified` | date     | 可选 | ISO 格式                             | 最后修改日期（JSON-LD dateModified）     |
+| `lastModified` | date     | 可选 | ISO 格式                             | 最后修改日期（JSON-LD dateModified + sitemap lastmod；boss/tier-list 超 90 天自动显示"可能过期"提示） |
 | `image`        | string   | 可选 | 相对 MDX 文件的路径（走 Astro Image） | 封面图（og:image，缺省用 hero）          |
 | `tags`         | string[] | 可选 | 默认 `[]`                            | 用于"相关文章"推荐                       |
 | `noindex`      | boolean  | 可选 | 默认 `false`                         | 设为 `true` 禁止搜索引擎索引此页         |
+| `summary`      | string   | 可选 | ≤ 200 字符                           | Quick Answer 卡片 + AI Overviews 摘要候选 |
+| `author`       | string   | 可选 | 缺省用 `site.defaultAuthor`           | 作者署名（E-E-A-T）                       |
+| `boss`         | object   | 可选 | hp/weakness/resistant/location/recommendedLevel | 结构化 Boss 数据卡（正文前渲染）   |
+| `videos`       | string[] | 可选 | YouTube 视频 ID（11 位，非完整 URL）  | 文章底部"相关视频"懒加载嵌入              |
+
+### 可在 MDX 中使用的模板组件
+
+MDX 里可以直接 import 模板组件（无需任何配置）：
+
+```mdx
+import CodeBlock from '~/components/article/CodeBlock.astro';
+import StatBar from '~/components/article/StatBar.astro';
+
+<CodeBlock code="FORGE-2026" label="+500 Gold · expires Aug 31" />
+
+<StatBar label="Molten Gem" value={35} />
+<StatBar label="Rare Helm" value={5} note="1 in 20 runs" />
+```
+
+- **CodeBlock** — 一键复制游戏兑换码（codes 页留存神器）
+- **StatBar** — 掉落率/属性条形可视化
+
+### Patch notes / 更新日志范式
+
+游戏每次版本更新都是搜索流量高峰（玩家搜 "game name patch notes August"）。不需要专门的 contentType：在 `navigation.ts` 加一个 `patch-notes` 分类，每篇文章对应一个版本（`date` 用版本日期、`lastModified` 持续更新），首页用 `timeline` displayType 模块自动呈现版本时间线，RSS 会把每次更新推给订阅者。demo 的 codes 文章（`src/content/wiki/en/codes/all-codes.mdx`）演示了同类"高频更新"内容的完整写法。
 
 ### 校验失败示例
 

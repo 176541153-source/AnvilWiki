@@ -32,6 +32,16 @@ const jsonLd = [websiteJsonLd('en')];
   titleSuffix={landing.projectName}
   jsonLd={jsonLd}
 >
+  {/* Announcement bar (optional — see landing.ts) */}
+  {landing.announcement && (
+    <a
+      href={landing.announcement.href}
+      class="block bg-nav/10 px-4 py-1.5 text-center text-xs font-medium text-nav transition hover:bg-nav/15"
+    >
+      {landing.announcement.text}
+    </a>
+  )}
+
   {/* Minimal header — logo + GitHub link + theme toggle */}
   <header class="sticky top-0 z-40 w-full border-b border-border bg-background/80 backdrop-blur">
     <div class="mx-auto flex h-14 max-w-7xl items-center gap-4 px-4">

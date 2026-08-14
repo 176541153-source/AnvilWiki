@@ -26,6 +26,12 @@ export interface SiteConfig {
     twitter?: string;
     reddit?: string;
   };
+  /**
+   * Canonical URLs about the GAME (Steam page, official site, Wikipedia entry…).
+   * Emitted as Organization JSON-LD `sameAs` — helps Google / AI engines link
+   * this wiki to the game's knowledge-graph entity.
+   */
+  sameAs?: string[];
   game: {
     /** Full game name. */
     name: string;
@@ -65,6 +71,11 @@ export const site: SiteConfig = {
     twitter: 'https://twitter.com/example',
     reddit: 'https://reddit.com/r/anvilquest',
   },
+  // 👉 APPLY TEMPLATE: point these at the game's real canonical pages.
+  sameAs: [
+    'https://example.com/anvil-quest',
+    'https://en.wikipedia.org/wiki/Anvil_Quest',
+  ],
   game: {
     name: 'Anvil Quest',
     platform: 'Roblox',

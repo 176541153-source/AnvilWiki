@@ -48,6 +48,11 @@ const wiki = defineCollection({
           recommendedLevel: z.string().optional(),
         })
         .optional(),
+      /**
+       * Optional related YouTube video IDs (lazy-loaded embeds at the article
+       * bottom — zero JS until click). 11-char IDs, not full URLs.
+       */
+      videos: z.array(z.string()).optional(),
     }),
 });
 

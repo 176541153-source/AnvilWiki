@@ -154,3 +154,23 @@ export async function getRelatedEntries(
     })
     .slice(0, limit);
 }
+
+/**
+ * Categories whose content goes stale when the game updates (boss mechanics,
+ * tier lists). Articles in these categories show a "possibly outdated" banner
+ * when the last-modified date is older than STALE_AFTER_DAYS.
+ */
+export const STALE_CATEGORIES = ['bosses', 'tier-list'];
+export const STALE_AFTER_DAYS = 90;
+
+/**
+ * True when the article is in a time-sensitive category and its
+ * lastModified (or date) is older than STALE_AFTER_DAYS.
+ * Pure function (testable without a build).
+ */
+export function isPossiblyOutdated(category: string, lastModified: Date | undefined, date: Date, now = new Date()): boolean {
+  if (!STALE_CATEGORIES.includes(category)) return false;
+  const ref = lastModified ?? date;
+  const ageMs = now.getTime() - ref.getTime();
+  return ageMs > STALE_AFTER_DAYS * 24 * 60 * 60 * 1000;
+}

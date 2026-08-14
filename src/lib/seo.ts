@@ -20,6 +20,9 @@ export function organizationJsonLd() {
     logo: `${siteUrl}/android-chrome-512x512.png`,
     image: `${siteUrl}/images/hero.webp`,
     description: site.description,
+    // Entity association: link the wiki to the game's canonical pages
+    // (Steam / official site / Wikipedia) — knowledge-graph signal.
+    ...(site.sameAs && site.sameAs.length > 0 ? { sameAs: site.sameAs } : {}),
   };
 }
 
