@@ -40,6 +40,29 @@ const description = t.description;
   jsonLd={jsonLd}
   alternates={alternates}
 >
+  {/* Locale auto-detect + preference memory (runs before anything renders):
+      1. Manual toggle always wins (stored in localStorage by the toggle links).
+      2. No stored preference + Chinese browser → serve the Chinese page.
+      3. Otherwise stay (someone may have been linked here directly). */}
+  <script is:inline>
+    (() => {
+      try {
+        const stored = localStorage.getItem('landing-lang');
+        const isZhPage = location.pathname.startsWith('/zh/');
+        if (stored === 'en' && isZhPage) {
+          location.replace('/landing');
+        } else if (stored === 'zh' && !isZhPage) {
+          location.replace('/zh/landing');
+        } else if (!stored && !isZhPage) {
+          const lang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
+          if (lang.startsWith('zh')) location.replace('/zh/landing');
+        }
+      } catch (e) {
+        /* storage unavailable — keep the current page */
+      }
+    })();
+  </script>
+
   {/* Announcement bar (optional — see landing.ts) */}
   {t.announcement && (
     <a
@@ -61,6 +84,7 @@ const description = t.description;
         <a
           href={landingPath(other)}
           hreflang={other}
+          onclick={`localStorage.setItem('landing-lang','${other}')`}
           class="rounded-md border border-border px-2 py-1 text-xs font-medium text-muted-foreground transition hover:text-nav"
         >
           {other === 'zh' ? '中文' : 'EN'}
