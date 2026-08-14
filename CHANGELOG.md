@@ -7,6 +7,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] — 2026-08-15
+
+**AnvilWiki v1.3 — 审计清零版:未完成清单全部落地(codes 范式 + 阅读体验全家桶 + fork 工具链)。**
+
+The final batch of the 2026-08 expert-audit backlog: a complete codes-content paradigm (the #1 traffic entry for game wikis), a full reading-experience suite, and fork-user tooling (locale scaffolding, homepage presets, schema validation).
+
+### Added
+- **Codes content paradigm**: `CodeBlock.astro` one-tap copy component + a complete demo codes article (en/ja) — 5 copyable codes, expiry table, "how to redeem" question-style H2s. Codes pages are the highest-traffic wiki entry; the template now ships a reference implementation.
+- **Stale-content notice**: articles in time-sensitive categories (bosses / tier-list) older than 90 days automatically show a "possibly outdated" banner (pure `isPossiblyOutdated()` function).
+- **Reading-experience suite on articles**: prev/next navigation within a category, reading-time estimate (CJK-adapted), top-edge reading progress bar, Quick Answer copy button, "was this helpful?" feedback, related lazy-loaded videos (`videos` frontmatter, YouTube IDs), print stylesheet (`@media print` strips chrome/ads), and drop-rate `StatBar` visualization component (used in the demo boss guide).
+- **AMOLED black theme**: theme toggle now cycles light → dark → pure-black (`html.dark.black`, battery-saving surfaces for OLED phones), persisted + no-FOUC.
+- **`pnpm new-locale`**: scaffolds a new language end-to-end (routing.ts + ui.ts + locale JSON clone + content dir) — the 4-place sync that was error-prone by hand.
+- **Homepage presets in `apply-template`**: codes-focused / guides-focused / keep-demo skeletons generated from your game name and categories, instead of hand-editing a 270-line demo JSON.
+- **`docs/home.schema.json`**: JSON Schema for the locale `home` namespace (displayType enum enforced); `$schema` refs wired into en/ja JSON for VS Code validation.
+- **Landing page**: real demo screenshots (desktop home, boss article, mobile) replace skeleton placeholders; announcement bar; "Deploy to Cloudflare" button and `/landing` badge in README.
+- **Mobile search entry**: prominent Search item at the top of the mobile menu (readers don't know Cmd+K).
+- **i18n smoke tests**: 6 regression tests guarding against hardcoded-locale arrays in routes (the v1.1.0 bug class).
+
+### Changed
+- **README repositioned**: tagline and feature list now lead with "100% ad revenue yours"; feature list rebuilt to cover all shipped capabilities.
+- **`apply-template` theme rewrite is line-based**: replaces only the 6 `--brand*` variable lines (tolerates custom vars/indentation in globals.css — the old whole-block regex silently broke on user edits).
+- **`apply-template` resets `wrangler.toml [vars]`**: forks no longer risk shipping the demo site's Giscus config (SITE_URL set to their domain, Giscus values blanked).
+- `new-post` scaffold now guides AI-Overview-friendly writing (question-shaped H2s, 40–60-word direct answers, summary field).
+- `organizationJsonLd` emits `sameAs` (configurable in site.ts) for knowledge-graph entity association.
+- docs/seo.md gains an "AI search era" chapter (what's built-in + 5 writing rules); content-format.md documents all frontmatter fields and the MDX components (`CodeBlock` / `StatBar`) + patch-notes paradigm.
+
+### Fixed
+- `migration-from-nextjs.md` now carries an honesty disclaimer (estimates not battle-tested).
+
 ## [1.2.0] — 2026-08-15
 
 **AnvilWiki v1.2 — 专家团审计落地版:项目官网 + 阅读体验 + AI 搜索卡位 + 隐私合规。**
@@ -128,7 +157,8 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
-[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/PNGTRID/AnvilWiki/compare/v0.2.0...v1.0.0
