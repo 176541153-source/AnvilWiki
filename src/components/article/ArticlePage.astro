@@ -18,6 +18,7 @@ import LocaleLayout from '~/components/layout/LocaleLayout.astro';
 import InContentAd from '~/components/ads/InContentAd.astro';
 import Comments from '~/components/article/Comments.astro';
 import TableOfContents from '~/components/article/TableOfContents.astro';
+import ShareButton from '~/components/article/ShareButton.astro';
 import WikiSidebar from '~/components/sidebar/WikiSidebar.astro';
 import { NAVIGATION_CONFIG } from '~/config/navigation';
 import { siteUrl } from '~/config/site';
@@ -133,6 +134,16 @@ const jsonLd = [
             </span>
           )
         }
+        <span class="ml-auto">
+          <ShareButton
+            title={entry.data.title}
+            labels={{
+              share: (shared.share as string) ?? 'Share',
+              copyLink: (shared.copyLink as string) ?? 'Copy link',
+              copied: (shared.copied as string) ?? 'Copied!',
+            }}
+          />
+        </span>
       </div>
     </header>
 

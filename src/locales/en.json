@@ -32,7 +32,14 @@
     "backToCategory": "Back to",
     "browseAll": "Browse all",
     "viewAll": "View all",
-    "commentsHeading": "Comments"
+    "commentsHeading": "Comments",
+    "share": "Share",
+    "copyLink": "Copy link",
+    "copied": "Copied!",
+    "consentText": "We use cookies for analytics and ads to keep this site free.",
+    "accept": "Accept",
+    "decline": "Decline",
+    "consentTitle": "Cookies"
   },
   "overview": {
     "bosses": {

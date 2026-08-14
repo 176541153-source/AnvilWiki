@@ -14,6 +14,8 @@ import '~/styles/globals.css';
 import { site, siteUrl } from '~/config/site';
 import { organizationJsonLd } from '~/lib/seo';
 import JsonLd from '~/components/seo/JsonLd.astro';
+import CookieConsent from './CookieConsent.astro';
+import { getUi } from '~/i18n/ui';
 
 interface Props {
   title: string;
@@ -57,6 +59,16 @@ const orgJsonLd = organizationJsonLd();
 const gaId = import.meta.env.PUBLIC_GA_ID as string | undefined;
 const gscVerification = import.meta.env.PUBLIC_GSC_VERIFICATION as string | undefined;
 const adsenseClient = import.meta.env.PUBLIC_ADSENSE_CLIENT as string | undefined;
+
+// Consent banner labels (locale JSON `shared.*`; hardcoded fallbacks for a
+// locale whose JSON hasn't been translated yet).
+const sharedStrings = getUi(locale).shared as Record<string, string>;
+const consentLabels = {
+  title: sharedStrings.consentTitle ?? 'Cookies',
+  text: sharedStrings.consentText ?? 'We use cookies for analytics and ads.',
+  accept: sharedStrings.accept ?? 'Accept',
+  decline: sharedStrings.decline ?? 'Decline',
+};
 ---
 
 <!doctype html>
@@ -67,6 +79,7 @@ const adsenseClient = import.meta.env.PUBLIC_ADSENSE_CLIENT as string | undefine
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.json" />
+    <link rel="alternate" type="application/rss+xml" title={site.name} href="/rss.xml" />
     <meta name="generator" content={Astro.generator} />
 
     <title>{fullTitle}</title>
@@ -105,34 +118,45 @@ const adsenseClient = import.meta.env.PUBLIC_ADSENSE_CLIENT as string | undefine
     {/* Google Search Console verification (optional) */}
     {gscVerification && <meta name="google-site-verification" content={gscVerification} />}
 
-    {/* Google Analytics (optional, env-var gated) */}
-    {gaId && (
-      <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} />
-    )}
-    {gaId && (
-      <script is:inline define:vars={{ gaId }}>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() {
-          dataLayer.push(arguments);
-        }
-        gtag('js', new Date());
-        gtag('config', gaId);
+    {/*
+      Analytics / AdSense are injected DYNAMICALLY (consent-gated).
+      BaseLayout only defines the loader; CookieConsent.astro calls it after
+      the visitor accepts. See GDPR note in AGENTS.md. No tracking env vars
+      → this block renders nothing → zero JS.
+    */}
+    {(gaId || adsenseClient) && (
+      <script is:inline define:vars={{ gaId, adsenseClient }}>
+        window.__awLoadTrackers = () => {
+          if (window.__awTrackersLoaded) return;
+          window.__awTrackersLoaded = true;
+          if (gaId) {
+            const s = document.createElement('script');
+            s.async = true;
+            s.src = 'https://www.googletagmanager.com/gtag/js?id=' + gaId;
+            document.head.appendChild(s);
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+              dataLayer.push(arguments);
+            }
+            gtag('js', new Date());
+            gtag('config', gaId);
+          }
+          if (adsenseClient) {
+            const s = document.createElement('script');
+            s.async = true;
+            s.crossOrigin = 'anonymous';
+            s.src =
+              'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' +
+              adsenseClient;
+            document.head.appendChild(s);
+          }
+        };
       </script>
     )}
 
     {/* JSON-LD: Organization (global) + any page-specific */}
     <JsonLd data={orgJsonLd} />
     {jsonLd.map((d) => <JsonLd data={d} />)}
-
-    {/* Google AdSense loader (optional, env-var gated) */}
-    {adsenseClient && (
-      <script
-        is:inline
-        async
-        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClient}`}
-        crossorigin="anonymous"
-      />
-    )}
 
     {/* No-FOUC theme init — runs before first paint. */}
     <script is:inline>
@@ -147,5 +171,16 @@ const adsenseClient = import.meta.env.PUBLIC_ADSENSE_CLIENT as string | undefine
   </head>
   <body class="min-h-screen bg-background text-foreground antialiased">
     <slot />
+    {/* Consent banner — only rendered when tracking env vars are set. */}
+    {(gaId || adsenseClient) && (
+      <CookieConsent
+        labels={{
+          title: consentLabels.title,
+          text: consentLabels.text,
+          accept: consentLabels.accept,
+          decline: consentLabels.decline,
+        }}
+      />
+    )}
   </body>
 </html>

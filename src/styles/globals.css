@@ -99,6 +99,16 @@
   .section {
     @apply mx-auto max-w-7xl px-4 py-12 md:py-16;
   }
+
+  /* Mobile table fix: GFM tables inside prose (boss stats, loadouts, drop
+     rates) easily exceed narrow viewports. Making the table itself a
+     scrollable block lets readers swipe horizontally instead of seeing a
+     broken, squeezed layout. Applies to ALL prose tables site-wide. */
+  .prose table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
 /* Theme initialization script — runs before paint to avoid FOUC. */
