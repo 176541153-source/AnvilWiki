@@ -34,6 +34,20 @@ const wiki = defineCollection({
       summary: z.string().max(200).optional(),
       /** Article author name (E-E-A-T signal). Falls back to site.defaultAuthor. */
       author: z.string().optional(),
+      /**
+       * Optional structured boss stats — rendered as a scannable data card
+       * (BossStatCard) above the article body. Values are strings so authors
+       * can express nuance ("4200 (Phase 2: 6300)").
+       */
+      boss: z
+        .object({
+          hp: z.string(),
+          weakness: z.string(),
+          resistant: z.string(),
+          location: z.string(),
+          recommendedLevel: z.string().optional(),
+        })
+        .optional(),
     }),
 });
 

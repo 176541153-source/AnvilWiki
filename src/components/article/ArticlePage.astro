@@ -19,6 +19,8 @@ import InContentAd from '~/components/ads/InContentAd.astro';
 import Comments from '~/components/article/Comments.astro';
 import TableOfContents from '~/components/article/TableOfContents.astro';
 import ShareButton from '~/components/article/ShareButton.astro';
+import BossStatCard from '~/components/article/BossStatCard.astro';
+import BackToTop from '~/components/article/BackToTop.astro';
 import WikiSidebar from '~/components/sidebar/WikiSidebar.astro';
 import { NAVIGATION_CONFIG } from '~/config/navigation';
 import { siteUrl } from '~/config/site';
@@ -39,7 +41,7 @@ const { locale, resolved, alternates = [] } = Astro.props;
 const { entry, servedLocale, isFallback } = resolved;
 const ui = getUi(locale);
 const nav = ui.nav as Record<string, string>;
-const shared = ui.shared as Record<string, string>;
+const shared = ui.shared as unknown as Record<string, any>;
 const overview = (ui.overview as Record<string, { overviewTitle: string }>)[entry.data.category];
 const navItem = NAVIGATION_CONFIG.find((n) => n.key === entry.data.category);
 
@@ -160,6 +162,14 @@ const jsonLd = [
       </aside>
     )}
 
+    {/* Boss stat card — structured key-value data when `boss` frontmatter present */}
+    {entry.data.boss && (
+      <BossStatCard
+        boss={entry.data.boss}
+        labels={(shared.bossCard as Record<string, string>) ?? {}}
+      />
+    )}
+
     {/* Mobile TOC (collapsible) — desktop TOC is sticky in the sidebar area */}
     <div class="mt-6 lg:hidden">
       <TableOfContents headings={headings} />
@@ -206,6 +216,7 @@ const jsonLd = [
                 <a href={detailPath(relCat, relSlug, locale)} class="card p-4">
                   <p class="text-xs uppercase tracking-wider text-muted-foreground">{relCat}</p>
                   <h3 class="mt-1 text-sm font-semibold leading-snug">{rel.data.title}</h3>
+                  <p class="mt-1 line-clamp-2 text-xs text-muted-foreground">{rel.data.description}</p>
                 </a>
               );
             })}
@@ -222,4 +233,7 @@ const jsonLd = [
       </div>
     </div>
   </div>
+
+  {/* Floating back-to-top (appears after 600px of scroll) */}
+  <BackToTop />
 </LocaleLayout>

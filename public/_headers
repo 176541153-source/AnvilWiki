@@ -7,3 +7,8 @@
   X-Content-Type-Options: nosniff
   X-Frame-Options: SAMEORIGIN
   Referrer-Policy: strict-origin-when-cross-origin
+
+# Hashed build assets (CSS/JS/fonts) never change — cache immutably for a year.
+# Returning visitors get instant repeat loads (helps LCP on revisit).
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable

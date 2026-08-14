@@ -38,7 +38,7 @@ interface Props {
 const { locale, jsonLd = [], alternates = [] } = Astro.props;
 const ui = getUi(locale);
 const home = ui.home as any;
-const shared = ui.shared as Record<string, string>;
+const shared = ui.shared as unknown as Record<string, any>;
 
 const recent = await getRecentEntries(locale, 6);
 

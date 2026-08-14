@@ -39,7 +39,15 @@
     "consentText": "We use cookies for analytics and ads to keep this site free.",
     "accept": "Accept",
     "decline": "Decline",
-    "consentTitle": "Cookies"
+    "consentTitle": "Cookies",
+    "bossCard": {
+      "title": "Boss Overview",
+      "hp": "HP",
+      "weakness": "Weakness",
+      "resistant": "Resistant",
+      "location": "Location",
+      "level": "Rec. Level"
+    }
   },
   "overview": {
     "bosses": {

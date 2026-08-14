@@ -62,7 +62,7 @@ const adsenseClient = import.meta.env.PUBLIC_ADSENSE_CLIENT as string | undefine
 
 // Consent banner labels (locale JSON `shared.*`; hardcoded fallbacks for a
 // locale whose JSON hasn't been translated yet).
-const sharedStrings = getUi(locale).shared as Record<string, string>;
+const sharedStrings = getUi(locale).shared as unknown as Record<string, any>;
 const consentLabels = {
   title: sharedStrings.consentTitle ?? 'Cookies',
   text: sharedStrings.consentText ?? 'We use cookies for analytics and ads.',
