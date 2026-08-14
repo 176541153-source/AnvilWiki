@@ -6,7 +6,7 @@
 import { Icon } from 'astro-icon/components';
 import { NAVIGATION_CONFIG } from '~/config/navigation';
 import { site } from '~/config/site';
-import { type Locale, defaultLocale } from '~/i18n/routing';
+import { type Locale, defaultLocale, locales, LOCALE_LABELS } from '~/i18n/routing';
 import { getUi } from '~/i18n/ui';
 import { localizePath } from '~/lib/url';
 import ThemeToggle from './ThemeToggle.astro';
@@ -87,6 +87,26 @@ const samePagePathFor = (loc: Locale) => {
               </a>
             ))
           }
+          {/* Language switcher for mobile — flat list, not nested dropdown */}
+          <div class="border-t border-border pt-1">
+            <div class="flex items-center gap-1 px-3 pb-1 text-xs text-muted-foreground">
+              <Icon name="lucide:globe" class="h-3 w-3" />
+              <span>{nav.language ?? 'Language'}</span>
+            </div>
+            {
+              locales.map((loc) => (
+                <a
+                  href={samePagePathFor(loc)}
+                  class:list={[
+                    'block px-3 py-2 text-sm transition hover:bg-muted',
+                    loc === locale && 'font-semibold text-nav',
+                  ]}
+                >
+                  {LOCALE_LABELS[loc]}
+                </a>
+              ))
+            }
+          </div>
         </div>
       </details>
     </div>

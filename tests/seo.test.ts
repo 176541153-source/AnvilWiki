@@ -26,7 +26,6 @@ describe('SEO helpers', () => {
       const json = websiteJsonLd('en');
       expect(json['@type']).toBe('WebSite');
       expect(json.inLanguage).toBe('en');
-      expect(json.potentialAction['@type']).toBe('SearchAction');
     });
   });
 

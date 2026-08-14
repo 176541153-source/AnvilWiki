@@ -10,7 +10,7 @@
 
 - 一个 [GitHub](https://github.com) 账号（免费）
 - 一个 [Cloudflare](https://cloudflare.com) 账号（免费）
-- 本地已安装 Node.js 20+ 和 pnpm
+- 本地已安装 Node.js 22+ 和 pnpm
 - 已经 fork 了 AnvilWiki 仓库并改好了配置层（见 [apply-template.md](./apply-template.md)）
 
 > 还没 fork？看 [快速开始](../README.md#5-分钟快速开始)。
@@ -61,7 +61,7 @@ Cloudflare 会自动检测 Astro，但请确认以下设置：
 
 | 变量名                    | 值                            | 说明                                   |
 | ------------------------- | ----------------------------- | -------------------------------------- |
-| `NODE_VERSION`            | `20`                          | 确保 Node 版本                         |
+| `NODE_VERSION`            | `22`                          | 确保 Node 版本（pnpm 11 需要 ≥22.13）  |
 | `SITE_URL`                | `https://<project>.pages.dev` | **先用临时域名**，必须含 `https://` 前缀 |
 | `PUBLIC_AD_MOBILE_320X50` | （你的 广告 key）         | 可选，留空则不显示广告                 |
 
@@ -190,7 +190,7 @@ AnvilWiki 是纯静态站点（`dist/`），可以部署到任何静态托管：
 | 变量                        | 必填 | 说明                                                   |
 | --------------------------- | ---- | ------------------------------------------------------ |
 | `SITE_URL`                  | ✅   | 站点绝对 URL（无尾斜杠），影响 sitemap/og:image/robots |
-| `NODE_VERSION`              | ✅   | 固定 `20`                                              |
+| `NODE_VERSION`              | ✅   | 固定 `22`                                              |
 | `PUBLIC_AD_MOBILE_320X50`   | 可选 | 广告网络 320×50 Sticky 广告 key                        |
 | `PUBLIC_AD_SIDEBAR_160X600` | 可选 | 侧边栏竖幅 key                                         |
 | `PUBLIC_AD_SIDEBAR_160X300` | 可选 | 侧边栏半高 key                                         |
@@ -258,7 +258,7 @@ curl -I https://<你的域名>/privacy-policy/
 
 ### Q: 构建失败，报 `Cannot find module 'astro:content'`
 
-A: Cloudflare Pages 的 Node 版本可能不对。确认环境变量 `NODE_VERSION=20` 已配。
+A: Cloudflare Pages 的 Node 版本可能不对。确认环境变量 `NODE_VERSION=22` 已配。
 
 ### Q: 构建失败，报 `ERR_PNPM_IGNORED_BUILDS`
 

@@ -27,6 +27,8 @@ interface Props {
   jsonLd?: Record<string, unknown>[];
   /** Set to true on article pages for og:type=article. */
   article?: boolean;
+  /** When true, emit <meta name="robots" content="noindex"> to exclude from search. */
+  noindex?: boolean;
 }
 
 const {
@@ -37,6 +39,7 @@ const {
   image = `${siteUrl}/images/hero.webp`,
   jsonLd = [],
   article = false,
+  noindex = false,
 } = Astro.props;
 
 const fullTitle = title.includes(site.name) ? title : `${title} — ${site.name}`;
@@ -60,6 +63,7 @@ const adsenseClient = import.meta.env.PUBLIC_ADSENSE_CLIENT as string | undefine
 
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
     <link rel="canonical" href={new URL(Astro.url.pathname, siteUrl).href} />
 
     {/* hreflang alternates */}

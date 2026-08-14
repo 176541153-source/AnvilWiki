@@ -24,7 +24,9 @@ export async function getStaticPaths() {
   }> = [];
 
   // Only non-default locales here.
-  const nonDefaultLocales: Locale[] = ['ja'].filter((l) => l !== defaultLocale) as Locale[];
+  // `locales` is a module-level export (visible inside getStaticPaths,
+  // unlike same-file top-level const — see AGENTS.md Astro 5 gotcha #3).
+  const nonDefaultLocales = locales.filter((l) => l !== defaultLocale);
 
   for (const locale of nonDefaultLocales) {
     // List page paths: one per category per locale.

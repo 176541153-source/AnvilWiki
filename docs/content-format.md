@@ -29,7 +29,7 @@ description: 'Complete strategy guide for defeating Emberfang, including attack 
 category: 'bosses'
 date: 2026-08-11
 lastModified: 2026-08-12
-image: '/images/emberfang-cover.jpg'
+image: '../../../../assets/covers/emberfang-cover.png'
 tags: ['boss', 'ice', 'early-game']
 noindex: false
 ---
@@ -44,7 +44,7 @@ noindex: false
 | `category`     | string   | ✅   | 必须在 `navigation.ts` 的 key 列表里 | 决定 URL 路径和列表页归属                |
 | `date`         | date     | ✅   | ISO 格式（YYYY-MM-DD）               | 发布日期 + Article JSON-LD datePublished |
 | `lastModified` | date     | 可选 | ISO 格式                             | 最后修改日期（JSON-LD dateModified）     |
-| `image`        | string   | 可选 | 相对 `/public` 路径或绝对 URL        | 封面图（og:image，缺省用 hero）          |
+| `image`        | string   | 可选 | 相对 MDX 文件的路径（走 Astro Image） | 封面图（og:image，缺省用 hero）          |
 | `tags`         | string[] | 可选 | 默认 `[]`                            | 用于"相关文章"推荐                       |
 | `noindex`      | boolean  | 可选 | 默认 `false`                         | 设为 `true` 禁止搜索引擎索引此页         |
 
@@ -85,7 +85,8 @@ title: 'Emberfang Boss Guide'
 - 代码块（```语法高亮）
 - 引用（`>`）
 - 链接（相对路径用 `/bosses/emberfang`，绝对路径用完整 URL）
-- 图片（`![alt](/images/xxx.jpg)`）
+- 图片（`![alt](/images/xxx.jpg)`，正文图片放 `public/images/`）
+  - ⚠️ 封面图（frontmatter `image` 字段）不同：走 Astro Image 优化（自动 WebP/srcset），放在 `src/assets/covers/`，写相对 MDX 文件的路径。详见上面的 frontmatter 示例。
 
 ### MDX 扩展（可选）
 

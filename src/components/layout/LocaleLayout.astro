@@ -19,6 +19,7 @@ interface Props {
   image?: string;
   jsonLd?: Record<string, unknown>[];
   article?: boolean;
+  noindex?: boolean;
 }
 const { locale, ...rest } = Astro.props;
 const currentPath = Astro.url.pathname;

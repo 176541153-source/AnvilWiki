@@ -15,7 +15,11 @@ import { localizePath, languageAlternates } from '~/lib/url';
 
 export function getStaticPaths() {
   // Only non-default locales — default is at /faq.
-  return [{ params: { locale: 'ja' } }].filter((p) => p.params.locale !== defaultLocale);
+  // `locales` is a module-level export (visible inside getStaticPaths,
+  // unlike same-file top-level const — see AGENTS.md Astro 5 gotcha #3).
+  return locales
+    .filter((l) => l !== defaultLocale)
+    .map((l) => ({ params: { locale: l } }));
 }
 
 const { locale: localeParam } = Astro.params;
