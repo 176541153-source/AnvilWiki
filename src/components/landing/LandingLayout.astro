@@ -1,0 +1,97 @@
+---
+/**
+ * LandingLayout — the shell for the project landing page (/landing).
+ *
+ * Wraps BaseLayout with a minimal header (logo + GitHub + theme toggle)
+ * and a simplified footer. Does NOT use SiteHeader (that's the demo game's
+ * navigation) or StickyBanner (ads) — the landing page is about the project,
+ * not the demo game.
+ */
+import '~/styles/globals.css';
+import BaseLayout from '~/components/layout/BaseLayout.astro';
+import ThemeToggle from '~/components/header/ThemeToggle.astro';
+import JsonLd from '~/components/seo/JsonLd.astro';
+import { Icon } from 'astro-icon/components';
+import { siteUrl } from '~/config/site';
+import { landing } from '~/config/landing';
+import { websiteJsonLd } from '~/lib/seo';
+
+interface Props {
+  title: string;
+  description: string;
+}
+const { title, description } = Astro.props;
+
+const jsonLd = [websiteJsonLd('en')];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  locale="en"
+  titleSuffix={landing.projectName}
+  jsonLd={jsonLd}
+>
+  {/* Minimal header — logo + GitHub link + theme toggle */}
+  <header class="sticky top-0 z-40 w-full border-b border-border bg-background/80 backdrop-blur">
+    <div class="mx-auto flex h-14 max-w-7xl items-center gap-4 px-4">
+      <a href="/landing" class="flex items-center gap-2 font-bold text-foreground">
+        <Icon name="lucide:hammer" class="h-6 w-6 text-nav" />
+        <span>{landing.projectName}</span>
+      </a>
+      <div class="ml-auto flex items-center gap-3">
+        <a
+          href={landing.githubUrl}
+          class="hidden items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium text-foreground/70 transition hover:bg-muted hover:text-foreground sm:inline-flex"
+        >
+          <Icon name="lucide:star" class="h-4 w-4" />
+          <span>GitHub</span>
+        </a>
+        <a
+          href={landing.demoUrl}
+          class="hidden items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium text-foreground/70 transition hover:bg-muted hover:text-foreground sm:inline-flex"
+        >
+          <Icon name="lucide:external-link" class="h-4 w-4" />
+          <span>Demo</span>
+        </a>
+        <ThemeToggle />
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <slot />
+  </main>
+
+  {/* Simplified footer */}
+  <footer class="border-t border-border">
+    <div class="mx-auto max-w-7xl px-4 py-10">
+      <div class="flex flex-col items-center gap-4 text-center sm:flex-row sm:justify-between sm:text-left">
+        <div class="flex items-center gap-2">
+          <Icon name="lucide:hammer" class="h-5 w-5 text-nav" />
+          <div>
+            <p class="font-bold text-foreground">{landing.projectName}</p>
+            <p class="text-xs text-muted-foreground">{landing.footer.tagline}</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-4 text-sm">
+          <a href={landing.githubUrl} class="text-foreground/70 transition hover:text-foreground">
+            GitHub
+          </a>
+          <a href={landing.demoUrl} class="text-foreground/70 transition hover:text-foreground">
+            Demo
+          </a>
+          <a
+            href={`${landing.githubUrl}/blob/main/LICENSE`}
+            class="text-foreground/70 transition hover:text-foreground"
+          >
+            {landing.footer.license}
+          </a>
+        </div>
+      </div>
+      <p class="mt-6 text-center text-xs text-muted-foreground sm:text-left">
+        {landing.footer.madeWith} · © 2026 {landing.projectName} Contributors
+      </p>
+    </div>
+  </footer>
+</BaseLayout>

@@ -29,6 +29,12 @@ interface Props {
   article?: boolean;
   /** When true, emit <meta name="robots" content="noindex"> to exclude from search. */
   noindex?: boolean;
+  /**
+   * Override the <title> suffix (defaults to site.name). Pass an empty string
+   * to suppress the suffix entirely (e.g. for the project landing page where
+   * the site.name is the demo game, not the project itself).
+   */
+  titleSuffix?: string;
 }
 
 const {
@@ -40,9 +46,11 @@ const {
   jsonLd = [],
   article = false,
   noindex = false,
+  titleSuffix,
 } = Astro.props;
 
-const fullTitle = title.includes(site.name) ? title : `${title} — ${site.name}`;
+const suffix = titleSuffix !== undefined ? titleSuffix : site.name;
+const fullTitle = suffix && !title.includes(suffix) ? `${title} — ${suffix}` : title;
 const orgJsonLd = organizationJsonLd();
 
 // Optional analytics / verification / ads (env-var gated — empty = not injected).

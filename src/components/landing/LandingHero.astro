@@ -1,0 +1,126 @@
+---
+/**
+ * LandingHero — the hero section of the project landing page.
+ *
+ * Left: badge + H1 + subtitle + 3 CTAs + install command block (with copy).
+ * Right: browser mockup frame with a text placeholder (screenshots later).
+ *
+ * The H1 carries the "repositioning narrative" — it must say "100% ad revenue"
+ * in the first screen so users don't confuse this with Fandom-style wikis.
+ */
+import { Icon } from 'astro-icon/components';
+import { landing } from '~/config/landing';
+---
+
+<section class="section overflow-hidden">
+  <div class="grid items-center gap-12 lg:grid-cols-2">
+    {/* Left: copy + CTAs */}
+    <div>
+      <span
+        class="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground"
+      >
+        <span class="h-1.5 w-1.5 rounded-full bg-green-500"></span>
+        {landing.hero.badge}
+      </span>
+
+      <h1 class="mt-5 text-4xl font-extrabold leading-tight tracking-tight text-foreground sm:text-5xl">
+        {landing.hero.title}
+      </h1>
+
+      <p class="mt-5 max-w-xl text-lg text-muted-foreground">
+        {landing.hero.subtitle}
+      </p>
+
+      {/* CTAs */}
+      <div class="mt-7 flex flex-wrap items-center gap-3">
+        <a href={landing.hero.primaryCta.href} class="btn-primary inline-flex items-center gap-1.5">
+          <Icon name="lucide:rocket" class="h-4 w-4" />
+          {landing.hero.primaryCta.label}
+        </a>
+        <a
+          href={landing.hero.secondaryCta.href}
+          class="btn-outline inline-flex items-center gap-1.5"
+          target="_blank"
+          rel="noopener"
+        >
+          <Icon name="lucide:star" class="h-4 w-4" />
+          {landing.hero.secondaryCta.label}
+        </a>
+        <a href={landing.hero.tertiaryCta.href} class="inline-flex items-center gap-1.5 text-sm font-medium text-nav transition hover:underline">
+          {landing.hero.tertiaryCta.label}
+          <Icon name="lucide:arrow-right" class="h-4 w-4" />
+        </a>
+      </div>
+
+      {/* Install command block */}
+      <div class="mt-7 max-w-lg">
+        <div class="flex items-center gap-2 rounded-t-lg border border-b-0 border-border bg-muted px-4 py-2">
+          <Icon name="lucide:terminal" class="h-4 w-4 text-muted-foreground" />
+          <span class="text-xs font-medium text-muted-foreground">Terminal</span>
+          <button
+            id="copy-install"
+            class="ml-auto inline-flex items-center gap-1 text-xs text-muted-foreground transition hover:text-foreground"
+            aria-label="Copy install command"
+          >
+            <Icon name="lucide:copy" class="h-3.5 w-3.5" />
+            <span>Copy</span>
+          </button>
+        </div>
+        <pre class="overflow-x-auto rounded-b-lg border border-border bg-card p-4 text-sm leading-relaxed text-foreground"><code id="install-code">{landing.hero.installCommand}</code></pre>
+      </div>
+    </div>
+
+    {/* Right: browser mockup placeholder */}
+    <div class="hidden lg:block">
+      <div class="overflow-hidden rounded-xl border border-border bg-card shadow-lg">
+        {/* Browser chrome */}
+        <div class="flex items-center gap-2 border-b border-border bg-muted px-4 py-3">
+          <span class="h-3 w-3 rounded-full bg-red-400"></span>
+          <span class="h-3 w-3 rounded-full bg-yellow-400"></span>
+          <span class="h-3 w-3 rounded-full bg-green-400"></span>
+          <span class="ml-3 truncate rounded bg-background px-3 py-0.5 text-xs text-muted-foreground">
+            anvilwiki.pages.dev
+          </span>
+        </div>
+        {/* Placeholder content */}
+        <div class="space-y-4 p-6">
+          <div class="h-8 w-3/4 rounded bg-muted"></div>
+          <div class="h-4 w-full rounded bg-muted/60"></div>
+          <div class="h-4 w-5/6 rounded bg-muted/60"></div>
+          <div class="grid grid-cols-2 gap-4 pt-2">
+            <div class="h-20 rounded-lg border border-border bg-muted/40"></div>
+            <div class="h-20 rounded-lg border border-border bg-muted/40"></div>
+            <div class="h-20 rounded-lg border border-border bg-muted/40"></div>
+            <div class="h-20 rounded-lg border border-border bg-muted/40"></div>
+          </div>
+          <div class="flex items-center justify-center gap-1 pt-2 text-xs text-muted-foreground">
+            <Icon name="lucide:image" class="h-3 w-3" />
+            <span>Live demo screenshot — coming soon</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const copyBtn = document.getElementById('copy-install');
+  const codeEl = document.getElementById('install-code');
+  if (copyBtn && codeEl) {
+    copyBtn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(codeEl.textContent || '');
+        const label = copyBtn.querySelector('span');
+        if (label) {
+          const original = label.textContent;
+          label.textContent = 'Copied!';
+          setTimeout(() => {
+            label.textContent = original;
+          }, 2000);
+        }
+      } catch {
+        // Clipboard API not available — silently ignore.
+      }
+    });
+  }
+</script>
