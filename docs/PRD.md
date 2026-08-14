@@ -79,7 +79,7 @@ AnvilWiki 围绕游戏 wiki 站点的技术特征，确立以下设计目标：
 | G5 | **SEO 工程化** | sitemap / JSON-LD / hreflang / robots / 内链全部由代码自动生成，填内容即生效。 |
 | G6 | **多语言开箱即用** | as-needed 前缀策略（英文无前缀），文章单篇 fallback 英文不 404，列表不 fallback。 |
 | G7 | **模板套用工程化** | 结构化套用流程（见 docs/apply-template.md），改配置不改框架代码。 |
-| G8 | **广告就绪** | 内置 广告 iframe 隔离广告系统，环境变量驱动，新手填 key 即生效。 |
+| G8 | **广告就绪** | 内置 Google AdSense 广告系统，环境变量驱动，新手填 key 即生效。 |
 | G9 | **开源** | MIT 协议，中英双语 README，完整文档，欢迎社区贡献。 |
 
 ### 2.2 非目标（明确不做）
@@ -90,7 +90,7 @@ AnvilWiki 围绕游戏 wiki 站点的技术特征，确立以下设计目标：
 | N2 | **不做可视化后台/CMS** | 内容靠 MDX 文件 + Git，文件系统即数据库。需要 CMS 的用户自行接 Astro DB / Decap CMS。 |
 | N3 | **不做自动化内容生成** | 内容生成是独立工具链，AnvilWiki 只负责消费标准 MDX 文章。提供 frontmatter 格式说明，不绑定特定生成工具。 |
 | N4 | **不做 React/Vue/Svelte 全栈** | 交互组件用纯 Astro 原生 + 极少 vanilla JS。不为单一组件引入整个 framework runtime。 |
-| N5 | **不绑定特定广告平台** | 默认接 广告网络（如 AdSense/其他广告网络 等），但广告组件抽象为通用 iframe 方案，可替换为任何广告网络。 |
+| N5 | **广告默认接 Google AdSense** | 广告系统基于 Google AdSense（`<ins class="adsbygoogle">`），3 个广告位（Sticky / Sidebar / InContent）各一个 slot，环境变量驱动。不内置其他广告网络的隔离方案。 |
 | N6 | **不做内容运营教学** | AnvilWiki 是模板，不是教程。文档聚焦「怎么用模板」，不教选词/SEO 策略/外链建设。 |
 
 ### 2.3 目标用户画像
@@ -119,7 +119,7 @@ AnvilWiki 面向「游戏 wiki 站点」这一特定场景，在框架、部署�
 | 多语言 | Astro i18n as-needed | `prefixDefaultLocale: false` 实现默认语言（英文）无前缀。 |
 | 首页模块 | JSON 驱动（v0.2：6 区块 / 4 explore 模块） | 文案与组件解耦，换游戏只改 JSON，组件零改动。 |
 | SEO 工程化 | 完整（sitemap/JSON-LD/hreflang/robots） | sitemap / JSON-LD（Organization/WebSite/Article/BreadcrumbList/ItemList/FAQPage）/ hreflang / robots 全部代码自动生成。 |
-| 广告系统 | 广告 iframe 隔离 | 每个广告位独立 html，避免 atOptions 串号；环境变量驱动，新手填 key 即生效。 |
+| 广告系统 | Google AdSense | 3 个广告位（Sticky / Sidebar / InContent）各一个 AdSense slot，环境变量驱动，新手填 key 即生效。 |
 | 套用模板流程 | 配置参考手册 | 换游戏只改配置层 + 替换内容层，代码层不动。 |
 | 游戏站适配 | 专为游戏站设计 | 内置游戏站特定的 SEO（ItemList/Breadcrumb）+ 兑换码/tier list 专用 displayType。 |
 
@@ -198,7 +198,7 @@ AnvilWiki 采用**分层设计**的架构设计：
 │  ├── i18n 系统（as-needed 前缀 + fallback）        │
 │  ├── SEO 组件（sitemap、JSON-LD、hreflang、robots）│
 │  ├── 首页模块渲染器（4 种 displayType）             │
-│  ├── 广告组件（iframe 隔离）                        │
+│  ├── 广告组件（Google AdSense）                     │
 │  └── 主题色 CSS 变量体系                            │
 ├─────────────────────────────────────────────────┤
 │  配置层（每个游戏改一次）                            │
@@ -295,14 +295,7 @@ anvilwiki/
 │   ├── android-chrome-192x192.png
 │   ├── android-chrome-512x512.png
 │   ├── manifest.json             # PWA manifest
-│   ├── ads.txt                   # 广告授权
-│   ├── ads/                      # ⭐ 广告 iframe 隔离广告模板
-│   │   ├── banner-320x50.html
-│   │   ├── banner-300x250.html
-│   │   ├── banner-728x90.html
-│   │   ├── banner-468x60.html
-│   │   ├── sidebar-160x600.html
-│   │   └── sidebar-160x300.html
+│   ├── ads.txt                   # 广告授权（Google AdSense 等）
 │   └── robots.txt                # （构建时由 endpoint 生成，此文件可不存在）
 ├── src/
 │   ├── content/                  # ⭐ 内容层：MDX 文章
@@ -326,8 +319,7 @@ anvilwiki/
 │   │   │   ├── about.astro
 │   │   │   └── 404.astro
 │   │   ├── robots.txt.ts         # 动态 robots（sitemap 由 @astrojs/sitemap 集成自动生成）
-│   │   ├── robots.txt.ts         # 动态 robots
-│   │   └── ads/                  # 广告 iframe 占位（如需 SSR 注入 key，否则用 public/ads/*.html）
+│   │   └── robots.txt.ts         # 动态 robots
 │   ├── components/               # ⭐ 代码层：纯 Astro 组件
 │   │   ├── layout/
 │   │   │   ├── BaseLayout.astro  # <html>/<head>/global meta/Organization JSON-LD
@@ -358,9 +350,10 @@ anvilwiki/
 │   │   ├── seo/
 │   │   │   └── JsonLd.astro       # ⭐ 通用 JSON-LD 注入组件
 │   │   └── ads/
-│   │       ├── AdBanner.astro     # iframe 广告组件（key 为空 return null）
-│   │       ├── StickyBanner.astro # Sticky 320×50 + 关闭按钮
-│   │       └── SidebarAd.astro    # 桌面端 fixed 侧边栏
+│   │       ├── AdSenseSlot.astro  # ⭐ AdSense <ins> 广告单元（position prop → slot env）
+│   │       ├── StickyBanner.astro # Sticky 粘顶横幅 + 关闭按钮
+│   │       ├── SidebarAd.astro    # 桌面端 fixed 侧边栏
+│   │       └── InContentAd.astro  # 文章内广告位
 │   ├── config/                   # ⭐ 配置层
 │   │   ├── site.ts               # 站点信息（name/domain/social/gameMeta）
 │   │   └── navigation.ts         # ⭐ NAVIGATION_CONFIG 单一真相源
@@ -377,8 +370,7 @@ anvilwiki/
 │       ├── content.ts            # Content Collections 查询封装
 │       ├── navigation.ts         # getDynamicNavigation()（扫描 content 生成分组）
 │       ├── seo.ts                # JSON-LD 构造函数（Organization/Article/Breadcrumb/ItemList）
-│       ├── url.ts                # URL 构造（locale 前缀、slug 转换、绝对路径）
-│       └── ads.ts                # 广告 key 读取 + 条件渲染辅助
+│       └── url.ts                # URL 构造（locale 前缀、slug 转换、绝对路径）
 ├── scripts/
 │   ├── new-post.ts               # 脚手架：生成新文章 MDX 模板
 │   ├── check-sitemap.ts          # 检查 sitemap 所有 URL 返回 200
@@ -977,124 +969,112 @@ export function getUi(locale: Locale) {
 
 ### 10.1 设计原则
 
-**核心**：iframe 隔离——每个广告位一个独立 html 文件，避免多个 `window.atOptions` 串号。
+**核心**：Google AdSense 集成——3 个广告位各一个 AdSense slot，环境变量驱动，key 为空时组件 `return null` 不渲染（保 Lighthouse 4×100 开箱契约）。
+
+- AdSense loader 脚本由 `BaseLayout.astro` 在 `<head>` 注入，仅当 `PUBLIC_ADSENSE_CLIENT` 有值时加载。
+- 每个广告位是一个 `<AdSenseSlot position="...">` 组件，根据 position 读取对应的 slot ID 环境变量。
+- 尺寸由 AdSense 自动决定（responsive），不需要为每个位置指定固定尺寸。
 
 ### 10.2 广告位清单
 
-| 广告类型 | 尺寸 | 必配 | 说明 |
+| 位置 | 组件 | 挂载点 | Slot 环境变量 |
 |---|---|---|---|
-| Banner Sticky | 320×50 | ✅ | 粘顶横幅，曝光时长最高 |
-| Sidebar Sticky | 160×300 | ✅ | 桌面端侧边栏半高 |
-| Sidebar Sticky | 160×600 | ✅ | 桌面端侧边栏竖幅 |
-| Banner | 728×90 | ✅ | 页内大横幅 |
-| Banner | 300×250 | ✅ | 页内中等矩形 |
-| Native Banner | — | ✅ | 原生横幅 |
-| Banner | 468×60 | 可选 | 经典横幅 |
+| Sticky（粘顶横幅） | `StickyBanner.astro` | `LocaleLayout`（全局） | `PUBLIC_ADSENSE_SLOT_STICKY` |
+| Sidebar（桌面端侧边栏） | `SidebarAd.astro` | `WikiSidebar`（桌面端） | `PUBLIC_ADSENSE_SLOT_SIDEBAR` |
+| InContent（文章内） | `InContentAd.astro` | `ArticlePage`（相关文章前） | `PUBLIC_ADSENSE_SLOT_INCONTENT` |
 
-> 具体每个广告位的 CPM 取决于流量地区、广告尺寸和广告网络填充率，因站而异。在 广告网络后台用 Group by 功能按广告位/国家/设备查看。
+> 在 AdSense 后台为每个位置创建一个广告单元，拿到 slot ID 填到对应环境变量。AdSense 会根据访客设备自动选择最合适的尺寸。
 
-### 10.3 iframe 隔离方案
+### 10.3 AdSenseSlot 组件
 
-**每个广告位一个独立 html**（放 `public/ads/`）：
-```html
-<!-- public/ads/banner-320x50.html -->
-<!DOCTYPE html>
-<html>
-<body style="margin:0">
-  <script type="text/javascript">
-    atOptions = {
-      'key': 'YOUR_AD_KEY',  // 构建时通过环境变量替换，或保留占位
-      'format': 'iframe',
-      'height': 50,
-      'width': 320,
-      'params': {}
-    };
-  </script>
-  <script src="//YOUR_AD_NETWORK_DOMAIN/YOUR_AD_KEY/invoke.js"></script>
-</body>
-</html>
-```
+底层组件 `AdSenseSlot.astro` 渲染一个 `<ins class="adsbygoogle">` 标签并 push 到 `adsbygoogle` 队列：
 
-**Astro 广告组件**：
 ```astro
 ---
-// src/components/ads/AdBanner.astro
-interface Props { type: string; eager?: boolean; }
-const { type, eager } = Astro.props;
-const adKey = import.meta.env.PUBLIC_AD_BANNER_320X50;  // 环境变量驱动
-if (!adKey) return null;  // key 为空不渲染
+// src/components/ads/AdSenseSlot.astro
+interface Props {
+  position: 'sticky' | 'sidebar' | 'incontent';
+  format?: 'auto' | 'fluid';
+  responsive?: boolean;
+}
+const { position, format = 'auto', responsive = true } = Astro.props;
+const client = import.meta.env.PUBLIC_ADSENSE_CLIENT;
+const slot = import.meta.env[`PUBLIC_ADSENSE_SLOT_${position.toUpperCase()}`];
+// client 或 slot 任一为空 → return null（不渲染）
 ---
-<iframe
-  src={`/ads/${type}.html`}
-  width={type.match(/(\d+)x(\d+)/)?.[1] ?? 300}
-  height={type.match(/(\d+)x(\d+)/)?.[2] ?? 50}
-  scrolling="no"
-  loading={eager ? 'eager' : 'lazy'}
-  style="border:none"
-></iframe>
+{client && slot && (
+  <>
+    <ins class="adsbygoogle" style="display:block"
+      data-ad-client={client} data-ad-slot={slot}
+      data-ad-format={format}
+      data-full-width-responsive={responsive ? 'true' : 'false'} />
+    <script is:inline>
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+  </>
+)}
 ```
 
-### 10.4 Sticky 320×50（粘顶横幅组件）
+3 个位置组件（`StickyBanner` / `SidebarAd` / `InContentAd`）都是对 `AdSenseSlot` 的薄封装，负责定位（sticky / fixed / inline）和门控逻辑。
+
+### 10.4 Sticky 粘顶横幅 + 关闭逻辑
+
+`StickyBanner.astro` 在粘顶位置渲染广告，带关闭按钮（localStorage 记忆）：
 
 ```astro
 ---
 // src/components/ads/StickyBanner.astro
-const adKey = import.meta.env.PUBLIC_AD_MOBILE_320X50;
+const client = import.meta.env.PUBLIC_ADSENSE_CLIENT;
+const slot = import.meta.env.PUBLIC_ADSENSE_SLOT_STICKY;
+const show = !!(client && slot);
 ---
-{adKey && (
-  <div class="sticky top-20 z-20 py-2">
-    <div class="relative mx-auto max-w-4xl pr-10">
-      <AdBanner type="banner-320x50" eager />
-      <button
-        id="dismiss-sticky"
-        class="absolute right-2 top-1/2 -translate-y-1/2 rounded-full border p-1"
-        aria-label="Close ad"
-      >
-        <Icon name="x" class="h-4 w-4" />
+{show && (
+  <div id="sticky-banner" class="sticky top-14 z-30 ...">
+    <div class="relative mx-auto max-w-4xl px-4">
+      <AdSenseSlot position="sticky" />
+      <button id="dismiss-sticky" aria-label="Close ad" ...>
+        <Icon name="lucide:x" />
       </button>
     </div>
   </div>
 )}
-<script>
-  // 3 行 JS：关闭按钮 + localStorage 记忆
-  const btn = document.getElementById('dismiss-sticky');
-  if (btn && localStorage.getItem('sticky-dismissed') === '1') btn.parentElement?.parentElement?.remove();
-  btn?.addEventListener('click', () => {
-    localStorage.setItem('sticky-dismissed', '1');
-    btn.parentElement?.parentElement?.remove();
-  });
+<script is:inline>
+  // 关闭按钮 + localStorage 记忆
+  (() => {
+    const banner = document.getElementById('sticky-banner');
+    const btn = document.getElementById('dismiss-sticky');
+    if (!banner || !btn) return;
+    if (localStorage.getItem('sticky-dismissed') === '1') { banner.remove(); return; }
+    btn.addEventListener('click', () => {
+      localStorage.setItem('sticky-dismissed', '1');
+      banner.remove();
+    });
+  })();
 </script>
 ```
 
 ### 10.5 环境变量驱动
 
-广告 key 全部走环境变量，**key 为空时组件 return null 不渲染**。新手部署时广告位是空的，不报错；接入广告时填 env 即生效。
+广告配置全部走环境变量，**4 个变量全填才显示广告，任一为空对应位置不渲染**。新手部署时广告位是空的，不报错；接入广告时填 env 即生效。
 
-环境变量清单见 [附录 A](#附录-a-环境变量清单)。
+| 变量 | 说明 |
+|---|---|
+| `PUBLIC_ADSENSE_CLIENT` | AdSense Publisher ID（`ca-pub-XXXXXXXXXXXXXXXX`），门控 loader 注入 |
+| `PUBLIC_ADSENSE_SLOT_STICKY` | Sticky 位置的 slot ID |
+| `PUBLIC_ADSENSE_SLOT_SIDEBAR` | Sidebar 位置的 slot ID |
+| `PUBLIC_ADSENSE_SLOT_INCONTENT` | InContent 位置的 slot ID |
+
+完整清单见 [附录 A](#附录-a-环境变量清单)。
 
 ### 10.6 广告部署流程
 
-1. 注册你的广告网络 Publisher 账号。
-2. Add Website → 填域名 → 选 Games 分类 → 选广告格式。
-3. 审核通过后，创建各广告单元拿 key。
-4. 在 Cloudflare Pages 项目 Settings → Environment variables 填入各 key（或改 `wrangler.toml` 的 `[vars]`）。
+1. 在 [Google AdSense](https://adsense.google.com/) 注册并提交你的站点审核。
+2. 审核通过后，拿到 Publisher ID（格式 `ca-pub-XXXXXXXXXXXXXXXX`）。
+3. 在 AdSense 后台创建 3 个广告单元（建议选 Responsive），分别拿到 3 个 slot ID。
+4. 在 Cloudflare Pages 项目 Settings → Environment variables（或 `wrangler.toml` 的 `[vars]`）填入 4 个变量：`PUBLIC_ADSENSE_CLIENT` + 3 个 slot ID。
 5. 重新部署，广告自动出现。
 
-> 广告接入的详细操作参考你的广告网络文档。
-
-### 10.7 Google AdSense（可选）
-
-除了 iframe 隔离方案（§10.3），AnvilWiki 也支持 Google AdSense。
-
-**配置步骤**：
-
-1. 在 [Google AdSense](https://adsense.google.com/) 注册并审核通过你的站点。
-2. 拿到 Publisher ID（格式 `ca-pub-XXXXXXXXXXXXXXXX`）。
-3. 填到环境变量 `PUBLIC_ADSENSE_CLIENT`。
-4. 在需要放广告的页面引入 `<AdSenseSlot slot="你的slot ID" />`。
-5. BaseLayout 会自动在 `<head>` 注入 AdSense 加载脚本（仅当 `PUBLIC_ADSENSE_CLIENT` 有值时）。
-
-**两种方案可以共存**：iframe 隔离方案和 AdSense 各自独立，互不干扰。填哪个的 env，哪个就生效。
+> AdSense 审核通常需要数天到数周，期间站点正常运行（广告位为空）。详见 [AdSense 帮助中心](https://support.google.com/adsense/)。
 
 ---
 
@@ -1337,7 +1317,7 @@ describe('sitemap', () => {
 | **MVP-2**：首页模块 | JSON 驱动 + 4 种 displayType（badge-list/steps/ranked-grid/labeled-cards）+ Hero/QuickStart/Explore/CTA/Footer/Video/RecentUpdates+Trending（v0.2 结构） | 换 en.json 数据，首页无组件改动即生效 | 1-2 天 |
 | **MVP-3**：SEO | sitemap 动态 + JSON-LD 全套（Organization/WebSite/Article/Breadcrumb/ItemList/FAQPage）+ hreflang + robots | Google Rich Results Test 全通过 | 1 天 |
 | **MVP-4**：主题换肤 | CSS 变量双变量（`--brand` + `--brand-light`）+ 暗色模式 + 主题切换器 | 改 globals.css 4 行整站变色 | 0.5 天 |
-| **MVP-5**：广告系统 | 广告 iframe 隔离（6 种广告位）+ Sticky 320×50 + 环境变量驱动 + 关闭按钮 | 移动端 + 桌面端广告正常显示不串号 | 1 天 |
+| **MVP-5**：广告系统 | Google AdSense（3 个广告位：Sticky / Sidebar / InContent）+ Sticky 关闭按钮 + 环境变量驱动 | 移动端 + 桌面端广告正常显示 | 1 天 |
 | **MVP-6**：套用模板文档 | 配置参考手册（按文件组织）+ 新手 README + docs/ 全套 | 新手照 README 30 分钟内部署上线 | 1-2 天 |
 | **v1.0**：基准实测与发布 | ✅ 已完成 — demo 站 `anvilwiki.pages.dev` 已上线，Lighthouse 全 100（Performance / Accessibility / Best Practices / SEO） | 性能目标全部达成，demo 站可访问 | 1 天 |
 
@@ -1435,18 +1415,14 @@ describe('sitemap', () => {
 |---|---|---|---|
 | `SITE_URL` | 站点绝对 URL（sitemap/og:image/robots 拼接用） | `https://anvilquestwiki.wiki` | ✅ |
 
-### A.2 广告 key（广告网络）
+### A.2 广告（Google AdSense）
 
-| 变量名 | 广告类型 |
+| 变量名 | 用途 |
 |---|---|
-| `PUBLIC_AD_MOBILE_320X50` | Sticky 粘顶横幅 |
-| `PUBLIC_AD_SIDEBAR_160X300` | 侧边栏半高 |
-| `PUBLIC_AD_SIDEBAR_160X600` | 侧边栏竖幅 |
-| `PUBLIC_AD_BANNER_728X90` | 大横幅 |
-| `PUBLIC_AD_BANNER_300X250` | 中等矩形 |
-| `PUBLIC_AD_BANNER_468X60` | 经典横幅 |
-| `PUBLIC_AD_NATIVE_BANNER` | Native Banner |
-| `PUBLIC_ADSENSE_CLIENT` | AdSense 自动广告（可选） |
+| `PUBLIC_ADSENSE_CLIENT` | AdSense Publisher ID（`ca-pub-XXXXXXXXXXXXXXXX`），门控 loader 注入 |
+| `PUBLIC_ADSENSE_SLOT_STICKY` | Sticky 粘顶横幅 slot ID |
+| `PUBLIC_ADSENSE_SLOT_SIDEBAR` | Sidebar 桌面端侧边栏 slot ID |
+| `PUBLIC_ADSENSE_SLOT_INCONTENT` | InContent 文章内 slot ID |
 
 > 所有广告变量为空时，对应广告组件 `return null` 不渲染。新手部署时不填也能正常上线。
 
@@ -1465,14 +1441,10 @@ describe('sitemap', () => {
 SITE_URL=https://your-domain.wiki
 
 # 广告（可选，留空则不显示）
-PUBLIC_AD_MOBILE_320X50=
-PUBLIC_AD_SIDEBAR_160X300=
-PUBLIC_AD_SIDEBAR_160X600=
-PUBLIC_AD_BANNER_728X90=
-PUBLIC_AD_BANNER_300X250=
-PUBLIC_AD_BANNER_468X60=
-PUBLIC_AD_NATIVE_BANNER=
 PUBLIC_ADSENSE_CLIENT=
+PUBLIC_ADSENSE_SLOT_STICKY=
+PUBLIC_ADSENSE_SLOT_SIDEBAR=
+PUBLIC_ADSENSE_SLOT_INCONTENT=
 
 # 分析（可选）
 PUBLIC_GA_ID=
@@ -1551,13 +1523,13 @@ PUBLIC_GA_ID=
 ### B.7 广告（上线 2-3 天后）
 
 ```
-□ 广告网络账号已注册，网站已审核通过
-□ 各广告 key 已配到 Cloudflare 环境变量
+□ Google AdSense 账号已注册，网站已审核通过
+□ 4 个广告变量已配到 Cloudflare 环境变量（CLIENT + 3 个 slot ID）
 □ 移动端 + 桌面端广告正常显示不破版
-□ 320×50 Sticky 正常，有关闭按钮
+□ Sticky 粘顶横幅正常，有关闭按钮
 □ 桌面端侧边栏广告 fixed 正常
-□ 无自动弹窗 / 跳转（有则检查广告设置）
-□ 广告网络后台 impression 数在涨
+□ 无自动弹窗 / 跳转（有则检查 AdSense 设置）
+□ AdSense 后台 impression 数在涨
 ```
 
 ---
@@ -1576,8 +1548,8 @@ PUBLIC_GA_ID=
 | **displayType** | 首页模块的渲染类型（badge-list/steps/ranked-grid/labeled-cards） |
 | **JSON-LD** | 结构化数据格式，告诉搜索引擎页面内容类型 |
 | **hreflang** | 多语言页面 alternate 链接，告诉搜索引擎各语言版本位置 |
-| **iframe 隔离** | 每个广告用独立 iframe，避免 atOptions 串号 |
 | **Sticky 广告** | 粘在屏幕固定位置的广告，曝光时长更长，CPM 更高 |
+| **AdSense slot** | Google AdSense 广告单元 ID，一个 slot 对应一个广告位 |
 | **分层架构** | 代码层 / 配置层 / 内容层 分离，套用模板只改后两层 |
 | **homepage-only 模式** | 只上线首页，无文章内容，后续慢慢补 |
 | **dogfooding** | 自己用自己的产品（AnvilWiki 文档站用 AnvilWiki 构建） |

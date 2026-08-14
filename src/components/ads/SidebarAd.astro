@@ -1,21 +1,22 @@
 ---
 /**
- * SidebarAd — desktop-only fixed sidebar ad.
- * Renders both the 160×600 (full height) and 160×300 (half height) variants,
- * gated by their respective env vars.
+ * SidebarAd — desktop-only fixed sidebar ad (AdSense).
+ *
+ * Gated on PUBLIC_ADSENSE_CLIENT + PUBLIC_ADSENSE_SLOT_SIDEBAR:
+ * either empty = nothing rendered.
  */
-import AdBanner from './AdBanner.astro';
+import AdSenseSlot from './AdSenseSlot.astro';
 
-const ad160x600 = import.meta.env.PUBLIC_AD_SIDEBAR_160X600;
-const ad160x300 = import.meta.env.PUBLIC_AD_SIDEBAR_160X300;
+const client = import.meta.env.PUBLIC_ADSENSE_CLIENT as string | undefined;
+const slot = import.meta.env.PUBLIC_ADSENSE_SLOT_SIDEBAR as string | undefined;
+const show = !!(client && slot);
 ---
 
 {
-  (ad160x600 || ad160x300) && (
+  show && (
     <aside class="hidden w-[160px] shrink-0 lg:block">
       <div class="sticky top-20 space-y-4">
-        {ad160x600 && <AdBanner type="sidebar-160x600" />}
-        {ad160x300 && <AdBanner type="sidebar-160x300" />}
+        <AdSenseSlot position="sidebar" />
       </div>
     </aside>
   )

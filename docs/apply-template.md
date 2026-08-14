@@ -19,7 +19,7 @@
 | 所有 UI 文案（首页、导航、页脚） | [src/locales/en.json](#5-ui文案) |
 | favicon / Hero 图 / PWA | [public/](#6-静态资源) |
 | 文章内容 | [src/content/wiki/](#7-mdx-文章) |
-| 广告 key | Cloudflare 环境变量 `PUBLIC_AD_*`（参考你的广告网络文档） |
+| 广告 key | Cloudflare 环境变量 `PUBLIC_ADSENSE_*`（参考 [Google AdSense](https://adsense.google.com/)） |
 
 > 想自动化基础配置？运行 `pnpm apply-template`，它会交互式引导你完成 site.ts / navigation.ts / globals.css / routing.ts / locales 的修改。
 
@@ -204,7 +204,6 @@ echo '{}' > src/locales/ru.json
 | `android-chrome-192x192.png` / `android-chrome-512x512.png` | Android 主屏图标 |
 | `manifest.json` | PWA manifest（改 `name` / `short_name`） |
 | `images/hero.webp` | Hero 图（模板自带可能是占位，必须换成真实图） |
-| `ads/*.html` | 广告 HTML 模板（替换 `YOUR_AD_KEY`） |
 
 **Hero 图**：模板自带的可能是占位文件。换成你的真实 Hero 图，格式推荐 WebP（体积最小）。如果你拿到的是 PNG/JPG，用任何工具转成 WebP 后覆盖。
 

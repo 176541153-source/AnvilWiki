@@ -49,7 +49,7 @@ pnpm install && pnpm dev`,
       icon: 'lucide:dollar-sign',
       title: '100% Your Revenue',
       description:
-        'Built-in ad slots (AdSense + isolated iframes). No platform cut, no revenue sharing — unlike hosted wiki farms that eat your earnings.',
+        'Built-in Google AdSense ad slots. No platform cut, no revenue sharing — unlike hosted wiki farms that eat your earnings.',
     },
     {
       icon: 'lucide:search',

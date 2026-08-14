@@ -1,26 +1,29 @@
 ---
 /**
- * StickyBanner — the 320×50 sticky mobile banner.
+ * StickyBanner — the sticky mobile banner (AdSense).
  *
  * Sticks below the header for maximum visibility. Includes a dismiss button
  * (persisted in localStorage) so users can close it.
  *
- * The ad key (PUBLIC_AD_MOBILE_320X50) gates rendering: empty = no ad.
+ * Gated on PUBLIC_ADSENSE_CLIENT + PUBLIC_ADSENSE_SLOT_STICKY:
+ * either empty = nothing rendered.
  */
 import { Icon } from 'astro-icon/components';
-import AdBanner from './AdBanner.astro';
+import AdSenseSlot from './AdSenseSlot.astro';
 
-const adKey = import.meta.env.PUBLIC_AD_MOBILE_320X50;
+const client = import.meta.env.PUBLIC_ADSENSE_CLIENT as string | undefined;
+const slot = import.meta.env.PUBLIC_ADSENSE_SLOT_STICKY as string | undefined;
+const show = !!(client && slot);
 ---
 
 {
-  adKey && (
+  show && (
     <div
       id="sticky-banner"
       class="sticky top-14 z-30 border-b border-border bg-background/95 py-2 backdrop-blur"
     >
       <div class="relative mx-auto max-w-4xl px-4">
-        <AdBanner type="banner-320x50" eager class="mx-auto" />
+        <AdSenseSlot position="sticky" class="mx-auto" />
         <button
           id="dismiss-sticky"
           type="button"

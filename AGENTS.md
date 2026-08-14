@@ -66,9 +66,9 @@ Content layer (src/content, src/locales)                   — fully replace per
 - **列表页**:不回退——该语言没有文章就显示空状态(`shared.noArticles`)。
 - 这个不对称是有意的:列表追求准确(不展示不存在的内容),详情追求可达(直接 URL 永远能打开)。
 
-## Ads: Each Slot Is Isolated
+## Ads: Google AdSense, 3 Positions
 
-每个广告位是 `public/ads/` 下的独立 HTML 文件(各自独立的 `window` 作用域),通过 `<iframe>` 嵌入。不要改成全局加载器——多个广告共享 `window` 会导致配置冲突。详见 PRD §10。
+广告系统基于 Google AdSense,3 个广告位(Sticky / Sidebar / InContent)各一个 `<AdSenseSlot position="...">` 组件。`AdSenseSlot` 根据 `position` 读对应的 `PUBLIC_ADSENSE_SLOT_*` 环境变量,渲染 `<ins class="adsbygoogle">` 标签。`PUBLIC_ADSENSE_CLIENT` 或对应 slot ID 为空时组件 `return null` 不渲染(保 Lighthouse 4×100 开箱契约)。AdSense loader 由 `BaseLayout.astro` 在 `<head>` 注入,仅当 `PUBLIC_ADSENSE_CLIENT` 有值时加载。详见 PRD §10。
 
 ## Commands
 

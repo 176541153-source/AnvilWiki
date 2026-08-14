@@ -47,7 +47,7 @@ AnvilWiki 是一个**游戏 wiki 站点模板**——用来快速搭建围绕某
 - 🎨 **JSON 驱动首页**：6 种 displayType 模块化布局，换游戏只改 JSON 不改组件
 - 🌍 **多语言开箱即用**：英文无前缀（SEO 最优），其他语言带前缀，缺失内容自动 fallback 英文
 - 🔍 **SEO 工程化**：sitemap / JSON-LD（含 VideoGame）/ hreflang / robots / 文章 TOC / Quick Answer 摘要块，全部代码自动生成
-- 🎯 **广告就绪**：内置广告组件（iframe 隔离 + Google AdSense 双方案，env 驱动，默认关闭）
+- 🎯 **广告就绪**：内置 Google AdSense 广告组件（3 个广告位，env 驱动，默认关闭）
 - 💬 **评论就绪**：内置 Giscus 评论（GitHub Discussions），默认关闭，填 env 即启用，见 [docs/comments.md](docs/comments.md)
 - 🔄 **套用模板**：按文件组织的配置参考手册 + 交互式 CLI（`pnpm apply-template`）
 - 🆓 **完全免费**：MIT 协议，Cloudflare Pages 免费部署
@@ -117,7 +117,7 @@ Built on **Astro + Cloudflare Pages**: pure static output, zero adapters, free u
 - 🎨 **JSON-driven homepage**: 6 displayTypes, swap games by editing JSON only
 - 🌍 **i18n out of the box**: Default locale (English) has no prefix (SEO optimal), others prefixed, missing content falls back to English
 - 🔍 **SEO engineering**: sitemap / JSON-LD (incl. VideoGame) / hreflang / robots / article TOC / Quick Answer summary blocks — all auto-generated
-- 🎯 **Ads ready**: Built-in ad components (iframe isolation + Google AdSense dual setup, env-driven, off by default)
+- 🎯 **Ads ready**: Built-in Google AdSense ad components (3 ad positions, env-driven, off by default)
 - 💬 **Comments ready**: Built-in Giscus comments (GitHub Discussions), off by default, enable via env — see [docs/comments.md](docs/comments.md)
 - 🔄 **Apply template**: File-organized config reference + interactive CLI (`pnpm apply-template`)
 - 🆓 **Completely free**: MIT license, free Cloudflare Pages deployment
@@ -156,7 +156,7 @@ See [`docs/deployment.md`](docs/deployment.md) for detailed guide.
 
 > **Status**: ✅ Live demo at **[anvilwiki.pages.dev](https://anvilwiki.pages.dev/)** — Lighthouse 4×100, CI green, fully deployed.
 >
-> **Features shipped**: Pagefind offline search · Astro Image (WebP/srcset) · Apply-template CLI · Full i18n (en/ja) · SEO (hreflang, JSON-LD incl. VideoGame, sitemap, article TOC, Quick Answer) · AdSense + iframe ad isolation · Security headers · Giscus comments (opt-in) · Contact page
+> **Features shipped**: Pagefind offline search · Astro Image (WebP/srcset) · Apply-template CLI · Full i18n (en/ja) · SEO (hreflang, JSON-LD incl. VideoGame, sitemap, article TOC, Quick Answer) · Google AdSense ads · Security headers · Giscus comments (opt-in) · Contact page
 >
 > 状态：✅ **[anvilwiki.pages.dev](https://anvilwiki.pages.dev/)** 已上线 — Lighthouse 全 100，CI 全绿。
 
