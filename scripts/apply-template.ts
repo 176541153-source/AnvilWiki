@@ -7,10 +7,13 @@
  *   pnpm apply-template                   interactive: prompts for game metadata, theme color,
  *                               locales, and categories; rewrites the config files
  *                               (site.ts, navigation.ts, globals.css, routing.ts,
- *                               ui.ts, locales/*.json, manifest.json) and clears
- *                               demo content (src/content/wiki/* MDX).
+ *                               ui.ts, locales/*.json, manifest.json), clears
+ *                               demo content (src/content/wiki/* MDX), and removes
+ *                               the project landing page (/landing, not needed by
+ *                               fork users).
  *   pnpm apply-template --dry-run         print every planned change, write nothing.
  *   pnpm apply-template --no-clear-content  keep demo MDX files in place.
+ *   pnpm apply-template --keep-landing      keep the project landing page (/landing).
  *
  * What this does NOT do (left for the user, see docs/apply-template.md):
  *   - Homepage modules (home.hero / start / explore / faq in locales)
@@ -31,6 +34,7 @@ const ROOT = process.cwd();
 const ARGS = process.argv.slice(2);
 const DRY_RUN = ARGS.includes('--dry-run') || ARGS.includes('-n');
 const KEEP_CONTENT = ARGS.includes('--no-clear-content');
+const KEEP_LANDING = ARGS.includes('--keep-landing');
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -153,6 +157,7 @@ interface SkinInput {
   locales: string[];
   categories: { key: string; icon: string }[];
   clearContent: boolean;
+  clearLanding: boolean;
 }
 
 function rewriteSiteTs(input: SkinInput): string {
@@ -362,6 +367,34 @@ function clearDemoContent() {
   return removed;
 }
 
+/**
+ * Files/dirs that make up the project landing page (/landing).
+ * Fork users don't need these — the landing page is about the AnvilWiki project
+ * itself, not their game wiki. The CLI removes them automatically.
+ */
+const LANDING_PATHS = [
+  'src/components/landing', // directory (8 components)
+  'src/config/landing.ts',
+  'src/pages/landing.astro',
+];
+
+function removeLandingPage(): number {
+  let removed = 0;
+  for (const rel of LANDING_PATHS) {
+    const abs = path.resolve(ROOT, rel);
+    if (!fs.existsSync(abs)) continue;
+    const stat = fs.statSync(abs);
+    if (stat.isDirectory()) {
+      if (!DRY_RUN) fs.rmSync(abs, { recursive: true, force: true });
+      removed += fs.readdirSync(abs).length;
+    } else {
+      if (!DRY_RUN) fs.unlinkSync(abs);
+      removed++;
+    }
+  }
+  return removed;
+}
+
 // ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
@@ -464,6 +497,16 @@ async function main() {
     clearContent = await askBool(rl, 'Clear demo content?', false);
   }
 
+  let clearLanding = false;
+  if (!KEEP_LANDING) {
+    console.log('\n' + '━'.repeat(60));
+    console.log('🌐  PROJECT LANDING PAGE');
+    console.log('━'.repeat(60));
+    console.log('   /landing is a marketing page for the AnvilWiki project itself.');
+    console.log('   Your game wiki does not need it. Removing it keeps your repo clean.');
+    clearLanding = await askBool(rl, 'Remove the project landing page (/landing)?', true);
+  }
+
   rl.close();
 
   // --- Summarize planned changes -----------------------------------------
@@ -483,6 +526,7 @@ async function main() {
     locales: uniqueLocales,
     categories,
     clearContent,
+    clearLanding,
   };
 
   console.log('\n' + '━'.repeat(60));
@@ -495,6 +539,7 @@ async function main() {
   console.log(`   Locales:     ${uniqueLocales.join(', ')}`);
   console.log(`   Categories:  ${categories.map((c) => c.key).join(', ') || '(none)'}`);
   console.log(`   Clear demo:  ${clearContent ? 'YES' : 'no'}`);
+  console.log(`   Remove /landing: ${skinInput.clearLanding ? 'YES' : 'no'}`);
   console.log('   Files to write:');
   console.log('     - src/config/site.ts');
   console.log('     - src/config/navigation.ts');
@@ -554,6 +599,13 @@ async function main() {
   if (clearContent) {
     const n = clearDemoContent();
     console.log(`   🗑️  Removed ${n} demo MDX file${n === 1 ? '' : 's'} under src/content/wiki/`);
+  }
+
+  if (skinInput.clearLanding) {
+    const n = removeLandingPage();
+    if (n > 0) {
+      console.log(`   🗑️  Removed ${n} project landing page file${n === 1 ? '' : 's'} (src/components/landing/, src/config/landing.ts, src/pages/landing.astro)`);
+    }
   }
 
   // --- Next steps --------------------------------------------------------
