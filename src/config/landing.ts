@@ -60,7 +60,15 @@ export interface LandingContent {
     primaryCta: { label: string; href: string };
     secondaryCta: { label: string; href: string };
   };
-  footer: { tagline: string; license: string; madeWith: string };
+  community: {
+    badge: string;
+    title: string;
+    subtitle: string;
+    qrAlt: string;
+    qrCaption: string;
+    qrNote: string;
+  };
+  footer: { tagline: string; license: string; madeWith: string; author: string };
 }
 
 const RELEASES = 'https://github.com/PNGTRID/AnvilWiki/releases';
@@ -213,10 +221,20 @@ pnpm install && pnpm dev`,
     primaryCta: { label: 'Get Started', href: '#docs' },
     secondaryCta: { label: 'Read the Docs', href: 'https://github.com/PNGTRID/AnvilWiki#readme' },
   },
+  community: {
+    badge: 'Community',
+    title: 'Join the discussion',
+    subtitle:
+      'Questions about deploying your own wiki, feature ideas, or just want to chat about game content sites? Scan the QR code to add the maintainer on WeChat and join the group.',
+    qrAlt: 'WeChat QR code — scan to add the maintainer and join the discussion group',
+    qrCaption: 'Scan with WeChat',
+    qrNote: 'WeChat group · 中文/English both welcome',
+  },
   footer: {
     tagline: 'Open-source game wiki site template. Free, fast, beginner-friendly.',
     license: 'MIT License',
     madeWith: 'Built with Astro · Deployed on Cloudflare Pages',
+    author: 'Open-sourced by 袁锐钦 (Yuan Ruiqin), lead of the PNGTRIBE team',
   },
 };
 
@@ -367,10 +385,20 @@ pnpm install && pnpm dev`,
     primaryCta: { label: '快速开始', href: '#docs' },
     secondaryCta: { label: '阅读文档', href: 'https://github.com/PNGTRID/AnvilWiki#readme' },
   },
+  community: {
+    badge: '社区交流',
+    title: '扫码进群,一起讨论',
+    subtitle:
+      '部署自己的 wiki 站有问题?想聊功能建议或游戏内容站怎么做?微信扫码添加主理人好友,拉你进交流群。',
+    qrAlt: '微信二维码——扫码添加主理人好友,进群交流讨论',
+    qrCaption: '微信扫码',
+    qrNote: '交流群 · 中文/English 均可',
+  },
   footer: {
     tagline: '开源游戏 wiki 站点模板。免费、快速、新手友好。',
     license: 'MIT 协议',
     madeWith: '基于 Astro 构建 · 部署于 Cloudflare Pages',
+    author: '由 PNG 部落团队主理人 袁锐钦 开源',
   },
 };
 

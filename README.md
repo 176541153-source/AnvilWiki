@@ -95,6 +95,14 @@ pnpm apply-template
 | [docs/comments.md](docs/comments.md)                           | Giscus 评论系统接入指南                                     |
 | [docs/migration-from-nextjs.md](docs/migration-from-nextjs.md) | 从 Next.js 模板迁移指南                                     |
 
+### 交流群
+
+微信扫码添加主理人好友,拉你进群交流讨论(部署问题、功能建议、游戏内容站经验都欢迎):
+
+<p align="center">
+  <img src="public/images/wechat-qr.jpg" width="200" alt="微信二维码——扫码添加好友进群交流" />
+</p>
+
 ### 技术栈
 
 | 技术                                                                           | 用途                |
@@ -155,6 +163,16 @@ pnpm apply-template
 
 See [`docs/deployment.md`](docs/deployment.md) for detailed guide.
 
+### Community & Maintainer
+
+Questions, ideas, or want to chat about game content sites? Scan the WeChat QR code to join the discussion group.
+
+<p align="center">
+  <img src="public/images/wechat-qr.jpg" width="200" alt="WeChat QR code — scan to join the discussion group" />
+</p>
+
+AnvilWiki is open-sourced by **袁锐钦 (Yuan Ruiqin)**, lead of the **PNGTRIBE** team — [GitHub @PNGTRID](https://github.com/PNGTRID).
+
 ### License
 
 [MIT](LICENSE) — free for commercial use.
@@ -166,6 +184,8 @@ See [`docs/deployment.md`](docs/deployment.md) for detailed guide.
 > **Features shipped**: Pagefind offline search · Astro Image (WebP/srcset) · Apply-template CLI · Full i18n (en/ja) · SEO (hreflang, JSON-LD incl. VideoGame, sitemap, article TOC, Quick Answer) · Google AdSense ads · Security headers · Giscus comments (opt-in) · Contact page
 >
 > 状态：✅ **[anvilwiki.pages.dev](https://anvilwiki.pages.dev/)** 已上线 — Lighthouse 全 100，CI 全绿。
+>
+> 本项目由 **PNG 部落团队**主理人 **袁锐钦** 开源([GitHub @PNGTRID](https://github.com/PNGTRID))。
 
 ---
 

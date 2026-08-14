@@ -546,6 +546,7 @@ const LANDING_PATHS = [
   'src/config/landing.ts',
   'src/pages/landing.astro',
   'src/pages/zh/landing.astro',
+  'public/images/wechat-qr.jpg', // maintainer's personal QR — not needed by forks
 ];
 
 function removeLandingPage(): number {
