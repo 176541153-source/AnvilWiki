@@ -82,6 +82,7 @@ import Accordion from '~/components/mdx/Accordion.astro';
 - **Callout** — 提示框，`type`: `info`（默认）/ `tip` / `warn` / `danger`，零 JS（v1.5）
 - **Accordion** — 原生 `<details>` 折叠面板，用于分阶段打法/剧透/平台差异，零 JS（v1.5）
 - **AffiliateLink** — 联盟/外链 CTA 卡片，自动带 `rel="sponsored nofollow"`（SEO 合规的第二变现渠道，v1.7）
+- **Video** — 正文内联 YouTube 播放器（懒加载 facade）。放哪渲染哪：`<Video id="..." title="..."/>`；**id 必须同时登记进 frontmatter `videos`**（VideoObject JSON-LD 来源），已内联的 id 不会在文末重复渲染（v1.8）
 
 ### 作者体系（v1.7）
 

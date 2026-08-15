@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (v1.8.1)
+- **Inline video placement** (from real-project dogfooding): new `<Video id title>` MDX component renders a YouTube player wherever the author places it in the body; the frontmatter `videos` array becomes the structured-data registry (VideoObject JSON-LD) + bottom fallback, with inline IDs auto-deduped from the fallback. Player core extracted to a shared `LazyYouTube` (event-delegation script — no more per-instance duplication; keyboard accessible; broken-thumbnail fallback to a plain link where i.ytimg.com is unreachable, e.g. mainland China).
+- Article layout: bottom video section moved up to right after the body; Comments moved to the very end (body → videos → gallery → tags → related → prev/next → feedback → comments → sponsor).
+- i18n: "On this page" (TOC) and "Quick Answer" hardcoded English now read from locale JSON (en/ja).
+
 ## [1.8.0] — 2026-08-15
 
 **AnvilWiki v1.8 — AI 原生内容生产 + 新鲜度管道:第一性原理路线落地(技能分发、codes 数据结构、定时审计、选品工作流)。**

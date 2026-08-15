@@ -43,6 +43,9 @@ description: 从用户提供的素材(口述要点/视频内容/别的攻略/原
 - 提示/警告用 `<Callout type="warn|tip">`,多阶段细节用 `<Accordion title="...">`(import 自 `~/components/mdx/`)
 - 图片放 `src/assets/covers/`,frontmatter `image` 写相对路径
 - 内链用无尾斜杠相对路径(`/bosses/emberfang`,不是 `https://...` 也不是 `/bosses/emberfang/`)
+- 视频**两条规则**:
+  1. **frontmatter `videos: [id]` 必须登记**(这是 VideoObject JSON-LD 的来源)
+  2. 位置:想放在某个小节下面,就在该小节末尾 `import Video from '~/components/mdx/Video.astro'` + `<Video id="..." title="..."/>`(与 Callout 同款心智);只想文末展示则只写 frontmatter(内联过的 id 不会在文末重复渲染)
 
 ### Step 4 — 自检(必须执行)
 
