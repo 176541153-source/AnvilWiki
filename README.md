@@ -103,17 +103,18 @@ fork 后用 ZCode / Claude Code / Codex / Cursor 打开仓库,直接对话即可
 
 ### 文档导航
 
+完整的文档索引与按角色的阅读路径见 **[docs/README.md](docs/README.md)**(建站赚钱 / 内容作者 / AI Agent / 贡献者四条路径 + 一页决策地图)。
+
+最常用的几份:
+
 | 文档                                                           | 内容                                                        |
 | -------------------------------------------------------------- | ----------------------------------------------------------- |
-| [docs/PRD.md](docs/PRD.md)                                     | ⭐ **完整产品设计文档**（架构、数据模型、模块设计、路线图） |
-| [docs/game-selection.md](docs/game-selection.md)               | 选品漏斗 + 首日 10 页工作流（做哪个游戏、上线第一天做什么） |
-| [docs/deployment.md](docs/deployment.md)                       | Cloudflare Pages 部署详细指南                               |
+| [docs/game-selection.md](docs/game-selection.md)               | 🎯 从这里开始:选品漏斗 + 首日 10 页工作流                   |
 | [docs/apply-template.md](docs/apply-template.md)               | 配置参考手册（按文件组织）                                  |
 | [docs/content-format.md](docs/content-format.md)               | MDX 文章格式规范                                            |
-| [docs/seo.md](docs/seo.md)                                     | SEO 工程化说明                                              |
-| [docs/comments.md](docs/comments.md)                           | Giscus 评论系统接入指南                                     |
-| [docs/staying-up-to-date.md](docs/staying-up-to-date.md)       | fork 后如何同步上游更新 + 版本策略                          |
-| [docs/migration-from-nextjs.md](docs/migration-from-nextjs.md) | 从 Next.js 模板迁移指南                                     |
+| [docs/deployment.md](docs/deployment.md)                       | Cloudflare Pages 部署详细指南                               |
+| [docs/development.md](docs/development.md)                     | 🔧 给模板写代码:架构、扩展模式、验证清单、发版流程         |
+| [docs/PRD.md](docs/PRD.md)                                     | ⭐ 完整产品设计文档（架构、数据模型、模块设计、路线图）     |
 
 ### 为什么不用 Fandom / 自建 Next.js?
 
