@@ -77,16 +77,16 @@ const en: LandingContent = {
   htmlLang: 'en',
   title: 'AnvilWiki — Open-Source Game Wiki Template for Cloudflare',
   description:
-    'An open-source Astro + Cloudflare Pages template for building SEO-driven game content sites. Free to deploy, Lighthouse 4×100, 100% ad revenue yours.',
+    'An open-source game wiki template with an AI-native content workflow: pick the right game, generate pages by talking to your AI tool, codes pages stay fresh on autopilot. Lighthouse 4×100, free on Cloudflare, 100% ad revenue yours.',
   announcement: {
     text: `v${PROJECT_VERSION} shipped — AI-native content skills, structured codes frontmatter, weekly freshness audit & game-selection guide.`,
     href: RELEASES,
   },
   hero: {
     badge: 'Open Source · MIT · Cloudflare Pages',
-    title: 'The game wiki template that keeps 100% of your ad revenue',
+    title: 'Turn a trending game into a traffic site — in 24 hours, not weeks',
     subtitle:
-      'An open-source Astro + Cloudflare Pages template for building SEO-driven game content sites. Fork it, drop in your game guides, deploy free with unlimited bandwidth — every ad dollar is yours.',
+      'AnvilWiki pairs an SEO-hardened game wiki template (Astro + Cloudflare Pages, Lighthouse 4×100, free unlimited bandwidth) with an AI-native content workflow that ships inside your repo: pick the right game, generate pages by just talking to your AI tool, codes pages stay fresh on autopilot. Every ad dollar is yours.',
     primaryCta: { label: 'Get Started', href: '#docs' },
     secondaryCta: { label: 'Star on GitHub', href: 'https://github.com/PNGTRID/AnvilWiki' },
     tertiaryCta: { label: 'Live Demo', href: '/' },
@@ -106,40 +106,40 @@ pnpm install && pnpm dev`,
   },
   features: [
     {
+      icon: 'lucide:bot',
+      title: 'AI-Native Content Workflow',
+      description:
+        'Agent skills ship inside the repo (.agent/skills/, Agent Skills open standard). Tell ZCode / Claude Code / Codex "write a boss guide from these notes" — you get a build-passing MDX page, auto-verified by schema + lint. No scripts to learn.',
+    },
+    {
+      icon: 'lucide:crosshair',
+      title: 'Game Selection Playbook',
+      description:
+        'The fork-user funnel most templates ignore: a 4-layer game-selection scoring model (demand validation via Trends + SERP gap check) plus a "first-day 10 pages" plan — because the 2-8 week window after a game blows up is where all the traffic lives.',
+    },
+    {
+      icon: 'lucide:ticket',
+      title: 'Codes Pages on Autopilot',
+      description:
+        'Structured codes frontmatter (status/expiry/source) auto-renders Active one-click-copy blocks + an Expired table that keeps long-tail "is X still working" traffic. A weekly audit workflow files an issue whenever pages go stale — freshness without you remembering.',
+    },
+    {
       icon: 'lucide:dollar-sign',
       title: '100% Your Revenue',
       description:
-        'Built-in ad slots (AdSense, env-driven). No platform cut, no revenue sharing — unlike hosted wiki farms that eat your earnings.',
-    },
-    {
-      icon: 'lucide:search',
-      title: 'SEO Engineering',
-      description:
-        'Sitemap with lastmod, JSON-LD (incl. VideoGame), hreflang, robots, article TOC, Quick Answer blocks, llms.txt — all auto-generated from MDX frontmatter.',
+        'Built-in AdSense slots, sponsor card and affiliate CTA component — all env-gated, off by default. No platform cut, unlike hosted wiki farms that eat your earnings.',
     },
     {
       icon: 'lucide:zap',
-      title: 'Blazing Fast',
+      title: 'SEO Engineering + Blazing Fast',
       description:
-        'Astro zero-JS by default. Lighthouse 4×100 — Performance, Accessibility, Best Practices, and SEO, all perfect.',
-    },
-    {
-      icon: 'lucide:globe',
-      title: 'i18n Out of the Box',
-      description:
-        'English at root (SEO-optimal, no prefix), other locales prefixed. Missing content falls back to English — direct URLs never 404.',
+        'Sitemap with lastmod, JSON-LD suite, hreflang, Quick Answer blocks for AI search, llms.txt — on top of Astro zero-JS and Lighthouse 4×100 out of the box.',
     },
     {
       icon: 'lucide:cloud',
       title: 'Free Forever',
       description:
-        'Deploy to Cloudflare Pages with zero config. Free unlimited bandwidth + global CDN + SSL. No hosting bills, ever.',
-    },
-    {
-      icon: 'lucide:wand-2',
-      title: '30-Minute Setup',
-      description:
-        'JSON-driven config with an interactive CLI: homepage presets, theme color, locales — framework code stays untouched.',
+        'Deploy to Cloudflare Pages with zero config: free unlimited bandwidth + global CDN + SSL. i18n built in (English at root, fallback so URLs never 404). No hosting bills, ever.',
     },
   ],
   compare: {
@@ -150,6 +150,14 @@ pnpm install && pnpm dev`,
       {
         label: 'Best for',
         values: ['Game SEO content sites', 'Community wikis', 'Product docs', 'Custom apps'],
+      },
+      {
+        label: 'AI content pipeline',
+        values: ['Skills ship in repo', 'None', 'None', 'Build yourself'],
+      },
+      {
+        label: 'Game selection guide',
+        values: ['Funnel + first-day plan', 'None', 'None', 'None'],
       },
       {
         label: 'Ad revenue',
@@ -166,10 +174,6 @@ pnpm install && pnpm dev`,
       {
         label: 'Performance',
         values: ['Lighthouse 4×100', 'Medium', 'High', 'Varies'],
-      },
-      {
-        label: 'Setup time',
-        values: ['30 min', 'Instant', '1 hour', 'Days+'],
       },
       {
         label: 'You own it',
@@ -194,6 +198,13 @@ pnpm install && pnpm dev`,
   docsEntry: {
     title: 'Get started in minutes',
     cards: [
+      {
+        icon: 'lucide:crosshair',
+        title: 'Pick Your Game',
+        description:
+          'Which game is worth a wiki? A 4-layer selection funnel plus the first-day 10-pages plan.',
+        href: 'https://github.com/PNGTRID/AnvilWiki/blob/main/docs/game-selection.md',
+      },
       {
         icon: 'lucide:rocket',
         title: 'Quick Start',
@@ -240,18 +251,18 @@ pnpm install && pnpm dev`,
 
 const zh: LandingContent = {
   htmlLang: 'zh',
-  title: 'AnvilWiki — 开源游戏 Wiki 模板(Cloudflare 原生)',
+  title: 'AnvilWiki — 开源游戏 Wiki 模板 + AI 内容工作流',
   description:
-    '基于 Astro + Cloudflare Pages 的开源游戏内容站模板。免费部署、Lighthouse 4×100、广告收入 100% 归你。',
+    '开源游戏 wiki 模板 + AI 原生内容工作流:选对游戏、和 AI 对话就能产页、codes 页自动保鲜。Lighthouse 4×100、Cloudflare 免费部署、广告收入 100% 归你。',
   announcement: {
     text: `v${PROJECT_VERSION} 发布 —— AI 原生内容技能、结构化 codes 数据、每周新鲜度审计与选品指南。`,
     href: RELEASES,
   },
   hero: {
     badge: '开源 · MIT 协议 · Cloudflare Pages',
-    title: '广告收入 100% 归你的游戏 wiki 模板',
+    title: '把一个爆发期游戏,24 小时变成你的流量站',
     subtitle:
-      '基于 Astro + Cloudflare Pages 的开源模板,专为游戏 SEO 内容站打造。Fork、放入你的游戏攻略、免费部署(无限带宽)——每一分广告收入都归你。',
+      'AnvilWiki = SEO 强化到极致的游戏 wiki 模板(Astro + Cloudflare Pages,Lighthouse 4×100,免费无限带宽)+ 随仓库分发的 AI 内容工作流:选对游戏、跟 AI 对话就能产页、codes 页自动保鲜——每一分广告收入都归你。',
     primaryCta: { label: '快速开始', href: '#docs' },
     secondaryCta: { label: 'GitHub 加星', href: 'https://github.com/PNGTRID/AnvilWiki' },
     tertiaryCta: { label: '查看 Demo', href: '/' },
@@ -271,40 +282,40 @@ pnpm install && pnpm dev`,
   },
   features: [
     {
+      icon: 'lucide:bot',
+      title: 'AI 原生内容工作流',
+      description:
+        'Agent 技能随仓库分发(.agent/skills/,Agent Skills 开放标准)。对 ZCode / Claude Code / Codex 说「根据这些笔记写一篇 Boss 攻略」,直接产出通过构建校验的 MDX 页面——schema + lint 自动质检,不用学任何脚本。',
+    },
+    {
+      icon: 'lucide:crosshair',
+      title: '选品方法论',
+      description:
+        '多数模板忽略的第一步:四层选品漏斗(Trends 需求验证 + SERP 空位检查)+ 首日 10 页计划——新游爆发的 2-8 周黄金窗口,流量全在这里。',
+    },
+    {
+      icon: 'lucide:ticket',
+      title: 'codes 页自动化',
+      description:
+        '结构化 codes 数据(状态/到期/来源)自动渲染 Active 一键复制区 + Expired 长尾表格(承接「XX 还能用吗」搜索);每周定时审计自动开 issue 提醒保鲜——不用你记得去更新。',
+    },
+    {
       icon: 'lucide:dollar-sign',
       title: '广告收入 100% 归你',
       description:
-        '内置 AdSense 广告位(env 驱动)。无平台抽成、无收入分成——和托管 wiki 农场完全不同。',
-    },
-    {
-      icon: 'lucide:search',
-      title: 'SEO 工程化',
-      description:
-        'sitemap(含 lastmod)、JSON-LD(含 VideoGame)、hreflang、robots、文章 TOC、Quick Answer、llms.txt——全部从 MDX frontmatter 自动生成。',
+        '内置 AdSense 广告位、赞助卡片、联盟链接组件——全部 env 门控默认关闭。无平台抽成,和托管 wiki 农场完全不同。',
     },
     {
       icon: 'lucide:zap',
-      title: '极致性能',
+      title: 'SEO 工程化 + 极致性能',
       description:
-        'Astro 零 JS 优先,Lighthouse 四项全 100(性能/无障碍/最佳实践/SEO)。',
-    },
-    {
-      icon: 'lucide:globe',
-      title: '多语言开箱即用',
-      description:
-        '英文在根路径(SEO 最优无前缀),其他语言带前缀。缺失内容自动回退英文——直链永不 404。',
+        'sitemap(含 lastmod)、JSON-LD 全套、hreflang、面向 AI 搜索的 Quick Answer、llms.txt——建立在 Astro 零 JS 和开箱 Lighthouse 4×100 之上。',
     },
     {
       icon: 'lucide:cloud',
       title: '永久免费',
       description:
-        '零配置部署到 Cloudflare Pages:免费无限带宽 + 全球 CDN + SSL。永远没有服务器账单。',
-    },
-    {
-      icon: 'lucide:wand-2',
-      title: '30 分钟套用',
-      description:
-        'JSON 驱动配置 + 交互式 CLI:首页预设、主题色、多语言一步到位——框架代码零改动。',
+        '零配置部署到 Cloudflare Pages:免费无限带宽 + 全球 CDN + SSL;多语言开箱即用(英文根路径,回退机制保证直链永不 404)。永远没有服务器账单。',
     },
   ],
   compare: {
@@ -315,6 +326,14 @@ pnpm install && pnpm dev`,
       {
         label: '适用场景',
         values: ['游戏 SEO 内容站', '社区协作 wiki', '产品文档', '定制应用'],
+      },
+      {
+        label: 'AI 内容管道',
+        values: ['技能随仓库分发', '无', '无', '自建'],
+      },
+      {
+        label: '选品指导',
+        values: ['漏斗 + 首日计划', '无', '无', '无'],
       },
       {
         label: '广告收入',
@@ -331,10 +350,6 @@ pnpm install && pnpm dev`,
       {
         label: '性能',
         values: ['Lighthouse 4×100', '中等', '高', '取决于实现'],
-      },
-      {
-        label: '上手时间',
-        values: ['30 分钟', '注册即用', '1 小时', '数天起'],
       },
       {
         label: '完全拥有',
@@ -358,6 +373,12 @@ pnpm install && pnpm dev`,
   docsEntry: {
     title: '几分钟即可上手',
     cards: [
+      {
+        icon: 'lucide:crosshair',
+        title: '选对游戏',
+        description: '哪个游戏值得建 wiki?四层选品漏斗 + 首日 10 页计划。',
+        href: 'https://github.com/PNGTRID/AnvilWiki/blob/main/docs/game-selection.md',
+      },
       {
         icon: 'lucide:rocket',
         title: '快速开始',

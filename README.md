@@ -1,9 +1,9 @@
 # AnvilWiki ⚒️
 
-> 广告收入 100% 归你的游戏 wiki 模板。
+> 带 AI 内容工作流的游戏 wiki 模板——广告收入 100% 归你。
 > 开源、Cloudflare Pages 原生优化、零成本免费部署上线。
 >
-> The game wiki template that keeps 100% of your ad revenue.
+> The game wiki template with an AI-native content workflow — 100% of your ad revenue.
 > Open source, natively optimized for Cloudflare Pages, free to deploy.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
