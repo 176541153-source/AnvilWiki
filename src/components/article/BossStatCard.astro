@@ -40,11 +40,11 @@ const stats = [
 ---
 
 <aside class="mt-6 rounded-lg border border-border bg-card p-4">
-  <p class="text-xs font-semibold uppercase tracking-wider text-nav">{labels.title}</p>
+  <p class="text-xs font-semibold uppercase tracking-wider text-foreground">{labels.title}</p>
   <dl class="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
     {stats.map((s) => (
       <div class="rounded-md bg-muted/50 p-3">
-        <dt class="flex items-center gap-1 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+        <dt class="flex items-center gap-1 text-[11px] font-medium uppercase tracking-wide text-foreground">
           <Icon name={s.icon} class="h-3 w-3" />
           {s.label}
         </dt>

@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.2] — 2026-08-15
+
+### Fixed
+- **Lighthouse a11y 100 restored** (regression introduced by v1.5–v1.8 components, caught by a full re-test): small brand-orange text on tinted backgrounds (gameVersion badge, Quick Answer label, BossStatCard labels, codes table headers, article tag chips) now uses foreground color while keeping brand icons/borders; CodeBlock copy button's accessible name no longer mismatches its visible text.
+- **`pnpm check-config` deployment domain gate**: errors when the effective SITE_URL host (env > wrangler.toml) ≠ `site.ts` domain — the wrangler.toml trap that caught the first real fork user is now machine-blocked.
+- LandingLayout unused-catch lint warning cleared (lint fully clean).
+
 ### Fixed (v1.8.1)
 - **Inline video placement** (from real-project dogfooding): new `<Video id title>` MDX component renders a YouTube player wherever the author places it in the body; the frontmatter `videos` array becomes the structured-data registry (VideoObject JSON-LD) + bottom fallback, with inline IDs auto-deduped from the fallback. Player core extracted to a shared `LazyYouTube` (event-delegation script — no more per-instance duplication; keyboard accessible; broken-thumbnail fallback to a plain link where i.ytimg.com is unreachable, e.g. mainland China).
 - Article layout: bottom video section moved up to right after the body; Comments moved to the very end (body → videos → gallery → tags → related → prev/next → feedback → comments → sponsor).

@@ -163,7 +163,7 @@ const jsonLd = [
         </span>
         {entry.data.gameVersion && (
           <span
-            class="inline-flex items-center gap-1 rounded-full border border-nav/40 bg-nav/10 px-2 py-0.5 font-medium text-nav"
+            class="inline-flex items-center gap-1 rounded-full border border-nav/40 bg-nav/10 px-2 py-0.5 font-medium text-foreground"
             title={shared.gameVersion}
           >
             <Icon name="lucide:git-branch" class="h-3 w-3" />
@@ -225,7 +225,7 @@ const jsonLd = [
           <Icon name="lucide:lightbulb" class="mt-0.5 h-4 w-4 shrink-0 text-nav" />
           <div class="min-w-0 flex-1">
             <div class="flex items-center gap-2">
-              <p class="text-xs font-semibold uppercase tracking-wider text-nav">{shared.quickAnswer}</p>
+              <p class="text-xs font-semibold uppercase tracking-wider text-foreground">{shared.quickAnswer}</p>
               <button
                 type="button"
                 data-copy-summary
@@ -307,7 +307,7 @@ const jsonLd = [
           {entry.data.tags.map((tag: string) => (
             <a
               href={tagPath(slugifyTag(tag), servedLocale)}
-              class="inline-flex items-center gap-1 rounded-full bg-muted px-3 py-1 text-xs text-muted-foreground transition hover:bg-nav/15 hover:text-nav"
+              class="inline-flex items-center gap-1 rounded-full bg-muted px-3 py-1 text-xs text-foreground transition hover:bg-nav/15 hover:text-nav"
             >
               <Icon name="lucide:hash" class="h-3 w-3" />
               {tag}
