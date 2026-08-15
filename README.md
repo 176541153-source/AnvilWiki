@@ -87,6 +87,20 @@ pnpm apply-template
 
 详细部署指南见 [`docs/deployment.md`](docs/deployment.md)。
 
+### 用 AI 直接生成内容(无需脚本)
+
+fork 后用 ZCode / Claude Code / Codex / Cursor 打开仓库,直接对话即可产页——"帮我写一篇 Emberfang 攻略,以下是打法要点:…"。Agent 会从 `AGENTS.md` 和 `.agent/skills/` 自动加载内容规范(frontmatter 硬规则、组件词汇表、验证命令),生成后自动跑 `pnpm check-content && pnpm build` 自检。
+
+内置 3 个技能(`.agent/skills/`,Agent Skills 开放标准,兼容工具自动发现):
+
+| 技能 | 用途 |
+|---|---|
+| `anvil-new-article` | 任意素材(口述/视频内容/原始数据)→ 合规 MDX 文章 |
+| `anvil-update-codes` | 新兑换码/过期码 → 更新 codes 页并同步多语言 |
+| `anvil-refresh` | 新鲜度巡检 → 输出"该更新什么"优先级清单 |
+
+也可以直接 `/anvil-new-article` 斜杠命令调用。`pnpm new-post` 等脚本保留,作为无 AI 环境的兜底。
+
 ### 文档导航
 
 | 文档                                                           | 内容                                                        |

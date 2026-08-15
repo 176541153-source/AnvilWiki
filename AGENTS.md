@@ -70,6 +70,16 @@ Content layer (src/content, src/locales)                   — fully replace per
 
 广告系统基于 Google AdSense,3 个广告位(Sticky / Sidebar / InContent)各一个 `<AdSenseSlot position="...">` 组件。`AdSenseSlot` 根据 `position` 读对应的 `PUBLIC_ADSENSE_SLOT_*` 环境变量,渲染 `<ins class="adsbygoogle">` 标签。`PUBLIC_ADSENSE_CLIENT` 或对应 slot ID 为空时组件 `return null` 不渲染(保 Lighthouse 4×100 开箱契约)。AdSense loader 由 `BaseLayout.astro` 在 `<head>` 注入,仅当 `PUBLIC_ADSENSE_CLIENT` 有值时加载。详见 PRD §10。
 
+## Conversational Content Authoring (AI-native page generation)
+
+Fork users drive this template from AI coding agents (ZCode / Claude Code / Codex / Cursor). They should be able to say "write a boss guide from these notes" and get a build-passing MDX page — no scripts required for authoring. Rules for any agent creating content:
+
+1. **Read before writing**: `docs/content-format.md` (field table + body rules), `src/content.config.ts` (Zod schema is the hard gate — invalid frontmatter fails `pnpm build`), `src/config/navigation.ts` (`category` must be a `CONTENT_TYPES` key), and one existing article of the same type for structure.
+2. **Hard frontmatter rules**: `description` 40–165 chars; `title` ≤ 80 chars; H1 never in the body (first heading is H2, question-shaped); `summary` is a 40–60 word direct answer (Quick Answer card + AI Overviews candidate); `tags` reuse existing tag vocabulary (grep `tags:` under `src/content/wiki/`); unverified drafts get `draft: true`; fast-patching games get `gameVersion`.
+3. **Component vocabulary** (import from `~/components/...`): `CodeBlock` (codes), `Callout` (info/tip/warn/danger), `Accordion` (collapsible detail), `AffiliateLink` (sponsored, auto `rel`), plus frontmatter-driven `boss` stat card / `videos` / `gallery`.
+4. **Verify, don't trust yourself**: after writing, run `pnpm check-content && pnpm build`. Both green = done. Never fabricate game facts (codes, stats) — ask the user for data; a single fake code destroys site trust.
+5. **Slash-command skills** live in `.agent/skills/` (Agent Skills open standard): `anvil-new-article` (generate a page from any source material), `anvil-update-codes` (apply new/expired codes), `anvil-refresh` (freshness audit). Agents supporting the standard auto-discover them; this section is the zero-install fallback.
+
 ## Commands
 
 ```bash
