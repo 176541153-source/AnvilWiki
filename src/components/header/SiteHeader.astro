@@ -17,10 +17,18 @@ import { landingLinkEnabled } from '~/config/project';
 interface Props {
   locale: Locale;
   currentPath: string;
+  /**
+   * Locales the current page exists in (optional). Pages that DON'T fall
+   * back to English (tag pages) pass their real coverage so the language
+   * switcher never links to a 404.
+   */
+  availableLocales?: readonly Locale[];
 }
-const { locale, currentPath } = Astro.props;
+const { locale, currentPath, availableLocales } = Astro.props;
 const ui = getUi(locale);
 const nav: Record<string, string> = ui.nav as Record<string, string>;
+
+const headerLocales = availableLocales ?? locales;
 
 const samePagePathFor = (loc: Locale) => {
   // Strip existing locale prefix, then prepend the new one.
@@ -78,7 +86,7 @@ const samePagePathFor = (loc: Locale) => {
       )}
       <SearchButton locale={locale} />
       <ThemeToggle />
-      <LanguageSwitcher locale={locale} pathFor={samePagePathFor} />
+      <LanguageSwitcher locale={locale} pathFor={samePagePathFor} availableLocales={availableLocales} />
 
       {/* Mobile menu */}
       <details class="relative md:hidden">
@@ -114,7 +122,7 @@ const samePagePathFor = (loc: Locale) => {
               <span>{nav.language ?? 'Language'}</span>
             </div>
             {
-              locales.map((loc) => (
+              headerLocales.map((loc) => (
                 <a
                   href={samePagePathFor(loc)}
                   class:list={[

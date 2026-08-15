@@ -10,8 +10,15 @@ interface Props {
   locale: Locale;
   /** Function that returns the path for a given locale (same page, different lang). */
   pathFor: (locale: Locale) => string;
+  /**
+   * Locales this page actually exists in (optional). Tag pages don't fall
+   * back to English, so they pass their real coverage — a locale without
+   * the tag is omitted instead of linking to a 404.
+   */
+  availableLocales?: readonly Locale[];
 }
-const { locale, pathFor } = Astro.props;
+const { locale, pathFor, availableLocales } = Astro.props;
+const switchLocales = availableLocales ?? locales;
 ---
 
 <details class="relative">
@@ -24,7 +31,7 @@ const { locale, pathFor } = Astro.props;
   </summary>
   <div class="absolute right-0 z-50 mt-2 w-40 overflow-hidden rounded-md border bg-card shadow-lg">
     {
-      locales.map((loc) => (
+      switchLocales.map((loc) => (
         <a
           href={pathFor(loc)}
           class:list={[

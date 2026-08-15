@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.0] — 2026-08-15
+
+**AnvilWiki v1.6 — 创作者维护工具 + 部署自动化:翻译覆盖率、内链审计、一键初始化 workflow。**
+
+### Added
+- **`pnpm check-i18n`**: translation coverage report — missing articles & UI keys per locale vs English (`--strict` to gate CI). Wired into CI as a report step.
+- **`pnpm check-links`**: internal-link audit over the built `dist/` — catches renamed-slug body links, homepage JSON links to unwritten articles, and locale links to pages that don't exist. Exits 1 on any broken link; wired into CI.
+- **"Initialize AnvilWiki" workflow** (`.github/workflows/setup.yml`): fork → Actions → Run once with your domain — resets `wrangler.toml [vars]`, removes the project landing page, opens a review PR.
+- **Cloudflare Web Analytics** env gating (`PUBLIC_CF_BEACON_TOKEN`): cookieless beacon, injected directly (no consent gate), empty = zero JS.
+- **`docs/staying-up-to-date.md`**: how to merge upstream after forking (three-layer merge matrix), SemVer compatibility promises, post-sync checklist.
+- **apply-template content scaffolding**: after clearing demo content, one schema-valid starter article is generated per chosen category.
+- **README growth pack**: AnvilWiki vs Fandom vs DIY comparison table, suggested repo topics, and a "built a site? add it to the Showcase" PR invitation.
+
+### Fixed
+- Article tag links on English-fallback pages now point at the served locale's tag pages (was: requested locale → 404).
+- Tag pages: hreflang alternates and the language switcher only offer locales where the tag actually exists (tag pages don't fall back).
+- Demo content dead links: `/guides/fastest-leveling`, `/updates`, `/guides/video-walkthroughs` (caught by the new check-links on its first run).
+
 ## [1.5.0] — 2026-08-15
 
 **AnvilWiki v1.5 — 内链 + 时效性 + 表达力:标签系统、版本号、最近更新页、MDX 组件与草稿流。**
@@ -187,7 +205,8 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
-[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v1.5.0...HEAD
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v1.6.0...HEAD
+[1.6.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.5.0...v1.6.0
 [1.5.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.4.0...v1.5.0
 [1.4.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.2.0...v1.3.0

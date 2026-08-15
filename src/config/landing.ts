@@ -11,7 +11,7 @@
  */
 
 /** Keep in sync with package.json "version" (used by the announcement bar). */
-export const PROJECT_VERSION = '1.5.0';
+export const PROJECT_VERSION = '1.6.0';
 
 export type LandingLocale = 'en' | 'zh';
 
@@ -79,7 +79,7 @@ const en: LandingContent = {
   description:
     'An open-source Astro + Cloudflare Pages template for building SEO-driven game content sites. Free to deploy, Lighthouse 4×100, 100% ad revenue yours.',
   announcement: {
-    text: `v${PROJECT_VERSION} shipped — tag pages, /recent, gameVersion badges, Callout/Accordion, drafts & sponsor card.`,
+    text: `v${PROJECT_VERSION} shipped — check-i18n & check-links audits, one-click fork setup workflow, CF Web Analytics.`,
     href: RELEASES,
   },
   hero: {
@@ -244,7 +244,7 @@ const zh: LandingContent = {
   description:
     '基于 Astro + Cloudflare Pages 的开源游戏内容站模板。免费部署、Lighthouse 4×100、广告收入 100% 归你。',
   announcement: {
-    text: `v${PROJECT_VERSION} 发布 —— 标签聚合页、/recent 更新页、版本号徽章、Callout/折叠面板、草稿与赞助组件。`,
+    text: `v${PROJECT_VERSION} 发布 —— 翻译覆盖率与内链审计脚本、一键初始化 workflow、CF Web Analytics 接入。`,
     href: RELEASES,
   },
   hero: {

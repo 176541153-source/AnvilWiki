@@ -540,6 +540,43 @@ function clearDemoContent() {
 }
 
 /**
+ * After clearing demo content, drop one scaffold article per chosen category
+ * (English) so the site builds and list pages aren't empty. The scaffold
+ * passes schema validation (description ≥ 40 chars) out of the box.
+ */
+function scaffoldContent(categories: { key: string }[]): number {
+  const enBase = path.resolve(ROOT, 'src/content/wiki/en');
+  let created = 0;
+  for (const { key } of categories) {
+    const dir = path.join(enBase, key);
+    if (!DRY_RUN) fs.mkdirSync(dir, { recursive: true });
+    const file = path.join(dir, 'getting-started.mdx');
+    if (!DRY_RUN && !fs.existsSync(file)) {
+      fs.writeFileSync(
+        file,
+        `---
+title: "${key === 'guides' ? 'Getting Started' : `Getting Started with ${key}`} Guide"
+description: "A starter article for the ${key} category. Replace this scaffold with your real ${key} content — keep the description between 40 and 165 characters for SEO."
+category: "${key}"
+date: ${new Date().toISOString().slice(0, 10)}
+tags: []
+---
+
+## First section — write question-shaped headings
+
+Replace this scaffold with your article. Remember: no H1 in the body (it is
+rendered from the frontmatter title), and start each section with a direct
+40-60 word answer for AI search engines.
+`,
+        'utf8',
+      );
+      created++;
+    }
+  }
+  return created;
+}
+
+/**
  * Files/dirs that make up the project landing page (/landing).
  * Fork users don't need these — the landing page is about the AnvilWiki project
  * itself, not their game wiki. The CLI removes them automatically.
@@ -802,6 +839,10 @@ async function main() {
   if (clearContent) {
     const n = clearDemoContent();
     console.log(`   🗑️  Removed ${n} demo MDX file${n === 1 ? '' : 's'} under src/content/wiki/`);
+    if (categories.length > 0) {
+      const s = scaffoldContent(categories);
+      console.log(`   📄 Created ${s} scaffold article${s === 1 ? '' : 's'} (one per category, en/)`);
+    }
   }
 
   if (skinInput.clearLanding) {

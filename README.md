@@ -97,7 +97,27 @@ pnpm apply-template
 | [docs/content-format.md](docs/content-format.md)               | MDX 文章格式规范                                            |
 | [docs/seo.md](docs/seo.md)                                     | SEO 工程化说明                                              |
 | [docs/comments.md](docs/comments.md)                           | Giscus 评论系统接入指南                                     |
+| [docs/staying-up-to-date.md](docs/staying-up-to-date.md)       | fork 后如何同步上游更新 + 版本策略                          |
 | [docs/migration-from-nextjs.md](docs/migration-from-nextjs.md) | 从 Next.js 模板迁移指南                                     |
+
+### 为什么不用 Fandom / 自建 Next.js?
+
+| | AnvilWiki | Fandom 类平台 | 自建 Next.js |
+| --- | --- | --- | --- |
+| 广告收入 | **100% 归你**(自带 AdSense 位) | 平台抽成 | 归你,但要自己接 |
+| 每月成本 | **¥0**(Cloudflare Pages 免费无限带宽) | 免费(代价是失去控制权) | Vercel 免费额度有限 |
+| Lighthouse | **4×100 开箱即得** | 平台决定 | 自己调优数周 |
+| SEO | JSON-LD/hreflang/sitemap 内置 | 平台域名权重高 | 自己实现 |
+| 数据所有权 | **你的 Git 仓库,纯文件** | 平台所有 | 你的 |
+| 评论/分析 | Giscus / GA / CF Analytics(env 门控) | 平台内置 | 自己选型 |
+
+> 建议的 GitHub 仓库 topics(提升 GitHub 搜索发现率):`game-wiki` `astro-template` `astro` `cloudflare-pages` `seo` `adsense` `wiki` `static-site` `open-source`
+
+### 用 AnvilWiki 建了站?欢迎提交 Showcase
+
+如果你用这个模板上线了自己的 wiki,**欢迎提 PR 把你的站加进官网 Showcase**(修改 `src/config/landing.ts` 的 showcase 数据即可)——真实案例是这个模板最有力的证明。
+
+Built a site with AnvilWiki? **Open a PR to add it to the landing Showcase** (`src/config/landing.ts`) — real user sites are the best proof of this template.
 
 ### 交流群
 

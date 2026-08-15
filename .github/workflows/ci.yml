@@ -42,3 +42,9 @@ jobs:
         run: pnpm build
         env:
           SITE_URL: https://anvilwiki.pages.dev
+
+      - name: Internal link audit (dist/)
+        run: pnpm check-links
+
+      - name: i18n coverage (report only)
+        run: pnpm check-i18n

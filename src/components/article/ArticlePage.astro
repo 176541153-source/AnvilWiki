@@ -251,7 +251,7 @@ const jsonLd = [
         <div class="mt-8 flex flex-wrap gap-2">
           {entry.data.tags.map((tag: string) => (
             <a
-              href={tagPath(slugifyTag(tag), locale)}
+              href={tagPath(slugifyTag(tag), servedLocale)}
               class="inline-flex items-center gap-1 rounded-full bg-muted px-3 py-1 text-xs text-muted-foreground transition hover:bg-nav/15 hover:text-nav"
             >
               <Icon name="lucide:hash" class="h-3 w-3" />

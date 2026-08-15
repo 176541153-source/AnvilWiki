@@ -204,6 +204,24 @@ export async function getEntriesByTag(tagSlug: string, locale: Locale): Promise<
 }
 
 /**
+ * All locales where at least one article carries this tag slug.
+ * Used to build hreflang alternates that never point at a 404
+ * (tag pages don't fall back to English).
+ */
+export async function localesForTag(tagSlug: string): Promise<Locale[]> {
+  const all = await getCollection('wiki');
+  const found = new Set<Locale>();
+  for (const e of all) {
+    if (!isPublished(e)) continue;
+    const parsed = parseEntryId(e.id);
+    if (parsed && e.data.tags.some((t: string) => slugifyTag(t) === tagSlug)) {
+      found.add(parsed.locale);
+    }
+  }
+  return Array.from(found);
+}
+
+/**
  * The display tag (original casing) for a tag slug in a locale,
  * or null when no article carries it.
  */

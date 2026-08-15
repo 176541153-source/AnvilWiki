@@ -57,6 +57,7 @@ const orgJsonLd = organizationJsonLd();
 
 // Optional analytics / verification / ads (env-var gated — empty = not injected).
 const gaId = import.meta.env.PUBLIC_GA_ID as string | undefined;
+const cfBeaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN as string | undefined;
 const gscVerification = import.meta.env.PUBLIC_GSC_VERIFICATION as string | undefined;
 const adsenseClient = import.meta.env.PUBLIC_ADSENSE_CLIENT as string | undefined;
 
@@ -152,6 +153,19 @@ const consentLabels = {
           }
         };
       </script>
+    )}
+
+    {/*
+      Cloudflare Web Analytics (optional) — cookieless, so unlike GA/AdSense
+      it needs no consent gate. Empty token = nothing injected, zero JS.
+    */}
+    {cfBeaconToken && (
+      <script
+        is:inline
+        defer
+        src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon={JSON.stringify({ token: cfBeaconToken })}
+      ></script>
     )}
 
     {/* JSON-LD: Organization (global) + any page-specific */}

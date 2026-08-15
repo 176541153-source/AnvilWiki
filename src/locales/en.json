@@ -263,7 +263,7 @@
           "order": 5,
           "name": "Update History",
           "description": "Major patches and events, newest first.",
-          "href": "/updates",
+          "href": "/recent",
           "displayType": "timeline",
           "highlights": [
             {
@@ -289,7 +289,7 @@
           "order": 6,
           "name": "Video Guides",
           "description": "Watch the best Anvil Quest walkthroughs and boss fights.",
-          "href": "/guides/video-walkthroughs",
+          "href": "/guides",
           "displayType": "video-grid",
           "highlights": [
             {

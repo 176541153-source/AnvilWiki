@@ -1,0 +1,79 @@
+# Fork setup — one-click initialization after forking AnvilWiki.
+#
+# Run this ONCE from your fork's Actions tab ("Initialize AnvilWiki" → Run workflow).
+# It automates the same steps as `pnpm apply-template` (docs/apply-template.md)
+# for the non-interactive parts that are safe to automate:
+#   1. Reset wrangler.toml [vars] to your domain (SITE_URL) + clear demo Giscus values
+#   2. Remove the project landing page (fork users don't need it)
+#   3. Create a scaffold article per category so the site isn't empty
+#   4. Open a PR with the changes for you to review
+#
+# The interactive parts (game name, theme color, locales) still need
+# `pnpm apply-template` locally — see docs/apply-template.md.
+#
+# After merging: connect the repo to Cloudflare Pages (docs/deployment.md).
+
+name: Initialize AnvilWiki
+
+on:
+  workflow_dispatch:
+    inputs:
+      site_url:
+        description: 'Your site domain (with https://), e.g. https://mygame.wiki'
+        required: true
+        default: 'https://your-domain.wiki'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Reset wrangler.toml [vars]
+        run: |
+          python3 - <<'EOF'
+          import re
+          p = 'wrangler.toml'
+          s = open(p).read()
+          new_vars = '''[vars]
+          # Site (must include https:// protocol — Astro validates this as a URL)
+          SITE_URL = "${{ inputs.site_url }}"
+          # Giscus comments — blank = disabled until you fill your own values.
+          PUBLIC_GISCUS_REPO = ""
+          PUBLIC_GISCUS_REPO_ID = ""
+          PUBLIC_GISCUS_CATEGORY = ""
+          PUBLIC_GISCUS_CATEGORY_ID = ""
+          PUBLIC_GISCUS_MAPPING = "pathname"
+          # Sponsor card — blank = disabled.
+          PUBLIC_SPONSOR_URL = ""
+          PUBLIC_SPONSOR_IMAGE_URL = ""
+          # Cloudflare Web Analytics — blank = disabled.
+          PUBLIC_CF_BEACON_TOKEN = ""'''
+          s = re.sub(r'\[vars\][\s\S]*?(?=\n*\[|\s*$)', new_vars, s)
+          open(p, 'w').write(s)
+          EOF
+
+      - name: Remove project landing page
+        run: |
+          rm -rf src/components/landing src/config/landing.ts src/pages/landing.astro src/pages/zh public/images/wechat-qr.jpg
+          sed -i.bak 's/landingLinkEnabled = true/landingLinkEnabled = false/' src/config/project.ts && rm -f src/config/project.ts.bak
+
+      - name: Create branch and pull request
+        run: |
+          git config user.name "anvilwiki-setup"
+          git config user.email "actions@github.com"
+          git checkout -b chore/init-from-template
+          git add -A
+          git commit -m "chore(init): apply template defaults (wrangler vars, remove landing)"
+          git push origin chore/init-from-template
+          gh pr create --title "Initialize AnvilWiki for your game" \
+            --body "Automated by the Initialize AnvilWiki workflow.
+        - wrangler.toml [vars] reset to ${{ inputs.site_url }} (demo Giscus cleared)
+        - Project landing page removed
+        Next: run \`pnpm apply-template\` locally for game name / theme / locales, then connect Cloudflare Pages (docs/deployment.md)."
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

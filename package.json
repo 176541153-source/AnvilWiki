@@ -1,6 +1,6 @@
 {
   "name": "anvilwiki",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "type": "module",
   "description": "Open-source game wiki site template. Astro + Cloudflare Pages. Free, fast, beginner-friendly.",
   "license": "MIT",
@@ -46,7 +46,9 @@
     "check-config": "tsx scripts/check-config.ts",
     "new-post": "tsx scripts/new-post.ts",
     "new-locale": "tsx scripts/new-locale.ts",
-    "apply-template": "tsx scripts/apply-template.ts"
+    "apply-template": "tsx scripts/apply-template.ts",
+    "check-i18n": "tsx scripts/check-i18n.ts",
+    "check-links": "tsx scripts/check-links.ts"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.14",

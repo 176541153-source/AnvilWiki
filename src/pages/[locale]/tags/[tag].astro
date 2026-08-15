@@ -5,7 +5,7 @@
  */
 import TagListPage from '~/components/article/TagListPage.astro';
 import { defaultLocale, isLocale, locales, type Locale } from '~/i18n/routing';
-import { slugifyTag } from '~/lib/content';
+import { slugifyTag, localesForTag } from '~/lib/content';
 import { languageAlternates, tagPath } from '~/lib/url';
 
 export async function getStaticPaths() {
@@ -39,7 +39,9 @@ if (!isLocale(localeParam) || localeParam === defaultLocale || !tagSlug) {
 }
 const locale: Locale = localeParam;
 
-const alternates = languageAlternates((loc) => tagPath(tagSlug, loc), locales);
+// hreflang only for locales where the tag actually exists (no fallback).
+const tagLocales = await localesForTag(tagSlug);
+const alternates = languageAlternates((loc) => tagPath(tagSlug, loc), tagLocales);
 ---
 
 <TagListPage locale={locale} tagSlug={tagSlug} alternates={alternates} />

@@ -17,6 +17,7 @@ export {
   getTagsWithCounts,
   getEntriesByTag,
   tagLabelFor,
+  localesForTag,
   parseEntryId,
   isPossiblyOutdated,
   STALE_AFTER_DAYS,

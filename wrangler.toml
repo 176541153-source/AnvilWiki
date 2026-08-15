@@ -45,3 +45,5 @@ PUBLIC_GISCUS_MAPPING = "pathname"
 # Sponsor card (empty = disabled, keeps Lighthouse 4×100 out of the box)
 PUBLIC_SPONSOR_URL = ""
 PUBLIC_SPONSOR_IMAGE_URL = ""
+# Cloudflare Web Analytics beacon token (empty = disabled)
+PUBLIC_CF_BEACON_TOKEN = ""
