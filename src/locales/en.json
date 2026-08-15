@@ -56,7 +56,18 @@
     "minuteRead": "min read",
     "wasThisHelpful": "Was this helpful?",
     "feedbackThanks": "Thanks for the feedback!",
-    "relatedVideos": "Related videos"
+    "relatedVideos": "Related videos",
+    "gameVersion": "Game version",
+    "allTags": "All Tags",
+    "tagsIndexDescription": "Browse all articles by topic.",
+    "articlesCount": "articles",
+    "recentTitle": "Recent Updates",
+    "recentDescription": "The latest articles and updates across the wiki, newest first.",
+    "sponsorTitle": "Support this wiki",
+    "sponsorText": "If these guides helped you, consider supporting the site.",
+    "sponsorButton": "Support us",
+    "notFoundSearchHint": "Try searching the wiki instead.",
+    "notFoundPopular": "Popular pages"
   },
   "overview": {
     "bosses": {

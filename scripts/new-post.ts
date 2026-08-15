@@ -106,6 +106,14 @@ async function main() {
     );
   }
 
+  // Draft: visible in `pnpm dev`, excluded from the production build.
+  const draftAnswer = (
+    await rl.question('Create as draft? (dev-only, not built) [y/N]: ')
+  )
+    .trim()
+    .toLowerCase();
+  const draft = draftAnswer === 'y' || draftAnswer === 'yes';
+
   rl.close();
 
   // Build the directory and file path.
@@ -126,6 +134,7 @@ category: "${category}"
 date: ${today}
 lastModified: ${today}
 tags: []
+draft: ${draft}
 summary: "One-sentence direct answer (40-60 words). This becomes the Quick
   Answer card and the AI Overviews / featured snippet candidate."
 ---

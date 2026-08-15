@@ -18,6 +18,7 @@ import { detailPath, languageAlternates, listPath } from '~/lib/url';
 export async function getStaticPaths() {
   const { getCollection } = await import('astro:content');
   const all = await getCollection('wiki');
+  const isDev = import.meta.env.DEV;
 
   const paths: Array<{ params: { slug: string } }> = [];
 
@@ -26,8 +27,9 @@ export async function getStaticPaths() {
     paths.push({ params: { slug: ct } });
   }
 
-  // Article paths: one per English MDX.
+  // Article paths: one per English MDX. Drafts are dev-only (never built).
   for (const entry of all) {
+    if (entry.data.draft && !isDev) continue;
     const parsed = parseEntryId(entry.id);
     if (!parsed || parsed.locale !== defaultLocale) continue;
     paths.push({ params: { slug: `${parsed.category}/${parsed.slug}` } });

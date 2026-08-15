@@ -15,6 +15,10 @@
 
 [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/PNGTRID/AnvilWiki)
 
+> ⚠️ **Fork 部署前必读 / Before deploying a fork**:仓库里的 `wrangler.toml` 存在时,它是 Cloudflare Pages env 的**唯一真相源**,dashboard 的 Environment variables UI 会被完全忽略。fork 后要么跑 `pnpm apply-template`(自动把 `[vars]` 重置为你的域名并清空 demo 值),要么手动改 `[vars]` 或删除该文件。详见 [`docs/deployment.md`](docs/deployment.md)。
+>
+> ⚠️ The shipped `wrangler.toml`, when present, is the **sole source of truth** for your Cloudflare Pages env — the dashboard's Environment variables UI is ignored. Run `pnpm apply-template` after forking (it resets `[vars]` to your domain and clears demo values), or edit/delete the file yourself. See [`docs/deployment.md`](docs/deployment.md) for details.
+
 > Lighthouse 4×100 — 实测于 [anvilwiki.pages.dev](https://anvilwiki.pages.dev/)（2026-08-12）
 <table>
   <tr>
@@ -181,7 +185,7 @@ AnvilWiki is open-sourced by **袁锐钦 (Yuan Ruiqin)**, lead of the **PNGTRIBE
 
 > **Status**: ✅ Live demo at **[anvilwiki.pages.dev](https://anvilwiki.pages.dev/)** — Lighthouse 4×100, CI green, fully deployed.
 >
-> **Features shipped**: Pagefind offline search · Astro Image (WebP/srcset) · Apply-template CLI · Full i18n (en/ja) · SEO (hreflang, JSON-LD incl. VideoGame, sitemap, article TOC, Quick Answer) · Google AdSense ads · Security headers · Giscus comments (opt-in) · Contact page
+> **Features shipped**: Pagefind offline search · Astro Image (WebP/srcset) · Apply-template CLI · Full i18n (en/ja) · SEO (hreflang, JSON-LD incl. VideoGame/VideoObject, sitemap, article TOC, Quick Answer) · Tag aggregation pages (`/tags`) · `/recent` updates page · gameVersion badges · Draft workflow · Callout/Accordion MDX components · Google AdSense ads · Sponsor card (opt-in) · Security headers · Giscus comments (opt-in) · Contact page
 >
 > 状态：✅ **[anvilwiki.pages.dev](https://anvilwiki.pages.dev/)** 已上线 — Lighthouse 全 100，CI 全绿。
 >

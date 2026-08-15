@@ -45,7 +45,9 @@ noindex: false
 | `date`         | date     | ✅   | ISO 格式（YYYY-MM-DD）               | 发布日期 + Article JSON-LD datePublished |
 | `lastModified` | date     | 可选 | ISO 格式                             | 最后修改日期（JSON-LD dateModified + sitemap lastmod；boss/tier-list 超 90 天自动显示"可能过期"提示） |
 | `image`        | string   | 可选 | 相对 MDX 文件的路径（走 Astro Image） | 封面图（og:image，缺省用 hero）          |
-| `tags`         | string[] | 可选 | 默认 `[]`                            | 用于"相关文章"推荐                       |
+| `tags`         | string[] | 可选 | 默认 `[]`                            | "相关文章"推荐 + 标签聚合页（`/tags/<tag>`，v1.5 起文章页 tag 可点击） |
+| `draft`        | boolean  | 可选 | 默认 `false`                         | 草稿：`pnpm dev` 可预览，生产构建完全排除（页面/列表/RSS/sitemap） |
+| `gameVersion`  | string   | 可选 | ≤ 20 字符                            | 适用的游戏版本号（如 `v2.5`），文章头渲染成徽章——快速迭代游戏的时效性/E-E-A-T 信号 |
 | `noindex`      | boolean  | 可选 | 默认 `false`                         | 设为 `true` 禁止搜索引擎索引此页         |
 | `summary`      | string   | 可选 | ≤ 200 字符                           | Quick Answer 卡片 + AI Overviews 摘要候选 |
 | `author`       | string   | 可选 | 缺省用 `site.defaultAuthor`           | 作者署名（E-E-A-T）                       |
@@ -59,15 +61,24 @@ MDX 里可以直接 import 模板组件（无需任何配置）：
 ```mdx
 import CodeBlock from '~/components/article/CodeBlock.astro';
 import StatBar from '~/components/article/StatBar.astro';
+import Callout from '~/components/mdx/Callout.astro';
+import Accordion from '~/components/mdx/Accordion.astro';
 
 <CodeBlock code="FORGE-2026" label="+500 Gold · expires Aug 31" />
 
 <StatBar label="Molten Gem" value={35} />
 <StatBar label="Rare Helm" value={5} note="1 in 20 runs" />
+
+<Callout type="warn" title="Patch v2.5">Mechanics changed in this patch — the old strat no longer works.</Callout>
+<Callout type="tip">Ice weapons shorten this fight by a third.</Callout>
+
+<Accordion title="Phase 2 details (spoiler)">战术细节……</Accordion>
 ```
 
 - **CodeBlock** — 一键复制游戏兑换码（codes 页留存神器）
 - **StatBar** — 掉落率/属性条形可视化
+- **Callout** — 提示框，`type`: `info`（默认）/ `tip` / `warn` / `danger`，零 JS（v1.5）
+- **Accordion** — 原生 `<details>` 折叠面板，用于分阶段打法/剧透/平台差异，零 JS（v1.5）
 
 ### Patch notes / 更新日志范式
 

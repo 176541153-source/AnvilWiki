@@ -14,6 +14,9 @@ export {
   localesForEntry,
   getRecentEntries,
   getRelatedEntries,
+  getTagsWithCounts,
+  getEntriesByTag,
+  tagLabelFor,
   parseEntryId,
   isPossiblyOutdated,
   STALE_AFTER_DAYS,
@@ -21,3 +24,5 @@ export {
   type WikiEntry,
   type ResolvedEntry,
 } from '~/i18n/content';
+
+export { slugifyTag } from '~/lib/url';

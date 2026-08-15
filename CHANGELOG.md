@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.0] — 2026-08-15
+
+**AnvilWiki v1.5 — 内链 + 时效性 + 表达力:标签系统、版本号、最近更新页、MDX 组件与草稿流。**
+
+### Added
+- **Tag system landing pages**: `/tags` (per-locale cloud) + `/tags/<tag>` aggregation pages; article-page tags are now clickable links; tag pages carry ItemList + Breadcrumb JSON-LD and land in the sitemap with hreflang. No English fallback (list accuracy rule).
+- **`gameVersion` frontmatter**: optional badge on the article header ("applies to v2.5") — freshness / E-E-A-T signal for fast-patching games. Demo articles tagged.
+- **`/recent` page** (all locales): full recently-updated listing, feeding "patch notes"-style queries; pairs with sitemap lastmod.
+- **`Callout` MDX component** (`~/components/mdx/Callout.astro`): info/tip/warn/danger callout boxes, zero JS.
+- **`Accordion` MDX component** (`~/components/mdx/Accordion.astro`): native `<details>` collapsible panels, zero JS.
+- **Draft mechanism**: `draft: true` frontmatter — visible in `pnpm dev`, fully excluded from production build (pages, lists, recent, related, hreflang, sitemap). `pnpm new-post` asks.
+- **VideoObject JSON-LD**: one per `videos` frontmatter entry — Google Video search eligibility.
+- **404 page recovery**: Pagefind search trigger + category entry points instead of a bare "back home".
+- **Sponsor card (env-gated)**: `PUBLIC_SPONSOR_URL` / `PUBLIC_SPONSOR_IMAGE_URL` — empty = renders nothing (same contract as AdSense/Giscus). Plus `.github/FUNDING.yml`.
+- **README fork warning**: wrangler.toml sole-source-of-truth warning surfaced next to the deploy button; `apply-template` also resets the new sponsor vars.
+
 ## [1.4.0] — 2026-08-15
 
 **AnvilWiki v1.4 — 官网国际化版:中文官网 + 微信交流群 + demo 双向入口。**
@@ -171,7 +187,8 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
-[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v1.4.0...HEAD
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v1.5.0...HEAD
+[1.5.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.4.0...v1.5.0
 [1.4.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.1.0...v1.2.0

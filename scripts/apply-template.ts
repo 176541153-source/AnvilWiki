@@ -487,7 +487,10 @@ PUBLIC_GISCUS_REPO = ""
 PUBLIC_GISCUS_REPO_ID = ""
 PUBLIC_GISCUS_CATEGORY = ""
 PUBLIC_GISCUS_CATEGORY_ID = ""
-PUBLIC_GISCUS_MAPPING = "pathname"`;
+PUBLIC_GISCUS_MAPPING = "pathname"
+# Sponsor card — blank = disabled. Fill PUBLIC_SPONSOR_URL to enable.
+PUBLIC_SPONSOR_URL = ""
+PUBLIC_SPONSOR_IMAGE_URL = ""`;
   const varsRe = /\[vars\][\s\S]*?(?=\n*\[|\n*$)/;
   if (!varsRe.test(src)) {
     console.warn(`⚠️ Could not find [vars] section in ${filePath} — edit it manually.`);

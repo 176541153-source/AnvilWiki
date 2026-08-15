@@ -179,6 +179,50 @@ export function faqPageJsonLd(items: Array<{ question: string; answer: string }>
   };
 }
 
+/**
+ * Generic ItemList JSON-LD for cross-category lists (tag pages, recent
+ * updates) where itemListJsonLd()'s single-category URL shape doesn't fit.
+ * Each item carries its own absolute URL.
+ */
+export function urlListJsonLd(opts: {
+  name: string;
+  items: Array<{ title: string; url: string }>;
+}) {
+  const { name, items } = opts;
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name,
+    itemListElement: items.map((item, idx) => ({
+      '@type': 'ListItem',
+      position: idx + 1,
+      name: item.title,
+      url: item.url,
+    })),
+  };
+}
+
+/**
+ * VideoObject JSON-LD — one per embedded YouTube video on an article page.
+ * Eligible for Google Video search results. `uploadDate` is required by
+ * Google; the article's publish date is the best available signal.
+ */
+export function videoObjectJsonLd(opts: {
+  videoId: string;
+  title: string;
+  uploadDate: Date;
+}) {
+  const { videoId, title, uploadDate } = opts;
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'VideoObject',
+    name: title,
+    thumbnailUrl: [`https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`],
+    uploadDate: uploadDate.toISOString(),
+    embedUrl: `https://www.youtube.com/embed/${videoId}`,
+  };
+}
+
 /** Build the <title> string with consistent suffix. */
 export function pageTitle(title: string): string {
   return `${title} — ${site.name}`;

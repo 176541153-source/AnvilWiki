@@ -38,6 +38,24 @@ export function detailPath(category: string, slug: string, locale: Locale): stri
   return localizePath(`/${category}/${slug}`, locale);
 }
 
+/** Tag index URL for a locale. e.g. tagsPath('en') -> '/tags' */
+export function tagsPath(locale: Locale): string {
+  return localizePath('/tags', locale);
+}
+
+/**
+ * Tag aggregation page URL. `tagSlug` must come from slugifyTag() so article
+ * tag links and the route params always match.
+ */
+export function tagPath(tagSlug: string, locale: Locale): string {
+  return localizePath(`/tags/${tagSlug}`, locale);
+}
+
+/** Recent-updates page URL for a locale. */
+export function recentPath(locale: Locale): string {
+  return localizePath('/recent', locale);
+}
+
 /**
  * Generate hreflang alternates for an article/category page.
  * Returns a record suitable for injection as <link rel="alternate"> tags.
@@ -51,6 +69,20 @@ export function languageAlternates(
     hreflang: loc,
     href: `${siteUrl}${buildPath(loc)}`,
   }));
+}
+
+/**
+ * Slugify a tag for use in URLs: lowercase, whitespace/underscores → "-".
+ * Tag pages are keyed by this slug; both article tag links and route
+ * params go through this function so they always match. Pure function
+ * (testable without a build).
+ */
+export function slugifyTag(tag: string): string {
+  return tag
+    .trim()
+    .toLowerCase()
+    .replace(/[\s_]+/g, '-')
+    .replace(/[^a-z0-9-]/g, '');
 }
 
 /** Extract locale from a URL pathname. Returns default locale if none found. */

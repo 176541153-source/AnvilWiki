@@ -18,6 +18,9 @@ import { detailPath, languageAlternates, listPath } from '~/lib/url';
 export async function getStaticPaths() {
   const { getCollection } = await import('astro:content');
   const all = await getCollection('wiki');
+  const isDev = import.meta.env.DEV;
+  // Drafts are dev-only — never generate production pages for them.
+  const published = all.filter((e) => isDev || !e.data.draft);
 
   const paths: Array<{
     params: { locale: string; slug: string };
@@ -35,7 +38,7 @@ export async function getStaticPaths() {
     }
 
     // Article paths from this locale's own MDX.
-    for (const entry of all) {
+    for (const entry of published) {
       const parsed = parseEntryId(entry.id);
       if (!parsed || parsed.locale !== locale) continue;
       paths.push({ params: { locale, slug: `${parsed.category}/${parsed.slug}` } });
@@ -43,7 +46,7 @@ export async function getStaticPaths() {
 
     // Also generate paths for English articles so fallback works at request
     // time (e.g. /ja/bosses/stormcaller where ja version doesn't exist).
-    for (const entry of all) {
+    for (const entry of published) {
       const parsed = parseEntryId(entry.id);
       if (!parsed || parsed.locale !== defaultLocale) continue;
       const slugStr = `${parsed.category}/${parsed.slug}`;

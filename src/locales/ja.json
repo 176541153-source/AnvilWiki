@@ -56,7 +56,18 @@
     "minuteRead": "分で読める",
     "wasThisHelpful": "この攻略は役に立ちましたか?",
     "feedbackThanks": "フィードバックありがとうございます!",
-    "relatedVideos": "関連動画"
+    "relatedVideos": "関連動画",
+    "gameVersion": "対応ゲームバージョン",
+    "allTags": "タグ一覧",
+    "tagsIndexDescription": "トピック別にすべての記事を閲覧できます。",
+    "articlesCount": "記事",
+    "recentTitle": "最新の更新",
+    "recentDescription": "Wiki全体の最新記事と更新情報を新しい順に表示します。",
+    "sponsorTitle": "このWikiを支援する",
+    "sponsorText": "この攻略が役に立った場合は、サイトの支援をご検討ください。",
+    "sponsorButton": "支援する",
+    "notFoundSearchHint": "Wiki内を検索してみてください。",
+    "notFoundPopular": "人気ページ"
   },
   "overview": {
     "bosses": {

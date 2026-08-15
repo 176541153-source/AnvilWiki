@@ -5,6 +5,7 @@ category: 'bosses'
 date: 2026-08-09
 lastModified: 2026-08-11
 image: '../../../../assets/covers/emberfang-cover.png'
+gameVersion: 'v2.5'
 tags: ['boss', 'fire', 'early-game', 'ash-warden']
 summary: 'Weak to ice damage. Dodge fire bolts in phase 1, avoid burning ground rings at 66% HP, and survive the Inferno enrage at 33%. Bring Frostpike or Stormcaller. Rewards Emberfang Shard and Molten Gem.'
 boss:
@@ -13,9 +14,15 @@ boss:
   resistant: 'Fire'
   location: 'Ashen Keep, Shattered Isles Act 1'
   recommendedLevel: '8+'
+videos: ['dQw4w9WgXcQ']
 ---
 
+import Callout from '~/components/mdx/Callout.astro';
+import Accordion from '~/components/mdx/Accordion.astro';
+
 Emberfang, the Ash Warden, is the first major boss most players encountered in Anvil Quest. This guide covers every attack pattern, the safest windows to deal damage, and the loadouts that make this fight trivial.
+
+<Callout type="tip" title="Quick tip">Any ice-imbued weapon shortens this fight by roughly a third. Frostpike is craftable two quests before the arena gate.</Callout>
 
 ## Boss Overview
 
@@ -38,6 +45,11 @@ Emberfang opens the fight by firing three fire bolts in a spread pattern. The bo
 ## Phase 2: Burning Ground (66% – 33% HP)
 
 At 66% HP, Emberfang slams the ground and creates expanding fire rings. Getting hit scorches you for 2 seconds — usually fatal because he follows up with a bolt volley.
+
+<Accordion title="Phase 2 details (open if you keep dying here)">
+  <p><strong>Ring timing</strong>: rings expand every 1.2s in sets of three. Jump as each ring reaches your feet — the window is 0.4s per ring.</p>
+  <p><strong>Why dash fails</strong>: dash has a 6s cooldown but the follow-up volley arrives 2s after the last ring. Jump the rings, save the dash for the volley.</p>
+</Accordion>
 
 **Counter**: Jump over each ring. The timing is generous (0.4s window per ring). Save your dash for the follow-up volley, not the rings.
 

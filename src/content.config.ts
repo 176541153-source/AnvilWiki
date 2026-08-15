@@ -30,6 +30,17 @@ const wiki = defineCollection({
       image: image().optional(),
       tags: z.array(z.string()).default([]),
       noindex: z.boolean().default(false),
+      /**
+       * Draft articles: visible in `pnpm dev`, excluded from the production
+       * build (pages, lists, recent, related, hreflang, sitemap).
+       */
+      draft: z.boolean().default(false),
+      /**
+       * Game version this article applies to (e.g. "v2.5"). Rendered as a
+       * badge on the article header — a freshness/E-E-A-T signal for
+       * fast-patching games. Optional.
+       */
+      gameVersion: z.string().max(20).optional(),
       /** Quick-answer summary shown before the article body (AI Overviews / featured snippet). */
       summary: z.string().max(200).optional(),
       /** Article author name (E-E-A-T signal). Falls back to site.defaultAuthor. */
