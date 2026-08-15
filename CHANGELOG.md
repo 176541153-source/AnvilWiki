@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.0] — 2026-08-15
+
+**AnvilWiki v1.4 — 官网国际化版:中文官网 + 微信交流群 + demo 双向入口。**
+
+### Added
+- **Chinese landing page (`/zh/landing`)**: full bilingual landing — every section localized (hero, features, comparison table, showcase, docs, CTA), EN ↔ 中文 toggle, hreflang alternates (x-default → English). The landing speaks for the PROJECT, so it ships its own en/zh pair independent of the demo game's en/ja content locales.
+- **Locale auto-detection**: visiting `/landing` with a Chinese browser language auto-redirects to `/zh/landing` (client-side, pre-render, zero runtime cost). Manual toggles are remembered in localStorage and always win.
+- **WeChat community group**: QR-code card on both landing pages + README (Chinese & English sections) — "scan to add the maintainer and join the discussion group". Image optimized 952×1374 PNG → 480×693 JPG (44 KB).
+- **Demo → landing entry**: hammer icon in the demo site header (desktop) + "AnvilWiki Template" link in the mobile menu, gated by `landingLinkEnabled` in `src/config/project.ts` — `apply-template` flips the flag when it removes the landing pages, so the entry never dead-links.
+- **Maintainer attribution**: footer on both landing pages and README — 由 PNG 部落团队主理人 袁锐钦 开源 / "Open-sourced by 袁锐钦 (Yuan Ruiqin), lead of the PNGTRIBE team".
+
+### Changed
+- Landing announcement bar is now driven by a `PROJECT_VERSION` constant (kept in sync with package.json) — no more stale hand-written version strings.
+
 ## [1.3.0] — 2026-08-15
 
 **AnvilWiki v1.3 — 审计清零版:未完成清单全部落地(codes 范式 + 阅读体验全家桶 + fork 工具链)。**
@@ -157,7 +171,8 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
-[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v1.3.0...HEAD
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v1.4.0...HEAD
+[1.4.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.0.0...v1.1.0
