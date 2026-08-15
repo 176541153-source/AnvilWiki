@@ -82,6 +82,7 @@ pnpm test             # Vitest (18 tests: url + seo)
 pnpm check-sitemap    # scripts/check-sitemap.ts — verify all sitemap URLs return 200
 pnpm check-links      # scripts/check-links.ts — audit dist/ internal links (run after build)
 pnpm check-i18n       # scripts/check-i18n.ts — translation coverage report (--strict to gate)
+pnpm check-content    # scripts/check-content.ts — content lint (no H1, alt text, link slashes)
 pnpm apply-template   # interactive template-apply CLI (hex→HSL theme, rewrite config/locales)
 pnpm new-post         # interactive MDX article scaffold
 ```

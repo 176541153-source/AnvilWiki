@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.0] — 2026-08-15
+
+**AnvilWiki v1.7 — 内容表达力二期 + E-E-A-T:画廊、作者体系、联盟链接与内容 lint。**
+
+### Added
+- **Image gallery + lightbox**: `gallery` frontmatter (image/caption/alt) renders a thumbnail grid below the article body with a native `<dialog>` lightbox (prev/next/ESC/backdrop close). Each image emits ImageObject JSON-LD (Google Images eligibility). Thumbnails via Astro Image (WebP/srcset).
+- **Author system**: `src/config/authors.ts` registry — registered authors link out from the article byline and upgrade Article JSON-LD author from Organization to **Person** (with `sameAs` knowledge-graph signal). Bare `author:` names keep working unchanged.
+- **`<AffiliateLink>` MDX component**: affiliate/outbound CTA card with `rel="sponsored nofollow noopener"` baked in — an SEO-compliant second monetization channel (Steam links, game passes). Zero JS, no env gating (it's content, not infrastructure).
+- **`pnpm check-content`**: content lint — no H1 in body, heading level skips, images without alt text, internal links with trailing slashes. Exits 1, CI-ready.
+
+### Changed
+- Demo: Stormcaller article now carries a gallery + named author; beginner guide demonstrates `<AffiliateLink>`; fixed a duplicate "What to Do Next" link.
+
 ## [1.6.0] — 2026-08-15
 
 **AnvilWiki v1.6 — 创作者维护工具 + 部署自动化:翻译覆盖率、内链审计、一键初始化 workflow。**
@@ -205,7 +218,8 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
-[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v1.6.0...HEAD
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v1.7.0...HEAD
+[1.7.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.6.0...v1.7.0
 [1.6.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.5.0...v1.6.0
 [1.5.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.4.0...v1.5.0
 [1.4.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.3.0...v1.4.0

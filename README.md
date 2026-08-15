@@ -205,7 +205,7 @@ AnvilWiki is open-sourced by **袁锐钦 (Yuan Ruiqin)**, lead of the **PNGTRIBE
 
 > **Status**: ✅ Live demo at **[anvilwiki.pages.dev](https://anvilwiki.pages.dev/)** — Lighthouse 4×100, CI green, fully deployed.
 >
-> **Features shipped**: Pagefind offline search · Astro Image (WebP/srcset) · Apply-template CLI · Full i18n (en/ja) · SEO (hreflang, JSON-LD incl. VideoGame/VideoObject, sitemap, article TOC, Quick Answer) · Tag aggregation pages (`/tags`) · `/recent` updates page · gameVersion badges · Draft workflow · Callout/Accordion MDX components · Google AdSense ads · Sponsor card (opt-in) · Security headers · Giscus comments (opt-in) · Contact page
+> **Features shipped**: Pagefind offline search · Astro Image (WebP/srcset) · Apply-template CLI · Full i18n (en/ja) · SEO (hreflang, JSON-LD incl. VideoGame/VideoObject/ImageObject, sitemap, article TOC, Quick Answer) · Tag aggregation pages (`/tags`) · `/recent` updates page · gameVersion badges · Draft workflow · Callout/Accordion/AffiliateLink MDX components · Image gallery + lightbox · Author system (Person JSON-LD) · Google AdSense ads · Sponsor card (opt-in) · Security headers · Giscus comments (opt-in) · Contact page
 >
 > 状态：✅ **[anvilwiki.pages.dev](https://anvilwiki.pages.dev/)** 已上线 — Lighthouse 全 100，CI 全绿。
 >

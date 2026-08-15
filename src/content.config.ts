@@ -64,6 +64,20 @@ const wiki = defineCollection({
        * bottom — zero JS until click). 11-char IDs, not full URLs.
        */
       videos: z.array(z.string()).optional(),
+      /**
+       * Optional image gallery — rendered as a thumbnail grid below the
+       * article body with a native <dialog> lightbox (zero JS until click).
+       * `image` is a path relative to the MDX file (same as the cover).
+       */
+      gallery: z
+        .array(
+          z.object({
+            image: image(),
+            caption: z.string().max(200).optional(),
+            alt: z.string().max(200).optional(),
+          }),
+        )
+        .default([]),
     }),
 });
 

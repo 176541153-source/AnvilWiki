@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { videoObjectJsonLd, urlListJsonLd } from '~/lib/seo';
+import { videoObjectJsonLd, urlListJsonLd, imageObjectJsonLd } from '~/lib/seo';
 import { slugifyTag, tagPath, tagsPath, recentPath } from '~/lib/url';
 
 describe('slugifyTag', () => {
@@ -41,6 +41,19 @@ describe('videoObjectJsonLd', () => {
     expect(json.thumbnailUrl[0]).toBe('https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg');
     expect(json.embedUrl).toBe('https://www.youtube.com/embed/dQw4w9WgXcQ');
     expect(json.uploadDate).toBe('2026-01-01T00:00:00.000Z');
+  });
+});
+
+describe('imageObjectJsonLd', () => {
+  it('builds an ImageObject with contentUrl and optional caption', () => {
+    const json = imageObjectJsonLd({ url: 'https://example.com/img.webp', caption: 'Arena' });
+    expect(json['@type']).toBe('ImageObject');
+    expect(json.contentUrl).toBe('https://example.com/img.webp');
+    expect(json.name).toBe('Arena');
+  });
+  it('omits caption fields when no caption given', () => {
+    const json = imageObjectJsonLd({ url: 'https://example.com/img.webp' });
+    expect(json.name).toBeUndefined();
   });
 });
 

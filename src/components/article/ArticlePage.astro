@@ -20,6 +20,7 @@ import Comments from '~/components/article/Comments.astro';
 import TableOfContents from '~/components/article/TableOfContents.astro';
 import ShareButton from '~/components/article/ShareButton.astro';
 import BossStatCard from '~/components/article/BossStatCard.astro';
+import ArticleGallery from '~/components/article/ArticleGallery.astro';
 import BackToTop from '~/components/article/BackToTop.astro';
 import WikiSidebar from '~/components/sidebar/WikiSidebar.astro';
 import { NAVIGATION_CONFIG } from '~/config/navigation';
@@ -29,9 +30,10 @@ import { getUi } from '~/i18n/ui';
 import { getRelatedEntries, getEntriesByCategory, isPossiblyOutdated, parseEntryId, slugifyTag, type WikiEntry, type ResolvedEntry } from '~/lib/content';
 import VideoSection from '~/components/home/VideoSection.astro';
 import SponsorCard from '~/components/article/SponsorCard.astro';
-import { articleJsonLd, breadcrumbJsonLd, pageTitle, videoObjectJsonLd } from '~/lib/seo';
+import { articleJsonLd, breadcrumbJsonLd, pageTitle, videoObjectJsonLd, imageObjectJsonLd } from '~/lib/seo';
 import { listPath, detailPath, tagPath } from '~/lib/url';
 import { site } from '~/config/site';
+import { getAuthor } from '~/config/authors';
 
 interface Props {
   locale: Locale;
@@ -61,6 +63,7 @@ const related = await getRelatedEntries(entry, locale, 3);
 const { Content, headings } = await render(entry);
 
 const author = entry.data.author ?? site.defaultAuthor;
+const authorInfo = getAuthor(author);
 const summary = entry.data.summary;
 const outdated = isPossiblyOutdated(category, entry.data.lastModified, entry.data.date);
 
@@ -89,6 +92,8 @@ const jsonLd = [
     category,
     slug,
     locale,
+    authorName: entry.data.author,
+    authorSameAs: authorInfo?.sameAs,
   }),
   breadcrumbJsonLd({
     category,
@@ -100,6 +105,10 @@ const jsonLd = [
   // One VideoObject per embedded video — Google Video search eligibility.
   ...(entry.data.videos ?? []).map((videoId: string) =>
     videoObjectJsonLd({ videoId, title: entry.data.title, uploadDate: entry.data.date }),
+  ),
+  // One ImageObject per gallery image — Google Images eligibility.
+  ...entry.data.gallery.map((g: { image: { src: string }; caption?: string }) =>
+    imageObjectJsonLd({ url: `${siteUrl}${g.image.src}`, caption: g.caption }),
   ),
 ];
 ---
@@ -153,7 +162,16 @@ const jsonLd = [
         {author && (
           <span class="inline-flex items-center gap-1">
             <Icon name="lucide:user" class="h-3.5 w-3.5" />
-            {author}
+            {authorInfo?.url ? (
+              <a
+                href={authorInfo.url}
+                rel="author noopener"
+                class="hover:text-nav"
+                target={authorInfo.url.startsWith('http') ? '_blank' : undefined}
+              >{author}</a>
+            ) : (
+              author
+            )}
           </span>
         )}
         {
@@ -244,6 +262,9 @@ const jsonLd = [
     >
       <Content />
     </div>
+
+    {/* Gallery — thumbnail grid + native dialog lightbox (renders nothing when empty) */}
+    <ArticleGallery items={entry.data.gallery} heading={shared.gallery} />
 
     {/* Tags */}
     {

@@ -52,7 +52,8 @@ noindex: false
 | `summary`      | string   | 可选 | ≤ 200 字符                           | Quick Answer 卡片 + AI Overviews 摘要候选 |
 | `author`       | string   | 可选 | 缺省用 `site.defaultAuthor`           | 作者署名（E-E-A-T）                       |
 | `boss`         | object   | 可选 | hp/weakness/resistant/location/recommendedLevel | 结构化 Boss 数据卡（正文前渲染）   |
-| `videos`       | string[] | 可选 | YouTube 视频 ID（11 位，非完整 URL）  | 文章底部"相关视频"懒加载嵌入              |
+| `videos`       | string[] | 可选 | YouTube 视频 ID（11 位，非完整 URL）  | 文章底部"相关视频"懒加载嵌入（每条生成 VideoObject JSON-LD） |
+| `gallery`      | object[] | 可选 | image/caption/alt（v1.7）            | 文章底部缩略图画廊 + 原生 dialog lightbox（每张生成 ImageObject JSON-LD） |
 
 ### 可在 MDX 中使用的模板组件
 
@@ -79,6 +80,13 @@ import Accordion from '~/components/mdx/Accordion.astro';
 - **StatBar** — 掉落率/属性条形可视化
 - **Callout** — 提示框，`type`: `info`（默认）/ `tip` / `warn` / `danger`，零 JS（v1.5）
 - **Accordion** — 原生 `<details>` 折叠面板，用于分阶段打法/剧透/平台差异，零 JS（v1.5）
+- **AffiliateLink** — 联盟/外链 CTA 卡片，自动带 `rel="sponsored nofollow"`（SEO 合规的第二变现渠道，v1.7）
+
+### 作者体系（v1.7）
+
+frontmatter `author` 除署名展示外，还可在 `src/config/authors.ts` 注册该作者的
+主页 URL / 社交链接 —— 文章头署名变成链接，Article JSON-LD 的 author 从
+Organization 升级为 **Person**（E-E-A-T 加分）。不注册则维持原样。
 
 ### Patch notes / 更新日志范式
 

@@ -48,13 +48,35 @@ export function articleJsonLd(opts: {
   category: string;
   slug: string;
   locale: Locale;
+  /** Named author (E-E-A-T) — renders as Person; falls back to the Organization. */
+  authorName?: string;
+  /** Profile URLs folded into the Person's sameAs (knowledge-graph signal). */
+  authorSameAs?: string[];
 }) {
-  const { title, description, image, datePublished, dateModified, category, slug, locale } = opts;
+  const {
+    title,
+    description,
+    image,
+    datePublished,
+    dateModified,
+    category,
+    slug,
+    locale,
+    authorName,
+    authorSameAs,
+  } = opts;
   const coverUrl = image
     ? image.startsWith('http')
       ? image
       : `${siteUrl}${image}`
     : `${siteUrl}/images/hero.webp`;
+  const author = authorName
+    ? {
+        '@type': 'Person',
+        name: authorName,
+        ...(authorSameAs && authorSameAs.length > 0 ? { sameAs: authorSameAs } : {}),
+      }
+    : { '@type': 'Organization', name: site.name };
   return {
     '@context': 'https://schema.org',
     '@type': 'Article',
@@ -63,7 +85,7 @@ export function articleJsonLd(opts: {
     image: coverUrl,
     datePublished: datePublished.toISOString(),
     dateModified: (dateModified ?? datePublished).toISOString(),
-    author: { '@type': 'Organization', name: site.name },
+    author,
     publisher: {
       '@type': 'Organization',
       name: site.name,
@@ -199,6 +221,17 @@ export function urlListJsonLd(opts: {
       name: item.title,
       url: item.url,
     })),
+  };
+}
+
+/** ImageObject JSON-LD — one per gallery image (Google Images eligibility). */
+export function imageObjectJsonLd(opts: { url: string; caption?: string }) {
+  const { url, caption } = opts;
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ImageObject',
+    contentUrl: url,
+    ...(caption ? { name: caption, description: caption } : {}),
   };
 }
 
