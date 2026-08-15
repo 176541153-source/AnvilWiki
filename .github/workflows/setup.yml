@@ -71,9 +71,6 @@ jobs:
           git commit -m "chore(init): apply template defaults (wrangler vars, remove landing)"
           git push origin chore/init-from-template
           gh pr create --title "Initialize AnvilWiki for your game" \
-            --body "Automated by the Initialize AnvilWiki workflow.
-        - wrangler.toml [vars] reset to ${{ inputs.site_url }} (demo Giscus cleared)
-        - Project landing page removed
-        Next: run \`pnpm apply-template\` locally for game name / theme / locales, then connect Cloudflare Pages (docs/deployment.md)."
+            --body "Automated by the Initialize AnvilWiki workflow. wrangler.toml [vars] reset to ${{ inputs.site_url }} (demo Giscus cleared); project landing page removed. Next: run pnpm apply-template locally for game name / theme / locales, then connect Cloudflare Pages (docs/deployment.md)."
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
