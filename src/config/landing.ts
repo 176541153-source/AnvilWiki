@@ -79,7 +79,7 @@ const en: LandingContent = {
   description:
     'An open-source Astro + Cloudflare Pages template for building SEO-driven game content sites. Free to deploy, Lighthouse 4×100, 100% ad revenue yours.',
   announcement: {
-    text: `v${PROJECT_VERSION} shipped — codes copy blocks, reading-experience suite, new-locale scaffolding & homepage presets.`,
+    text: `v${PROJECT_VERSION} shipped — Chinese landing page, WeChat community group & demo↔landing cross links.`,
     href: RELEASES,
   },
   hero: {
@@ -244,7 +244,7 @@ const zh: LandingContent = {
   description:
     '基于 Astro + Cloudflare Pages 的开源游戏内容站模板。免费部署、Lighthouse 4×100、广告收入 100% 归你。',
   announcement: {
-    text: `v${PROJECT_VERSION} 发布 —— 兑换码一键复制、阅读体验全家桶、多语言脚手架与首页预设。`,
+    text: `v${PROJECT_VERSION} 发布 —— 中文版官网、微信交流群、demo 与官网双向入口。`,
     href: RELEASES,
   },
   hero: {
