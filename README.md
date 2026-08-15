@@ -106,6 +106,7 @@ fork 后用 ZCode / Claude Code / Codex / Cursor 打开仓库,直接对话即可
 | 文档                                                           | 内容                                                        |
 | -------------------------------------------------------------- | ----------------------------------------------------------- |
 | [docs/PRD.md](docs/PRD.md)                                     | ⭐ **完整产品设计文档**（架构、数据模型、模块设计、路线图） |
+| [docs/game-selection.md](docs/game-selection.md)               | 选品漏斗 + 首日 10 页工作流（做哪个游戏、上线第一天做什么） |
 | [docs/deployment.md](docs/deployment.md)                       | Cloudflare Pages 部署详细指南                               |
 | [docs/apply-template.md](docs/apply-template.md)               | 配置参考手册（按文件组织）                                  |
 | [docs/content-format.md](docs/content-format.md)               | MDX 文章格式规范                                            |

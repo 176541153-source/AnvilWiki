@@ -76,7 +76,7 @@ Fork users drive this template from AI coding agents (ZCode / Claude Code / Code
 
 1. **Read before writing**: `docs/content-format.md` (field table + body rules), `src/content.config.ts` (Zod schema is the hard gate — invalid frontmatter fails `pnpm build`), `src/config/navigation.ts` (`category` must be a `CONTENT_TYPES` key), and one existing article of the same type for structure.
 2. **Hard frontmatter rules**: `description` 40–165 chars; `title` ≤ 80 chars; H1 never in the body (first heading is H2, question-shaped); `summary` is a 40–60 word direct answer (Quick Answer card + AI Overviews candidate); `tags` reuse existing tag vocabulary (grep `tags:` under `src/content/wiki/`); unverified drafts get `draft: true`; fast-patching games get `gameVersion`.
-3. **Component vocabulary** (import from `~/components/...`): `CodeBlock` (codes), `Callout` (info/tip/warn/danger), `Accordion` (collapsible detail), `AffiliateLink` (sponsored, auto `rel`), plus frontmatter-driven `boss` stat card / `videos` / `gallery`.
+3. **Component vocabulary** (import from `~/components/...`): `CodeBlock` (codes), `Callout` (info/tip/warn/danger), `Accordion` (collapsible detail), `AffiliateLink` (sponsored, auto `rel`), plus frontmatter-driven `boss` stat card / `codes` (Active+Expired auto-split) / `videos` / `gallery`.
 4. **Verify, don't trust yourself**: after writing, run `pnpm check-content && pnpm build`. Both green = done. Never fabricate game facts (codes, stats) — ask the user for data; a single fake code destroys site trust.
 5. **Slash-command skills** live in `.agent/skills/` (Agent Skills open standard): `anvil-new-article` (generate a page from any source material), `anvil-update-codes` (apply new/expired codes), `anvil-refresh` (freshness audit). Agents supporting the standard auto-discover them; this section is the zero-install fallback.
 
@@ -93,6 +93,7 @@ pnpm check-sitemap    # scripts/check-sitemap.ts — verify all sitemap URLs ret
 pnpm check-links      # scripts/check-links.ts — audit dist/ internal links (run after build)
 pnpm check-i18n       # scripts/check-i18n.ts — translation coverage report (--strict to gate)
 pnpm check-content    # scripts/check-content.ts — content lint (no H1, alt text, link slashes)
+pnpm refresh-audit    # scripts/refresh-audit.ts — deterministic freshness report (codes pages >7d, stale categories >90d)
 pnpm apply-template   # interactive template-apply CLI (hex→HSL theme, rewrite config/locales)
 pnpm new-post         # interactive MDX article scaffold
 ```

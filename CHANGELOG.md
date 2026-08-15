@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.0] — 2026-08-15
+
+**AnvilWiki v1.8 — AI 原生内容生产 + 新鲜度管道:第一性原理路线落地(技能分发、codes 数据结构、定时审计、选品工作流)。**
+
+### Added
+- **`.agent/skills/` ships with the template** (Agent Skills open standard — Claude Code / ZCode / Codex / Cursor auto-discover): `anvil-new-article` (any source material → build-passing MDX), `anvil-update-codes` (apply new/expired codes incl. multilingual sync), `anvil-refresh` (freshness audit report). Plus a "Conversational Content Authoring" section in AGENTS.md as the zero-install fallback — fork users generate pages by just talking to their AI tool, scripts become the verification backend (`check-content` + `build`).
+- **Structured `codes` frontmatter**: `{code, reward, status, expiryDate, source}` array → auto-rendered CodesTable (Active section with one-click-copy CodeBlocks + freshness labels; Expired table kept for long-tail "is X still working" queries) + localized 4-question FAQPage JSON-LD. Demo codes articles (en/ja) migrated.
+- **`pnpm refresh-audit`**: deterministic freshness engine (codes pages unverified >7d = P0, stale categories >90d = P1) — markdown report, no LLM, no mutations.
+- **`content-pipeline.yml`**: weekly cron workflow that runs the audit and files a tracking issue. Never mutates content — fixing stays human/AI-gated.
+- **`docs/game-selection.md`**: the fork-user funnel the template was missing — game selection (4-layer scoring incl. Trends demand validation + SERP gap check + two-source rule), then "first-day 10 pages" (codes → beginner guide → bosses → tier list) to compress the 2-8 week golden window.
+
 ## [1.7.0] — 2026-08-15
 
 **AnvilWiki v1.7 — 内容表达力二期 + E-E-A-T:画廊、作者体系、联盟链接与内容 lint。**
@@ -218,7 +229,8 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
-[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v1.7.0...HEAD
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v1.8.0...HEAD
+[1.8.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.7.0...v1.8.0
 [1.7.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.6.0...v1.7.0
 [1.6.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.5.0...v1.6.0
 [1.5.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.4.0...v1.5.0

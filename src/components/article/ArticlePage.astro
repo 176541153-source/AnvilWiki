@@ -20,6 +20,7 @@ import Comments from '~/components/article/Comments.astro';
 import TableOfContents from '~/components/article/TableOfContents.astro';
 import ShareButton from '~/components/article/ShareButton.astro';
 import BossStatCard from '~/components/article/BossStatCard.astro';
+import CodesTable from '~/components/article/CodesTable.astro';
 import ArticleGallery from '~/components/article/ArticleGallery.astro';
 import BackToTop from '~/components/article/BackToTop.astro';
 import WikiSidebar from '~/components/sidebar/WikiSidebar.astro';
@@ -30,7 +31,7 @@ import { getUi } from '~/i18n/ui';
 import { getRelatedEntries, getEntriesByCategory, isPossiblyOutdated, parseEntryId, slugifyTag, type WikiEntry, type ResolvedEntry } from '~/lib/content';
 import VideoSection from '~/components/home/VideoSection.astro';
 import SponsorCard from '~/components/article/SponsorCard.astro';
-import { articleJsonLd, breadcrumbJsonLd, pageTitle, videoObjectJsonLd, imageObjectJsonLd } from '~/lib/seo';
+import { articleJsonLd, breadcrumbJsonLd, pageTitle, videoObjectJsonLd, imageObjectJsonLd, faqPageJsonLd } from '~/lib/seo';
 import { listPath, detailPath, tagPath } from '~/lib/url';
 import { site } from '~/config/site';
 import { getAuthor } from '~/config/authors';
@@ -110,6 +111,10 @@ const jsonLd = [
   ...entry.data.gallery.map((g: { image: { src: string }; caption?: string }) =>
     imageObjectJsonLd({ url: `${siteUrl}${g.image.src}`, caption: g.caption }),
   ),
+  // Structured codes page → standard 4-question FAQ schema (localized).
+  ...(entry.data.codes && entry.data.codes.length > 0
+    ? [faqPageJsonLd((shared.codesFaq as Array<{ question: string; answer: string }>) ?? [])]
+    : []),
 ];
 ---
 
@@ -247,6 +252,14 @@ const jsonLd = [
       <BossStatCard
         boss={entry.data.boss}
         labels={(shared.bossCard as Record<string, string>) ?? {}}
+      />
+    )}
+
+    {/* Structured codes table — Active (copy blocks) / Expired (long-tail table) */}
+    {entry.data.codes && entry.data.codes.length > 0 && (
+      <CodesTable
+        codes={entry.data.codes}
+        labels={(shared.codesTable as Record<string, string>) ?? { active: 'Active Codes', expired: 'Expired Codes', reward: 'Reward', expires: 'Expires' }}
       />
     )}
 

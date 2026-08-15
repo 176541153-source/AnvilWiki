@@ -49,6 +49,30 @@
       "location": "Location",
       "level": "Rec. Level"
     },
+    "codesTable": {
+      "active": "Active Codes",
+      "expired": "Expired Codes",
+      "reward": "Reward",
+      "expires": "Expires"
+    },
+    "codesFaq": [
+      {
+        "question": "How do I redeem codes?",
+        "answer": "Open the game, click the settings gear in the top-right, paste your code into the Redeem Code field, and confirm. Codes are case-sensitive."
+      },
+      {
+        "question": "Why do codes stop working?",
+        "answer": "Codes expire on a schedule set by the developer (usually monthly or tied to update milestones), and some are one-per-account. This page is re-tested regularly."
+      },
+      {
+        "question": "How often are new codes released?",
+        "answer": "New codes typically arrive with each major game update. Bookmark this page and check back after every patch."
+      },
+      {
+        "question": "Do codes expire?",
+        "answer": "Yes — most codes have an expiry date, shown next to each code. Expired codes move to the expired table below."
+      }
+    ],
     "possiblyOutdated": "This guide was last checked on",
     "outdatedNote": "— the game may have changed since. Some details could be out of date.",
     "prevArticle": "Previous",

@@ -78,6 +78,24 @@ const wiki = defineCollection({
           }),
         )
         .default([]),
+      /**
+       * Structured redeem codes (codes pages). Rendered as a CodesTable
+       * above the article body: Active section (CodeBlock, one-click copy)
+       * + Expired section (table, long-tail SEO for "is X still working").
+       * `status` drives the split; `expiryDate`/`source` are freshness and
+       * E-E-A-T signals. Body stays for prose (how to redeem, reward notes).
+       */
+      codes: z
+        .array(
+          z.object({
+            code: z.string().min(1),
+            reward: z.string().optional(),
+            status: z.enum(['active', 'expired']).default('active'),
+            expiryDate: z.string().max(40).optional(),
+            source: z.string().optional(),
+          }),
+        )
+        .optional(),
     }),
 });
 

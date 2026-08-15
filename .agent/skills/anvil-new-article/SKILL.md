@@ -18,7 +18,7 @@ description: 从用户提供的素材(口述要点/视频内容/别的攻略/原
 
 | 用户素材特征 | category 建议 | 页面形态 |
 |---|---|---|
-| 兑换码列表 / 奖励码 | `codes` | 每码一个 `<CodeBlock>` + Active/Expired 分节 |
+| 兑换码列表 / 奖励码 | `codes` | frontmatter `codes:` 数组(status/expiryDate/source),页面自动渲染 Active/Expired 分区 + FAQPage JSON-LD |
 | Boss 打法 / 属性 | `bosses` | frontmatter 加 `boss:` 结构化数据卡 + 按阶段 H2 |
 | 教程 / 路线 / how to | `guides` | 问题式 H2 + 每节首段 40-60 词直答 |
 | 排名 / 对比 | `guides`(或 tier-list 分类若存在) | 表格为主 |

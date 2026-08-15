@@ -54,6 +54,7 @@ noindex: false
 | `boss`         | object   | 可选 | hp/weakness/resistant/location/recommendedLevel | 结构化 Boss 数据卡（正文前渲染）   |
 | `videos`       | string[] | 可选 | YouTube 视频 ID（11 位，非完整 URL）  | 文章底部"相关视频"懒加载嵌入（每条生成 VideoObject JSON-LD） |
 | `gallery`      | object[] | 可选 | image/caption/alt（v1.7）            | 文章底部缩略图画廊 + 原生 dialog lightbox（每张生成 ImageObject JSON-LD） |
+| `codes`        | object[] | 可选 | code/reward/status/expiryDate/source（v1.8） | codes 页结构化数据：正文前自动渲染 Active（CodeBlock 一键复制）/ Expired（表格）分区 + FAQPage JSON-LD |
 
 ### 可在 MDX 中使用的模板组件
 

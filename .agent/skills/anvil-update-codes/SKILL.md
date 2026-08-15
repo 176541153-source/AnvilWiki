@@ -17,13 +17,25 @@ ls src/content/wiki/en/codes/   # 或用户指定的 locale
 
 读现有文章,理解现有结构(Active 列表 / How to Redeem / Expired 列表)。
 
-### Step 2 — 应用新数据
+### Step 2 — 应用新数据(v1.8 起 codes 走 frontmatter,不再手写 CodeBlock)
 
-- 新码:新增 `<CodeBlock code="..." label="奖励描述" />`,放在 Active 区顶部
-- 用户说"XX 过期了":把对应 CodeBlock 移到 Expired 区(灰色/删除线样式按文章现状),不删除(过期码保留是长尾 SEO 内容:"is CODE-123 still working")
+文章 frontmatter 有结构化 `codes:` 数组,页面自动渲染 Active(CodeBlock 一键复制)/ Expired(表格)分区 + FAQPage JSON-LD:
+
+```yaml
+codes:
+  - code: FORGE-2026
+    reward: '+500 Gold'
+    status: active        # active | expired
+    expiryDate: 'Aug 31'
+    source: 'Official Discord announcement'
+```
+
+- 新码:在 `codes:` 数组 active 项最前面追加(带 reward/expiryDate)
+- 用户说"XX 过期了":把该项 `status` 改为 `expired`(保留,不删除——过期码是 "is X still working" 长尾 SEO 内容)
 - 更新 frontmatter:`lastModified: <今天>`;游戏有版本号就更新 `gameVersion`
-- 若文章标题含年月(如 "All Working Codes (August 2026)"),跨月时同步更新 title 与 H2 月份
+- 若文章标题含年月(如 "All Working Codes (August 2026)"),跨月时同步更新 title
 - `summary` 里的码数量/日期同步修正
+- 正文里的 CodeBlock 列表(旧格式)迁移到 frontmatter 后删除,正文保留 how-to-redeem 等散文内容
 
 ### Step 3 — 多语言同步
 
