@@ -8,7 +8,7 @@ AnvilWiki is an **open-source (MIT) game wiki site template** built with **Astro
 
 Goal: let beginners deploy a game wiki site to Cloudflare Pages for free (unlimited bandwidth) in ~30 minutes, with strong SEO, i18n, and ad-monetization built in.
 
-**Status (as of 2026-08-11)**: Planning stage. Only `README.md` + `docs/PRD.md` exist. No code yet. Code MVP starts after PRD review.
+**Status (as of 2026-08-15)**: v1.8.0 released — full template + AI content skills (`.agent/skills/`) + 9 scripts + 3 CI workflows. Live demo: anvilwiki.pages.dev (Lighthouse 4×100).
 
 ## Read These First
 
@@ -20,7 +20,7 @@ Goal: let beginners deploy a game wiki site to Cloudflare Pages for free (unlimi
 | Layer       | Choice                                          | Notes                                                                                                                                                                                               |
 | ----------- | ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Framework   | Astro 5 (`output: 'static'`)                    | Pure static, **no adapter** (unlike Next.js)                                                                                                                                                        |
-| Content     | Content Layer API + `glob()` loader, Zod schema | Defined in root `content.config.ts`. Base dir is `./src/content/wiki` (subdirectory required to avoid Astro's legacy auto-collection of `src/content/<locale>/` folders).                           |
+| Content     | Content Layer API + `glob()` loader, Zod schema | Defined in `src/content.config.ts`. Base dir is `./src/content/wiki` (subdirectory required to avoid Astro's legacy auto-collection of `src/content/<locale>/` folders).                           |
 | MDX         | `@astrojs/mdx` ^4.3.x                           | **mdx 3.x fails with Astro 5.18** (`./jsx/renderer.js` not in exports). mdx 4.x pairs with astro 5.x; mdx 7.x needs astro 7.x.                                                                      |
 | Styles      | Tailwind CSS 3 + `@astrojs/tailwind`            | Theme via CSS variables mapped in `tailwind.config.mjs` (shadcn-style tokens).                                                                                                                      |
 | Icons       | `astro-icon` + `@iconify-json/lucide`           | Use `lucide:` prefix on every icon name. `reddit` does NOT exist in lucide (use `globe`).                                                                                                           |
@@ -87,8 +87,10 @@ pnpm install
 pnpm dev              # dev server, http://localhost:4321
 pnpm build            # includes Content schema validation — fails on bad frontmatter
 pnpm typecheck        # astro check (0 errors expected)
-pnpm lint             # ESLint + Prettier + eslint-plugin-astro
-pnpm test             # Vitest (18 tests: url + seo)
+pnpm lint             # ESLint (eslint-plugin-astro)
+pnpm test             # Vitest (url + seo + tags + i18n-smoke)
+pnpm check-config     # scripts/check-config.ts — nav/locale 3-place consistency
+pnpm new-locale       # scripts/new-locale.ts — scaffold a new language
 pnpm check-sitemap    # scripts/check-sitemap.ts — verify all sitemap URLs return 200
 pnpm check-links      # scripts/check-links.ts — audit dist/ internal links (run after build)
 pnpm check-i18n       # scripts/check-i18n.ts — translation coverage report (--strict to gate)

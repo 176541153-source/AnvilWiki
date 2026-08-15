@@ -41,7 +41,12 @@ jobs:
       - name: Build
         run: pnpm build
         env:
-          SITE_URL: https://anvilwiki.pages.dev
+          # FORKS: set a repository variable SITE_URL (Settings → Secrets and
+          # variables → Actions → Variables) to your domain — otherwise CI
+          # falls back to the demo domain and the built canonical/sitemap
+          # point at the wrong site (production builds use wrangler.toml,
+          # which this does not affect).
+          SITE_URL: ${{ vars.SITE_URL || 'https://anvilwiki.pages.dev' }}
 
       - name: Internal link audit (dist/)
         run: pnpm check-links

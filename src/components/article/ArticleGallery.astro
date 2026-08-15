@@ -22,8 +22,11 @@ interface Props {
   items: GalleryItem[];
   /** Section heading (from locale JSON shared.gallery). */
   heading: string;
+  /** Lightbox button labels (locale JSON shared.galleryLabels). */
+  labels?: Record<string, string>;
 }
-const { items, heading } = Astro.props;
+const { items, heading, labels = {} } = Astro.props;
+const t = (key: string, fallback: string) => labels[key] ?? fallback;
 
 if (items.length === 0) return null;
 ---
@@ -72,14 +75,14 @@ if (items.length === 0) return null;
     <img data-gallery-full src="" alt="" class="max-h-[80vh] max-w-[90vw] rounded-md object-contain" />
     <p data-gallery-caption class="min-h-5 text-sm text-foreground"></p>
     <div class="flex gap-2">
-      <button type="button" data-gallery-prev class="btn-outline px-3 py-1.5 text-xs" aria-label="Previous image">
+      <button type="button" data-gallery-prev class="btn-outline px-3 py-1.5 text-xs" aria-label={t("prev", "Previous image")}>
         <Icon name="lucide:chevron-left" class="h-4 w-4" />
       </button>
       <button type="button" data-gallery-close class="btn-outline px-3 py-1.5 text-xs">
         <Icon name="lucide:x" class="mr-1 h-4 w-4" />
-        Close
+        {t("close", "Close")}
       </button>
-      <button type="button" data-gallery-next class="btn-outline px-3 py-1.5 text-xs" aria-label="Next image">
+      <button type="button" data-gallery-next class="btn-outline px-3 py-1.5 text-xs" aria-label={t("next", "Next image")}>
         <Icon name="lucide:chevron-right" class="h-4 w-4" />
       </button>
     </div>

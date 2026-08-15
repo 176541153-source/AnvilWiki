@@ -23,7 +23,7 @@ export const GET: APIRoute = async () => {
   const entries = all
     .filter((e) => {
       const parsed = parseEntryId(e.id);
-      return parsed?.locale === defaultLocale && !e.data.noindex;
+      return parsed?.locale === defaultLocale && !e.data.noindex && !e.data.draft;
     })
     .sort((a, b) => a.data.category.localeCompare(b.data.category));
 

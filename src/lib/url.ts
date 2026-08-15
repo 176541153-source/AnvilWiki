@@ -78,11 +78,15 @@ export function languageAlternates(
  * (testable without a build).
  */
 export function slugifyTag(tag: string): string {
-  return tag
+  const slug = tag
     .trim()
     .toLowerCase()
     .replace(/[\s_]+/g, '-')
     .replace(/[^a-z0-9-]/g, '');
+  // Non-ASCII tags (CJK etc.) would collapse to '' — which would route all
+  // of them to the same /tags/ page. Fall back to percent-encoding so every
+  // tag keeps a unique, buildable URL segment.
+  return slug || encodeURIComponent(tag.trim());
 }
 
 /** Extract locale from a URL pathname. Returns default locale if none found. */

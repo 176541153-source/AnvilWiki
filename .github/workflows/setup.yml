@@ -1,15 +1,14 @@
 # Fork setup — one-click initialization after forking AnvilWiki.
 #
 # Run this ONCE from your fork's Actions tab ("Initialize AnvilWiki" → Run workflow).
-# It automates the same steps as `pnpm apply-template` (docs/apply-template.md)
-# for the non-interactive parts that are safe to automate:
+# Safe-to-automate, non-interactive steps only:
 #   1. Reset wrangler.toml [vars] to your domain (SITE_URL) + clear demo Giscus values
 #   2. Remove the project landing page (fork users don't need it)
-#   3. Create a scaffold article per category so the site isn't empty
+#   3. Optionally clear the demo game content (default: yes)
 #   4. Open a PR with the changes for you to review
 #
-# The interactive parts (game name, theme color, locales) still need
-# `pnpm apply-template` locally — see docs/apply-template.md.
+# What this does NOT do (run `pnpm apply-template` locally for these):
+#   game name / theme color / locales / homepage copy — see docs/apply-template.md.
 #
 # After merging: connect the repo to Cloudflare Pages (docs/deployment.md).
 
@@ -19,9 +18,13 @@ on:
   workflow_dispatch:
     inputs:
       site_url:
-        description: 'Your site domain (with https://), e.g. https://mygame.wiki'
+        description: 'Your site domain (https:// added automatically if missing), e.g. https://mygame.wiki'
         required: true
         default: 'https://your-domain.wiki'
+      clear_demo_content:
+        description: 'Delete the demo game articles (Anvil Quest) so your site starts clean'
+        required: false
+        default: 'true'
 
 permissions:
   contents: write
@@ -34,14 +37,22 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Reset wrangler.toml [vars]
+        env:
+          RAW_SITE_URL: ${{ inputs.site_url }}
         run: |
           python3 - <<'EOF'
-          import re
+          import os, re
+          # Normalize: strip any protocol/host casing issues, force https://.
+          # Astro's `site` config REQUIRES a valid URL — a bare domain would
+          # crash the build only at deploy time, so fix it here.
+          raw = os.environ['RAW_SITE_URL'].strip().rstrip('/')
+          url = re.sub(r'^https?://', '', raw)
+          url = f'https://{url}'
           p = 'wrangler.toml'
           s = open(p).read()
           new_vars = '''[vars]
           # Site (must include https:// protocol — Astro validates this as a URL)
-          SITE_URL = "${{ inputs.site_url }}"
+          SITE_URL = "__SITE_URL__"
           # Giscus comments — blank = disabled until you fill your own values.
           PUBLIC_GISCUS_REPO = ""
           PUBLIC_GISCUS_REPO_ID = ""
@@ -53,6 +64,7 @@ jobs:
           PUBLIC_SPONSOR_IMAGE_URL = ""
           # Cloudflare Web Analytics — blank = disabled.
           PUBLIC_CF_BEACON_TOKEN = ""'''
+          new_vars = new_vars.replace('__SITE_URL__', url)
           s = re.sub(r'\[vars\][\s\S]*?(?=\n*\[|\s*$)', new_vars, s)
           open(p, 'w').write(s)
           EOF
@@ -61,6 +73,22 @@ jobs:
         run: |
           rm -rf src/components/landing src/config/landing.ts src/pages/landing.astro src/pages/zh public/images/wechat-qr.jpg
           sed -i.bak 's/landingLinkEnabled = true/landingLinkEnabled = false/' src/config/project.ts && rm -f src/config/project.ts.bak
+
+      - name: Clear demo content and demo author
+        if: ${{ inputs.clear_demo_content != 'false' }}
+        run: |
+          # Remove demo game articles (keep directory structure) + the demo
+          # author registry entry, so no "Anvil Quest" / "Forge Master Kael"
+          # residue ships with the fork.
+          find src/content/wiki -name '*.mdx' -delete
+          python3 - <<'EOF'
+          import re
+          p = 'src/config/authors.ts'
+          s = open(p).read()
+          # Drop the DEMO entry block (comment + 'Forge Master Kael' line).
+          s = re.sub(r"\n\s*// DEMO .*?\n\s*'Forge Master Kael'.*?\n", '\n', s)
+          open(p, 'w').write(s)
+          EOF
 
       - name: Create branch and pull request
         run: |

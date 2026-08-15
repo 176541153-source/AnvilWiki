@@ -9,15 +9,17 @@ description: 内容新鲜度巡检——扫描全站 lastModified 超 90 天的�
 
 ## 工作流
 
-### Step 1 — 找出过期候选
+### Step 1 — 跑确定性审计脚本
 
-时效性分类(`bosses` / `tier-list`,定义在 `src/i18n/content.ts` 的 `STALE_CATEGORIES`)里
-`lastModified`(或缺省时 `date`)距今超 90 天(`STALE_AFTER_DAYS`)的文章:
+仓库自带 `pnpm refresh-audit`(scripts/refresh-audit.ts,与每周一定时
+content-pipeline workflow 同一引擎):codes 超 7/30 天 = P0,bosses/tier-list
+超 90 天 = P1,自动跳过 draft,输出优先级表格。直接跑它,把输出作为报告基础:
 
 ```bash
-# 列出所有文章的 date/lastModified,按上述规则人工/程序筛出超期项
-grep -rE "^(date|lastModified|category):" src/content/wiki/ --include="*.mdx"
+pnpm refresh-audit
 ```
+
+(仅当脚本不可用时才退回手动 `grep -rE "^(date|lastModified|category):" src/content/wiki/`)。
 
 ### Step 2 — 检查 codes 页
 

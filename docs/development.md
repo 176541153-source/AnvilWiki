@@ -97,7 +97,7 @@ Minor = 新功能(默认关闭/向后兼容);Patch = 修复;Major = breaking(需
 
 ## 5. 测试策略
 
-- **只测纯函数**:`lib/url`、`lib/seo`、`lib/content` 的 re-export 纯函数(tests/ 现状,34 个)
+- **只测纯函数**:`lib/url`、`lib/seo`、`lib/content` 的 re-export 纯函数(tests/ 现状,以 `pnpm test` 输出为准)
 - 不测 .astro 组件(构建 + check-* 已覆盖)
 - 新增纯函数 → 同步加测试;修 bug → 先加复现测试再修
 

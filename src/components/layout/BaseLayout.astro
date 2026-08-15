@@ -12,6 +12,7 @@
  */
 import '~/styles/globals.css';
 import { site, siteUrl } from '~/config/site';
+import { locales } from '~/i18n/routing';
 import { organizationJsonLd } from '~/lib/seo';
 import JsonLd from '~/components/seo/JsonLd.astro';
 import CookieConsent from './CookieConsent.astro';
@@ -55,6 +56,11 @@ const suffix = titleSuffix !== undefined ? titleSuffix : site.name;
 const fullTitle = suffix && !title.includes(suffix) ? `${title} — ${suffix}` : title;
 const orgJsonLd = organizationJsonLd();
 
+// Strip ANY known locale prefix (built from routing.ts so new locales keep
+// x-default pointing at the default-locale URL — a hardcoded en|ja list
+// would silently break for forks that add languages).
+const localePrefixRe = new RegExp(`^/(${locales.join('|')})(?=/|$)`);
+
 // Optional analytics / verification / ads (env-var gated — empty = not injected).
 const gaId = import.meta.env.PUBLIC_GA_ID as string | undefined;
 const cfBeaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN as string | undefined;
@@ -93,7 +99,7 @@ const consentLabels = {
     <link
       rel="alternate"
       hreflang="x-default"
-      href={`${siteUrl}${Astro.url.pathname.replace(/^\/(en|ja|zh)(?=\/)/, '')}`}
+      href={`${siteUrl}${Astro.url.pathname.replace(localePrefixRe, '')}`}
     />
 
     {/* Open Graph */}

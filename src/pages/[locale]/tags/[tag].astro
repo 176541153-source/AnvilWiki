@@ -22,7 +22,8 @@ export async function getStaticPaths() {
       if (parsed[0] !== locale) continue;
       if (entry.data.draft && !isDev) continue;
       for (const tag of entry.data.tags) {
-        slugs.add(slugifyTag(tag));
+        const slug = slugifyTag(tag);
+        if (slug) slugs.add(slug); // skip empty-string slugs (blank tags)
       }
     }
     for (const tagSlug of slugs) {

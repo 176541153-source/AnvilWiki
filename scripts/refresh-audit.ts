@@ -56,6 +56,7 @@ const DAY = 24 * 60 * 60 * 1000;
 for (const file of files) {
   const src = fs.readFileSync(file, 'utf8');
   const fm = src.split('---')[1] ?? '';
+  if (/^draft:\s*true\s*$/m.test(fm)) continue; // drafts never published
   const category = fm.match(/^category:\s*['"]?([\w-]+)/m)?.[1] ?? '';
   const dateStr = fm.match(/^date:\s*(.+)$/m)?.[1]?.trim().replace(/['"]/g, '');
   const lmStr = fm.match(/^lastModified:\s*(.+)$/m)?.[1]?.trim().replace(/['"]/g, '');

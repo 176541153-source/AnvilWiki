@@ -49,6 +49,9 @@ function articleMap(locale: string): Map<string, string> {
       const p = path.join(d, entry.name);
       if (entry.isDirectory()) walk(p);
       else if (entry.name.endsWith('.mdx')) {
+        // Drafts are dev-only; don't report them as missing translations.
+        const fm = fs.readFileSync(p, 'utf8').split('---')[1] ?? '';
+        if (/^draft:\s*true\s*$/m.test(fm)) continue;
         map.set(path.relative(dir, p), entry.name.replace(/\.mdx$/, ''));
       }
     }

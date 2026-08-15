@@ -30,6 +30,9 @@ function buildLastmodMap(): Map<string, string> {
       }
       if (!entry.name.endsWith('.mdx')) continue;
       const src = fs.readFileSync(p, 'utf8');
+      // Drafts never publish — their dates must not leak into list-page
+      // lastmod (would tell Google a page updated that didn't).
+      if (/^draft:\s*true\s*$/m.test(src.split('---')[1] ?? '')) continue;
       const fm = src.split('---')[1] ?? '';
       const lm = fm.match(/^lastModified:\s*(.+)$/m)?.[1]?.trim();
       const dt = fm.match(/^date:\s*(.+)$/m)?.[1]?.trim();

@@ -21,8 +21,8 @@ export const GET: APIRoute = async (context) => {
   const items = all
     .filter((e) => {
       const parsed = parseEntryId(e.id);
-      // Only default-locale articles; exclude noindex drafts from the feed.
-      return parsed?.locale === defaultLocale && !e.data.noindex;
+      // Only default-locale, published articles (no noindex, no drafts).
+      return parsed?.locale === defaultLocale && !e.data.noindex && !e.data.draft;
     })
     .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
     .slice(0, 50);

@@ -229,3 +229,19 @@
 - [内容格式](./content-format.md)
 - [套用模板指南](./apply-template.md)
 - 回到 [README](../README.md)
+
+
+## v1.5–v1.8 新增的 SEO 资产
+
+| 资产 | 位置 | 作用 |
+|---|---|---|
+| 标签聚合页 | `/tags/<tag>`(各语言独立生成,不回退) | 每篇文章的 tags 变成可收录的内链枢纽页,扩大长尾索引面 |
+| `/recent` 页 | 全语言 | 承接 "patch notes / update" 类查询;配合 sitemap lastmod 提升回访 |
+| VideoObject JSON-LD | 有 `videos` 的文章 | Google Video 搜索富结果资格 |
+| ImageObject JSON-LD | 有 `gallery` 的文章 | Google Images 收录资格 |
+| Person JSON-LD | `src/config/authors.ts` 注册过作者的文章 | author 实体从 Organization 升级为 Person(E-E-A-T),支持 sameAs |
+| FAQPage JSON-LD | 有 `codes` frontmatter 的文章 | 本地化四问(redeem/过期/频率)结构化 |
+| gameVersion 徽章 | 文章头 | 时效性信号,配 90 天过期横幅(STALE_CATEGORIES) |
+| game.config 式新鲜度 | content-pipeline 每周审计 | codes >7 天 / 时效分类 >90 天自动开 issue |
+
+注意:FAQPage 富摘要 Google 已限制到政府/医疗站(游戏站拿不到富展示),其价值在结构化信号而非 SERP 样式。

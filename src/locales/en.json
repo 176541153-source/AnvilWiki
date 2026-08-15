@@ -53,7 +53,8 @@
       "active": "Active Codes",
       "expired": "Expired Codes",
       "reward": "Reward",
-      "expires": "Expires"
+      "expires": "Expires",
+      "code": "Code"
     },
     "codesFaq": [
       {
@@ -92,7 +93,12 @@
     "sponsorText": "If these guides helped you, consider supporting the site.",
     "sponsorButton": "Support us",
     "notFoundSearchHint": "Try searching the wiki instead.",
-    "notFoundPopular": "Popular pages"
+    "notFoundPopular": "Popular pages",
+    "galleryLabels": {
+      "close": "Close",
+      "prev": "Previous image",
+      "next": "Next image"
+    }
   },
   "overview": {
     "bosses": {
@@ -197,19 +203,19 @@
           "displayType": "badge-list",
           "highlights": [
             {
-              "label": "WELCOME2026",
-              "detail": "500 coins + starter sword",
+              "label": "FORGE-2026",
+              "detail": "+500 Gold · expires Aug 31",
               "badge": "Active"
             },
             {
-              "label": "FORGE",
-              "detail": "1 rare gem",
+              "label": "EMBERBORN",
+              "detail": "2× XP (30 min) · expires Aug 31",
               "badge": "Active"
             },
             {
-              "label": "12MVISITS",
-              "detail": "Exclusive cosmetic",
-              "badge": "Expires soon"
+              "label": "ASHENKEEP",
+              "detail": "Ashen Keep cosmetic set",
+              "badge": "Active"
             }
           ]
         },

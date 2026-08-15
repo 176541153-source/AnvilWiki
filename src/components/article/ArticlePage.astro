@@ -259,6 +259,7 @@ const jsonLd = [
     {entry.data.codes && entry.data.codes.length > 0 && (
       <CodesTable
         codes={entry.data.codes}
+        copiedText={shared.copied}
         labels={(shared.codesTable as Record<string, string>) ?? { active: 'Active Codes', expired: 'Expired Codes', reward: 'Reward', expires: 'Expires' }}
       />
     )}
@@ -277,7 +278,7 @@ const jsonLd = [
     </div>
 
     {/* Gallery — thumbnail grid + native dialog lightbox (renders nothing when empty) */}
-    <ArticleGallery items={entry.data.gallery} heading={shared.gallery} />
+    <ArticleGallery items={entry.data.gallery} heading={shared.gallery} labels={(shared.galleryLabels as Record<string, string>) ?? {}} />
 
     {/* Tags */}
     {

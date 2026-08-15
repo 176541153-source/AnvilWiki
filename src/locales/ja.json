@@ -53,7 +53,8 @@
       "active": "有効なコード",
       "expired": "期限切れのコード",
       "reward": "報酬",
-      "expires": "有効期限"
+      "expires": "有効期限",
+      "code": "コード"
     },
     "codesFaq": [
       {
@@ -92,7 +93,12 @@
     "sponsorText": "この攻略が役に立った場合は、サイトの支援をご検討ください。",
     "sponsorButton": "支援する",
     "notFoundSearchHint": "Wiki内を検索してみてください。",
-    "notFoundPopular": "人気ページ"
+    "notFoundPopular": "人気ページ",
+    "galleryLabels": {
+      "close": "閉じる",
+      "prev": "前の画像",
+      "next": "次の画像"
+    }
   },
   "overview": {
     "bosses": {
@@ -197,17 +203,17 @@
           "displayType": "badge-list",
           "highlights": [
             {
-              "label": "WELCOME2026",
+              "label": "FORGE-2026",
               "detail": "コイン500 + 初心者用の剣",
               "badge": "有効"
             },
             {
-              "label": "FORGE",
+              "label": "EMBERBORN",
               "detail": "レアジェム1個",
               "badge": "有効"
             },
             {
-              "label": "12MVISITS",
+              "label": "ASHENKEEP",
               "detail": "限定コスメ",
               "badge": "近日期限切れ"
             }

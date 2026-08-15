@@ -1343,7 +1343,7 @@ describe('sitemap', () => {
 - `video-grid`：✅ 实现（缩略图 + 跳转，不 embed）—— 保住 Lighthouse 100，流量留站内变现（embed 会让用户看视频时广告曝光归 YouTube）。
 - `comparison-table`：⏸ 推迟 —— 广告变现模型下，对比表把信息完整呈现后用户无点击动力（信息已满足），ROI 为负。等真实用户反馈「我首页需要对比表」再做，做时需重新设计「如何驱动用户点进文章页」。
 
-详见 `docs/superpowers/specs/2026-08-12-v1.3-display-types-design.md`。
+(设计推演过程见 git 历史中该时期的 commit 记录。)
 
 ### 14.3 「待验证清单」回填计划
 

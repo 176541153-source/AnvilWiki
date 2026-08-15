@@ -49,4 +49,4 @@ pnpm check-content && pnpm build
 
 ### Step 5 — 汇报
 
-新增 N 码 / 过期 M 码 / 文章路径,提醒用户:codes 类页面建议每周检查一次(90 天未更新的 codes 页会自动显示"可能过期"横幅,见 STALE_CATEGORIES)。
+新增 N 码 / 过期 M 码 / 文章路径,提醒用户:codes 类页面建议每周检查一次——注意 codes 分类**不在** STALE_CATEGORIES 里,不会显示页面横幅;保鲜提醒来自每周一的 content-pipeline 审计 issue(codes 超 7 天未验证 = P0)。

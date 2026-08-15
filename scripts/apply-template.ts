@@ -546,6 +546,12 @@ function clearDemoContent() {
  */
 function scaffoldContent(categories: { key: string }[]): number {
   const enBase = path.resolve(ROOT, 'src/content/wiki/en');
+  // "tier-list" → "Tier List", so scaffold titles read naturally.
+  const titleCase = (key: string) =>
+    key
+      .split(/[-_]/)
+      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+      .join(' ');
   let created = 0;
   for (const { key } of categories) {
     const dir = path.join(enBase, key);
@@ -555,7 +561,7 @@ function scaffoldContent(categories: { key: string }[]): number {
       fs.writeFileSync(
         file,
         `---
-title: "${key === 'guides' ? 'Getting Started' : `Getting Started with ${key}`} Guide"
+title: "Getting Started with ${titleCase(key)} Guide"
 description: "A starter article for the ${key} category. Replace this scaffold with your real ${key} content — keep the description between 40 and 165 characters for SEO."
 category: "${key}"
 date: ${new Date().toISOString().slice(0, 10)}
@@ -834,6 +840,14 @@ async function main() {
   if (wrangler !== null) {
     write('wrangler.toml', wrangler);
     console.log('   ✅ wrangler.toml ([vars] reset — demo Giscus config cleared)');
+  }
+
+  // Reset the demo author registry so fork sites don't inherit demo authors.
+  const authorsPath = 'src/config/authors.ts';
+  if (fs.existsSync(path.resolve(ROOT, authorsPath))) {
+    const src = read(authorsPath).replace(/\n\s*\/\/ DEMO .*?\n\s*'[^']+'.*?\{[^}]*\},\n/, '\n');
+    write(authorsPath, src);
+    console.log('   ✅ src/config/authors.ts (demo author removed)');
   }
 
   if (clearContent) {

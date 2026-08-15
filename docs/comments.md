@@ -70,4 +70,4 @@ AnvilWiki 内置可选的评论系统，基于 [Giscus](https://giscus.app) —�
 ## 进一步阅读
 
 - [Giscus 官方文档](https://giscus.app)
-- [设计决策](./superpowers/specs/2026-08-12-v1.4-comments-design.md)（为什么选 Giscus 不选 Utterances、为什么用官方 script 不用静态 iframe）
+- [设计决策](https://github.com/PNGTRID/AnvilWiki/commits/main/)(设计过程见 git 历史)（为什么选 Giscus 不选 Utterances、为什么用官方 script 不用静态 iframe）
