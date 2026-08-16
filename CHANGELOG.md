@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.11.2] — 2026-08-17
+
+**Landing 导航栏手册入口:头部新增「学习手册 / 开发手册」链接,锚定文档中心对应手册区块。**
+
+### Added
+- LandingLayout 头部新增两个导航项(Learning Manual / Development Manual,图标 lucide:graduation-cap / wrench,移动端隐藏与 GitHub/Demo 同策略),链接按当前语言指向 `/landing/docs#learn|dev` 或 `/zh/landing/docs#learn|dev`;对全部 landing 族页面(官网/文档 hub/章节页)生效。
+- HandbookHub 手册区块加 `id="learn"` / `id="dev"` + `scroll-mt-20`(锚点定位不被吸顶头部遮挡)。
+
 ## [1.11.1] — 2026-08-16
 
 **手册文档专家审查修订版:9 项事实校正(P0×2 + P1×4 + P2×3),中英双语 + 3 份关联文档同步。**
@@ -332,7 +340,8 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
-[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v1.11.1...HEAD
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v1.11.2...HEAD
+[1.11.2]: https://github.com/PNGTRID/AnvilWiki/compare/v1.11.1...v1.11.2
 [1.11.1]: https://github.com/PNGTRID/AnvilWiki/compare/v1.11.0...v1.11.1
 [1.11.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.10.0...v1.11.0
 [1.10.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.9.0...v1.10.0

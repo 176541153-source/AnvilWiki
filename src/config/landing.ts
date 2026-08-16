@@ -11,7 +11,7 @@
  */
 
 /** Keep in sync with package.json "version" (used by the announcement bar). */
-export const PROJECT_VERSION = '1.11.1';
+export const PROJECT_VERSION = '1.11.2';
 
 export type LandingLocale = 'en' | 'zh';
 
@@ -105,7 +105,7 @@ const en: LandingContent = {
   description:
     'An open-source game wiki template with an AI-native content workflow: pick the right game, generate pages by talking to your AI tool, codes pages stay fresh on autopilot. Lighthouse 4×100, free on Cloudflare, 100% ad revenue yours.',
   announcement: {
-    text: `v${PROJECT_VERSION} shipped — docs-center manuals revised after an expert documentation review: fork freshness workflow, init-workflow scope, theme-variable count, and 6 more factual fixes.`,
+    text: `v${PROJECT_VERSION} shipped — the landing header now links straight to the Learning and Development manuals, anchored to each manual's section in the docs center.`,
     href: RELEASES,
   },
   hero: {
@@ -358,7 +358,7 @@ const zh: LandingContent = {
   description:
     '开源游戏 wiki 模板 + AI 原生内容工作流:选对游戏、和 AI 对话就能产页、codes 页自动保鲜。Lighthouse 4×100、Cloudflare 免费部署、广告收入 100% 归你。',
   announcement: {
-    text: `v${PROJECT_VERSION} 发布 —— 文档中心手册经文档专家审查修订:fork 保鲜工作流、初始化 workflow 范围、主题色变量行数等 9 项事实校正。`,
+    text: `v${PROJECT_VERSION} 发布 —— landing 导航栏新增「学习手册 / 开发手册」入口,直达文档中心对应手册区块。`,
     href: RELEASES,
   },
   hero: {
