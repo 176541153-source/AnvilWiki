@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.12.1] — 2026-08-17
+
+**CLI 清理完整性修复:landing 专属 showcase 截图此前不在删除清单,fork 仓库会残留 3 张无用图片。**
+
+### Fixed
+- `apply-template` 的 `LANDING_PATHS` 补上 `public/images/showcase/`(demo-article/home/mobile 三张截图,仅 landing Showcase 组件引用)——此前只删 `wechat-qr.jpg`,fork 的 `public/` 与 `dist/` 会残留这 3 张图。CLI 头部注释/汇总文案同步,组件计数注释修正(13)。
+- **全量 fork 模拟验证零残留**:按最终清单删除全部 8 个路径 + 翻转 `landingLinkEnabled` 后 `pnpm build` 绿;dist 无 landing 路由、无 showcase/wechat 图,llms.txt / sitemap / robots 均零 landing 痕迹。幸存文件中的 landing 引用全部为 flag 门控(SiteHeader / llms.txt)或有意保留(`docs/handbook` 手册源 + `lib/handbook.ts` 纯函数,fork 可直接复用提示词 SOP)。dry-run 计数 23 文件,与清单逐项吻合。
+
 ## [1.12.0] — 2026-08-17
 
 **手册章节页三栏布局:左侧手册目录树 + 右侧本页内容目录(scrollspy)。**
@@ -349,7 +357,8 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
-[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v1.12.0...HEAD
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v1.12.1...HEAD
+[1.12.1]: https://github.com/PNGTRID/AnvilWiki/compare/v1.12.0...v1.12.1
 [1.12.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.11.2...v1.12.0
 [1.11.2]: https://github.com/PNGTRID/AnvilWiki/compare/v1.11.1...v1.11.2
 [1.11.1]: https://github.com/PNGTRID/AnvilWiki/compare/v1.11.0...v1.11.1

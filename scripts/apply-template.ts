@@ -10,9 +10,10 @@
  *                               ui.ts, locales/*.json, manifest.json), clears
  *                               demo content (src/content/wiki/* MDX), and removes
  *                               the project landing page + in-site docs center
- *                               (/landing, /landing/docs — not needed by fork
- *                               users; docs/handbook markdown is kept as repo
- *                               docs).
+ *                               (/landing, /landing/docs) and its assets
+ *                               (public/images/showcase/, wechat QR) — not
+ *                               needed by fork users; docs/handbook markdown
+ *                               is kept as repo docs.
  *   pnpm apply-template --dry-run         print every planned change, write nothing.
  *   pnpm apply-template --no-clear-content  keep demo MDX files in place.
  *   pnpm apply-template --keep-landing      keep the project landing page (/landing).
@@ -603,12 +604,13 @@ rendered from the frontmatter title), and start each section with a direct
  * Directory counts in removeLandingPage() are top-level entries (approximate).
  */
 const LANDING_PATHS = [
-  'src/components/landing', // directory (12 components incl. handbook hub/chapter)
+  'src/components/landing', // directory (13 components incl. docs hub/chapter/nav)
   'src/config/landing.ts',
   'src/pages/landing.astro', // file — coexists with the src/pages/landing/ dir
   'src/pages/landing', // directory (docs hub + chapter routes)
   'src/pages/zh/landing.astro', // file — coexists with the src/pages/zh/landing/ dir
   'src/pages/zh/landing', // directory (zh docs routes)
+  'public/images/showcase', // directory (3 demo screenshots — landing Showcase only)
   'public/images/wechat-qr.jpg', // maintainer's personal QR — not needed by forks
 ];
 
@@ -879,7 +881,7 @@ async function main() {
   if (skinInput.clearLanding) {
     const n = removeLandingPage();
     if (n > 0) {
-      console.log(`   🗑️  Removed ${n} project landing page file${n === 1 ? '' : 's'} (src/components/landing/, src/config/landing.ts, src/pages/landing* — incl. the /landing/docs center; docs/handbook markdown stays as repo docs)`);
+      console.log(`   🗑️  Removed ${n} project landing page file${n === 1 ? '' : 's'} (src/components/landing/, src/config/landing.ts, src/pages/landing* incl. the /landing/docs center, public/images/showcase/ + wechat-qr.jpg; docs/handbook markdown stays as repo docs)`);
     }
   }
 
