@@ -38,9 +38,9 @@ updated: 2026-08-17
 
 | 去哪找 | 看什么 |
 |---|---|
-| itch.io 网站的 newest 页(选 Play in browser) | 每天都有新游戏,竞争最少 |
-| Steam 的新品和愿望单榜单 | 游戏质量高,但盯的人也多 |
-| Roblox 的 rising 榜 | 搜「兑换码」的玩家最密集的地方 |
+| [itch.io 的 newest 页](https://itch.io/games/newest)(选 Play in browser) | 每天都有新游戏,竞争最少 |
+| [Steam 的新品/愿望单榜单](https://store.steampowered.com/explore/new/) | 游戏质量高,但盯的人也多 |
+| [Roblox 的 Discover 页](https://www.roblox.com/discover)(切到 Rising / Up-and-Coming 排序) | 搜「兑换码」的玩家最密集的地方 |
 | YouTube 游戏频道的近期爆款 | 7 天内播放超过 5 万的,说明真有人看 |
 
 ## 第二关:给每个候选打分(每个 5 分钟)
@@ -69,8 +69,8 @@ Google 搜 `游戏名 wiki` 和 `游戏名 codes`,看第一页:
 | 你看到的 | 结论 |
 |---|---|
 | 结果不到 10 条,或者大多是 PDF、论坛帖子、YouTube 视频 | 有空位,**立刻建** |
-| 有 Fandom(一个老牌 wiki 网站),但内容薄、更新慢 | 可以做,用更完整的内容抢它的位置 |
-| Fandom 或 Game8(专业游戏站)内容又厚又天天更新 | **放弃,换下一个** |
+| 有 [Fandom](https://www.fandom.com)(一个老牌 wiki 网站),但内容薄、更新慢 | 可以做,用更完整的内容抢它的位置 |
+| [Fandom](https://www.fandom.com) 或 [Game8](https://game8.co)(专业游戏站)内容又厚又天天更新 | **放弃,换下一个** |
 
 ## 让 AI 帮你跑这四关(推荐)
 

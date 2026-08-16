@@ -60,7 +60,7 @@ Three long-term promises: article registration-card fields are **added only, nev
 
 **Your site itself is a contribution too**: send a PR adding it to the official showcase wall (edit the showcase data in `src/config/landing.ts`) — a real successful site is this template's most persuasive advertisement.
 
-(The full process for cutting versions of the template itself is maintainer-view material, recorded in the repo's docs/development.md; not repeated here.)
+(The full process for cutting versions of the template itself is maintainer-view material, recorded in the repo's [docs/development.md](https://github.com/PNGTRID/AnvilWiki/blob/main/docs/development.md); not repeated here.)
 
 ## If you get stuck
 

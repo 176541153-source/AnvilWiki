@@ -85,7 +85,7 @@ git push
 ### Step 4: Buy your own domain (skippable for now, required before earning)
 
 **What to do**: swap `project-name.pages.dev` for your own address, e.g. `yourgame-wiki.com`. **AdSense review basically requires your own domain**, so you must buy one before monetizing (just a small yearly fee).
-**How to do it**: at [Cloudflare Registrar](https://www.cloudflare.com/products/registrar/) (sells at cost, no markup) or a registrar like Porkbun, search and buy a `.com` / `.wiki` domain; then Cloudflare Pages → your project → **Custom domains** → Set up, and point the domain over as prompted (if your DNS lives on Cloudflare, it's all just Next, Next, Finish).
+**How to do it**: at [Cloudflare Registrar](https://www.cloudflare.com/products/registrar/) (sells at cost, no markup) or a registrar like [Porkbun](https://porkbun.com), search and buy a `.com` / `.wiki` domain; then Cloudflare Pages → your project → **Custom domains** → Set up, and point the domain over as prompted (if your DNS lives on Cloudflare, it's all just Next, Next, Finish).
 **What you'll see**: within minutes (up to a few hours), your domain opens your site.
 **Confirm you got it right**: once the site opens on your own domain, change both the Domain from Chapter 2's config and Cloudflare's `SITE_URL` variable to this domain (starting with `https://` — the protocol can't be missing), and redeploy.
 

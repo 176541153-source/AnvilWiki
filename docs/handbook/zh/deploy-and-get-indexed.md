@@ -85,7 +85,7 @@ git push
 ### 第 4 步:买自己的域名(可以先跳过,赚钱前需要)
 
 **做什么**:把 `项目名.pages.dev` 换成自己的门牌,如 `你的游戏-wiki.com`。**AdSense 广告审核基本要求自有域名**,所以赚钱前必须买(一年几十块)。
-**怎么做**:在 [Cloudflare Registrar](https://www.cloudflare.com/products/registrar/)(按成本价卖,不赚差价)或 Porkbun 等注册商搜一个 `.com` / `.wiki` 域名买下;然后 Cloudflare Pages → 你的项目 → **Custom domains** → Set up,按提示把域名指过来(DNS 在 Cloudflare 管的话全程点下一步)。
+**怎么做**:在 [Cloudflare Registrar](https://www.cloudflare.com/products/registrar/)(按成本价卖,不赚差价)或 [Porkbun](https://porkbun.com) 等注册商搜一个 `.com` / `.wiki` 域名买下;然后 Cloudflare Pages → 你的项目 → **Custom domains** → Set up,按提示把域名指过来(DNS 在 Cloudflare 管的话全程点下一步)。
 **你会看到**:几分钟后(最长几小时),你的域名打开就是你的站。
 **确认做对了**:用自己的域名能打开网站后,把第 2 章配置里的 Domain 和 Cloudflare 的 `SITE_URL` 变量都改成这个域名(`https://` 开头,不能少),重新部署。
 

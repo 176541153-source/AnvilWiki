@@ -38,9 +38,9 @@ Find new games from the places below; gather 10 to 20 candidates before moving o
 
 | Where to look | What to watch |
 |---|---|
-| The newest page on itch.io (pick Play in browser) | New games every day, the least competition |
-| Steam's new releases and wishlist charts | High game quality, but more people watching too |
-| Roblox's rising chart | The densest crowd of players searching "codes" |
+| [The newest page on itch.io](https://itch.io/games/newest) (pick Play in browser) | New games every day, the least competition |
+| [Steam's new-release and wishlist charts](https://store.steampowered.com/explore/new/) | High game quality, but more people watching too |
+| [Roblox's Discover page](https://www.roblox.com/discover) (switch to the Rising / Up-and-Coming sort) | The densest crowd of players searching "codes" |
 | Recent breakouts on YouTube gaming channels | Over 50K views in 7 days means people really watch |
 
 ## Gate 2: Score every candidate (5 minutes each)
@@ -69,8 +69,8 @@ Google `game name wiki` and `game name codes`, and read page one:
 | What you see | Verdict |
 |---|---|
 | Fewer than 10 results, or mostly PDFs, forum threads, YouTube videos | Open seats — **build now** |
-| A Fandom (an old wiki site) exists, but the content is thin and updates are slow | Winnable — take its spot with fuller content |
-| Fandom or Game8 (a pro gaming site), thick content and daily updates | **Drop it, next candidate** |
+| A [Fandom](https://www.fandom.com) (an old wiki site) exists, but the content is thin and updates are slow | Winnable — take its spot with fuller content |
+| [Fandom](https://www.fandom.com) or [Game8](https://game8.co) (a pro gaming site), thick content and daily updates | **Drop it, next candidate** |
 
 ## Let AI run the four gates for you (recommended)
 

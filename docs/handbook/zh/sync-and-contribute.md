@@ -60,7 +60,7 @@ pnpm build && pnpm check-links
 
 **你的站本身也能贡献**:提 PR 把它加进官网展示墙(改 `src/config/landing.ts` 里的 showcase 数据)——真实的成功站,是这套模板最有说服力的广告。
 
-(给模板本身发版本的完整流程是维护者视角的事,记录在仓库 docs/development.md,这里不重复。)
+(给模板本身发版本的完整流程是维护者视角的事,记录在仓库 [docs/development.md](https://github.com/PNGTRID/AnvilWiki/blob/main/docs/development.md),这里不重复。)
 
 ## 卡住了怎么办
 

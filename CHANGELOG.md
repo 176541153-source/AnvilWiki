@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.13.1] — 2026-08-17
+
+**建站全景清单 + 全书直达链接:回答「一个游戏站要完成哪些工作」,每个「去哪做」都能点进去。**
+
+### Added
+- **文档中心 hub 新增「建站全景清单」**:从零到赚钱的 10 件工作(选游戏 → 装工具 → 建站 → 10 页 → 上线 → Google 登记 → 买域名 → 接广告 → 周保鲜 → 定制),每项带耗时标注,点击直达对应章节——新访客 10 秒看到全部工作量的地图。
+- **手册外链补齐(zh+en 同步)**:找新游四来源([itch.io newest](https://itch.io/games/newest) / [Steam 新品](https://store.steampowered.com/explore/new/) / [Roblox Discover](https://www.roblox.com/discover) / YouTube)、竞对站([Fandom](https://www.fandom.com) / [Game8](https://game8.co))、工具链([brew.sh](https://brew.sh) / [pnpm.io](https://pnpm.io) / [Claude Code](https://claude.com/claude-code) / [Codex](https://openai.com/codex) / [Cursor](https://cursor.com))、域名注册商([Cloudflare Registrar](https://www.cloudflare.com/products/registrar/) / [Porkbun](https://porkbun.com))、维护文档(development.md)——全部从纯文本变为可点击直达。
+
 ## [1.13.0] — 2026-08-17
 
 **双手册全量重写:按「完全零基础也能跟着走」标准,四专家(科普写作/第一性原理架构/新手测试员/模板守门)定档。旧版实测服务的是「半熟手」,新版服务真正的目标用户。**
@@ -371,7 +379,8 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
-[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v1.13.0...HEAD
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v1.13.1...HEAD
+[1.13.1]: https://github.com/PNGTRID/AnvilWiki/compare/v1.13.0...v1.13.1
 [1.13.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.12.1...v1.13.0
 [1.12.1]: https://github.com/PNGTRID/AnvilWiki/compare/v1.12.0...v1.12.1
 [1.12.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.11.2...v1.12.0

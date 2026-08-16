@@ -11,7 +11,7 @@
  */
 
 /** Keep in sync with package.json "version" (used by the announcement bar). */
-export const PROJECT_VERSION = '1.13.0';
+export const PROJECT_VERSION = '1.13.1';
 
 export type LandingLocale = 'en' | 'zh';
 
@@ -83,6 +83,12 @@ export interface LandingContent {
     onThisPageLabel: string;
     /** Left-hand manual-tree nav label (mobile <details> summary). */
     manualsLabel: string;
+    /** The "whole job at a glance" checklist shown above the manuals on the hub. */
+    roadmap: {
+      title: string;
+      hint: string;
+      items: { label: string; time: string; href: string }[];
+    };
   };
   finalCta: {
     title: string;
@@ -109,7 +115,7 @@ const en: LandingContent = {
   description:
     'An open-source game wiki template with an AI-native content workflow: pick the right game, generate pages by talking to your AI tool, codes pages stay fresh on autopilot. Lighthouse 4×100, free on Cloudflare, 100% ad revenue yours.',
   announcement: {
-    text: `v${PROJECT_VERSION} shipped — both manuals rewritten for complete beginners: first-principles structure, fixed analogies, "what you'll see" on every step, and a new tools-install warm-up (the old #1 drop-off point).`,
+    text: `v${PROJECT_VERSION} shipped — the docs hub now opens with a 10-job "whole picture" checklist, and every tool/service mention in the manuals links out directly (itch.io, Steam, Roblox, registrars, AI tools…).`,
     href: RELEASES,
   },
   hero: {
@@ -334,6 +340,22 @@ pnpm install && pnpm dev`,
     tldrLabel: 'TL;DR',
     onThisPageLabel: 'On this page',
     manualsLabel: 'Manual contents',
+    roadmap: {
+      title: 'Building a game wiki: the whole job at a glance',
+      hint: 'Ten jobs from zero to earning. Click any job to jump to the chapter that walks you through it step by step.',
+      items: [
+        { label: 'Pick the right game', time: '2 days', href: '/landing/docs/pick-your-game' },
+        { label: 'Install the 6 tools', time: '30 min', href: '/landing/docs/launch-your-site' },
+        { label: 'Turn the template into your site', time: '30 min', href: '/landing/docs/launch-your-site' },
+        { label: 'Write the first 10 pages with AI', time: '1 day', href: '/landing/docs/first-10-pages' },
+        { label: 'Put the site online (free hosting)', time: '15 min', href: '/landing/docs/deploy-and-get-indexed' },
+        { label: 'Register with Google (GSC + sitemap)', time: '20 min', href: '/landing/docs/deploy-and-get-indexed' },
+        { label: 'Buy and connect a domain', time: '30 min', href: '/landing/docs/deploy-and-get-indexed' },
+        { label: 'Turn on ads (AdSense)', time: 'review: days', href: '/landing/docs/monetize-and-grow' },
+        { label: 'Weekly 30-min freshness loop', time: 'weekly', href: '/landing/docs/monetize-and-grow' },
+        { label: 'Customize: categories, languages, theme', time: 'as needed', href: '/landing/docs/customize' },
+      ],
+    },
   },
   finalCta: {
     title: 'Ready to launch your game wiki?',
@@ -364,7 +386,7 @@ const zh: LandingContent = {
   description:
     '开源游戏 wiki 模板 + AI 原生内容工作流:选对游戏、和 AI 对话就能产页、codes 页自动保鲜。Lighthouse 4×100、Cloudflare 免费部署、广告收入 100% 归你。',
   announcement: {
-    text: `v${PROJECT_VERSION} 发布 —— 双手册按「小学生也能跟着走」标准全部重写:第一性原理主线、固定类比、每步写明「你会看到什么」、新增装备安装序幕(旧版最大流失点)。`,
+    text: `v${PROJECT_VERSION} 发布 —— 文档中心新增「建站全景清单」(10 件工作一目了然,逐项点入对应章节);手册内所有工具/服务均可直接点击直达(找新游/装工具/买域名/装 AI 助手)。`,
     href: RELEASES,
   },
   hero: {
@@ -585,6 +607,22 @@ pnpm install && pnpm dev`,
     tldrLabel: '太长不看',
     onThisPageLabel: '本页目录',
     manualsLabel: '手册目录',
+    roadmap: {
+      title: '建一个游戏 wiki 站:全部工作一览',
+      hint: '从零到赚钱一共 10 件事。点任意一项,直接跳到手把手教你的那一章。',
+      items: [
+        { label: '选对游戏', time: '2 天', href: '/zh/landing/docs/pick-your-game' },
+        { label: '装好 6 样工具', time: '30 分钟', href: '/zh/landing/docs/launch-your-site' },
+        { label: '把模板变成你的站', time: '30 分钟', href: '/zh/landing/docs/launch-your-site' },
+        { label: '用 AI 写首日 10 页', time: '1 天', href: '/zh/landing/docs/first-10-pages' },
+        { label: '网站上线(免费托管)', time: '15 分钟', href: '/zh/landing/docs/deploy-and-get-indexed' },
+        { label: '在 Google 登记(站长后台+目录)', time: '20 分钟', href: '/zh/landing/docs/deploy-and-get-indexed' },
+        { label: '买域名并绑定', time: '30 分钟', href: '/zh/landing/docs/deploy-and-get-indexed' },
+        { label: '接广告(AdSense)', time: '审核数天', href: '/zh/landing/docs/monetize-and-grow' },
+        { label: '每周 30 分钟保鲜', time: '每周', href: '/zh/landing/docs/monetize-and-grow' },
+        { label: '定制:加栏目/语言/换肤', time: '按需', href: '/zh/landing/docs/customize' },
+      ],
+    },
   },
   finalCta: {
     title: '准备好上线你的游戏 wiki 了吗?',

@@ -52,7 +52,7 @@ Node 是让这套网站模板能跑起来的底座软件,版本需要 **22.13 �
 
 ### 装备 4:pnpm(搬运工,一条命令装齐网站零件)
 
-在终端输入:
+在终端输入(pnpm 的[官方网站](https://pnpm.io)有更多介绍,这里直接装):
 
 ```bash
 npm install -g pnpm
@@ -63,14 +63,14 @@ npm install -g pnpm
 
 ### 装备 5:Git(把文件送进仓库的搬运车)
 
-- **Mac**:终端输入 `brew install git`(没装 brew 就先到 brew.sh 按首页那行命令装)。或者更简单:装完 Node 后很多 Mac 直接自带 Git,先输 `git -v` 试试,有版本号就跳过。
+- **Mac**:终端输入 `brew install git`(没装 brew 就先到 [brew.sh](https://brew.sh),按首页那行命令装)。或者更简单:装完 Node 后很多 Mac 直接自带 Git,先输 `git -v` 试试,有版本号就跳过。
 - **Windows**:到 [git-scm.com](https://git-scm.com) 下载安装,一路下一步。
 
 **确认做对了**:终端输入 `git -v`,显示版本号。
 
 ### 装备 6:AI 编程助手(帮你写内容的搭档,后面每章都用)
 
-从 ZCode / Claude Code / Codex / Cursor 里**任选一个**装上(都有免费额度)。这一章还用不到,第 3 章它就是主角。
+从 ZCode / [Claude Code](https://claude.com/claude-code) / [Codex](https://openai.com/codex) / [Cursor](https://cursor.com) 里**任选一个**装上(都有免费额度)。这一章还用不到,第 3 章它就是主角。
 
 **确认做对了**:软件能打开,你知道怎么新建一个对话。
 

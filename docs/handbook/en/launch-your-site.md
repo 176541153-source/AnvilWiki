@@ -63,14 +63,14 @@ npm install -g pnpm
 
 ### Tool 5: Git (the delivery truck that carries files into the warehouse)
 
-- **Mac**: type `brew install git` in the terminal (no brew? Install it first with the command on brew.sh's homepage). Or simpler: after installing Node, many Macs already ship Git — try `git -v` first; if a version number shows, skip this.
+- **Mac**: type `brew install git` in the terminal (no brew? Install it first with the command on [brew.sh](https://brew.sh)'s homepage). Or simpler: after installing Node, many Macs already ship Git — try `git -v` first; if a version number shows, skip this.
 - **Windows**: download from [git-scm.com](https://git-scm.com), install, keep clicking Next.
 
 **Confirm you got it right**: type `git -v` in the terminal and a version number appears.
 
 ### Tool 6: an AI coding assistant (your content-writing partner — every later chapter uses it)
 
-Install **any one** of ZCode / Claude Code / Codex / Cursor (all have free tiers). You won't need it this chapter; in Chapter 3 it becomes the star.
+Install **any one** of ZCode / [Claude Code](https://claude.com/claude-code) / [Codex](https://openai.com/codex) / [Cursor](https://cursor.com) (all have free tiers). You won't need it this chapter; in Chapter 3 it becomes the star.
 
 **Confirm you got it right**: the app opens, and you know how to start a new chat.
 
