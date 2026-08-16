@@ -23,13 +23,26 @@ interface Props {
   locale: LandingLocale;
   /** hreflang alternates (built by the route page). */
   alternates?: Array<{ hreflang: string; href: string }>;
+  /** Override the <title> (docs pages: "{chapter} | AnvilWiki Docs"). */
+  pageTitle?: string;
+  /** Override the meta description. */
+  pageDescription?: string;
+  /**
+   * Where the header language toggle should link. Defaults to the other
+   * locale's landing root; docs pages pass the equivalent docs path so the
+   * toggle keeps you inside the docs center.
+   */
+  togglePath?: string;
+  /** Extra JSON-LD objects appended after the default WebSite one. */
+  extraJsonLd?: Record<string, unknown>[];
 }
-const { locale, alternates = [] } = Astro.props;
+const { locale, alternates = [], pageTitle, pageDescription, togglePath, extraJsonLd = [] } =
+  Astro.props;
 const t = landingContent[locale];
 const other: LandingLocale = locale === 'en' ? 'zh' : 'en';
-const jsonLd = [websiteJsonLd((locale === 'en' ? defaultLocale : 'zh') as Locale)];
-const title = t.title;
-const description = t.description;
+const jsonLd = [websiteJsonLd((locale === 'en' ? defaultLocale : 'zh') as Locale), ...extraJsonLd];
+const title = pageTitle ?? t.title;
+const description = pageDescription ?? t.description;
 ---
 
 <BaseLayout
@@ -44,6 +57,9 @@ const description = t.description;
       1. Manual toggle always wins (stored in localStorage by the toggle links).
       2. No stored preference + Chinese browser → serve the Chinese page.
       3. Otherwise stay (someone may have been linked here directly).
+      Scoped to the landing ROOT pages only — redirecting someone away from
+      /landing/docs/<chapter> would drop the chapter they were reading (the
+      docs center has its own per-page language toggle).
       Crawlers are excluded from the auto-detect branch: headless renderers
       follow JS redirects, which would turn /landing into a conditional
       redirect for zh-locale crawlbots and muddy the canonical/hreflang
@@ -52,6 +68,8 @@ const description = t.description;
     (() => {
       try {
         const stored = localStorage.getItem('landing-lang');
+        const isRoot = location.pathname === '/landing' || location.pathname === '/zh/landing';
+        if (!isRoot) return;
         const isZhPage = location.pathname.startsWith('/zh/');
         const isBot = /bot|crawler|spider|crawl|slurp|bingpreview|lighthouse/i.test(
           navigator.userAgent,
@@ -89,7 +107,7 @@ const description = t.description;
       </a>
       <div class="ml-auto flex items-center gap-3">
         <a
-          href={landingPath(other)}
+          href={togglePath ?? landingPath(other)}
           hreflang={other}
           onclick={`localStorage.setItem('landing-lang','${other}')`}
           class="rounded-md border border-border px-2 py-1 text-xs font-medium text-muted-foreground transition hover:text-nav"

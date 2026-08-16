@@ -63,8 +63,8 @@ const { steps } = t.devGuide;
     <div class="mt-4 flex justify-center border-t border-border pt-6">
       <a
         href={t.devGuide.allDocs.href}
-        target="_blank"
-        rel="noopener"
+        target={t.devGuide.allDocs.href.startsWith('http') ? '_blank' : undefined}
+        rel={t.devGuide.allDocs.href.startsWith('http') ? 'noopener' : undefined}
         class="card group inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-foreground transition hover:text-nav"
       >
         <Icon name="lucide:book-open" class="h-4 w-4 text-nav" />

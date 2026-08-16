@@ -9,8 +9,10 @@
  *                               (site.ts, navigation.ts, globals.css, routing.ts,
  *                               ui.ts, locales/*.json, manifest.json), clears
  *                               demo content (src/content/wiki/* MDX), and removes
- *                               the project landing page (/landing, not needed by
- *                               fork users).
+ *                               the project landing page + in-site docs center
+ *                               (/landing, /landing/docs — not needed by fork
+ *                               users; docs/handbook markdown is kept as repo
+ *                               docs).
  *   pnpm apply-template --dry-run         print every planned change, write nothing.
  *   pnpm apply-template --no-clear-content  keep demo MDX files in place.
  *   pnpm apply-template --keep-landing      keep the project landing page (/landing).
@@ -587,15 +589,26 @@ rendered from the frontmatter title), and start each section with a direct
 }
 
 /**
- * Files/dirs that make up the project landing page (/landing).
- * Fork users don't need these — the landing page is about the AnvilWiki project
+ * Files/dirs that make up the project landing page (/landing) and its in-site
+ * docs center (/landing/docs + /zh/landing/docs).
+ * Fork users don't need these routes — they are about the AnvilWiki project
  * itself, not their game wiki. The CLI removes them automatically.
+ *
+ * NOTE: docs/handbook/ (the handbook markdown SOURCE) is deliberately NOT in
+ * this list — the learning manual's SOPs and AI prompts stay useful to fork
+ * users as repo docs; only the landing ROUTES above are removed. The handbook
+ * collection in src/content.config.ts becomes an unloaded leftover (its glob
+ * base still exists), which builds cleanly.
+ *
+ * Directory counts in removeLandingPage() are top-level entries (approximate).
  */
 const LANDING_PATHS = [
-  'src/components/landing', // directory (10 components)
+  'src/components/landing', // directory (12 components incl. handbook hub/chapter)
   'src/config/landing.ts',
-  'src/pages/landing.astro',
-  'src/pages/zh/landing.astro',
+  'src/pages/landing.astro', // file — coexists with the src/pages/landing/ dir
+  'src/pages/landing', // directory (docs hub + chapter routes)
+  'src/pages/zh/landing.astro', // file — coexists with the src/pages/zh/landing/ dir
+  'src/pages/zh/landing', // directory (zh docs routes)
   'public/images/wechat-qr.jpg', // maintainer's personal QR — not needed by forks
 ];
 
@@ -866,7 +879,7 @@ async function main() {
   if (skinInput.clearLanding) {
     const n = removeLandingPage();
     if (n > 0) {
-      console.log(`   🗑️  Removed ${n} project landing page file${n === 1 ? '' : 's'} (src/components/landing/, src/config/landing.ts, src/pages/landing.astro)`);
+      console.log(`   🗑️  Removed ${n} project landing page file${n === 1 ? '' : 's'} (src/components/landing/, src/config/landing.ts, src/pages/landing* — incl. the /landing/docs center; docs/handbook markdown stays as repo docs)`);
     }
   }
 

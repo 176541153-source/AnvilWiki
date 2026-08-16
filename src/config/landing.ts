@@ -15,6 +15,11 @@ export const PROJECT_VERSION = '1.10.0';
 
 export type LandingLocale = 'en' | 'zh';
 
+interface ManualCopy {
+  label: string;
+  description: string;
+}
+
 export interface LandingContent {
   htmlLang: string;
   title: string;
@@ -59,6 +64,21 @@ export interface LandingContent {
     subtitle: string;
     steps: { title: string; description: string; command: string; linkLabel: string; href: string }[];
     allDocs: { label: string; href: string };
+  };
+  handbook: {
+    hubTitle: string;
+    hubSubtitle: string;
+    manuals: { learn: ManualCopy; dev: ManualCopy };
+    chapterLabel: string;
+    /** Empty for en ("Chapter 3"); "章" for zh ("第 3 章"). */
+    chapterSuffix: string;
+    backToHub: string;
+    prevLabel: string;
+    nextLabel: string;
+    editLabel: string;
+    updatedLabel: string;
+    readLabel: string;
+    tldrLabel: string;
   };
   finalCta: {
     title: string;
@@ -209,19 +229,19 @@ pnpm install && pnpm dev`,
         title: 'Pick Your Game',
         description:
           'Which game is worth a wiki? A 4-layer selection funnel plus the first-day 10-pages plan.',
-        href: 'https://github.com/PNGTRID/AnvilWiki/blob/main/docs/game-selection.md',
+        href: '/landing/docs/pick-your-game',
       },
       {
         icon: 'lucide:rocket',
         title: 'Quick Start',
         description: 'Fork, configure, and deploy to Cloudflare Pages in 5 minutes.',
-        href: 'https://github.com/PNGTRID/AnvilWiki/blob/main/docs/deployment.md',
+        href: '/landing/docs/launch-your-site',
       },
       {
         icon: 'lucide:palette',
         title: 'Apply Template',
         description: 'Swap the demo game for yours — config, theme, content, locales.',
-        href: 'https://github.com/PNGTRID/AnvilWiki/blob/main/docs/apply-template.md',
+        href: '/landing/docs/customize',
       },
       {
         icon: 'lucide:search',
@@ -279,9 +299,35 @@ pnpm install && pnpm dev`,
       },
     ],
     allDocs: {
-      label: 'All docs — 4 reading paths (site owner / author / AI agent / contributor)',
-      href: 'https://github.com/PNGTRID/AnvilWiki/blob/main/docs/README.md',
+      label: 'Open the docs center — two hands-on manuals with copy-paste AI prompts',
+      href: '/landing/docs',
     },
+  },
+  handbook: {
+    hubTitle: 'AnvilWiki Docs',
+    hubSubtitle:
+      'Two hands-on manuals, written as step-by-step SOPs with copy-paste AI prompts. The Learning Manual takes you from game selection to a live, indexed, monetized wiki; the Development Manual covers architecture, customization, integrations, and upstream sync.',
+    manuals: {
+      learn: {
+        label: 'Learning Manual',
+        description:
+          'From zero to an earning game wiki: pick the right game, set up in 30 minutes, write 10 pages with AI on day one, deploy free, then run a 30-minute weekly ops loop.',
+      },
+      dev: {
+        label: 'Development Manual',
+        description:
+          'For deep customizers and contributors: the three-layer architecture and change map, customization SOPs, env-gated integrations, CI, and how to sync upstream or contribute back.',
+      },
+    },
+    chapterLabel: 'Chapter',
+    chapterSuffix: '',
+    backToHub: 'All docs',
+    prevLabel: 'Previous',
+    nextLabel: 'Next',
+    editLabel: 'Edit on GitHub',
+    updatedLabel: 'Updated',
+    readLabel: 'Read chapter',
+    tldrLabel: 'TL;DR',
   },
   finalCta: {
     title: 'Ready to launch your game wiki?',
@@ -434,19 +480,19 @@ pnpm install && pnpm dev`,
         icon: 'lucide:crosshair',
         title: '选对游戏',
         description: '哪个游戏值得建 wiki?四层选品漏斗 + 首日 10 页计划。',
-        href: 'https://github.com/PNGTRID/AnvilWiki/blob/main/docs/game-selection.md',
+        href: '/zh/landing/docs/pick-your-game',
       },
       {
         icon: 'lucide:rocket',
         title: '快速开始',
         description: 'Fork、配置、5 分钟内部署到 Cloudflare Pages。',
-        href: 'https://github.com/PNGTRID/AnvilWiki/blob/main/docs/deployment.md',
+        href: '/zh/landing/docs/launch-your-site',
       },
       {
         icon: 'lucide:palette',
         title: '套用模板',
         description: '把 demo 游戏换成你的——配置、主题、内容、多语言。',
-        href: 'https://github.com/PNGTRID/AnvilWiki/blob/main/docs/apply-template.md',
+        href: '/zh/landing/docs/customize',
       },
       {
         icon: 'lucide:search',
@@ -502,9 +548,35 @@ pnpm install && pnpm dev`,
       },
     ],
     allDocs: {
-      label: '全部文档 · 四条阅读路径(建站 / 写作 / AI Agent / 贡献者)',
-      href: 'https://github.com/PNGTRID/AnvilWiki/blob/main/docs/README.md',
+      label: '打开文档中心 —— 两本实操手册,含可复制的 AI 提示词',
+      href: '/zh/landing/docs',
     },
+  },
+  handbook: {
+    hubTitle: 'AnvilWiki 文档中心',
+    hubSubtitle:
+      '两本实操手册,每一步都是 SOP + 可复制的 AI 提示词。学习手册带你从选游戏到上线、收录、变现;开发手册覆盖架构、定制、集成与上游同步。',
+    manuals: {
+      learn: {
+        label: '学习手册',
+        description:
+          '从零到一个能赚钱的游戏 wiki:选对游戏、30 分钟建站、首日用 AI 产出 10 页、免费部署上线,然后每周 30 分钟的运营节奏。',
+      },
+      dev: {
+        label: '开发手册',
+        description:
+          '面向深度定制者与贡献者:三层架构与改动地图、定制 SOP、env 门控集成、CI 门禁,以及同步上游与贡献回流。',
+      },
+    },
+    chapterLabel: '第',
+    chapterSuffix: '章',
+    backToHub: '全部文档',
+    prevLabel: '上一章',
+    nextLabel: '下一章',
+    editLabel: '在 GitHub 上编辑',
+    updatedLabel: '更新于',
+    readLabel: '阅读本章',
+    tldrLabel: '太长不看',
   },
   finalCta: {
     title: '准备好上线你的游戏 wiki 了吗?',

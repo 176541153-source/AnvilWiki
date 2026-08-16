@@ -62,6 +62,36 @@ function buildLastmodMap(noindexPaths: Set<string>): Map<string, string> {
     }
   };
   walk(base);
+
+  // Handbook chapters (docs/handbook/<locale>/<slug>.md) → /landing/docs/<slug>
+  // (+ /zh/ prefix). Same frontmatter-driven lastmod contract; the `updated`
+  // field is optional, so chapters without it simply keep the default.
+  const hb = path.resolve('./docs/handbook');
+  if (fs.existsSync(hb)) {
+    for (const loc of ['en', 'zh']) {
+      const dir = path.join(hb, loc);
+      if (!fs.existsSync(dir)) continue;
+      for (const entry of fs.readdirSync(dir)) {
+        if (!entry.endsWith('.md')) continue;
+        const src = fs.readFileSync(path.join(dir, entry), 'utf8');
+        const fm = src.split('---')[1] ?? '';
+        const iso = fm.match(/^updated:\s*(.+)$/m)?.[1]?.trim().replace(/['"]/g, '');
+        if (!iso) continue;
+        const date = new Date(iso);
+        if (Number.isNaN(date.getTime())) continue;
+        const slug = entry.replace(/\.md$/, '');
+        const pagePath = loc === 'en' ? `/landing/docs/${slug}` : `/zh/landing/docs/${slug}`;
+        map.set(pagePath, date.toISOString());
+        // Hub pages: newest chapter wins.
+        const hubPath = loc === 'en' ? '/landing/docs' : '/zh/landing/docs';
+        const existing = map.get(hubPath);
+        if (!existing || existing < date.toISOString()) {
+          map.set(hubPath, date.toISOString());
+        }
+      }
+    }
+  }
+
   return map;
 }
 

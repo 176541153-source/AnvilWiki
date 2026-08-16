@@ -1,0 +1,80 @@
+---
+/**
+ * HandbookHub — the /landing/docs index. Groups handbook chapters by manual
+ * (learn / dev) into card lists. Pure props-driven; all copy lives in
+ * landing.ts (t.handbook).
+ */
+import { Icon } from 'astro-icon/components';
+import { type LandingContent } from '~/config/landing';
+import { handbookPath, parseHandbookId, type HandbookEntry, type HandbookManual } from '~/lib/handbook';
+
+interface Props {
+  chapters: HandbookEntry[];
+  locale: 'en' | 'zh';
+  t: LandingContent;
+}
+const { chapters, locale, t } = Astro.props;
+const manuals: HandbookManual[] = ['learn', 'dev'];
+const manualIcons: Record<HandbookManual, string> = {
+  learn: 'lucide:graduation-cap',
+  dev: 'lucide:wrench',
+};
+---
+
+<section class="section">
+  <div class="mx-auto max-w-5xl">
+    <h1 class="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
+      {t.handbook.hubTitle}
+    </h1>
+    <p class="mx-auto mt-4 max-w-3xl text-muted-foreground">{t.handbook.hubSubtitle}</p>
+
+    {manuals.map((manual) => (
+      <div class="mt-12">
+        <div class="flex items-center gap-3">
+          <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-nav/10 text-nav">
+            <Icon name={manualIcons[manual]} class="h-5 w-5" />
+          </div>
+          <div>
+            <h2 class="text-xl font-bold text-foreground">{t.handbook.manuals[manual].label}</h2>
+            <p class="text-sm text-muted-foreground">{t.handbook.manuals[manual].description}</p>
+          </div>
+        </div>
+        <div class="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {chapters
+            .filter((c) => c.data.manual === manual)
+            .map((chapter) => (
+              <a
+                href={handbookPath(locale, parseHandbookId(chapter.id)?.slug ?? '')}
+                class="card group flex flex-col p-5"
+              >
+                <div class="flex items-center justify-between">
+                  <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-nav/10 text-nav">
+                    <Icon name={chapter.data.icon} class="h-5 w-5" />
+                  </div>
+                  <span class="text-xs font-medium text-muted-foreground">
+                    {t.handbook.chapterLabel}
+                    {` `}
+                    {chapter.data.order}
+                    {t.handbook.chapterSuffix}
+                  </span>
+                </div>
+                <h3 class="mt-3 font-semibold text-foreground">{chapter.data.title}</h3>
+                <p class="mt-1 line-clamp-3 text-sm text-muted-foreground">
+                  {chapter.data.description}
+                </p>
+                <span class="mt-3 inline-flex items-center gap-1 text-xs font-medium text-nav">
+                  <span class="border-b border-transparent transition group-hover:border-nav">
+                    {t.handbook.readLabel}
+                  </span>
+                  <Icon
+                    name="lucide:arrow-right"
+                    class="h-3 w-3 transition group-hover:translate-x-0.5"
+                  />
+                </span>
+              </a>
+            ))}
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
