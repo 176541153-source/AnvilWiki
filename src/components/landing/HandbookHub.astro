@@ -1,12 +1,13 @@
 ---
 /**
- * HandbookHub — the /landing/docs index. Groups handbook chapters by manual
- * (learn / dev) into card lists. Pure props-driven; all copy lives in
- * landing.ts (t.handbook).
+ * HandbookHub — the /landing/docs chooser. Shows the "whole job at a glance"
+ * roadmap, then ONE card per manual linking to that manual's own page
+ * (learn/dev are deliberately separate — different audiences, different
+ * reading modes: linear course vs. lookup reference).
  */
 import { Icon } from 'astro-icon/components';
 import { type LandingContent } from '~/config/landing';
-import { handbookPath, parseHandbookId, type HandbookEntry, type HandbookManual } from '~/lib/handbook';
+import { handbookPath, type HandbookEntry, type HandbookManual } from '~/lib/handbook';
 
 interface Props {
   chapters: HandbookEntry[];
@@ -19,6 +20,7 @@ const manualIcons: Record<HandbookManual, string> = {
   learn: 'lucide:graduation-cap',
   dev: 'lucide:wrench',
 };
+const count = (m: HandbookManual) => chapters.filter((c) => c.data.manual === m).length;
 ---
 
 <section class="section">
@@ -52,53 +54,33 @@ const manualIcons: Record<HandbookManual, string> = {
       </ol>
     </div>
 
-    {manuals.map((manual) => (
-      <div id={manual} class="mt-12 scroll-mt-20">
-        <div class="flex items-center gap-3">
-          <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-nav/10 text-nav">
-            <Icon name={manualIcons[manual]} class="h-5 w-5" />
+    {/* One card per manual → its own page */}
+    <div class="mt-10 grid gap-5 md:grid-cols-2">
+      {manuals.map((manual) => (
+        <a href={handbookPath(locale, manual)} class="card group flex flex-col p-6">
+          <div class="flex items-center gap-3">
+            <div class="flex h-11 w-11 items-center justify-center rounded-lg bg-nav/10 text-nav">
+              <Icon name={manualIcons[manual]} class="h-6 w-6" />
+            </div>
+            <h2 class="text-lg font-bold text-foreground">{t.handbook.manuals[manual].label}</h2>
+            <span class="ml-auto rounded-full border border-border px-2.5 py-0.5 text-xs text-muted-foreground">
+              {count(manual)} {t.handbook.chaptersCountLabel}
+            </span>
           </div>
-          <div>
-            <h2 class="text-xl font-bold text-foreground">{t.handbook.manuals[manual].label}</h2>
-            <p class="text-sm text-muted-foreground">{t.handbook.manuals[manual].description}</p>
-          </div>
-        </div>
-        <div class="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {chapters
-            .filter((c) => c.data.manual === manual)
-            .map((chapter) => (
-              <a
-                href={handbookPath(locale, parseHandbookId(chapter.id)?.slug ?? '')}
-                class="card group flex flex-col p-5"
-              >
-                <div class="flex items-center justify-between">
-                  <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-nav/10 text-nav">
-                    <Icon name={chapter.data.icon} class="h-5 w-5" />
-                  </div>
-                  <span class="text-xs font-medium text-muted-foreground">
-                    {t.handbook.chapterLabel}
-                    {` `}
-                    {chapter.data.order}
-                    {t.handbook.chapterSuffix}
-                  </span>
-                </div>
-                <h3 class="mt-3 font-semibold text-foreground">{chapter.data.title}</h3>
-                <p class="mt-1 line-clamp-3 text-sm text-muted-foreground">
-                  {chapter.data.description}
-                </p>
-                <span class="mt-3 inline-flex items-center gap-1 text-xs font-medium text-nav">
-                  <span class="border-b border-transparent transition group-hover:border-nav">
-                    {t.handbook.readLabel}
-                  </span>
-                  <Icon
-                    name="lucide:arrow-right"
-                    class="h-3 w-3 transition group-hover:translate-x-0.5"
-                  />
-                </span>
-              </a>
-            ))}
-        </div>
-      </div>
-    ))}
+          <p class="mt-3 text-sm leading-relaxed text-muted-foreground">
+            {t.handbook.manuals[manual].description}
+          </p>
+          <span class="mt-4 inline-flex items-center gap-1 text-sm font-medium text-nav">
+            <span class="border-b border-transparent transition group-hover:border-nav">
+              {t.handbook.openManualLabel}
+            </span>
+            <Icon
+              name="lucide:arrow-right"
+              class="h-4 w-4 transition group-hover:translate-x-0.5"
+            />
+          </span>
+        </a>
+      ))}
+    </div>
   </div>
 </section>

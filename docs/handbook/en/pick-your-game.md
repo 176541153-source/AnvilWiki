@@ -10,7 +10,7 @@ updated: 2026-08-17
 
 ## Where you are, and what this chapter solves
 
-You want to earn traffic money from a game guide site. The whole thing is like opening a bakery: **first decide what you sell, then decorate the store**.
+You want to earn traffic money from a game guide site. The whole thing is like opening a snack shop: **first decide what snack you sell, then decorate the store**.
 
 Most beginners build the site right away — that's like opening the shop only to discover nobody on this street eats what you sell. Game guide traffic follows a rule: after a new game takes off, the **2 to 8 weeks** are the golden window. That month-plus of searches can be 60% to 80% of the game's lifetime search volume. Pick the right window and even ordinary content ranks; pick the wrong one and nobody reads you no matter how well you write.
 
@@ -128,4 +128,4 @@ Why does the codes page rank first? Because it pulls the most traffic, and playe
 
 ## Next step
 
-The game is chosen and you still have nothing — the next chapter starts with installing software and gets a working site onto your computer in 30 minutes. [Go to Chapter 2 · Get the site onto your computer](/landing/docs/launch-your-site)
+The game is chosen and you still have nothing — the next chapter spends 30 minutes installing 6 tools (a one-time install, yours forever), and the chapter after that gets a working site onto your computer. [Go to Chapter 2 · Before You Set Off: Install the 6 Tools](/landing/docs/install-tools)

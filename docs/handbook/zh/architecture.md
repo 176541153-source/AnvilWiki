@@ -42,7 +42,7 @@ updated: 2026-08-17
 ├─ 语言列表              → 三处必须同时一致(见下)
 ├─ 文章内容              → src/content/wiki/<语言>/<栏目>/ 下的 .mdx
 ├─ 新组件/新页面         → 代码层,动了要考虑升级成本
-└─ 广告/评论/统计开关    → Cloudflare 网页变量或 wrangler.toml(二选一,见集成章)
+└─ 广告/评论/统计开关    → Cloudflare 网页变量或 wrangler.toml(二选一,见「功能开关」章)
 ```
 
 两条「三处一致」铁律(跑 `pnpm check-config` 自动检查):
@@ -106,4 +106,4 @@ pnpm build && pnpm check-links # 构建 + 全站死链检查
 
 ## 下一步
 
-地图有了,去[开发 2 · 定制手册](/zh/landing/docs/customize):加栏目、加语言、换主题、改首页文案,每个需求的分步操作和配套 AI 提示词。
+地图有了,去[开发 2 · 加栏目与加语言](/zh/landing/docs/categories-and-locales):每个需求的分步操作和配套 AI 提示词;换皮肤改首页在[开发 3](/zh/landing/docs/theme-and-homepage)。

@@ -1,16 +1,16 @@
 ---
-title: "Chapter 2 · Get the Site onto Your Computer"
-description: "Install 6 tools (terminal, GitHub, Node, pnpm, Git, AI helper), fork the template as yours, and your game's site runs in 30 minutes. Each step says what you'll see."
+title: "Chapter 3 · Copy the Template, Get Your Site Running"
+description: "Fork the AnvilWiki template to your GitHub, clone it locally, and run one Q&A command that swaps the demo for your game — 30 minutes to your site in the browser."
 manual: learn
-order: 2
+order: 3
 icon: lucide:rocket
-tldr: "This chapter has two acts. Act one installs all six tools — terminal, GitHub account, Node, pnpm, Git, and an AI coding assistant; not one can be skipped, and they are your ticket to every later chapter. Act two copies the template, runs one command to swap the demo site for your game, and ends with your own site open at localhost:4321. Every step tells you what you'll see."
+tldr: "Four steps: fork (copy the fully decorated bakery into your name) → clone (move it onto your computer) → pnpm install (install every part) → pnpm apply-template (one question-and-answer command that swaps the game name, theme color, categories, and languages for yours). Every step tells you what you'll see, and the finale is acceptance at localhost:4321 in the browser."
 updated: 2026-08-17
 ---
 
 ## Where you are, and what this chapter solves
 
-Last chapter you picked your game. Right now you still have nothing — by the end of this chapter, your computer holds a full set of website files, and the browser opens a running site that carries your game's name.
+Last chapter the tools were all installed, and your game is already picked — but right now you still have nothing. By the end of this chapter, your computer holds a full set of website files, and the browser opens a running site that carries your game's name.
 
 Think of it as opening a bakery: the AnvilWiki template is a **bakery already fully decorated** (shelves, counter, and lights all in place, with a set of sample cakes on display). Your job is to copy the whole bakery and make it yours, then swap the samples for your own cakes.
 
@@ -19,69 +19,12 @@ Think of it as opening a bakery: the AnvilWiki template is a **bakery already fu
 - A working website on your computer — open `http://localhost:4321` in a browser to see it
 - It shows your game's name, your theme color, and your categories
 
-## Act one: before you set off, install 6 things
-
-This act is the biggest dropout point of the whole book. Take them one at a time; install one, tick it off. **You install these 6 exactly once and use them forever.**
-
-### Tool 1: the terminal (the window where you type commands)
-
-The terminal is the window where you give your computer orders by typing.
-
-- **Mac**: press `Command + Space`, type "Terminal", press Enter to open it.
-- **Windows**: open the Start menu, type "PowerShell", press Enter to open it.
-
-**Confirm you got it right**: the window shows a blinking cursor next to your computer's name and a `~` or `>` symbol. This is the terminal. Whenever the book says "in the terminal, type", this is where you type and press Enter.
-
-### Tool 2: a GitHub account (the warehouse that holds your site's files)
-
-GitHub is where your website files live — your storefront warehouse, so to speak.
-
-Open [github.com](https://github.com), click Sign up at the top right, and register a free account with your email. Pick a sensible username — it appears in your website address.
-
-**Confirm you got it right**: you can log in, and your avatar shows at the top right.
-
-### Tool 3: Node (the foundation the site engine sits on)
-
-Node is the base software this website template runs on; you need version **22.13 or newer**.
-
-- Open [nodejs.org](https://nodejs.org), download the LTS (long-term support) version on the left, double-click to install, keep clicking Next.
-- After installing, **open a new terminal** (close the old one and reopen it), type `node -v`, press Enter.
-
-**What you'll see**: a line like `v22.14.0`.
-**Confirm you got it right**: the number starts with 22 or higher. If you see command not found, either the terminal wasn't reopened or the install didn't finish — do it again.
-
-### Tool 4: pnpm (the mover — one command installs every site part)
-
-In the terminal, type:
-
-```bash
-npm install -g pnpm
-```
-
-**What you'll see**: a few lines of progress, with no red error at the end.
-**Confirm you got it right**: type `pnpm -v`, press Enter, and a version number appears.
-
-### Tool 5: Git (the delivery truck that carries files into the warehouse)
-
-- **Mac**: type `brew install git` in the terminal (no brew? Install it first with the command on [brew.sh](https://brew.sh)'s homepage). Or simpler: after installing Node, many Macs already ship Git — try `git -v` first; if a version number shows, skip this.
-- **Windows**: download from [git-scm.com](https://git-scm.com), install, keep clicking Next.
-
-**Confirm you got it right**: type `git -v` in the terminal and a version number appears.
-
-### Tool 6: an AI coding assistant (your content-writing partner — every later chapter uses it)
-
-Install **any one** of ZCode / [Claude Code](https://claude.com/claude-code) / [Codex](https://openai.com/codex) / [Cursor](https://cursor.com) (all have free tiers). You won't need it this chapter; in Chapter 3 it becomes the star.
-
-**Confirm you got it right**: the app opens, and you know how to start a new chat.
-
-## Act two: copy the bakery, hang your own sign
-
 ### Step 1: Copy the template repo into your GitHub (fork)
 
 **What to do**: copy the entire AnvilWiki bakery under your name. The original store keeps running as usual; the copy you made is yours to change freely.
 **How to do it**: log into GitHub, open [github.com/PNGTRID/AnvilWiki](https://github.com/PNGTRID/AnvilWiki), click the **Fork** button at the top right, then click **Create fork**.
-**What you'll see**: you land on the `your-username/AnvilWiki` repo page.
-**Confirm you got it right**: the repo name at the top left shows your username, not PNGTRID.
+**You'll see**: you land on the `your-username/AnvilWiki` repo page.
+**Confirm it worked**: the repo name at the top left shows your username, not PNGTRID.
 
 ### Step 2: Move the repo onto your computer (clone)
 
@@ -94,8 +37,8 @@ cd AnvilWiki
 pnpm install
 ```
 
-**What you'll see**: `pnpm install` runs for ten seconds to a few minutes, scrolls a pile of package names, and stops with no red error.
-**Confirm you got it right**: type `ls`, press Enter, and you can see `package.json` among a row of files.
+**You'll see**: `pnpm install` runs for ten seconds to a few minutes, scrolls a pile of package names, and stops with no red error.
+**Confirm it worked**: type `ls`, press Enter, and you can see `package.json` among a row of files.
 
 ### Step 3: Run it locally and take a look
 
@@ -106,8 +49,8 @@ pnpm install
 pnpm dev
 ```
 
-**What you'll see**: a few green startup lines containing `localhost:4321`.
-**Confirm you got it right**: open [localhost:4321](http://localhost:4321) in a browser — a guide site for a fictional game, "Anvil Quest". That's the look you're about to replace. When you've seen enough, go back to the terminal and press `Control + C` to stop it.
+**You'll see**: a few green startup lines containing `localhost:4321`.
+**Confirm it worked**: open [localhost:4321](http://localhost:4321) in a browser — a guide site for a fictional game, "Anvil Quest". That's the look you're about to replace. When you've seen enough, go back to the terminal and press `Control + C` to stop it.
 
 ### Step 4: Swap in your game (one question-and-answer command)
 
@@ -132,8 +75,8 @@ pnpm dev
 | Homepage preset | Press Enter (picks 1) | 1 = codes-style homepage (most people), 2 = guides-style, 3 = keep the demo |
 | Remove landing page? | Press Enter (default yes) | /landing is the AnvilWiki project's own intro page; your game site doesn't need it, auto-removed |
 
-**What you'll see**: the command rewrites files one by one, each line prefixed with a green ✅, and it reports done at the end.
-**Confirm you got it right**: type `pnpm check-config` in the terminal, press Enter, and it prints "✅ Config is consistent".
+**You'll see**: the command rewrites files one by one, each line prefixed with a green ✅, and it reports done at the end.
+**Confirm it worked**: type `pnpm check-config` in the terminal, press Enter, and it prints "✅ Config is consistent".
 
 Small tip: to preview what it will change before letting it act, run `pnpm apply-template --dry-run` first (prints the plan only, changes nothing). Also, GitHub has a button called **Initialize AnvilWiki** (in the repo's Actions tab), but it **only does final cleanup** — it does not swap in your game name, your theme color, or your languages. The full replacement only happens with this local command.
 
@@ -141,8 +84,8 @@ Small tip: to preview what it will change before letting it act, run `pnpm apply
 
 **What to do**: confirm the store sign really changed.
 **How to do it**: type `pnpm dev` in the terminal, open [localhost:4321](http://localhost:4321) in the browser.
-**What you'll see**: the homepage shows your game's name and theme color, and the navigation bar shows the categories you chose.
-**Confirm you got it right** — check item by item:
+**You'll see**: the homepage shows your game's name and theme color, and the navigation bar shows the categories you chose.
+**Confirm it worked** — check item by item:
 
 - ☐ The homepage title is your game (no longer Anvil Quest)
 - ☐ The brand color is the one you picked (no longer orange)
@@ -153,7 +96,6 @@ When you've seen enough, `Control + C` to stop it.
 
 ## If you get stuck
 
-- **"Typing pnpm says command not found"**: pnpm didn't install, or you didn't reopen the terminal after installing. Close the terminal, reopen it, try again.
 - **`pnpm install` or build prints a wall of red**: read the **last line** first — 90% of the answer lives there; if you really can't parse it, copy the whole red block, hand it to your AI assistant, and ask "how do I fix this error".
 - **localhost:4321 won't open**: make sure `pnpm dev` is still running in the terminal (window not closed, no Control + C pressed); and don't type the address as https.
 - **You answered apply-template wrong mid-way**: press `Control + C` to cancel and run it again — it overwrites with the new answers.
@@ -163,9 +105,8 @@ When you've seen enough, `Control + C` to stop it.
 
 - Commands: `pnpm check-config` shows ✅, and `pnpm build` finishes with no red error on the last line
 - Pages: on localhost:4321, the game name, theme color, and categories are all yours
-- ☐ All 6 tools are in place (Chapter 3 needs the AI assistant right away)
 - ☐ You remember what you entered for Domain (a pages.dev placeholder for now is fine; come back and change it after you buy a domain)
 
 ## Next step
 
-The store is decorated, but the shelves still hold sample goods. The next chapter is the best part of the whole book: have AI write 10 build-check-passing guides in one day. [Go to Chapter 3 · Let AI write 10 guides for you](/landing/docs/first-10-pages)
+The store is decorated, but the shelves still hold sample goods. The next chapter is the best part of the whole book: have AI write 10 build-check-passing guides in one day. [Go to Chapter 4 · Let AI Write 10 Guides for You](/landing/docs/first-10-pages)

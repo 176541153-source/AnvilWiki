@@ -1,8 +1,8 @@
 ---
-title: "Dev 4 · Keep Up With Official Updates and Give the Good Stuff Back"
+title: "Dev 6 · Keep Up With Official Updates and Give the Good Stuff Back"
 description: "Merge upstream safely (conflicts always keep your game config and articles), the SemVer promises, and the path to contributing back and the showcase."
 manual: dev
-order: 4
+order: 6
 icon: lucide:git-merge
 tldr: "Three commands bring official updates: set upstream, fetch, merge. Conflicts land almost only in the config and content layers, where the answer never changes — keep yours. The compatibility promises (fields only added, never renamed; new features off by default) make merging safe. Not syncing? A static site frozen on a version keeps running — but take security fixes at least. A good site earns a showcase PR."
 updated: 2026-08-17
@@ -75,4 +75,4 @@ Three long-term promises: article registration-card fields are **added only, nev
 
 ## The dev manual ends here
 
-Map (architecture) → customization → integrations → sync — your command of this template is now maintainer-level. Head back to the [learning manual, chapter 5](/landing/docs/monetize-and-grow) weekly rhythm and run the site well — or start scouting the next game for your next site.
+Map (architecture) → categories and languages → theme and homepage → feature toggles → CI and security → sync and contribute — your command of this template is now maintainer-level. Head back to the [learning manual, chapter 8](/landing/docs/weekly-ops) weekly rhythm and run the site well — or start scouting the next game for your next site.

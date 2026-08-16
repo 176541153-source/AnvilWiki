@@ -11,7 +11,7 @@
  */
 
 /** Keep in sync with package.json "version" (used by the announcement bar). */
-export const PROJECT_VERSION = '1.13.1';
+export const PROJECT_VERSION = '1.14.0';
 
 export type LandingLocale = 'en' | 'zh';
 
@@ -89,6 +89,10 @@ export interface LandingContent {
       hint: string;
       items: { label: string; time: string; href: string }[];
     };
+    /** Label for the hub card / nav link opening a manual's own page. */
+    openManualLabel: string;
+    /** "N chapters" counter label on manual pages. */
+    chaptersCountLabel: string;
   };
   finalCta: {
     title: string;
@@ -115,7 +119,7 @@ const en: LandingContent = {
   description:
     'An open-source game wiki template with an AI-native content workflow: pick the right game, generate pages by talking to your AI tool, codes pages stay fresh on autopilot. Lighthouse 4×100, free on Cloudflare, 100% ad revenue yours.',
   announcement: {
-    text: `v${PROJECT_VERSION} shipped — the docs hub now opens with a 10-job "whole picture" checklist, and every tool/service mention in the manuals links out directly (itch.io, Steam, Roblox, registrars, AI tools…).`,
+    text: `v${PROJECT_VERSION} shipped — the two manuals now live on separate pages (Learning 8 chapters / Development 6, split finer along natural seams) and each manual's page shows a numbered chapter list.`,
     href: RELEASES,
   },
   hero: {
@@ -244,14 +248,14 @@ pnpm install && pnpm dev`,
       {
         icon: 'lucide:rocket',
         title: 'Quick Start',
-        description: 'Fork, configure, and deploy to Cloudflare Pages in 5 minutes.',
-        href: '/landing/docs/launch-your-site',
+        description: 'Install the 6 tools and get your environment ready — once and for all.',
+        href: '/landing/docs/install-tools',
       },
       {
         icon: 'lucide:palette',
         title: 'Apply Template',
-        description: 'Swap the demo game for yours — config, theme, content, locales.',
-        href: '/landing/docs/customize',
+        description: 'Fork the template and swap in your game — one guided command.',
+        href: '/landing/docs/launch-your-site',
       },
       {
         icon: 'lucide:search',
@@ -345,17 +349,19 @@ pnpm install && pnpm dev`,
       hint: 'Ten jobs from zero to earning. Click any job to jump to the chapter that walks you through it step by step.',
       items: [
         { label: 'Pick the right game', time: '2 days', href: '/landing/docs/pick-your-game' },
-        { label: 'Install the 6 tools', time: '30 min', href: '/landing/docs/launch-your-site' },
+        { label: 'Install the 6 tools', time: '30 min', href: '/landing/docs/install-tools' },
         { label: 'Turn the template into your site', time: '30 min', href: '/landing/docs/launch-your-site' },
         { label: 'Write the first 10 pages with AI', time: '1 day', href: '/landing/docs/first-10-pages' },
-        { label: 'Put the site online (free hosting)', time: '15 min', href: '/landing/docs/deploy-and-get-indexed' },
-        { label: 'Register with Google (GSC + sitemap)', time: '20 min', href: '/landing/docs/deploy-and-get-indexed' },
-        { label: 'Buy and connect a domain', time: '30 min', href: '/landing/docs/deploy-and-get-indexed' },
-        { label: 'Turn on ads (AdSense)', time: 'review: days', href: '/landing/docs/monetize-and-grow' },
-        { label: 'Weekly 30-min freshness loop', time: 'weekly', href: '/landing/docs/monetize-and-grow' },
-        { label: 'Customize: categories, languages, theme', time: 'as needed', href: '/landing/docs/customize' },
+        { label: 'Put the site online (free hosting)', time: '15 min', href: '/landing/docs/put-site-online' },
+        { label: 'Register with Google (GSC + sitemap)', time: '20 min', href: '/landing/docs/get-on-google' },
+        { label: 'Buy and connect a domain', time: '30 min', href: '/landing/docs/put-site-online' },
+        { label: 'Turn on ads (AdSense)', time: 'review: days', href: '/landing/docs/enable-ads' },
+        { label: 'Weekly 30-min freshness loop', time: 'weekly', href: '/landing/docs/weekly-ops' },
+        { label: 'Customize: categories, languages, theme', time: 'as needed', href: '/landing/docs/categories-and-locales' },
       ],
     },
+    openManualLabel: 'Open this manual',
+    chaptersCountLabel: 'chapters',
   },
   finalCta: {
     title: 'Ready to launch your game wiki?',
@@ -386,7 +392,7 @@ const zh: LandingContent = {
   description:
     '开源游戏 wiki 模板 + AI 原生内容工作流:选对游戏、和 AI 对话就能产页、codes 页自动保鲜。Lighthouse 4×100、Cloudflare 免费部署、广告收入 100% 归你。',
   announcement: {
-    text: `v${PROJECT_VERSION} 发布 —— 文档中心新增「建站全景清单」(10 件工作一目了然,逐项点入对应章节);手册内所有工具/服务均可直接点击直达(找新游/装工具/买域名/装 AI 助手)。`,
+    text: `v${PROJECT_VERSION} 发布 —— 学习手册与开发手册各自独立成页(8 章 + 6 章,沿自然接缝拆细),手册页改为编号列表展示,进度一目了然。`,
     href: RELEASES,
   },
   hero: {
@@ -513,14 +519,14 @@ pnpm install && pnpm dev`,
       {
         icon: 'lucide:rocket',
         title: '快速开始',
-        description: 'Fork、配置、5 分钟内部署到 Cloudflare Pages。',
-        href: '/zh/landing/docs/launch-your-site',
+        description: '装好 6 样工具,准备开工环境——只装一次,以后永远用。',
+        href: '/zh/landing/docs/install-tools',
       },
       {
         icon: 'lucide:palette',
         title: '套用模板',
-        description: '把 demo 游戏换成你的——配置、主题、内容、多语言。',
-        href: '/zh/landing/docs/customize',
+        description: 'Fork 模板,一条问答式命令换成你的游戏。',
+        href: '/zh/landing/docs/launch-your-site',
       },
       {
         icon: 'lucide:search',
@@ -612,17 +618,19 @@ pnpm install && pnpm dev`,
       hint: '从零到赚钱一共 10 件事。点任意一项,直接跳到手把手教你的那一章。',
       items: [
         { label: '选对游戏', time: '2 天', href: '/zh/landing/docs/pick-your-game' },
-        { label: '装好 6 样工具', time: '30 分钟', href: '/zh/landing/docs/launch-your-site' },
+        { label: '装好 6 样工具', time: '30 分钟', href: '/zh/landing/docs/install-tools' },
         { label: '把模板变成你的站', time: '30 分钟', href: '/zh/landing/docs/launch-your-site' },
         { label: '用 AI 写首日 10 页', time: '1 天', href: '/zh/landing/docs/first-10-pages' },
-        { label: '网站上线(免费托管)', time: '15 分钟', href: '/zh/landing/docs/deploy-and-get-indexed' },
-        { label: '在 Google 登记(站长后台+目录)', time: '20 分钟', href: '/zh/landing/docs/deploy-and-get-indexed' },
-        { label: '买域名并绑定', time: '30 分钟', href: '/zh/landing/docs/deploy-and-get-indexed' },
-        { label: '接广告(AdSense)', time: '审核数天', href: '/zh/landing/docs/monetize-and-grow' },
-        { label: '每周 30 分钟保鲜', time: '每周', href: '/zh/landing/docs/monetize-and-grow' },
-        { label: '定制:加栏目/语言/换肤', time: '按需', href: '/zh/landing/docs/customize' },
+        { label: '网站上线(免费托管)', time: '15 分钟', href: '/zh/landing/docs/put-site-online' },
+        { label: '在 Google 登记(站长后台+目录)', time: '20 分钟', href: '/zh/landing/docs/get-on-google' },
+        { label: '买域名并绑定', time: '30 分钟', href: '/zh/landing/docs/put-site-online' },
+        { label: '接广告(AdSense)', time: '审核数天', href: '/zh/landing/docs/enable-ads' },
+        { label: '每周 30 分钟保鲜', time: '每周', href: '/zh/landing/docs/weekly-ops' },
+        { label: '定制:加栏目/语言/换肤', time: '按需', href: '/zh/landing/docs/categories-and-locales' },
       ],
     },
+    openManualLabel: '打开这本手册',
+    chaptersCountLabel: '章',
   },
   finalCta: {
     title: '准备好上线你的游戏 wiki 了吗?',

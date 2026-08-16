@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.14.0] — 2026-08-17
+
+**手册分册成页 + 章节拆细:学习手册与开发手册各自独立页面,5+4 章拆为 8+6 章,手册页改编号列表展示。**
+
+### Changed
+- **两本手册独立成页**:`/landing/docs`(及中文版)改为选择页(全景清单 + 两张手册大卡);新增 `/landing/docs/learn` 与 `/landing/docs/dev` 手册专属页(中英四页)。左侧手册树的册名、章节页面包屑同步链接到手册页。
+- **学习手册 5 → 8 章**(沿自然接缝拆):①选对游戏 ②出发前:装好 6 样工具(原第 2 章第一幕独立成章——最大流失点值得独立入口)③复制模板跑起你的站 ④让 AI 写 10 篇攻略 ⑤网站上线(含买域名)⑥让 Google 认识你(GSC/sitemap/收录独立成章)⑦接广告开始赚钱 ⑧每周保鲜与增长。
+- **开发手册 4 → 6 章**:①改动地图 ②加栏目与加语言 ③换主题色与改首页(原「定制」一分为二)④功能开关总表 ⑤CI 门禁与安全底线(原「集成」一分为二)⑥同步与回流。
+- **手册页列表化**:每本手册的页面用编号列表逐章展示(序号徽章 + 标题 + 一行简介 + 箭头),比卡片网格更直观;hub 手册卡显示章数。
+- **互链全面重接**:roadmap 10 项、DocsEntry 卡片、章间「下一步」、跨章引用全部指向新 slug;旧 slug(customize/deploy-and-get-indexed/monetize-and-grow)零残留(en 14 章 2 并行 agent 同源重写,13 提示词块守恒,事实限定词逐条存活)。
+
 ## [1.13.1] — 2026-08-17
 
 **建站全景清单 + 全书直达链接:回答「一个游戏站要完成哪些工作」,每个「去哪做」都能点进去。**
@@ -379,7 +390,8 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
-[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v1.13.1...HEAD
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v1.14.0...HEAD
+[1.14.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.13.1...v1.14.0
 [1.13.1]: https://github.com/PNGTRID/AnvilWiki/compare/v1.13.0...v1.13.1
 [1.13.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.12.1...v1.13.0
 [1.12.1]: https://github.com/PNGTRID/AnvilWiki/compare/v1.12.0...v1.12.1

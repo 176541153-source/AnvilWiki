@@ -1,8 +1,8 @@
 ---
-title: "Chapter 3 · Let AI Write 10 Guides for You"
-description: "Feed game notes to your AI and use three copy-paste prompts to produce guide, codes, and tier list pages that pass the build check. Plus 7 never-do rules."
+title: "Chapter 4 · Let AI Write 10 Guides for You"
+description: "Feed game notes to your AI; three prompts produce guide, codes, and tier list pages that pass the build check. Includes search-intent table and 7 never-do rules."
 manual: learn
-order: 3
+order: 4
 icon: lucide:bot
 tldr: "You play the game for an hour and take notes, then feed the notes to your AI and say 'write a guide from these points' — it auto-loads the site's format rules and writes pages that pass the pnpm build check. Three disciplines: give full source material, verify each page on its own, mark missing data 'to be added' rather than invented. Day one output: 10 pages."
 updated: 2026-08-17
@@ -33,9 +33,9 @@ Good news: in this chapter you don't write a single word yourself. You **play th
 ## Step 1: Open your website folder with the AI assistant
 
 **What to do**: have the AI assistant "enter" your website folder, so the files it writes land in the right places.
-**How to do it**: open the assistant you installed in Chapter 2 and point it at the `AnvilWiki` folder — **Cursor / ZCode**: click the "Open Folder" button and pick the folder; **Claude Code / Codex** (terminal-based): type `cd AnvilWiki` in the terminal to enter the folder, then launch the tool (e.g. `claude`). Start a new chat once it's open.
-**What you'll see**: the AI assistant's window shows the folder path, ending in `AnvilWiki`.
-**Confirm you got it right**: ask it "which folder are you in right now?" — its answer ends in AnvilWiki.
+**How to do it**: open the sixth tool you installed in Chapter 2 — the AI assistant — and point it at the `AnvilWiki` folder its own way — **Cursor / ZCode**: click the "Open Folder" button in the UI and pick the folder; **Claude Code / Codex** (terminal-based): type `cd AnvilWiki` in the terminal to enter the folder, then launch the tool (e.g. `claude`). Start a new chat once it's open.
+**You'll see**: the AI assistant's window shows the folder path, ending in `AnvilWiki`.
+**Confirm it worked**: ask it "which folder are you in right now?" — its answer ends in AnvilWiki.
 
 Once opened, it automatically knows three things (no teaching needed): the site's format rules (AGENTS.md), three ready-made skills, and the info-card format (the schema).
 
@@ -107,7 +107,7 @@ If the AI listed a "to be added" list and you don't have the data yet: keep that
 1. **Let the AI invent codes, stats, or drop rates.** Better to leave a gap marked [to be added].
 2. **Generate 10 pages at once without verifying each one.** Every page passes the build check on its own.
 3. **Publish unverified content without marking it draft.**
-4. **Invent new categories or new tags.** Categories and tags only reuse the existing set (the one the Chapter 2 CLI built).
+4. **Invent new categories or new tags.** Categories and tags only reuse the existing set (the one the Chapter 3 CLI built).
 5. **Ask the AI to change site code to fulfill a copy need.** Copy belongs in config; the code is a load-bearing wall.
 6. **Say "write a good guide" and call it a prompt.** Materials are the first-class citizen of a prompt.
 7. **Hand-edit the build output, or skip git saves.** Every change goes through source files; after writing, have the AI commit for you (one save point per article, easy rollback).
@@ -115,9 +115,9 @@ If the AI listed a "to be added" list and you don't have the data yet: keep that
 ## If you get stuck
 
 - **"The AI says build failed"**: have it paste the last error line and fix it per the error — the prompt already says "fix failures and rerun"; most of the time it repairs itself.
-- **"The AI doesn't know which category to use"**: tell it the Categories you entered in Chapter 2, e.g. `codes, guides, bosses`.
+- **"The AI doesn't know which category to use"**: tell it the Categories you entered in Chapter 3, e.g. `codes, guides, bosses`.
 - **"I can't see the page"**: make sure `pnpm dev` is running; also make sure that article isn't `draft: true` (drafts are visible in dev mode only — a real build never publishes them).
-- **"I want to add Chinese-language articles"**: not yet — get the English site working first; once the site is live and earning, the developer manual's "customize" chapter has the full set of translation prompts.
+- **"I want to add Chinese-language articles"**: not yet — get the English site working first; once the site is live and earning, the developer manual's [Add Categories and Languages](/landing/docs/categories-and-locales) chapter has the full set of translation prompts.
 
 ## ✅ Acceptance criteria (all must hold)
 
@@ -128,4 +128,4 @@ If the AI listed a "to be added" list and you don't have the data yet: keep that
 
 ## Next step
 
-All the content lives on your computer — but players and Google still can't see you. Next chapter: move the site onto Cloudflare's free shelf, then get Google to start indexing you. [Go to Chapter 4 · Let the whole world see your site](/landing/docs/deploy-and-get-indexed)
+All the content lives on your computer — but players and Google still can't see you. Next chapter: move the site onto Cloudflare's free shelf. [Go to Chapter 5 · Take Your Site Live](/landing/docs/put-site-online)

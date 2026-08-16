@@ -60,7 +60,9 @@ const updated = chapter.data.updated?.toLocaleDateString(locale === 'zh' ? 'zh-C
           {t.handbook.backToHub}
         </a>
         <Icon name="lucide:chevron-right" class="h-3.5 w-3.5" />
-        <span>{manualLabel}</span>
+        <a href={handbookPath(locale, chapter.data.manual)} class="transition hover:text-nav">
+          {manualLabel}
+        </a>
         <Icon name="lucide:chevron-right" class="h-3.5 w-3.5" />
         <span aria-current="page" class="text-foreground">{chapterNo}</span>
       </nav>
