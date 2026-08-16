@@ -103,7 +103,9 @@ fork 后用 ZCode / Claude Code / Codex / Cursor 打开仓库,直接对话即可
 
 ### 文档导航
 
-完整的文档索引与按角色的阅读路径见 **[docs/README.md](docs/README.md)**(建站赚钱 / 内容作者 / AI Agent / 贡献者四条路径 + 一页决策地图)。
+**新手首选:[站内文档中心](https://anvilwiki.pages.dev/zh/landing/docs)** —— 学习手册(选品 → 建站 → AI 产页 → 部署 → 变现运营,每步 SOP + 可复制提示词)+ 开发手册(架构/定制/集成/同步),双语言。
+
+完整的仓库文档索引与按角色的阅读路径见 **[docs/README.md](docs/README.md)**(建站赚钱 / 内容作者 / AI Agent / 贡献者四条路径 + 一页决策地图)。
 
 最常用的几份:
 
@@ -156,6 +158,8 @@ Built a site with AnvilWiki? **Open a PR to add it to the landing Showcase** (`s
 ---
 
 ## 📖 English Documentation
+
+**Start here: the [in-site docs center](https://anvilwiki.pages.dev/landing/docs)** — a Learning Manual (game selection → setup → AI content → deploy → monetize & weekly ops, every step a SOP with copy-paste prompts) plus a Development Manual (architecture / customization / integrations / upstream sync), in English and Chinese.
 
 ### What is this?
 

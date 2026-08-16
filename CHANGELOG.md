@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.11.0] — 2026-08-16
+
+**站内文档中心版:`/landing/docs` + `/zh/landing/docs`——学习/开发双手册(9 章 × 中英),每步 SOP + 可复制 AI 提示词,四专家(游戏wiki站/SEO/自动化/模板架构)讨论定档。**
+
+### Added
+- **站内文档中心**(`HandbookHub` + `HandbookChapter` 组件,4 条路由):手册源码 `docs/handbook/{en,zh}/*.md` 单一真相源(GitHub 可浏览 + 站内渲染);**fork 用户保留手册**(学习手册的提示词 SOP 对站长有直接价值),apply-template CLI 只删 landing 路由——删除清单实测 19 文件,fork 模拟(删 landing 全套后)`pnpm build` 仍绿。
+- **学习手册 5 章**:选品四层漏斗(含 P01 选品分析/P02 首日规划提示词)→ 半小时建站(CLI 逐项填法+三类新手报错)→ 首日 10 页 AI 产页(P03 攻略/P04 codes/P06 tier list + 逐篇验收三件套 + 7 条反模式)→ 部署与首次收录(wrangler.toml 二选一 + GSC/sitemap/请求收录 SOP)→ 变现与周运营(AdSense 前置清单 + P05 codes 更新/P08 巡检/P11 SEO 体检 + 每周 30 分钟节奏)。
+- **开发手册 4 章**:三层架构与改动决策树(Astro 5 六坑)→ 定制 SOP(加分类/加语言/主题/首页,含 P07 翻译/P09 文案/P10 新语言提示词)→ 集成与工程(env 门控全表 + CI 三工作流 + 安全基线)→ 同步上游与贡献回流(merge 策略 + SemVer 承诺 + 发版流程)。
+- `handbook` content collection(Zod schema:title/description/manual/order/icon/tldr/updated)+ `src/lib/handbook.ts` 纯函数(parseHandbookId/sortChapters/prevNext/handbookPath)+ `tests/handbook.test.ts`(**中英 1:1 parity 硬门禁**:slug 镜像、manual/order 孪生、字段齐全、order 唯一)。
+- 文档页 SEO:任务式 H2 + TL;DR 卡 + BreadcrumbList/TechArticle JSON-LD + en/zh hreflang 成对真实 + sitemap lastmod(astro.config 扫描 `updated` 字段)+ llms.txt 新增 Handbook 段(`landingLinkEnabled` 门控,fork 站零污染)。
+- LandingLayout 支持 `pageTitle`/`pageDescription`/`togglePath`/`extraJsonLd`;语言切换器在文档页内互切;自动跳转脚本收窄到 landing 根路径(不再把读者从章节页弹走)。DocsEntry 3 卡改站内链接,DevGuide「全部文档」入口改指 /landing/docs。
+
+### Fixed
+- en 手册 frontmatter 的 ASCII 冒号破坏 YAML 解析(plain scalar 含 `: `)——18 文件统一 JSON 双引号转义;tldr 上限 300→480 字符(en 译文天然更长)。
+- DocsEntry 4 卡网格在 3 列下 3+1 孤行换行(v1.10.0 已修,此处确认保持)。
+
 ## [1.10.0] — 2026-08-16
 
 **官网开发指南版：landing 新增「怎么用」5 步上手板块——此前只有 4 张文档卡，缺一条"从头到尾怎么走"的向导。**
@@ -303,7 +319,8 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
-[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v1.10.0...HEAD
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v1.11.0...HEAD
+[1.11.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.10.0...v1.11.0
 [1.10.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.9.0...v1.10.0
 [1.9.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.8.2...v1.9.0
 [1.8.2]: https://github.com/PNGTRID/AnvilWiki/compare/v1.8.1...v1.8.2
