@@ -11,7 +11,7 @@
  */
 
 /** Keep in sync with package.json "version" (used by the announcement bar). */
-export const PROJECT_VERSION = '1.9.0';
+export const PROJECT_VERSION = '1.10.0';
 
 export type LandingLocale = 'en' | 'zh';
 
@@ -54,6 +54,12 @@ export interface LandingContent {
     cards: { icon: string; title: string; description: string; href: string }[];
     readLabel: string;
   };
+  devGuide: {
+    title: string;
+    subtitle: string;
+    steps: { title: string; description: string; command: string; linkLabel: string; href: string }[];
+    allDocs: { label: string; href: string };
+  };
   finalCta: {
     title: string;
     subtitle: string;
@@ -79,7 +85,7 @@ const en: LandingContent = {
   description:
     'An open-source game wiki template with an AI-native content workflow: pick the right game, generate pages by talking to your AI tool, codes pages stay fresh on autopilot. Lighthouse 4×100, free on Cloudflare, 100% ad revenue yours.',
   announcement: {
-    text: `v${PROJECT_VERSION} shipped — AI-native content skills, structured codes frontmatter, weekly freshness audit & game-selection guide.`,
+    text: `v${PROJECT_VERSION} shipped — the landing page now walks you through the whole workflow: fork → CLI → AI authoring → deploy → freshness.`,
     href: RELEASES,
   },
   hero: {
@@ -226,6 +232,57 @@ pnpm install && pnpm dev`,
     ],
     readLabel: 'Read',
   },
+  devGuide: {
+    title: 'How to use it — 5 steps',
+    subtitle:
+      'From fork to a live site in about 30 minutes. Every step ships with a full doc behind it.',
+    steps: [
+      {
+        title: 'Fork & run locally',
+        description:
+          'Clone your fork and start the dev server — the demo wiki (fictional game "Anvil Quest") works out of the box.',
+        command: 'pnpm install && pnpm dev',
+        linkLabel: 'README',
+        href: 'https://github.com/PNGTRID/AnvilWiki#readme',
+      },
+      {
+        title: 'Make it yours',
+        description:
+          'One interactive CLI swaps game identity, theme color, locales and nav — and resets demo values (incl. wrangler.toml).',
+        command: 'pnpm apply-template',
+        linkLabel: 'apply-template.md',
+        href: 'https://github.com/PNGTRID/AnvilWiki/blob/main/docs/apply-template.md',
+      },
+      {
+        title: 'Write pages by chatting',
+        description:
+          'Open the repo in ZCode / Claude Code / Codex and just talk — agent skills ship inside the repo and the Zod schema gates every page.',
+        command: '"write a boss guide from these notes"',
+        linkLabel: 'content-format.md',
+        href: 'https://github.com/PNGTRID/AnvilWiki/blob/main/docs/content-format.md',
+      },
+      {
+        title: 'Deploy for free',
+        description:
+          'Push to GitHub and connect Cloudflare Pages — the Astro build is auto-detected; free unlimited bandwidth + global CDN.',
+        command: 'pnpm build && git push',
+        linkLabel: 'deployment.md',
+        href: 'https://github.com/PNGTRID/AnvilWiki/blob/main/docs/deployment.md',
+      },
+      {
+        title: 'Stay fresh',
+        description:
+          'A weekly audit workflow flags stale pages, codes skills keep redemption pages current, and upstream updates sync cleanly.',
+        command: 'pnpm refresh-audit',
+        linkLabel: 'staying-up-to-date.md',
+        href: 'https://github.com/PNGTRID/AnvilWiki/blob/main/docs/staying-up-to-date.md',
+      },
+    ],
+    allDocs: {
+      label: 'All docs — 4 reading paths (site owner / author / AI agent / contributor)',
+      href: 'https://github.com/PNGTRID/AnvilWiki/blob/main/docs/README.md',
+    },
+  },
   finalCta: {
     title: 'Ready to launch your game wiki?',
     subtitle: 'Fork, configure, deploy — all in 30 minutes, completely free.',
@@ -255,7 +312,7 @@ const zh: LandingContent = {
   description:
     '开源游戏 wiki 模板 + AI 原生内容工作流:选对游戏、和 AI 对话就能产页、codes 页自动保鲜。Lighthouse 4×100、Cloudflare 免费部署、广告收入 100% 归你。',
   announcement: {
-    text: `v${PROJECT_VERSION} 发布 —— AI 原生内容技能、结构化 codes 数据、每周新鲜度审计与选品指南。`,
+    text: `v${PROJECT_VERSION} 发布 —— 官网新增「怎么用」5 步开发指南:fork → CLI → AI 产页 → 部署 → 保鲜。`,
     href: RELEASES,
   },
   hero: {
@@ -399,6 +456,55 @@ pnpm install && pnpm dev`,
       },
     ],
     readLabel: '阅读',
+  },
+  devGuide: {
+    title: '怎么用:5 步走',
+    subtitle: '从 fork 到上线约 30 分钟,每一步背后都有完整文档。',
+    steps: [
+      {
+        title: 'Fork 并本地跑起来',
+        description: '克隆你的 fork、启动开发服务器——demo wiki(虚构游戏「Anvil Quest」)开箱即用。',
+        command: 'pnpm install && pnpm dev',
+        linkLabel: 'README',
+        href: 'https://github.com/PNGTRID/AnvilWiki#readme',
+      },
+      {
+        title: '换成你的游戏',
+        description:
+          '一条交互式 CLI 替换游戏信息、主题色、多语言与导航,并重置 demo 配置(含 wrangler.toml)。',
+        command: 'pnpm apply-template',
+        linkLabel: '套用模板文档',
+        href: 'https://github.com/PNGTRID/AnvilWiki/blob/main/docs/apply-template.md',
+      },
+      {
+        title: '和 AI 对话产页',
+        description:
+          '用 ZCode / Claude Code / Codex 打开仓库直接说——agent 技能随仓库分发,Zod schema 把住每一页的质量关。',
+        command: '"帮我写一篇 Boss 攻略,要点如下:…"',
+        linkLabel: '内容格式文档',
+        href: 'https://github.com/PNGTRID/AnvilWiki/blob/main/docs/content-format.md',
+      },
+      {
+        title: '免费部署上线',
+        description:
+          '推到 GitHub、连接 Cloudflare Pages——自动识别 Astro 构建,免费无限带宽 + 全球 CDN。',
+        command: 'pnpm build && git push',
+        linkLabel: '部署文档',
+        href: 'https://github.com/PNGTRID/AnvilWiki/blob/main/docs/deployment.md',
+      },
+      {
+        title: '保持新鲜',
+        description:
+          '每周审计工作流自动标记过期页面,兑换码技能守住长尾流量,上游更新随时可同步。',
+        command: 'pnpm refresh-audit',
+        linkLabel: '同步更新文档',
+        href: 'https://github.com/PNGTRID/AnvilWiki/blob/main/docs/staying-up-to-date.md',
+      },
+    ],
+    allDocs: {
+      label: '全部文档 · 四条阅读路径(建站 / 写作 / AI Agent / 贡献者)',
+      href: 'https://github.com/PNGTRID/AnvilWiki/blob/main/docs/README.md',
+    },
   },
   finalCta: {
     title: '准备好上线你的游戏 wiki 了吗?',

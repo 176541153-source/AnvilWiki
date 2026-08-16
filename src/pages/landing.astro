@@ -9,8 +9,10 @@
  *   3. FeatureGrid (6 cards)
  *   4. CompareTable (vs Fandom / Starlight / DIY)
  *   5. Showcase (demo screenshots)
- *   6. DocsEntry (3 doc cards)
- *   7. FinalCta
+ *   6. DocsEntry (4 doc cards)
+ *   7. DevGuide (5-step how-to walkthrough)
+ *   8. Community
+ *   9. FinalCta
  */
 import LandingLayout from '~/components/landing/LandingLayout.astro';
 import LandingHero from '~/components/landing/LandingHero.astro';
@@ -19,6 +21,7 @@ import FeatureGrid from '~/components/landing/FeatureGrid.astro';
 import CompareTable from '~/components/landing/CompareTable.astro';
 import Showcase from '~/components/landing/Showcase.astro';
 import DocsEntry from '~/components/landing/DocsEntry.astro';
+import DevGuide from '~/components/landing/DevGuide.astro';
 import FinalCta from '~/components/landing/FinalCta.astro';
 import Community from '~/components/landing/Community.astro';
 import { landingContent } from '~/config/landing';
@@ -38,6 +41,7 @@ const alternates = [
   <CompareTable t={t} />
   <Showcase t={t} />
   <DocsEntry t={t} />
+  <DevGuide t={t} />
   <Community t={t} />
   <FinalCta t={t} />
 </LandingLayout>

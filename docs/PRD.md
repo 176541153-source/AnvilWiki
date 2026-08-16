@@ -1337,6 +1337,7 @@ describe('sitemap', () => {
 | v1.6 | 创作者维护工具 + 部署自动化（check-i18n / setup workflow / 内容层 CLI / 死链对账等） | 中 | ✅ 已实现（`pnpm check-i18n` 翻译覆盖率 + `pnpm check-links` dist 内链审计（均入 CI）/ Initialize workflow 一键初始化 / CF Web Analytics 门控 / staying-up-to-date 文档 / apply-template 内容骨架 / README 对比表+showcase 征集） |
 | v1.7 | 内容表达力二期 + E-E-A-T（画廊/作者体系/联盟链接/内容 lint） | 中 | ✅ 已实现（`gallery` frontmatter + 原生 dialog lightbox + ImageObject JSON-LD / `authors.ts` 注册表 + Person JSON-LD / `<AffiliateLink>` sponsored nofollow 组件 / `pnpm check-content` 内容 lint；og:image 自动生成与 PWA 留待 v1.8 按用户反馈排期） |
 | v1.8 | AI 原生内容生产 + 新鲜度管道（第一性原理路线②③①④） | 高 | ✅ 已实现（`.agent/skills/` 3 技能 + AGENTS.md 对话式产页章节 / `codes` frontmatter + CodesTable 自动分区 + FAQPage JSON-LD / `pnpm refresh-audit` 确定性审计 + content-pipeline.yml 每周定时开 issue（绝不自动改内容）/ docs/game-selection.md 选品漏斗 + 首日 10 页） |
+| v1.10 | 官网开发指南板块（landing「怎么用」5 步上手向导） | 低 | ✅ 已实现（`DevGuide.astro` 时间线：fork → apply-template CLI → AI 对话产页 → 免费部署 → 保持新鲜，每步附命令 + 文档链接，底部通向 docs/README.md 四条阅读路径；文案在 `landing.ts` `devGuide`，随 CLI 整目录删除，fork 零残留） |
 
 **v1.3 范围说明**：
 - `timeline`：✅ 实现 —— 版本日志/活动时序，零副作用，商业价值正（老玩家点进 patch notes 文章页）。

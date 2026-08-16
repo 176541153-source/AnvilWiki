@@ -592,7 +592,7 @@ rendered from the frontmatter title), and start each section with a direct
  * itself, not their game wiki. The CLI removes them automatically.
  */
 const LANDING_PATHS = [
-  'src/components/landing', // directory (8 components)
+  'src/components/landing', // directory (10 components)
   'src/config/landing.ts',
   'src/pages/landing.astro',
   'src/pages/zh/landing.astro',

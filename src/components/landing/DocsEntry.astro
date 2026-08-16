@@ -1,6 +1,6 @@
 ---
 /**
- * DocsEntry — 3 documentation entry cards.
+ * DocsEntry — 4 documentation entry cards.
  * Links to the GitHub docs (no in-site docs subdomain for MVP).
  */
 import { Icon } from 'astro-icon/components';
@@ -17,7 +17,7 @@ const { t } = Astro.props;
     <h2 class="text-center text-3xl font-extrabold tracking-tight text-foreground">
       {t.docsEntry.title}
     </h2>
-    <div class="mt-8 grid gap-4 sm:grid-cols-3">
+    <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {t.docsEntry.cards.map((card) => (
         <a
           href={card.href}

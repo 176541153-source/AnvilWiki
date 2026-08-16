@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.10.0] — 2026-08-16
+
+**官网开发指南版：landing 新增「怎么用」5 步上手板块——此前只有 4 张文档卡，缺一条"从头到尾怎么走"的向导。**
+
+### Added
+- **Landing「怎么用」5 步开发指南板块**（`/landing` + `/zh/landing`，位于 DocsEntry 与 Community 之间）：fork 本地跑 → `pnpm apply-template` → 与 AI 对话产页 → 免费部署 → 保持新鲜。每步附可直接照抄的命令（含对话式产页示例 prompt）与对应文档链接，板块底部链接文档中心（`docs/README.md` 四条阅读路径：建站 / 写作 / AI Agent / 贡献者）。新组件 `DevGuide.astro` + `LandingContent.devGuide` 类型与中英文案。
+- DocsEntry 卡片网格修正：`sm:grid-cols-3` → `sm:grid-cols-2 lg:grid-cols-4`（4 张卡在 3 列网格会 3+1 孤行换行），陈旧注释（"3 cards"）同步修正。
+
+### Changed
+- `apply-template` CLI 删除范围确认覆盖新板块：CLI 本就整目录删除 `src/components/landing/`（现为 10 组件）+ `src/config/landing.ts`（含 devGuide 文案）+ 两个 landing 页面；注释计数同步（8 → 10）。dry-run 实测「Removed 15 project landing page files」，fork 用户套用模板后仓库零 landing 残留。
+
 ## [1.9.0] — 2026-08-16
 
 **专家团全面审计修复版：5 视角深挖（运行时/配置 CI/SEO i18n/安全 a11y/文档 DX），P0×5 + P1×10 + P2×30 全部清零。**
@@ -292,7 +303,8 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
-[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v1.9.0...HEAD
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v1.10.0...HEAD
+[1.10.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.9.0...v1.10.0
 [1.9.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.8.2...v1.9.0
 [1.8.2]: https://github.com/PNGTRID/AnvilWiki/compare/v1.8.1...v1.8.2
 [1.8.1]: https://github.com/PNGTRID/AnvilWiki/compare/v1.8.0...v1.8.1
