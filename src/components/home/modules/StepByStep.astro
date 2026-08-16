@@ -13,7 +13,7 @@ const { highlights } = Astro.props;
   {
     highlights.map((h) => (
       <li class="flex items-start gap-3 rounded-md border bg-card p-3">
-        <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-nav text-xs font-bold text-white">
+        <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-nav text-xs font-bold text-background">
           {h.label}
         </span>
         <p class="pt-0.5 text-sm text-muted-foreground">{h.detail}</p>

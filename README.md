@@ -67,9 +67,9 @@ AnvilWiki 是一个**游戏 SEO 内容站模板**——用来快速搭建围绕�
 ```bash
 # 1. Fork 本仓库到你的 GitHub
 
-# 2. 本地克隆 & 安装
-git clone https://github.com/PNGTRID/AnvilWiki.git
-cd anvilwiki
+# 2. 本地克隆 & 安装（换成你的 GitHub 用户名）
+git clone https://github.com/<你的用户名>/AnvilWiki.git
+cd AnvilWiki
 pnpm install
 
 # 3. 启动开发服务器
@@ -183,9 +183,9 @@ Built on **Astro + Cloudflare Pages**: pure static output, zero adapters, free u
 ```bash
 # 1. Fork this repo to your GitHub
 
-# 2. Clone & install locally
-git clone https://github.com/PNGTRID/AnvilWiki.git
-cd anvilwiki
+# 2. Clone & install locally (replace with YOUR GitHub username)
+git clone https://github.com/<your-username>/AnvilWiki.git
+cd AnvilWiki
 pnpm install
 
 # 3. Start dev server
@@ -221,7 +221,7 @@ AnvilWiki is open-sourced by **袁锐钦 (Yuan Ruiqin)**, lead of the **PNGTRIBE
 
 > **Status**: ✅ Live demo at **[anvilwiki.pages.dev](https://anvilwiki.pages.dev/)** — Lighthouse 4×100, CI green, fully deployed.
 >
-> **Features shipped**: Pagefind offline search · Astro Image (WebP/srcset) · Apply-template CLI · Full i18n (en/ja) · SEO (hreflang, JSON-LD incl. VideoGame/VideoObject/ImageObject, sitemap, article TOC, Quick Answer) · Tag aggregation pages (`/tags`) · `/recent` updates page · gameVersion badges · Draft workflow · Callout/Accordion/AffiliateLink MDX components · Image gallery + lightbox · Author system (Person JSON-LD) · Google AdSense ads · Sponsor card (opt-in) · Security headers · Giscus comments (opt-in) · Contact page
+> **Features shipped**: Pagefind offline search · Astro Image (WebP/srcset) · Apply-template CLI · Full i18n (en/ja) · SEO (hreflang, JSON-LD incl. VideoGame/VideoObject/ImageObject, sitemap, article TOC, Quick Answer) · Tag aggregation pages (`/tags`) · `/recent` updates page · gameVersion badges · Draft workflow · Callout/Accordion/AffiliateLink/Video MDX components · Image gallery + lightbox · Author system (Person JSON-LD) · Google AdSense ads · Sponsor card (opt-in) · Security headers · Giscus comments (opt-in) · Contact page
 >
 > 状态：✅ **[anvilwiki.pages.dev](https://anvilwiki.pages.dev/)** 已上线 — Lighthouse 全 100，CI 全绿。
 >

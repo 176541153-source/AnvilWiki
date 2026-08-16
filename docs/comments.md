@@ -2,7 +2,7 @@
 
 AnvilWiki 内置可选的评论系统，基于 [Giscus](https://giscus.app) —— 评论通过 GitHub 登录后存到你的仓库的 **GitHub Discussions** 里。零服务器、零数据库，构建时静态，评论运行时按需加载。
 
-**默认关闭。** 不配置时文章页不显示评论区，模板保持 Lighthouse 4×100。填好 5 个环境变量后自动启用。
+**默认关闭。** 不配置时文章页不显示评论区，模板保持 Lighthouse 4×100。填好 4 个必填环境变量（`PUBLIC_GISCUS_REPO` / `REPO_ID` / `CATEGORY` / `CATEGORY_ID`，`MAPPING` 有默认值）后自动启用。
 
 ---
 

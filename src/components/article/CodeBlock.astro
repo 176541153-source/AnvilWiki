@@ -12,6 +12,9 @@
  *
  * Pure vanilla JS (clipboard API), supports multiple instances per page.
  */
+import { getUi } from '~/i18n/ui';
+import { isLocale } from '~/i18n/routing';
+
 interface Props {
   /** The code itself — the whole string is the copy target. */
   code: string;
@@ -19,8 +22,22 @@ interface Props {
   label?: string;
   /** Copied feedback text; locale-aware when passed from a translated page. */
   copiedText?: string;
+  /** Persistent hint next to the code; locale-aware from the page. */
+  hint?: string;
 }
-const { code, label, copiedText = 'Copied!' } = Astro.props;
+// Locale defaults come from Astro.currentLocale so MDX-authored instances
+// (which can't receive page props) still localize on translated pages.
+const current = Astro.currentLocale;
+const pageShared =
+  current && isLocale(current)
+    ? ((getUi(current).shared ?? {}) as unknown as Record<string, string>)
+    : {};
+const {
+  code,
+  label,
+  copiedText = pageShared.copied ?? 'Copied!',
+  hint = pageShared.tapToCopy ?? 'Tap to copy',
+} = Astro.props;
 ---
 
 <div
@@ -44,8 +61,9 @@ const { code, label, copiedText = 'Copied!' } = Astro.props;
   <span
     class="shrink-0 text-xs font-medium text-muted-foreground transition"
     data-codeblock-hint
+    data-hint-original={hint}
   >
-    Tap to copy
+    {hint}
   </span>
 </div>
 
@@ -59,7 +77,7 @@ const { code, label, copiedText = 'Copied!' } = Astro.props;
         try {
           await navigator.clipboard.writeText(code);
           if (hint) {
-            const original = hint.textContent;
+            const original = hint.getAttribute('data-hint-original') ?? hint.textContent;
             hint.textContent = copied;
             hint.classList.add('text-nav');
             setTimeout(() => {

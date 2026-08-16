@@ -74,12 +74,25 @@ const year = new Date().getFullYear();
           serve relevant ads. You can opt out of personalized advertising via your browser settings.
         </li>
         <li>
-          <strong>Analytics</strong> (e.g. Google Analytics) — may collect anonymized usage data
-          such as page views and approximate location.
+          <strong>Analytics</strong> (e.g. Google Analytics, Cloudflare Web Analytics) — GA may
+          collect anonymized usage data such as page views and approximate location (cookie-based,
+          loaded only after you accept the consent banner); Cloudflare Web Analytics is cookieless
+          and collects aggregate page-view data.
         </li>
         <li>
           <strong>Cloudflare</strong> — our hosting provider, which may process basic request data
-          for security and performance.
+          for security and performance (and serve Web Analytics when enabled, see above).
+        </li>
+        <li>
+          <strong>Comments</strong> (giscus, opt-in) — when the comment section is enabled,
+          giscus.app loads an embedded GitHub view; viewing it exposes your IP address and browser
+          info to that service, and signing in to comment is handled by GitHub under its own
+          privacy policy.
+        </li>
+        <li>
+          <strong>Embedded videos</strong> (YouTube) — pages with videos load thumbnail images
+          from i.ytimg.com and, after you press play, the YouTube player from youtube-nocookie.com.
+          Until you interact, no YouTube cookies are set.
         </li>
       </ul>
       <h2>Cookies</h2>
@@ -173,7 +186,8 @@ const year = new Date().getFullYear();
 {
   page === 'contact' && (
     <>
-      <h1>Contact {site.name}</h1>
+      {/* h2, not h1 — LegalPage already renders the page H1 (single-H1 rule). */}
+      <h2>Contact {site.name}</h2>
       <p>
         {site.name} is a community-run wiki. The fastest way to reach us or contribute is through
         our community channels below.

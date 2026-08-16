@@ -7,6 +7,57 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.9.0] — 2026-08-16
+
+**专家团全面审计修复版：5 视角深挖（运行时/配置 CI/SEO i18n/安全 a11y/文档 DX），P0×5 + P1×10 + P2×30 全部清零。**
+
+### Fixed (P0)
+- **5 个日文 legal 页 soft-404**：`[locale]/[legal].astro` 误从 `Astro.props` 读路由参数（AGENTS.md gotcha #4 原样违例），全部页面渲染成 HTTP 200 的 "Not Found" 空壳并被 sitemap/hreflang/footer 收录——改读 `Astro.params`。`check-links` 新增 soft-404 断言防止复发（状态码检查看不见这类问题）。
+- **JSON-LD 注入面关闭**：`JsonLd.astro` 的 `JSON.stringify` 不转义 `<`，frontmatter 含 `</script>` 即可逃逸 script 标签（社区 PR 工作流下的存储型 XSS 面）——序列化后统一 `\u003c` 转义。
+- **`pnpm apply-template` 产物缺 `ogImageWidth/ogImageHeight`**：fork 用户 typecheck 必挂 + 线上 `content="undefined"`——重写模板补齐两个必填字段。
+- **README 快速开始克隆 URL 指向上游仓库**（中英两处）：fork 用户按字面走完 push 必被拒——改为占位符 `<你的用户名>`。
+- **环境变量三表矛盾**：实际消费 15 个 env，`wrangler.toml [vars]` 只有 9 个（AdSense×4/GA/GSC 连注释占位都没有）、`setup.yml` 重置块同样、deployment.md 只列 8 个——三处对齐；保留 wrangler.toml 的 fork 现在有处可填广告变量（此前按文档去 dashboard 配置会被静默忽略）。
+
+### Fixed (fork 扩展性 / 跨平台)
+- 语言切换器硬编码 `/^\/(ja)(\/|$)/` 剥前缀——新增语言后切换器全部产出 404/假链接，改为从 `locales` 动态构建（与 BaseLayout 同模式）。
+- 文章页 hreflang 用全量 `locales`——ja-only 文章会产出指向 404 的 `hreflang="en"`/x-default；改用 `localesForEntry()`（原为死导出）∪ 当前 locale，x-default 由 BaseLayout 从 alternates 推导（不存在死链）。语言切换器同步受 `availableLocales` 约束。
+- `check-links.ts` 在 Windows 上全站内链误报（`path.relative` 反斜杠未归一化）；`check-content.ts` 对 CRLF 检出不健壮（frontmatter 定界符精确匹配）——归一化 + 新增根级 `.gitattributes`（`* text=auto eol=lf`）根治。
+- sitemap lastmod 对非 ASCII slug 因 percent-encoding 静默失配——`decodeURIComponent` 归一化。
+- `check-i18n` 以 `locales[0]` 充当默认语言——改为 regex 读取真实的 `defaultLocale`。
+
+### Fixed (SEO / 结构化数据)
+- sitemap 不过滤 `noindex` 文章（rss/llms.txt 都过滤了）——`filter` 选项补上。
+- `rss.xml.ts` 硬编码回退域名违反约束 #9——改用 `siteUrl`。
+- 空列表页输出 `itemListElement: []` 的非法 ItemList——仅在有条目时注入。
+- og:image:width/height 恒 1200×630 与真实封面（800×450）不符——文章页传真实尺寸，未知时省略（错误的尺寸比没有更糟）。
+- 回退页 `<html lang="ja">` 包英文正文——`contentLocale`（servedLocale）修正 lang/og:locale；og:locale 格式改为 `en_US`/`ja_JP`（OG 规范）。
+- 新增 `og:locale:alternate`、`article:published_time`/`modified_time`。
+- `codes[].source` 定义于 schema 却从不渲染——Active label 与 Expired 表格补 Source 列（E-E-A-T 信号不再被静默丢弃）。
+- 面包屑 Home 硬编码 `href="/"`（5 个组件）→ `homeUrl(locale)`；BreadcrumbList JSON-LD 的 `name: 'Home'` → 本地化 `nav.home`。
+- 日期展示固定 `timeZone: 'UTC'`（schema 的 `z.coerce.date()` 把日期解析为 UTC 零点，负偏移时区本地构建会"早一天"）。
+- gallery 图片 JSON-LD 用 `caption` 当 name——优先作者写的 `alt`。
+- landing 自动跳转对爬虫渲染器关闸（bot UA guard），保留中文浏览器自动跳转的 UX。
+
+### Fixed (a11y / 前端)
+- **skip-to-content 链接**（WCAG 2.4.1 A 级此前失败）——`#main` + sr-only 焦点样式，文案走 locale JSON。
+- **亮色模式品牌色文本对比度 3.1:1 → 4.8:1**：新增派生变量 `--brand-text`（从 `--brand-h/--brand-s` 计算，fork 只改 `--brand` 两个主变量仍然生效），`nav.DEFAULT`/TOC 激活态/搜索高亮全部切到文本安全色；StepByStep 步骤徽章白字改 `text-background`（暗色模式同步达标）。
+- 硬编码英文 UI 文案全部 i18n 化（en/ja 双语 key）：CodeBlock "Tap to copy"、ExploreModules "View all"、QuickStart "Open"、LazyYouTube 播放标签（顺带去掉 `▶` emoji 字形，与 lucide 图标一致）、StickyBanner/ThemeToggle/TableOfContents aria-label、footer "Community/Legal"、回退页 "English fallback" 徽章、快速答案复制/有用反馈按钮的 aria/title、面包屑与上下篇导航 aria；补上被引用却不存在的 `nav.language` key。
+- LazyYouTube 降级链接的 Enter 被 keydown `preventDefault` 吞掉（键盘用户在缩略图挂掉时无法打开 YouTube）——放行 fallback 链接自身。
+- StickyBanner localStorage 未包 try/catch（存储被禁的访客抛未捕获异常，与其他脚本模式不一致）。
+- theme-color meta 值 `hsl(var(--brand))` 永不解析——改为运行时从计算样式注入 + 主题切换时跟随（MutationObserver）。
+- `/contact` 双 H1 → h2。
+- CJK 阅读时长判定从 `locale === 'ja'` 放宽为 `['ja','zh','ko']`。
+
+### Changed (CI / 工程化)
+- CI 补跑自家门禁 `check-config` + `check-content`；加 `permissions: contents: read` 与 `timeout-minutes`；`setup.yml` 幂等化（`checkout -B` + `--force-with-lease` + 空 commit/已存在 PR 跳过）；`content-pipeline.yml` 去掉重复 audit 执行、失败不再吞掉建空 issue。
+- **测试 34 → 51**：`parseEntryId`/`isPossiblyOutdated`/`STALE_*` 下沉到 `lib/content-utils.ts`（原在 `astro:content` 依赖模块内，vitest 无法加载）；补 `slugifyTag` CJK/纯符号分支、`absoluteUrl`、`languageAlternates`（含"never emits x-default"契约）测试。
+- 移除零引用的 playwright devDependency。
+- 隐私声明补 giscus / YouTube / Cloudflare Web Analytics 条目；cookie 同意横幅链接到隐私政策（ePrivacy 知情同意最佳实践）。
+- vitest 路径别名改用 `fileURLToPath`（中文路径下 `.pathname` 会 percent-encode 导致 `~/lib/*` 解析失败——真实项目 dogfooding 发现）。
+
+### Docs
+- PRD Node 20 → 22（两处）；AGENTS.md 版本状态行、组件词汇表补 StatBar、命令表提 pagefind postbuild；deployment.md 期望页数改为不写死数字、curl 示例去尾斜杠、新增 CSP 配置 FAQ；CHANGELOG 补 1.8.1/1.8.2 compare 链接；apply-template.md navigation 示例补必填字段 `isContentType`、home 模块数 4→6；Giscus 口径统一"4 必填 + 1 可选"；anvil-update-codes 技能措辞对齐 frontmatter 时代；seo.md "v1.5–v1.8 资产"章节移到"下一步"之前；3 处注释从 legacy 路径 `src/content/<locale>/` 更正为 `src/content/wiki/<locale>/`。
+
 ## [1.8.2] — 2026-08-15
 
 ### Fixed
@@ -241,7 +292,10 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
-[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v1.8.0...HEAD
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v1.9.0...HEAD
+[1.9.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.8.2...v1.9.0
+[1.8.2]: https://github.com/PNGTRID/AnvilWiki/compare/v1.8.1...v1.8.2
+[1.8.1]: https://github.com/PNGTRID/AnvilWiki/compare/v1.8.0...v1.8.1
 [1.8.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.7.0...v1.8.0
 [1.7.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.6.0...v1.7.0
 [1.6.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.5.0...v1.6.0

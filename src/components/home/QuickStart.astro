@@ -13,6 +13,7 @@
 import { Icon } from 'astro-icon/components';
 import { type Locale } from '~/i18n/routing';
 import { localizePath } from '~/lib/url';
+import { getUi } from '~/i18n/ui';
 
 interface StartCard {
   number: string;
@@ -29,6 +30,8 @@ interface Props {
   cards?: StartCard[];
 }
 const { locale, badge = 'Start Here', title = 'Quick Start', cards = [] } = Astro.props;
+const sharedStrings = getUi(locale).shared as unknown as Record<string, any>;
+const open = sharedStrings.open ?? 'Open';
 ---
 {cards.length > 0 && (
   <section class="section border-t border-border">
@@ -51,7 +54,7 @@ const { locale, badge = 'Start Here', title = 'Quick Start', cards = [] } = Astr
           <h3 class="mt-4 font-semibold leading-snug">{card.title}</h3>
           <p class="mt-1 line-clamp-2 text-sm text-muted-foreground">{card.description}</p>
           <span class="mt-3 inline-flex items-center gap-1 text-xs font-medium text-foreground hover:text-nav">
-            <span class="border-b border-transparent transition group-hover:border-nav">Open</span>
+            <span class="border-b border-transparent transition group-hover:border-nav">{open}</span>
             <Icon
               name="lucide:arrow-right"
               class="h-3 w-3 transition group-hover:translate-x-0.5"

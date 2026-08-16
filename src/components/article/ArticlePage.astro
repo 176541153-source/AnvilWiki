@@ -32,7 +32,7 @@ import { getRelatedEntries, getEntriesByCategory, isPossiblyOutdated, parseEntry
 import LazyYouTube from '~/components/video/LazyYouTube.astro';
 import SponsorCard from '~/components/article/SponsorCard.astro';
 import { articleJsonLd, breadcrumbJsonLd, pageTitle, videoObjectJsonLd, imageObjectJsonLd, faqPageJsonLd } from '~/lib/seo';
-import { listPath, detailPath, tagPath } from '~/lib/url';
+import { listPath, detailPath, tagPath, homeUrl } from '~/lib/url';
 import { site } from '~/config/site';
 import { getAuthor } from '~/config/authors';
 
@@ -41,8 +41,14 @@ interface Props {
   resolved: ResolvedEntry;
   /** hreflang alternates (built by the route page). */
   alternates?: Array<{ hreflang: string; href: string }>;
+  /**
+   * Locales this article's URL exists in (real version or fallback page).
+   * Constrains the language switcher so it never links to a 404
+   * (e.g. a ja-only article must not offer an English link).
+   */
+  availableLocales?: readonly Locale[];
 }
-const { locale, resolved, alternates = [] } = Astro.props;
+const { locale, resolved, alternates = [], availableLocales } = Astro.props;
 const { entry, servedLocale, isFallback } = resolved;
 const ui = getUi(locale);
 const nav = ui.nav as Record<string, string>;
@@ -76,11 +82,11 @@ const outdated = isPossiblyOutdated(category, entry.data.lastModified, entry.dat
 
 // Reading time estimate: ~200 wpm for space-separated languages,
 // ~400 chars/min for CJK (no spaces). Author-facing, purely informational.
+const CJK_LOCALES: readonly string[] = ['ja', 'zh', 'ko'];
 const bodyText = entry.body ?? '';
-const readMinutes =
-  locale === 'ja'
-    ? Math.max(1, Math.ceil(bodyText.replace(/\s+/g, '').length / 400))
-    : Math.max(1, Math.ceil(bodyText.trim().split(/\s+/).filter(Boolean).length / 200));
+const readMinutes = CJK_LOCALES.includes(servedLocale)
+  ? Math.max(1, Math.ceil(bodyText.replace(/\s+/g, '').length / 400))
+  : Math.max(1, Math.ceil(bodyText.trim().split(/\s+/).filter(Boolean).length / 200));
 
 // Prev/next within the same category (newest-first list → newer = idx-1).
 const categoryEntries = await getEntriesByCategory(category, locale);
@@ -108,14 +114,15 @@ const jsonLd = [
     title: entry.data.title,
     slug,
     locale,
+    homeLabel: nav.home,
   }),
   // One VideoObject per embedded video — Google Video search eligibility.
   ...(entry.data.videos ?? []).map((videoId: string) =>
     videoObjectJsonLd({ videoId, title: entry.data.title, uploadDate: entry.data.date }),
   ),
   // One ImageObject per gallery image — Google Images eligibility.
-  ...entry.data.gallery.map((g: { image: { src: string }; caption?: string }) =>
-    imageObjectJsonLd({ url: `${siteUrl}${g.image.src}`, caption: g.caption }),
+  ...entry.data.gallery.map((g: { image: { src: string }; caption?: string; alt?: string }) =>
+    imageObjectJsonLd({ url: `${siteUrl}${g.image.src}`, caption: g.caption, alt: g.alt }),
   ),
   // Structured codes page → standard 4-question FAQ schema (localized).
   ...(entry.data.codes && entry.data.codes.length > 0
@@ -130,9 +137,15 @@ const jsonLd = [
   description={entry.data.description}
   image={coverUrl}
   alternates={alternates}
+  availableLocales={availableLocales}
   article={true}
   jsonLd={jsonLd}
   noindex={entry.data.noindex}
+  ogImageWidth={entry.data.image?.width}
+  ogImageHeight={entry.data.image?.height}
+  articlePublished={entry.data.date}
+  articleModified={entry.data.lastModified}
+  contentLocale={servedLocale}
 >
   {/* Reading progress bar (top edge) */}
   <div class="pointer-events-none fixed inset-x-0 top-0 z-50 h-0.5" aria-hidden="true">
@@ -142,8 +155,8 @@ const jsonLd = [
   <div class="flex gap-8">
     <article class="mx-auto min-w-0 max-w-3xl flex-1">
     {/* Breadcrumb */}
-    <nav class="text-sm text-muted-foreground" aria-label="breadcrumb">
-      <a href="/" class="hover:text-nav">{nav.home}</a>
+    <nav class="text-sm text-muted-foreground" aria-label={shared.breadcrumbAria ?? 'Breadcrumb'}>
+      <a href={homeUrl(locale)} class="hover:text-nav">{nav.home}</a>
       <span class="mx-1">/</span>
       <a href={listPath(category, locale)} class="hover:text-nav">{categoryLabel}</a>
     </nav>
@@ -159,7 +172,7 @@ const jsonLd = [
       <div class="mt-4 flex items-center gap-4 text-xs text-muted-foreground">
         <span class="inline-flex items-center gap-1">
           <Icon name="lucide:calendar" class="h-3.5 w-3.5" />
-          {entry.data.date.toLocaleDateString(locale)}
+          {entry.data.date.toLocaleDateString(locale, { timeZone: 'UTC' })}
         </span>
         {entry.data.gameVersion && (
           <span
@@ -189,7 +202,7 @@ const jsonLd = [
           entry.data.lastModified && (
             <span class="inline-flex items-center gap-1">
               <Icon name="lucide:refresh-cw" class="h-3.5 w-3.5" />
-              {shared.lastUpdated}: {entry.data.lastModified.toLocaleDateString(locale)}
+              {shared.lastUpdated}: {entry.data.lastModified.toLocaleDateString(locale, { timeZone: 'UTC' })}
             </span>
           )
         }
@@ -197,7 +210,7 @@ const jsonLd = [
           isFallback && servedLocale !== locale && (
             <span class="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5">
               <Icon name="lucide:alert-circle" class="h-3 w-3" />
-              English fallback
+              {shared.fallbackNotice ?? 'English fallback'}
             </span>
           )
         }
@@ -229,9 +242,10 @@ const jsonLd = [
               <button
                 type="button"
                 data-copy-summary
+                data-copied-title={shared.copied ?? 'Copied!'}
                 class="text-nav transition hover:opacity-70"
-                aria-label="Copy quick answer"
-                title="Copy quick answer"
+                aria-label={shared.copyQuickAnswer ?? 'Copy quick answer'}
+                title={shared.copyQuickAnswer ?? 'Copy quick answer'}
               >
                 <Icon name="lucide:copy" class="h-3 w-3" />
               </button>
@@ -247,7 +261,7 @@ const jsonLd = [
       <aside class="mt-4 flex items-start gap-2 rounded-lg border border-amber-500/40 bg-amber-500/10 p-3 text-sm text-foreground" role="note">
         <Icon name="lucide:alert-triangle" class="mt-0.5 h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
         <p>
-          {shared.possiblyOutdated} {(entry.data.lastModified ?? entry.data.date).toLocaleDateString(locale)}
+          {shared.possiblyOutdated} {(entry.data.lastModified ?? entry.data.date).toLocaleDateString(locale, { timeZone: 'UTC' })}
           {shared.outdatedNote}
         </p>
       </aside>
@@ -343,7 +357,7 @@ const jsonLd = [
     }
     {/* Prev / Next within the same category */}
     {(olderEntry || newerEntry) && (
-      <nav class="mt-10 grid gap-3 sm:grid-cols-2" aria-label="Article pagination">
+      <nav class="mt-10 grid gap-3 sm:grid-cols-2" aria-label={shared.paginationAria ?? 'Article pagination'}>
         {olderEntry && (
           <a href={detailPath(category, parseEntryId(olderEntry.id)?.slug ?? '', locale)} class="card p-4">
             <p class="flex items-center gap-1 text-xs text-muted-foreground">
@@ -372,10 +386,10 @@ const jsonLd = [
     <div class="mt-10 flex flex-col items-center gap-2 border-t border-border pt-6 text-center" data-helpful-root>
       <p class="text-sm text-muted-foreground">{shared.wasThisHelpful}</p>
       <div class="flex gap-2" data-helpful-buttons>
-        <button type="button" data-helpful-yes class="btn-outline inline-flex items-center gap-1.5 px-3 py-1.5 text-xs" aria-label="Yes">
+        <button type="button" data-helpful-yes class="btn-outline inline-flex items-center gap-1.5 px-3 py-1.5 text-xs" aria-label={shared.feedbackYes ?? 'Yes'}>
           <Icon name="lucide:thumbs-up" class="h-3.5 w-3.5" />
         </button>
-        <button type="button" data-helpful-no class="btn-outline inline-flex items-center gap-1.5 px-3 py-1.5 text-xs" aria-label="No">
+        <button type="button" data-helpful-no class="btn-outline inline-flex items-center gap-1.5 px-3 py-1.5 text-xs" aria-label={shared.feedbackNo ?? 'No'}>
           <Icon name="lucide:thumbs-down" class="h-3.5 w-3.5" />
         </button>
       </div>
@@ -425,7 +439,7 @@ const jsonLd = [
     btn.addEventListener('click', async () => {
       try {
         await navigator.clipboard.writeText(text.textContent ?? '');
-        btn.setAttribute('title', 'Copied!');
+        btn.setAttribute('title', btn.getAttribute('data-copied-title') ?? 'Copied!');
         setTimeout(() => btn.removeAttribute('title'), 1500);
       } catch {
         /* clipboard unavailable */

@@ -122,7 +122,7 @@ const placeholder = search.placeholder ?? 'Search...';
 
   /* Root container */
   :global(#search-modal-inner .pagefind-ui) {
-    --pagefind-ui-primary: hsl(var(--brand));
+    --pagefind-ui-primary: hsl(var(--brand-text));
     --pagefind-ui-text: hsl(var(--foreground));
     --pagefind-ui-background: hsl(var(--card));
     --pagefind-ui-border: hsl(var(--border));
@@ -315,7 +315,7 @@ const placeholder = search.placeholder ?? 'Search...';
     transition: color 0.12s !important;
   }
   :global(#search-modal .pagefind-ui__result:hover .pagefind-ui__result-link) {
-    color: hsl(var(--brand)) !important;
+    color: hsl(var(--brand-text)) !important;
   }
 
   /* Excerpt */
@@ -331,7 +331,7 @@ const placeholder = search.placeholder ?? 'Search...';
   /* Highlight mark */
   :global(#search-modal mark) {
     background: hsl(var(--brand) / 0.14) !important;
-    color: hsl(var(--brand)) !important;
+    color: hsl(var(--brand-text)) !important;
     border-radius: 3px !important;
     padding: 1px 3px !important;
     font-weight: 600 !important;
@@ -356,7 +356,7 @@ const placeholder = search.placeholder ?? 'Search...';
     color: hsl(var(--muted-foreground)) !important;
   }
   :global(#search-modal .pagefind-ui__result-tag) {
-    color: hsl(var(--brand)) !important;
+    color: hsl(var(--brand-text)) !important;
     font-weight: 500 !important;
   }
 

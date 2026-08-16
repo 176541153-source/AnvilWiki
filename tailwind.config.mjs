@@ -18,7 +18,8 @@ export default {
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         nav: {
-          DEFAULT: 'hsl(var(--brand))',
+          // DEFAULT is the text-safe shade (WCAG AA); nav-light stays decorative.
+          DEFAULT: 'hsl(var(--brand-text))',
           light: 'hsl(var(--brand-light))',
         },
         primary: {

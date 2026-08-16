@@ -1163,7 +1163,7 @@ Cloudflare Pages（连接 GitHub 仓库）
 **构建命令**：`pnpm build`
 **输出目录**：`dist`
 **环境变量**：见 [附录 A](#附录-a-环境变量清单)。
-**Node 版本**：`NODE_VERSION = 20`（Cloudflare Pages 默认支持）。
+**Node 版本**：`NODE_VERSION = 22`（pnpm 11 要求 ≥22.13）。
 
 **`wrangler.toml`（可选，用于本地预览）**：
 ```toml
@@ -1507,7 +1507,7 @@ PUBLIC_GA_ID=
 ```
 □ Cloudflare Pages 项目已创建，连 GitHub 仓库
 □ 构建命令 pnpm build，输出目录 dist
-□ NODE_VERSION = 20 已配
+□ NODE_VERSION = 22 已配
 □ 环境变量已填（至少 SITE_URL）
 □ 自定义域名已绑定，SSL 已生效
 □ 部署成功，访问域名看到正确内容

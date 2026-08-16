@@ -6,7 +6,7 @@
  * The `key` MUST be identical in THREE places (rule enforced across the codebase):
  *   1. Here — NAVIGATION_CONFIG[].key
  *   2. src/locales/en.json — nav.<key> (display label) + overview.<key> (list page meta)
- *   3. src/content/<locale>/<key>/ — MDX directory name
+ *   3. src/content/wiki/<locale>/<key>/ — MDX directory name
  *
  * Changing this one file automatically affects: nav menu, URL routes, sitemap,
  * content loading, and the sidebar.
@@ -16,7 +16,7 @@
 // We avoid importing the icon component here so this file stays framework-agnostic
 // and can be read by non-Astro tooling (scripts, tests).
 export interface NavigationItem {
-  /** Category slug. Must match `src/content/<locale>/<key>/` directory name. */
+  /** Category slug. Must match `src/content/wiki/<locale>/<key>/` directory name. */
   key: string;
   /** URL path segment. Must be `/${key}`. */
   path: string;

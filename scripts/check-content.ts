@@ -43,7 +43,10 @@ const warn = (file: string, line: number, msg: string) => {
 console.log(`\n📝 Content lint — ${files.length} MDX files\n`);
 
 for (const file of files) {
-  const src = fs.readFileSync(file, 'utf8');
+  // Normalize CRLF → LF: on Windows with core.autocrlf the checked-out MDX
+  // has \r\n line endings, and an exact `---` match would fail, making the
+  // frontmatter look like body text (phantom H1s, shifted line numbers).
+  const src = fs.readFileSync(file, 'utf8').replace(/\r\n/g, '\n');
   // Strip frontmatter (between the first two `---` lines).
   const lines = src.split('\n');
   const secondFm = lines.indexOf('---', 1);

@@ -12,7 +12,7 @@ import ListPage from '~/components/article/ListPage.astro';
 import ArticlePage from '~/components/article/ArticlePage.astro';
 import { CONTENT_TYPES } from '~/config/navigation';
 import { defaultLocale, locales, type Locale } from '~/i18n/routing';
-import { getEntryWithFallback, parseEntryId, type ResolvedEntry } from '~/lib/content';
+import { getEntryWithFallback, localesForEntry, parseEntryId, type ResolvedEntry } from '~/lib/content';
 import { detailPath, languageAlternates, listPath } from '~/lib/url';
 
 export async function getStaticPaths() {
@@ -69,15 +69,21 @@ if (view === 'not-found') {
 }
 
 // Build hreflang alternates for this page.
-// List page: /<category> for default locale, /<locale>/<category> otherwise.
-// Article page: /<category>/<slug> (default) or /<locale>/<category>/<slug>.
+// List page: /<category> for default locale, /<locale>/<category> otherwise —
+// list pages are built for every locale, so all locales are valid alternates.
+// Article page: locales whose URL is actually built (localesForEntry, plus the
+// current locale — fallback pages like /ja/<en-article> exist as real URLs)
+// — e.g. a ja-only article must not emit hreflang="en" pointing at a 404.
+const entryLocales = view === 'article' ? await localesForEntry(category, articleSlug) : [];
+const altLocales =
+  view === 'list' ? locales : Array.from(new Set([locale, ...entryLocales]));
 const alternates =
   view === 'list'
     ? languageAlternates((loc) => listPath(category, loc), locales)
-    : languageAlternates((loc) => detailPath(category, articleSlug, loc), locales);
+    : languageAlternates((loc) => detailPath(category, articleSlug, loc), altLocales);
 ---
 
 {view === 'list' && <ListPage locale={locale} category={category} alternates={alternates} />}
 {view === 'article' && resolved && (
-  <ArticlePage locale={locale} resolved={resolved} alternates={alternates} />
+  <ArticlePage locale={locale} resolved={resolved} alternates={alternates} availableLocales={altLocales} />
 )}

@@ -18,7 +18,7 @@ Content 层 src/content, src/locales/<loc>.json 的 home 数据 — fork 用户�
 
 ```bash
 pnpm typecheck       # 0 errors(astro check)
-pnpm lint            # 0 errors(存量 1 个 warning 可接受)
+pnpm lint            # 0 errors 0 warnings(全绿)
 pnpm test            # vitest 全过(纯函数放 lib/url、lib/seo,可测)
 pnpm build           # Zod schema 校验 + 全站构建
 pnpm check-content   # 内容 lint(改了 MDX 时)
@@ -97,7 +97,7 @@ Minor = 新功能(默认关闭/向后兼容);Patch = 修复;Major = breaking(需
 
 ## 5. 测试策略
 
-- **只测纯函数**:`lib/url`、`lib/seo`、`lib/content` 的 re-export 纯函数(tests/ 现状,以 `pnpm test` 输出为准)
+- **只测纯函数**:`lib/url`、`lib/seo`、`lib/content-utils`(parseEntryId/isPossiblyOutdated 已从 i18n/content 下沉,tests/ 现状以 `pnpm test` 输出为准;依赖 astro:content 的加载器不进 vitest,新纯逻辑请下沉到 lib)
 - 不测 .astro 组件(构建 + check-* 已覆盖)
 - 新增纯函数 → 同步加测试;修 bug → 先加复现测试再修
 

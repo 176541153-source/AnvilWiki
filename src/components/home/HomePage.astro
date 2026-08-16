@@ -135,7 +135,7 @@ function trendingLabel(link: QuickLink): string {
       <div class="lg:col-span-2">
         <div class="flex items-baseline justify-between">
           <h2 class="text-2xl font-bold">{updates.title}</h2>
-          <a href={listPath('guides', locale)} class="text-sm text-foreground hover:text-nav hover:underline"
+          <a href={listPath(NAVIGATION_CONFIG[1]?.key ?? 'guides', locale)} class="text-sm text-foreground hover:text-nav hover:underline"
             >{shared.browseAll}</a
           >
         </div>

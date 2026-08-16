@@ -10,7 +10,7 @@ import { type Locale } from '~/i18n/routing';
 import { getUi } from '~/i18n/ui';
 import { getTagsWithCounts, slugifyTag } from '~/lib/content';
 import { pageTitle, simpleBreadcrumbJsonLd } from '~/lib/seo';
-import { tagPath, tagsPath } from '~/lib/url';
+import { homeUrl, tagPath, tagsPath } from '~/lib/url';
 
 interface Props {
   locale: Locale;
@@ -26,7 +26,7 @@ const description = shared.tagsIndexDescription as string;
 
 const tags = await getTagsWithCounts(locale);
 
-const jsonLd = simpleBreadcrumbJsonLd({ pageLabel: title, path: tagsPath(locale), locale });
+const jsonLd = simpleBreadcrumbJsonLd({ pageLabel: title, path: tagsPath(locale), locale, homeLabel: nav.home });
 ---
 
 <LocaleLayout
@@ -39,7 +39,7 @@ const jsonLd = simpleBreadcrumbJsonLd({ pageLabel: title, path: tagsPath(locale)
   <div class="space-y-6">
     <header>
       <nav class="text-sm text-muted-foreground" aria-label="breadcrumb">
-        <a href="/" class="hover:text-nav">{nav.home}</a>
+        <a href={homeUrl(locale)} class="hover:text-nav">{nav.home}</a>
         <span class="mx-1">/</span>
         <span class="text-foreground">{title}</span>
       </nav>

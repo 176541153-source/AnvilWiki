@@ -12,7 +12,7 @@ import { type Locale } from '~/i18n/routing';
 import { getUi } from '~/i18n/ui';
 import { getEntriesByTag, localesForTag, parseEntryId, tagLabelFor } from '~/lib/content';
 import { pageTitle, simpleBreadcrumbJsonLd, urlListJsonLd } from '~/lib/seo';
-import { detailPath, tagPath, tagsPath } from '~/lib/url';
+import { detailPath, homeUrl, tagPath, tagsPath } from '~/lib/url';
 import { siteUrl } from '~/config/site';
 
 interface Props {
@@ -44,7 +44,7 @@ const jsonLd = [
       };
     }),
   }),
-  simpleBreadcrumbJsonLd({ pageLabel: title, path: tagPath(tagSlug, locale), locale }),
+  simpleBreadcrumbJsonLd({ pageLabel: title, path: tagPath(tagSlug, locale), locale, homeLabel: nav.home }),
 ];
 ---
 
@@ -59,7 +59,7 @@ const jsonLd = [
   <div class="space-y-6">
     <header>
       <nav class="text-sm text-muted-foreground" aria-label="breadcrumb">
-        <a href="/" class="hover:text-nav">{nav.home}</a>
+        <a href={homeUrl(locale)} class="hover:text-nav">{nav.home}</a>
         <span class="mx-1">/</span>
         <a href={tagsPath(locale)} class="hover:text-nav">{shared.allTags}</a>
         <span class="mx-1">/</span>
@@ -95,8 +95,8 @@ const jsonLd = [
                 </p>
                 <p class="mt-3 text-xs text-muted-foreground">
                   {entry.data.lastModified
-                    ? `${shared.lastUpdated}: ${entry.data.lastModified.toLocaleDateString(locale)}`
-                    : `${shared.publishedOn}: ${entry.data.date.toLocaleDateString(locale)}`}
+                    ? `${shared.lastUpdated}: ${entry.data.lastModified.toLocaleDateString(locale, { timeZone: 'UTC' })}`
+                    : `${shared.publishedOn}: ${entry.data.date.toLocaleDateString(locale, { timeZone: 'UTC' })}`}
                 </p>
               </a>
             );

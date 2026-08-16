@@ -38,7 +38,11 @@ const active = codes.filter((c) => c.status === 'active');
 const expired = codes.filter((c) => c.status === 'expired');
 
 const codeLabel = (c: CodeItem) =>
-  [c.reward, c.expiryDate ? `${t("expires","Expires")}: ${c.expiryDate}` : undefined]
+  [
+    c.reward,
+    c.expiryDate ? `${t("expires","Expires")}: ${c.expiryDate}` : undefined,
+    c.source ? `${t("source","Source")}: ${c.source}` : undefined,
+  ]
     .filter(Boolean)
     .join(' · ');
 ---
@@ -77,6 +81,7 @@ const codeLabel = (c: CodeItem) =>
                 <th class="px-3 py-2 font-medium">{t("code", "Code")}</th>
                 <th class="px-3 py-2 font-medium">{t("reward","Reward")}</th>
                 <th class="px-3 py-2 font-medium">{t("expires","Expires")}</th>
+                <th class="px-3 py-2 font-medium">{t("source","Source")}</th>
               </tr>
             </thead>
             <tbody>
@@ -87,6 +92,7 @@ const codeLabel = (c: CodeItem) =>
                   </td>
                   <td class="px-3 py-2 text-muted-foreground">{c.reward ?? '—'}</td>
                   <td class="px-3 py-2 text-muted-foreground">{c.expiryDate ?? '—'}</td>
+                  <td class="px-3 py-2 text-muted-foreground">{c.source ?? '—'}</td>
                 </tr>
               ))}
             </tbody>

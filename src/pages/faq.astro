@@ -19,7 +19,7 @@ const faqPath = localizePath('/faq', locale);
 const alternates = languageAlternates((loc) => localizePath('/faq', loc), locales);
 const jsonLd = [
   ...(faq.items?.length > 0 ? [faqPageJsonLd(faq.items)] : []),
-  simpleBreadcrumbJsonLd({ pageLabel: faq.title, path: faqPath, locale }),
+  simpleBreadcrumbJsonLd({ pageLabel: faq.title, path: faqPath, locale, homeLabel: (ui.nav as Record<string, string>).home }),
 ];
 ---
 

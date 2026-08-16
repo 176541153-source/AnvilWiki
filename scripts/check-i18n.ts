@@ -37,7 +37,14 @@ const locales = localesMatch[1]
   .split(',')
   .map((l) => l.trim().replace(/['"]/g, ''))
   .filter(Boolean);
-const defaultLocale = locales[0];
+// Read the REAL default locale — assuming locales[0] would drift when a fork
+// reorders the array (apply-template guarantees 'en' exists, not that it's first).
+const defaultMatch = routingSrc.match(/export const defaultLocale: Locale = '([^']+)';/);
+if (!defaultMatch || !locales.includes(defaultMatch[1])) {
+  console.error('❌ Could not read defaultLocale from src/i18n/routing.ts');
+  process.exit(1);
+}
+const defaultLocale = defaultMatch[1];
 
 /** All MDX paths under a locale dir, relative like "bosses/emberfang.mdx". */
 function articleMap(locale: string): Map<string, string> {
@@ -61,11 +68,11 @@ function articleMap(locale: string): Map<string, string> {
 }
 
 /** Flatten a JSON object into dot-paths ("shared.bossCard.hp"). */
-function flattenKeys(obj: unknown, prefix = ''): string[] {
+function flattdefaultKeys(obj: unknown, prefix = ''): string[] {
   if (typeof obj !== 'object' || obj === null) return [];
   return Object.entries(obj as Record<string, unknown>).flatMap(([k, v]) =>
     typeof v === 'object' && v !== null && !Array.isArray(v)
-      ? flattenKeys(v, prefix ? `${prefix}.${k}` : k)
+      ? flattdefaultKeys(v, prefix ? `${prefix}.${k}` : k)
       : [prefix ? `${prefix}.${k}` : k],
   );
 }
@@ -74,11 +81,14 @@ let missingAnything = false;
 
 console.log(`\n🌐 i18n coverage report — default locale: ${defaultLocale}\n`);
 
-const enArticles = articleMap(defaultLocale);
-const enJson = JSON.parse(fs.readFileSync(path.join(LOCALES_DIR, `${defaultLocale}.json`), 'utf8'));
-const enKeys = new Set(flattenKeys(enJson));
+const defaultArticles = articleMap(defaultLocale);
+const defaultJson = JSON.parse(fs.readFileSync(path.join(LOCALES_DIR, `${defaultLocale}.json`), 'utf8'));
+const defaultKeys = new Set(flattdefaultKeys(defaultJson));
 
-for (const locale of locales.slice(1)) {
+// Compare every NON-default locale against the default — never assume the
+// default is locales[0] (apply-template only guarantees it exists, not that
+// it's first in the array).
+for (const locale of locales.filter((l) => l !== defaultLocale)) {
   console.log('━'.repeat(60));
   console.log(` ${locale}`);
   console.log('━'.repeat(60));
@@ -86,20 +96,20 @@ for (const locale of locales.slice(1)) {
   // --- Articles ---
   const locArticles = articleMap(locale);
   const missing: string[] = [];
-  for (const rel of enArticles.keys()) {
+  for (const rel of defaultArticles.keys()) {
     if (!locArticles.has(rel)) missing.push(rel);
   }
   const extra: string[] = [];
   for (const rel of locArticles.keys()) {
-    if (!enArticles.has(rel)) extra.push(rel);
+    if (!defaultArticles.has(rel)) extra.push(rel);
   }
 
   const coverage =
-    enArticles.size === 0
+    defaultArticles.size === 0
       ? 100
-      : Math.round(((enArticles.size - missing.length) / enArticles.size) * 100);
+      : Math.round(((defaultArticles.size - missing.length) / defaultArticles.size) * 100);
   console.log(
-    `   Articles: ${enArticles.size - missing.length}/${enArticles.size} translated (${coverage}%)`,
+    `   Articles: ${defaultArticles.size - missing.length}/${defaultArticles.size} translated (${coverage}%)`,
   );
   for (const m of missing) console.log(`   ⬜ missing:  ${locale}/${m.replace(/\.mdx$/, '')}`);
   for (const e of extra) console.log(`   ➕ extra:    ${locale}/${e.replace(/\.mdx$/, '')}`);
@@ -112,13 +122,13 @@ for (const locale of locales.slice(1)) {
     continue;
   }
   const locKeys = new Set(
-    flattenKeys(JSON.parse(fs.readFileSync(locJsonPath, 'utf8'))),
+    flattdefaultKeys(JSON.parse(fs.readFileSync(locJsonPath, 'utf8'))),
   );
-  const missingKeys = [...enKeys].filter((k) => !locKeys.has(k)).sort();
+  const missingKeys = [...defaultKeys].filter((k) => !locKeys.has(k)).sort();
   const coverageKeys =
-    enKeys.size === 0 ? 100 : Math.round(((enKeys.size - missingKeys.length) / enKeys.size) * 100);
+    defaultKeys.size === 0 ? 100 : Math.round(((defaultKeys.size - missingKeys.length) / defaultKeys.size) * 100);
   console.log(
-    `   UI keys:  ${enKeys.size - missingKeys.length}/${enKeys.size} translated (${coverageKeys}%)`,
+    `   UI keys:  ${defaultKeys.size - missingKeys.length}/${defaultKeys.size} translated (${coverageKeys}%)`,
   );
   // Print at most 15 missing keys — the list can be long for a fresh locale.
   for (const k of missingKeys.slice(0, 15)) console.log(`   ⬜ missing:  ${k}`);

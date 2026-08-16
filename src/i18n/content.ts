@@ -16,7 +16,7 @@
  */
 
 import { getCollection, getEntry, type CollectionEntry } from 'astro:content';
-import { defaultLocale, isLocale, type Locale } from './routing';
+import { defaultLocale, type Locale } from './routing';
 import { slugifyTag } from '~/lib/url';
 
 export type WikiEntry = CollectionEntry<'wiki'>;
@@ -40,25 +40,9 @@ function isPublished(e: WikiEntry): boolean {
   return !e.data.draft || isDev;
 }
 
-/**
- * Parse an entry id like "en/bosses/emberfang" or "ja/bosses/sub/emberfang" into parts.
- * Returns null if the id doesn't match `<locale>/<category>/<...slug>`.
- */
-export function parseEntryId(
-  id: string,
-): { locale: Locale; category: string; slug: string } | null {
-  // Strip the .mdx extension that the glob loader includes in the id.
-  const cleanId = id.replace(/\.mdx$/, '');
-  const parts = cleanId.split('/');
-  if (parts.length < 3) return null;
-  const [locale, category, ...rest] = parts;
-  if (!isLocaleSafe(locale)) return null;
-  return { locale, category, slug: rest.join('/') };
-}
-
-function isLocaleSafe(value: string): value is Locale {
-  return isLocale(value);
-}
+// parseEntryId lives in lib/content-utils.ts (pure, vitest-testable).
+import { parseEntryId } from '~/lib/content-utils';
+export { parseEntryId };
 
 /**
  * Load a single article. Falls back to English if the locale version is missing.
@@ -117,7 +101,9 @@ export async function getAllEntriesByCategory(category: string): Promise<WikiEnt
 
 /**
  * All locales that have at least one article for a given (category, slug).
- * Used to generate hreflang alternates.
+ * Used to generate hreflang alternates. Only lists locales whose page is
+ * actually built (the default-locale page exists only if an English MDX
+ * exists), so alternates never point at a 404.
  */
 export async function localesForEntry(category: string, slug: string): Promise<Locale[]> {
   const all = await getCollection('wiki');
@@ -128,8 +114,6 @@ export async function localesForEntry(category: string, slug: string): Promise<L
       found.add(parsed.locale);
     }
   }
-  // Always include default locale for x-default / fallback.
-  found.add(defaultLocale);
   return Array.from(found);
 }
 
@@ -236,22 +220,7 @@ export async function tagLabelFor(tagSlug: string, locale: Locale): Promise<stri
   return null;
 }
 
-/**
- * Categories whose content goes stale when the game updates (boss mechanics,
- * tier lists). Articles in these categories show a "possibly outdated" banner
- * when the last-modified date is older than STALE_AFTER_DAYS.
- */
-export const STALE_CATEGORIES = ['bosses', 'tier-list'];
-export const STALE_AFTER_DAYS = 90;
-
-/**
- * True when the article is in a time-sensitive category and its
- * lastModified (or date) is older than STALE_AFTER_DAYS.
- * Pure function (testable without a build).
- */
-export function isPossiblyOutdated(category: string, lastModified: Date | undefined, date: Date, now = new Date()): boolean {
-  if (!STALE_CATEGORIES.includes(category)) return false;
-  const ref = lastModified ?? date;
-  const ageMs = now.getTime() - ref.getTime();
-  return ageMs > STALE_AFTER_DAYS * 24 * 60 * 60 * 1000;
-}
+// Staleness constants + predicate live in lib/content-utils.ts (pure,
+// vitest-testable — this module imports astro:content and can't be loaded
+// outside a build).
+export { isPossiblyOutdated, STALE_AFTER_DAYS, STALE_CATEGORIES } from '~/lib/content-utils';

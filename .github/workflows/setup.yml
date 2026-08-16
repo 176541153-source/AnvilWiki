@@ -33,6 +33,7 @@ permissions:
 jobs:
   setup:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
 
@@ -63,7 +64,14 @@ jobs:
           PUBLIC_SPONSOR_URL = ""
           PUBLIC_SPONSOR_IMAGE_URL = ""
           # Cloudflare Web Analytics — blank = disabled.
-          PUBLIC_CF_BEACON_TOKEN = ""'''
+          PUBLIC_CF_BEACON_TOKEN = ""
+          # Optional slots (empty = disabled) — fill HERE, not the dashboard:
+          #PUBLIC_ADSENSE_CLIENT = ""
+          #PUBLIC_ADSENSE_SLOT_STICKY = ""
+          #PUBLIC_ADSENSE_SLOT_SIDEBAR = ""
+          #PUBLIC_ADSENSE_SLOT_INCONTENT = ""
+          #PUBLIC_GA_ID = ""
+          #PUBLIC_GSC_VERIFICATION = ""'''
           new_vars = new_vars.replace('__SITE_URL__', url)
           s = re.sub(r'\[vars\][\s\S]*?(?=\n*\[|\s*$)', new_vars, s)
           open(p, 'w').write(s)
@@ -94,11 +102,19 @@ jobs:
         run: |
           git config user.name "anvilwiki-setup"
           git config user.email "actions@github.com"
-          git checkout -b chore/init-from-template
+          # Idempotent re-runs: -B resets the branch instead of colliding with
+          # the previous run's commits, --force-with-lease overwrites the remote
+          # branch, and we skip commit/PR when there is nothing to change.
+          git checkout -B chore/init-from-template
           git add -A
-          git commit -m "chore(init): apply template defaults (wrangler vars, remove landing)"
-          git push origin chore/init-from-template
+          if git diff --cached --quiet; then
+            echo "Nothing to commit — template already initialized."
+          else
+            git commit -m "chore(init): apply template defaults (wrangler vars, remove landing)"
+          fi
+          git push --force-with-lease origin chore/init-from-template
           gh pr create --title "Initialize AnvilWiki for your game" \
-            --body "Automated by the Initialize AnvilWiki workflow. wrangler.toml [vars] reset to ${{ inputs.site_url }} (demo Giscus cleared); project landing page removed. Next: run pnpm apply-template locally for game name / theme / locales, then connect Cloudflare Pages (docs/deployment.md)."
+            --body "Automated by the Initialize AnvilWiki workflow. wrangler.toml [vars] reset to ${{ inputs.site_url }} (demo Giscus cleared); project landing page removed. Next: run pnpm apply-template locally for game name / theme / locales, then connect Cloudflare Pages (docs/deployment.md)." \
+            || echo "PR already exists — leaving the existing one open."
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

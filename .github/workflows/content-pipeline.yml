@@ -26,6 +26,7 @@ jobs:
     # content. Delete this `if` (or change the repo name) to enable on a fork.
     if: github.repository == 'PNGTRID/AnvilWiki'
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
 
@@ -43,22 +44,29 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Run freshness audit
-        run: pnpm refresh-audit
+        # shell: bash opts into `bash -eo pipefail` — without pipefail the
+        # pipeline exit code would come from tee and mask audit failures.
+        shell: bash
+        run: pnpm refresh-audit | tee /tmp/audit.md
 
       - name: File tracking issue
-        if: always()
+        if: ${{ !failure() }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Single evergreen issue: close the previous audit, open a fresh one.
+          # Runs only when the audit itself succeeded — a failed audit would
+          # otherwise file an empty-body issue and mask the failure.
           ISSUE_URL=$(gh issue list --search "in:title \"Content freshness audit\"" --json url --jq '.[0].url' || true)
           if [ -n "$ISSUE_URL" ]; then
             gh issue close "$ISSUE_URL" --reason completed || true
           fi
-          # Rebuild a clean body (the step summary may contain other jobs' output).
-          pnpm refresh-audit > /tmp/audit.md 2>/dev/null || true
           # The script prints surrounding blank lines; trim to markdown body.
           BODY=$(sed -n '/^## Content freshness audit/,$p' /tmp/audit.md)
+          if [ -z "$BODY" ]; then
+            echo "Audit produced no report body — skipping issue creation."
+            exit 0
+          fi
           gh issue create \
             --title "Content freshness audit — $(date +%F)" \
             --body "$BODY" \

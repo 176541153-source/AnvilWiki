@@ -70,10 +70,11 @@ export const site = {
 
 ```ts
 export const NAVIGATION_CONFIG = [
-  { key: 'bosses', path: '/bosses', icon: 'lucide:swords' },
-  { key: 'guides', path: '/guides', icon: 'lucide:book-open' },
-  { key: 'codes',  path: '/codes',  icon: 'lucide:gift' },
-  // → 改成你的游戏需要的内容分类
+  { key: 'bosses', path: '/bosses', icon: 'lucide:swords', isContentType: true, order: 1 },
+  { key: 'guides', path: '/guides', icon: 'lucide:book-open', isContentType: true, order: 2 },
+  { key: 'codes',  path: '/codes',  icon: 'lucide:gift',     isContentType: true, order: 3 },
+  // → 改成你的游戏需要的内容分类。isContentType 与 order 都是必填
+  //   （isContentType 标记"有 MDX 内容目录的分类"，order 控制导航排序）。
 ];
 ```
 
@@ -178,7 +179,7 @@ echo '{}' > src/locales/ru.json
 - `home.meta.title` / `description`：SEO 元数据（title 50-60 字符，description 150-160 字符）
 - `home.hero`：Hero 区域（`badge` / `title` / `description` / `ctaPrimary` / `ctaSecondary`）
 - `home.start.cards[]`：QuickStart 卡片（4 张，每张含 `icon` + `href`）
-- `home.explore.modules[]`：内容模块（4 个，每个含 `displayType` + `highlights[]`）
+- `home.explore.modules[]`：内容模块（当前 demo 为 6 个，每个含 `displayType` + `highlights[]`）
 - `home.closingCta`：底部号召文案
 
 **SEO 要求**：`home.explore.modules[].name` 必须包含游戏名。
@@ -252,7 +253,7 @@ tags: ["boss", "guide"]
 □ hero 图是真实图片（非占位）
 □ 所有 MDX frontmatter 通过 Zod schema（pnpm build 不报错）
 □ sitemap URL 全部返回 200（pnpm check-sitemap）
-□ SITE_URL 环境变量已配（含 https:// 协议，改 wrangler.toml 或 dashboard）
+□ SITE_URL 环境变量已配（含 https:// 协议，改 wrangler.toml 或 dashboard —— 注意 wrangler.toml 存在时会接管 dashboard，见 [deployment.md](./deployment.md)）
 ```
 
 ---

@@ -16,21 +16,19 @@
     "toggleTheme": "テーマ切替",
     "menu": "メニュー",
     "close": "閉じる",
-    "search": "検索"
+    "search": "検索",
+    "language": "言語"
   },
   "search": {
     "placeholder": "Wikiを検索...",
-    "noResults": "結果が見つかりません",
-    "open": "検索を開く"
+    "noResults": "結果が見つかりません"
   },
   "shared": {
-    "readMore": "続きを読む",
     "lastUpdated": "最終更新",
     "publishedOn": "公開日",
     "noArticles": "記事はまだありません。お楽しみに！",
     "relatedArticles": "関連記事",
     "onThisPage": "目次",
-    "backToCategory": "戻る",
     "browseAll": "すべて見る",
     "viewAll": "すべて表示",
     "commentsHeading": "コメント",
@@ -54,6 +52,7 @@
       "expired": "期限切れのコード",
       "reward": "報酬",
       "expires": "有効期限",
+      "source": "出典",
       "code": "コード"
     },
     "codesFaq": [
@@ -99,7 +98,19 @@
       "prev": "前の画像",
       "next": "次の画像"
     },
-    "quickAnswer": "まとめ"
+    "quickAnswer": "まとめ",
+    "skipToContent": "本文へスキップ",
+    "tapToCopy": "タップしてコピー",
+    "open": "開く",
+    "playVideo": "動画を再生",
+    "closeAd": "広告を閉じる",
+    "toggleTheme": "テーマを切り替える",
+    "fallbackNotice": "英語フォールバック",
+    "copyQuickAnswer": "クイック回答をコピー",
+    "feedbackYes": "はい",
+    "feedbackNo": "いいえ",
+    "breadcrumbAria": "パンくずリスト",
+    "paginationAria": "前後の記事"
   },
   "overview": {
     "bosses": {
@@ -133,8 +144,7 @@
       "videoId": ""
     },
     "updates": {
-      "title": "最新更新",
-      "browse": "全ガイドを見る"
+      "title": "最新更新"
     },
     "start": {
       "badge": "ここから始める",
@@ -392,6 +402,8 @@
     "privacyPolicy": "プライバシーポリシー",
     "termsOfService": "利用規約",
     "copyright": "著作権",
-    "copyrightText": "© 2026 Anvil Quest Wiki. ファン制作、Forge Studiosとは関係ありません。"
+    "copyrightText": "© 2026 Anvil Quest Wiki. ファン制作、Forge Studiosとは関係ありません。",
+    "community": "コミュニティ",
+    "legal": "法的情報"
   }
 }

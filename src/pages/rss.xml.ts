@@ -30,7 +30,9 @@ export const GET: APIRoute = async (context) => {
   return rss({
     title: site.name,
     description: site.description,
-    site: context.site ?? 'https://anvilwiki.pages.dev',
+    // siteUrl (from SITE_URL env / site config) — no hardcoded demo domain:
+    // a fork without context.site must not emit the template's URL.
+    site: context.site ?? siteUrl,
     items: items.map((e) => {
       const parsed = parseEntryId(e.id);
       const slug = parsed?.slug ?? '';

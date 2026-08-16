@@ -15,10 +15,18 @@
  */
 import { Icon } from 'astro-icon/components';
 import AdSenseSlot from './AdSenseSlot.astro';
+import { getUi } from '~/i18n/ui';
+import { isLocale } from '~/i18n/routing';
 
 const client = import.meta.env.PUBLIC_ADSENSE_CLIENT as string | undefined;
 const slot = import.meta.env.PUBLIC_ADSENSE_SLOT_STICKY as string | undefined;
 const show = !!(client && slot);
+const current = Astro.currentLocale;
+const sharedStrings =
+  current && isLocale(current)
+    ? ((getUi(current).shared ?? {}) as unknown as Record<string, string>)
+    : {};
+const closeAd = sharedStrings.closeAd ?? 'Close ad';
 ---
 
 {
@@ -32,7 +40,7 @@ const show = !!(client && slot);
         <button
           id="dismiss-sticky"
           type="button"
-          aria-label="Close ad"
+          aria-label={closeAd}
           class="absolute -right-1 -top-1 rounded-full border bg-background p-1 text-muted-foreground transition hover:bg-muted"
         >
           <Icon name="lucide:x" class="h-3 w-3" />
@@ -46,12 +54,24 @@ const show = !!(client && slot);
     const banner = document.getElementById('sticky-banner');
     const btn = document.getElementById('dismiss-sticky');
     if (!banner || !btn) return;
-    if (localStorage.getItem('sticky-dismissed') === '1') {
+    // Storage can be blocked (privacy extensions / strict browsers) — degrade
+    // to "dismiss works, just not remembered", same pattern as ThemeToggle.
+    let dismissed = false;
+    try {
+      dismissed = localStorage.getItem('sticky-dismissed') === '1';
+    } catch {
+      /* storage unavailable */
+    }
+    if (dismissed) {
       banner.remove();
       return;
     }
     btn.addEventListener('click', () => {
-      localStorage.setItem('sticky-dismissed', '1');
+      try {
+        localStorage.setItem('sticky-dismissed', '1');
+      } catch {
+        /* storage unavailable */
+      }
       banner.remove();
     });
   })();

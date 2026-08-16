@@ -105,8 +105,10 @@ export function breadcrumbJsonLd(opts: {
   title: string;
   slug: string;
   locale: Locale;
+  /** Localized "Home" label (locale JSON nav.home). */
+  homeLabel?: string;
 }) {
-  const { category, categoryLabel, title, slug, locale } = opts;
+  const { category, categoryLabel, title, slug, locale, homeLabel = 'Home' } = opts;
   return {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -114,7 +116,7 @@ export function breadcrumbJsonLd(opts: {
       {
         '@type': 'ListItem',
         position: 1,
-        name: 'Home',
+        name: homeLabel,
         item: `${siteUrl}${locale === defaultLocale ? '' : `/${locale}`}`,
       },
       {
@@ -145,8 +147,10 @@ export function simpleBreadcrumbJsonLd(opts: {
   /** Absolute-or-relative path of the current page for a given locale. */
   path: string;
   locale: Locale;
+  /** Localized "Home" label (locale JSON nav.home). */
+  homeLabel?: string;
 }) {
-  const { pageLabel, path, locale } = opts;
+  const { pageLabel, path, locale, homeLabel = 'Home' } = opts;
   return {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -154,7 +158,7 @@ export function simpleBreadcrumbJsonLd(opts: {
       {
         '@type': 'ListItem',
         position: 1,
-        name: 'Home',
+        name: homeLabel,
         item: `${siteUrl}${locale === defaultLocale ? '' : `/${locale}`}`,
       },
       {
@@ -225,13 +229,15 @@ export function urlListJsonLd(opts: {
 }
 
 /** ImageObject JSON-LD — one per gallery image (Google Images eligibility). */
-export function imageObjectJsonLd(opts: { url: string; caption?: string }) {
-  const { url, caption } = opts;
+export function imageObjectJsonLd(opts: { url: string; caption?: string; alt?: string }) {
+  const { url, caption, alt } = opts;
+  // Prefer the author-written alt as the name; caption describes context.
+  const name = alt ?? caption;
   return {
     '@context': 'https://schema.org',
     '@type': 'ImageObject',
     contentUrl: url,
-    ...(caption ? { name: caption, description: caption } : {}),
+    ...(name ? { name, description: caption ?? name } : {}),
   };
 }
 

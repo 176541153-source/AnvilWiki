@@ -6,9 +6,13 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
 jobs:
   check:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
 
@@ -38,6 +42,9 @@ jobs:
       - name: Test
         run: pnpm test
 
+      - name: Config consistency (nav/locale 3-place check)
+        run: pnpm check-config
+
       - name: Build
         run: pnpm build
         env:
@@ -47,6 +54,9 @@ jobs:
           # point at the wrong site (production builds use wrangler.toml,
           # which this does not affect).
           SITE_URL: ${{ vars.SITE_URL || 'https://anvilwiki.pages.dev' }}
+
+      - name: Content lint (H1/alt/slashes)
+        run: pnpm check-content
 
       - name: Internal link audit (dist/)
         run: pnpm check-links

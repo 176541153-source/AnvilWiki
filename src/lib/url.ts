@@ -58,8 +58,8 @@ export function recentPath(locale: Locale): string {
 
 /**
  * Generate hreflang alternates for an article/category page.
- * Returns a record suitable for injection as <link rel="alternate"> tags.
- * Always includes x-default → English.
+ * Returns a list suitable for injection as <link rel="alternate"> tags.
+ * x-default is NOT included here — BaseLayout derives it from the alternates.
  */
 export function languageAlternates(
   buildPath: (locale: Locale) => string,

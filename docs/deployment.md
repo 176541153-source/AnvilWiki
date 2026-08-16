@@ -82,7 +82,7 @@ Cloudflare 会自动检测 Astro，但请确认以下设置：
 2. 运行 `pnpm install` + `pnpm build`
 3. 把 `dist/` 部署到全球 CDN
 
-构建日志里看到 `Complete!` 和 `27 page(s) built` 就成功了。整个过程 2-3 分钟。
+构建日志里看到 `Complete!` 就成功了（页数随内容增长，不用纠结具体数字）。整个过程 2-3 分钟。
 
 ### Step 5 — 访问站点
 
@@ -185,19 +185,30 @@ AnvilWiki 是纯静态站点（`dist/`），可以部署到任何静态托管：
 
 ## 环境变量清单
 
-在 Pages → **Settings** → **Environment variables** 配置。支持 Production / Preview 两套。
+> ⚠️ **先读 [wrangler.toml 接管警告](#cloudflare-pages-推荐)**：如果你保留了 `wrangler.toml`（方案 A/B），下表所有变量必须写进它的 `[vars]` 段——此时在 Pages → Settings → **Environment variables** 里配置是**无效的**（dashboard 会被完全忽略）。删掉 `wrangler.toml`（方案 C）才用 dashboard 配置。
+
+Dashboard（方案 C）在 Pages → **Settings** → **Environment variables** 配置。支持 Production / Preview 两套。
 
 | 变量                        | 必填 | 说明                                                   |
 | --------------------------- | ---- | ------------------------------------------------------ |
-| `SITE_URL`                  | ✅   | 站点绝对 URL（无尾斜杠），影响 sitemap/og:image/robots |
-| `NODE_VERSION`              | ✅   | 固定 `22`                                              |
+| `SITE_URL`                  | ✅   | 站点绝对 URL（含 `https://`，无尾斜杠），影响 sitemap/og:image/robots |
+| `NODE_VERSION`              | ✅   | 固定 `22`（pnpm 11 要求 ≥22.13）                       |
 | `PUBLIC_ADSENSE_CLIENT`      | 可选 | AdSense Publisher ID（`ca-pub-XXXXXXXXXXXXXXXX`）      |
 | `PUBLIC_ADSENSE_SLOT_STICKY` | 可选 | Sticky 粘顶横幅 slot ID                                |
 | `PUBLIC_ADSENSE_SLOT_SIDEBAR`| 可选 | Sidebar 桌面端侧边栏 slot ID                           |
 | `PUBLIC_ADSENSE_SLOT_INCONTENT` | 可选 | InContent 文章内 slot ID                            |
-| `PUBLIC_GA_ID`              | 可选 | Google Analytics ID                                    |
+| `PUBLIC_GA_ID`              | 可选 | Google Analytics ID（有 cookie，经同意横幅门控）       |
+| `PUBLIC_CF_BEACON_TOKEN`    | 可选 | Cloudflare Web Analytics beacon token（无 cookie）     |
+| `PUBLIC_GSC_VERIFICATION`   | 可选 | Google Search Console 验证 meta token                 |
+| `PUBLIC_SPONSOR_URL`        | 可选 | 赞助/捐赠卡链接（空 = 不渲染）                         |
+| `PUBLIC_SPONSOR_IMAGE_URL`  | 可选 | 赞助卡二维码/横幅图（空 = 只显示文字卡）               |
+| `PUBLIC_GISCUS_REPO`        | 可选 | Giscus 仓库（`owner/repo`，4 个必填项之一）            |
+| `PUBLIC_GISCUS_REPO_ID`     | 可选 | Giscus 仓库 ID（4 个必填项之一）                       |
+| `PUBLIC_GISCUS_CATEGORY`    | 可选 | Giscus Discussion 分类名（4 个必填项之一）             |
+| `PUBLIC_GISCUS_CATEGORY_ID` | 可选 | Giscus 分类 ID（4 个必填项之一）                       |
+| `PUBLIC_GISCUS_MAPPING`     | 可选 | Giscus 页面映射方式，默认 `pathname`（唯一可选项）     |
 
-完整清单见 [`.env.example`](../.env.example)。所有广告变量**留空时对应广告位不渲染**——新手可以先不配广告把站上线，后续再加。
+完整说明见 [`.env.example`](../.env.example)。所有广告/评论变量**留空时对应组件不渲染**——新手可以先不配广告把站上线，后续再加。
 
 ---
 
@@ -223,11 +234,11 @@ curl -I https://<你的域名>/ja/   # 日文首页
 curl -I https://<你的域名>/bosses/  # 英文列表页
 
 # 5. 文章页正常
-curl -I https://<你的域名>/bosses/emberfang/
+curl -I https://<你的域名>/bosses/emberfang
 # 期望: 200，不是 404
 
 # 6. 法律页可访问
-curl -I https://<你的域名>/about/
+curl -I https://<你的域名>/about
 curl -I https://<你的域名>/privacy-policy/
 ```
 
@@ -287,6 +298,14 @@ A: `SITE_URL` 环境变量没更新或没重新部署。改完后必须触发一
 ### Q: 日文页面显示英文 fallback
 
 A: 这是设计行为，不是 bug。参见 [PRD §9.3](./PRD.md#93-文章-fallback-机制)：单篇文章缺失时自动回退英文，保证 URL 不 404；列表页不回退（该语言没内容就显示空状态）。
+
+### Q: 我想加 Content-Security-Policy（CSP）
+
+A: 模板默认不带 CSP（`public/_headers` 里已有 COOP/nosniff/XFO/Referrer-Policy 四条基础头）。如果自建 CSP，注意模板有**内联脚本**（防 FOUC 主题初始化、主题切换、搜索、AdSense/giscus 按需加载），`script-src` 需要 `'unsafe-inline'`（或逐脚本 hash）；开启广告还要放行 `pagead2.googlesyndication.com` 系域名，开启评论放行 `giscus.app`，开启 GA 放行 `googletagmanager.com`。一个可用起点（在 `public/_headers` 按路径追加，改完重新部署并逐项验证主题切换/搜索/评论/广告）：
+
+```
+Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' pagead2.googlesyndication.com static.cloudflareinsights.com www.googletagmanager.com giscus.app; style-src 'self' 'unsafe-inline'; img-src 'self' data: i.ytimg.com pagead2.googlesyndication.com; frame-src youtube-nocookie.com giscus.app; connect-src 'self' cloudflareinsights.com region1.google-analytics.com;
+```
 
 ---
 

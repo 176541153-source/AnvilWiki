@@ -16,6 +16,8 @@
  *     (event delegation — safe for multiple videos per article).
  */
 import { Icon } from 'astro-icon/components';
+import { getUi } from '~/i18n/ui';
+import { isLocale } from '~/i18n/routing';
 
 interface Props {
   /** 11-char YouTube video ID. */
@@ -24,6 +26,12 @@ interface Props {
   title?: string;
 }
 const { videoId, title = 'Watch video' } = Astro.props;
+const current = Astro.currentLocale;
+const sharedStrings =
+  current && isLocale(current)
+    ? ((getUi(current).shared ?? {}) as unknown as Record<string, string>)
+    : {};
+const playLabel = sharedStrings.playVideo ?? 'Play video';
 ---
 
 <div
@@ -31,7 +39,7 @@ const { videoId, title = 'Watch video' } = Astro.props;
   class="relative aspect-video w-full cursor-pointer overflow-hidden rounded-lg bg-black"
   role="button"
   tabindex="0"
-  aria-label={`Play video: ${title}`}
+  aria-label={`${playLabel}: ${title}`}
 >
   <img
     src={`https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`}
@@ -52,7 +60,10 @@ const { videoId, title = 'Watch video' } = Astro.props;
     target="_blank"
     rel="noopener noreferrer"
     class="fallback-link absolute inset-0 hidden items-center justify-center gap-2 bg-card text-sm font-medium text-nav hover:underline"
-  >▶ {title} — YouTube</a>
+  >
+    <Icon name="lucide:play" class="h-4 w-4 shrink-0" />
+    {title} — YouTube
+  </a>
 </div>
 
 <style>
@@ -99,7 +110,12 @@ const { videoId, title = 'Watch video' } = Astro.props;
   });
   document.addEventListener('keydown', (e) => {
     if (e.key !== 'Enter' && e.key !== ' ') return;
-    const facade = document.activeElement?.closest<HTMLElement>('[data-yt-facade]');
+    const active = document.activeElement;
+    // When the thumbnail is broken the facade collapses into a plain <a>
+    // fallback — let the browser handle Enter on the link itself instead of
+    // swallowing it and swapping in an iframe that can't load either.
+    if (active && active.classList.contains('fallback-link')) return;
+    const facade = active?.closest<HTMLElement>('[data-yt-facade]');
     if (facade) {
       e.preventDefault();
       play(facade);

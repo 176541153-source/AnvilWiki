@@ -8,7 +8,7 @@ AnvilWiki is an **open-source (MIT) game wiki site template** built with **Astro
 
 Goal: let beginners deploy a game wiki site to Cloudflare Pages for free (unlimited bandwidth) in ~30 minutes, with strong SEO, i18n, and ad-monetization built in.
 
-**Status (as of 2026-08-15)**: v1.8.0 released — full template + AI content skills (`.agent/skills/`) + 9 scripts + 3 CI workflows. Live demo: anvilwiki.pages.dev (Lighthouse 4×100).
+**Status (as of 2026-08-16)**: v1.9.0 released — full template + AI content skills (`.agent/skills/`) + 9 scripts + 3 CI workflows. Live demo: anvilwiki.pages.dev (Lighthouse 4×100).
 
 ## Read These First
 
@@ -76,7 +76,7 @@ Fork users drive this template from AI coding agents (ZCode / Claude Code / Code
 
 1. **Read before writing**: `docs/content-format.md` (field table + body rules), `src/content.config.ts` (Zod schema is the hard gate — invalid frontmatter fails `pnpm build`), `src/config/navigation.ts` (`category` must be a `CONTENT_TYPES` key), and one existing article of the same type for structure.
 2. **Hard frontmatter rules**: `description` 40–165 chars; `title` ≤ 80 chars; H1 never in the body (first heading is H2, question-shaped); `summary` is a 40–60 word direct answer (Quick Answer card + AI Overviews candidate); `tags` reuse existing tag vocabulary (grep `tags:` under `src/content/wiki/`); unverified drafts get `draft: true`; fast-patching games get `gameVersion`.
-3. **Component vocabulary** (import from `~/components/...`): `CodeBlock` (codes), `Callout` (info/tip/warn/danger), `Accordion` (collapsible detail), `Video` (inline YouTube, register IDs in frontmatter `videos` for JSON-LD), `AffiliateLink` (sponsored, auto `rel`), plus frontmatter-driven `boss` stat card / `codes` (Active+Expired auto-split) / `videos` / `gallery`.
+3. **Component vocabulary** (import from `~/components/...`): `CodeBlock` (codes), `StatBar` (boss/item stat bars), `Callout` (info/tip/warn/danger), `Accordion` (collapsible detail), `Video` (inline YouTube, register IDs in frontmatter `videos` for JSON-LD), `AffiliateLink` (sponsored, auto `rel`), plus frontmatter-driven `boss` stat card / `codes` (Active+Expired auto-split) / `videos` / `gallery`.
 4. **Verify, don't trust yourself**: after writing, run `pnpm check-content && pnpm build`. Both green = done. Never fabricate game facts (codes, stats) — ask the user for data; a single fake code destroys site trust.
 5. **Slash-command skills** live in `.agent/skills/` (Agent Skills open standard): `anvil-new-article` (generate a page from any source material), `anvil-update-codes` (apply new/expired codes), `anvil-refresh` (freshness audit). Agents supporting the standard auto-discover them; this section is the zero-install fallback.
 
@@ -85,10 +85,10 @@ Fork users drive this template from AI coding agents (ZCode / Claude Code / Code
 ```bash
 pnpm install
 pnpm dev              # dev server, http://localhost:4321
-pnpm build            # includes Content schema validation — fails on bad frontmatter
+pnpm build            # includes Content schema validation — fails on bad frontmatter; postbuild indexes Pagefind search
 pnpm typecheck        # astro check (0 errors expected)
 pnpm lint             # ESLint (eslint-plugin-astro)
-pnpm test             # Vitest (url + seo + tags + i18n-smoke)
+pnpm test             # Vitest (url + seo + tags + i18n-smoke + content-utils)
 pnpm check-config     # scripts/check-config.ts — nav/locale 3-place consistency
 pnpm new-locale       # scripts/new-locale.ts — scaffold a new language
 pnpm check-sitemap    # scripts/check-sitemap.ts — verify all sitemap URLs return 200

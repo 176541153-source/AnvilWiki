@@ -14,9 +14,13 @@ import { locales, defaultLocale } from './src/i18n/routing';
  * hook so Google gets the one sitemap field it actually trusts for crawl
  * scheduling (Google Search Central docs).
  *
+ * Also collects `noindex: true` article paths — pages excluded from search
+ * must not appear in the sitemap (rss.xml/llms.txt already filter them; this
+ * closes the loop for the third generator).
+ *
  * Plain fs scan at config time — `astro:content` is not importable here.
  */
-function buildLastmodMap(): Map<string, string> {
+function buildLastmodMap(noindexPaths: Set<string>): Map<string, string> {
   const map = new Map<string, string>();
   const base = path.resolve('./src/content/wiki');
   if (!fs.existsSync(base)) return map;
@@ -46,6 +50,7 @@ function buildLastmodMap(): Map<string, string> {
       const [loc, cat, ...rest] = rel.split(path.sep);
       const slugPath = rest.join('/');
       const articlePath = loc === defaultLocale ? `/${cat}/${slugPath}` : `/${loc}/${cat}/${slugPath}`;
+      if (/^noindex:\s*true\s*$/m.test(fm)) noindexPaths.add(articlePath);
       map.set(articlePath, date.toISOString());
 
       // List pages: newest article in the category wins.
@@ -60,7 +65,8 @@ function buildLastmodMap(): Map<string, string> {
   return map;
 }
 
-const lastmodMap = buildLastmodMap();
+const noindexPaths = new Set<string>();
+const lastmodMap = buildLastmodMap(noindexPaths);
 
 // https://astro.build/config
 export default defineConfig({
@@ -92,10 +98,16 @@ export default defineConfig({
         defaultLocale,
         locales: Object.fromEntries(locales.map((l) => [l, l])),
       },
+      // noindex articles stay out of the sitemap (self-contradictory signal
+      // otherwise — the page asks not to be indexed while the sitemap submits it).
+      filter: (url) => !noindexPaths.has(decodeURIComponent(new URL(url).pathname)),
       // Inject <lastmod> from article frontmatter (see buildLastmodMap).
       serialize(item) {
         try {
-          const pagePath = new URL(item.url).pathname;
+          // Decode: non-ASCII slugs (CJK filenames) come percent-encoded in
+          // item.url, while lastmodMap keys are raw filesystem names —
+          // without decoding the lookup silently misses.
+          const pagePath = decodeURIComponent(new URL(item.url).pathname);
           const lm = lastmodMap.get(pagePath);
           if (lm) item.lastmod = lm;
         } catch {

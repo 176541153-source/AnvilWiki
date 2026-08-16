@@ -1,9 +1,11 @@
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   resolve: {
     alias: {
-      '~': new URL('./src/', import.meta.url).pathname,
+      // fileURLToPath 还原 percent-encoding；`.pathname` 在含中文的目录下会得到 %E7... 导致模块解析失败
+      '~': fileURLToPath(new URL('./src/', import.meta.url)),
     },
   },
   test: {

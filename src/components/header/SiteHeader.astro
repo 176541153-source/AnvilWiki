@@ -30,9 +30,13 @@ const nav: Record<string, string> = ui.nav as Record<string, string>;
 
 const headerLocales = availableLocales ?? locales;
 
+// Build the strip regex from `locales` — a hardcoded "en|ja" list would
+// silently break for forks that add languages (same rationale as BaseLayout).
+const localePrefixRe = new RegExp(`^/(${locales.filter((l) => l !== defaultLocale).join('|')})(?=/|$)`);
+
 const samePagePathFor = (loc: Locale) => {
   // Strip existing locale prefix, then prepend the new one.
-  const stripped = currentPath.replace(/^\/(ja)(\/|$)/, '/') || '/';
+  const stripped = currentPath.replace(localePrefixRe, '') || '/';
   return localizePath(stripped, loc);
 };
 ---

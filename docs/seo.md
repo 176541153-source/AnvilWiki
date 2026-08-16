@@ -224,12 +224,6 @@
 
 ---
 
-## 下一步
-
-- [内容格式](./content-format.md)
-- [套用模板指南](./apply-template.md)
-- 回到 [README](../README.md)
-
 
 ## v1.5–v1.8 新增的 SEO 资产
 
@@ -245,3 +239,9 @@
 | game.config 式新鲜度 | content-pipeline 每周审计 | codes >7 天 / 时效分类 >90 天自动开 issue |
 
 注意:FAQPage 富摘要 Google 已限制到政府/医疗站(游戏站拿不到富展示),其价值在结构化信号而非 SERP 样式。
+
+## 下一步
+
+- [内容格式](./content-format.md)
+- [套用模板指南](./apply-template.md)
+- 回到 [README](../README.md)

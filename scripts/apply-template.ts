@@ -290,6 +290,10 @@ function rewriteSiteTs(input: SkinInput): string {
     genre: '${input.genre}',
     releaseDate: '${input.releaseDate}',
   },
+  // og:image dims of the SHIPPED hero.webp — if you replace public/images/hero.webp,
+  // update these in src/config/site.ts to match (wrong dims mis-crop share cards).
+  ogImageWidth: 1200,
+  ogImageHeight: 630,
 };`;
   const siteRe = /export const site: SiteConfig = \{[\s\S]*?\n\};/;
   if (!siteRe.test(src)) {

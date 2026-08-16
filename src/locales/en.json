@@ -16,21 +16,19 @@
     "toggleTheme": "Toggle theme",
     "menu": "Menu",
     "close": "Close",
-    "search": "Search"
+    "search": "Search",
+    "language": "Language"
   },
   "search": {
     "placeholder": "Search the wiki...",
-    "noResults": "No matches found",
-    "open": "Open search"
+    "noResults": "No matches found"
   },
   "shared": {
-    "readMore": "Read more",
     "lastUpdated": "Last updated",
     "publishedOn": "Published",
     "noArticles": "No articles yet. Check back soon!",
     "relatedArticles": "Related Articles",
     "onThisPage": "On this page",
-    "backToCategory": "Back to",
     "browseAll": "Browse all",
     "viewAll": "View all",
     "commentsHeading": "Comments",
@@ -54,6 +52,7 @@
       "expired": "Expired Codes",
       "reward": "Reward",
       "expires": "Expires",
+      "source": "Source",
       "code": "Code"
     },
     "codesFaq": [
@@ -99,7 +98,19 @@
       "prev": "Previous image",
       "next": "Next image"
     },
-    "quickAnswer": "Quick Answer"
+    "quickAnswer": "Quick Answer",
+    "skipToContent": "Skip to content",
+    "tapToCopy": "Tap to copy",
+    "open": "Open",
+    "playVideo": "Play video",
+    "closeAd": "Close ad",
+    "toggleTheme": "Toggle theme",
+    "fallbackNotice": "English fallback",
+    "copyQuickAnswer": "Copy quick answer",
+    "feedbackYes": "Yes",
+    "feedbackNo": "No",
+    "breadcrumbAria": "Breadcrumb",
+    "paginationAria": "Article pagination"
   },
   "overview": {
     "bosses": {
@@ -133,8 +144,7 @@
       "videoId": ""
     },
     "updates": {
-      "title": "Recent Updates",
-      "browse": "Browse all guides"
+      "title": "Recent Updates"
     },
     "start": {
       "badge": "Start Here",
@@ -392,6 +402,8 @@
     "privacyPolicy": "Privacy Policy",
     "termsOfService": "Terms of Service",
     "copyright": "Copyright",
-    "copyrightText": "© 2026 Anvil Quest Wiki. Fan-made, not affiliated with Forge Studios."
+    "copyrightText": "© 2026 Anvil Quest Wiki. Fan-made, not affiliated with Forge Studios.",
+    "community": "Community",
+    "legal": "Legal"
   }
 }

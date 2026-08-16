@@ -17,8 +17,11 @@
 interface Props {
   /** i18n labels. */
   labels: { title: string; text: string; accept: string; decline: string };
+  /** Link to the (localized) privacy policy — ePrivacy informed-consent best practice. */
+  privacyHref?: string;
+  privacyLabel?: string;
 }
-const { labels } = Astro.props;
+const { labels, privacyHref, privacyLabel } = Astro.props;
 ---
 
 <div
@@ -32,6 +35,11 @@ const { labels } = Astro.props;
   <div class="mx-auto flex max-w-7xl flex-col items-center gap-3 sm:flex-row">
     <p class="text-sm text-muted-foreground">
       <span class="font-semibold text-foreground">{labels.title}: </span>{labels.text}
+      {privacyHref && privacyLabel && (
+        <a href={privacyHref} class="underline underline-offset-2 hover:text-foreground">
+          {privacyLabel}
+        </a>
+      )}
     </p>
     <div class="flex shrink-0 items-center gap-2 sm:ml-auto">
       <button

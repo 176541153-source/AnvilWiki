@@ -39,7 +39,7 @@ codes:
 
 ### Step 3 — 多语言同步
 
-若 `src/content/wiki/<locale>/codes/` 存在同名文章,同步数据(CodeBlock 的 code 不翻译,label 翻译)。
+若 `src/content/wiki/<locale>/codes/` 存在同名文章,同步数据(codes frontmatter 的 `code` 字段不翻译,`reward` 等文案字段翻译)。
 
 ### Step 4 — 自检(必须执行)
 
