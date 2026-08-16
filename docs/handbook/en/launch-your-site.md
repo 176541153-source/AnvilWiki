@@ -52,15 +52,16 @@ The interactive CLI asks for each item; here is how to fill everything in:
 | Official game URL | The game's official site/store page | Used in metadata |
 | Theme color | `#rrggbb` hex | The CLI converts to HSL and writes it into `globals.css`; the whole site's palette follows |
 | Platform / Developer / Genre | Fill in as appropriate | Used in structured data |
+| Release date | Release date (ISO format); can be left empty | Used in structured data |
 | Locales | Comma-separated, e.g. `en,zh`; **the first is the default language, en must be included** | English gets no path prefix; other languages are prefixed |
 | Categories | Comma-separated lowercase keys, e.g. `codes,guides,bosses` | Common ones: bosses/guides/items/codes/tier-list/characters |
 | Clear demo content? | Press Enter (default N) to keep the demo for reference; clear it before deploy | Deletes demo MDX, keeps the directory structure |
 | Homepage preset | 1 for a codes-style site (default), 2 for a guides-style site, 3 to keep the demo | Decides the homepage module mix |
 | Remove landing page? | Enter (default Y) | /landing is the AnvilWiki project's own site page; your game site doesn't need it |
 
-What the CLI does: rewrites `site.ts`/`navigation.ts`/`routing.ts`/`ui.ts`/`globals.css` (only the 4 theme-color lines)/`locales/*.json`/`manifest.json`/`wrangler.toml [vars]`, clears demo authors, and optionally clears demo content and generates one skeleton article per category.
+What the CLI does: rewrites `site.ts`/`navigation.ts`/`routing.ts`/`ui.ts`/`globals.css` (only the 8 theme-color variable lines)/`locales/*.json`/`manifest.json`/`wrangler.toml [vars]`, clears demo authors, and optionally clears demo content and generates one skeleton article per category.
 
-**Don't want to answer item by item?** You can instead run the **Initialize AnvilWiki** workflow on GitHub (Actions tab) to do the same thing, or preview every change first with `pnpm apply-template --dry-run`.
+**Don't want to answer item by item?** Preview every change first with `pnpm apply-template --dry-run`. There is also an **Initialize AnvilWiki** workflow (Actions tab, manual trigger), but it only does cleanup (resets wrangler.toml vars, removes the project landing page, optionally clears demo content and opens a PR) — **it does not replace the game name, theme color, or locales**; full initialization still means running the CLI locally.
 
 **Beginner error 2: build fails after editing config, complaining about category key mismatch.** Category keys must stay consistent in three places (the CLI guarantees this for you): the `NAVIGATION_CONFIG[].key` in `navigation.ts` = `nav.<key>` in `en.json` = the directory name under `src/content/wiki/en/<key>/`. Editing config by hand is an advanced move; see [docs/apply-template.md](https://github.com/PNGTRID/AnvilWiki/blob/main/docs/apply-template.md).
 

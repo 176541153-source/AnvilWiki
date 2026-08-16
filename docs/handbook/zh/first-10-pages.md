@@ -86,7 +86,7 @@ frontmatter 加 gameVersion;未实测对象标 [待补充] 或整篇 draft: true
 
 ## 多语言(可选,别在首日做)
 
-英文站先跑通;想加语言时,翻译文章用开发手册[定制章](/landing/docs/customize)的翻译提示词。
+英文站先跑通;想加语言时,翻译文章用开发手册[定制章](/zh/landing/docs/customize)的翻译提示词。
 
 > **✅ 验收(本章整体)**
 > - 站内有 8-10 篇通过构建的文章,demo 内容已清(`pnpm apply-template` 重跑选清空,或手动删 `src/content/wiki/en/` 下的 demo 文件)

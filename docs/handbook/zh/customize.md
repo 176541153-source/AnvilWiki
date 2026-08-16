@@ -4,7 +4,7 @@ description: "加导航分类、用 new-locale 脚手架加语言、翻译文章
 manual: dev
 order: 2
 icon: lucide:palette
-tldr: "加分类=三处一致(navigation.ts + locale JSON + 内容目录);加语言=先跑 pnpm new-locale 再让 AI 翻译 JSON 与文章;主题色只改 globals.css 4 行;首页文案全在 locale JSON 的 home.* 段。每步都有对应提示词让 AI 代劳。"
+tldr: "加分类=三处一致(navigation.ts + locale JSON + 内容目录);加语言=先跑 pnpm new-locale 再让 AI 翻译 JSON 与文章;主题色只改 globals.css 8 行(4 变量 × 亮/暗);首页文案全在 locale JSON 的 home.* 段。每步都有对应提示词让 AI 代劳。"
 updated: 2026-08-16
 ---
 
@@ -69,14 +69,14 @@ pnpm check-content && pnpm build && pnpm check-i18n,全绿才算完成。
 
 ## 换主题色(2 分钟)
 
-只改 `src/styles/globals.css` 顶部 4 行:
+只改 `src/styles/globals.css` 顶部的 8 行(4 个变量 × 亮/暗两个块):
 
 ```css
-:root { --brand: hsl(...); --brand-light: hsl(...); }
-.dark { --brand: hsl(...); --brand-light: hsl(...); }
+:root { --brand: hsl(...); --brand-light: hsl(...); --brand-h: ...; --brand-s: ...%; }
+.dark { --brand: hsl(...); --brand-light: hsl(...); --brand-h: ...; --brand-s: ...%; }
 ```
 
-全站组件引用 `var(--brand)`,不许硬编码 hex。十六进制转 HSL:`pnpm apply-template` 的主题色步骤会自动转,或任意在线工具。fork 时直接用 CLI 一步到位(建站章)。
+`--brand-text`(文字安全色)由 `--brand-h/--brand-s` 自动派生,不用手改——所以只改 `--brand`/`--brand-light` 两行会留下旧色相的文字色,必须 8 行一起换。全站组件引用 `var(--brand)`,不许硬编码 hex。十六进制转 HSL:`pnpm apply-template` 的主题色步骤会自动转全部 8 行,或任意在线工具。fork 时直接用 CLI 一步到位(建站章)。
 
 ## 改首页文案与模块
 
@@ -103,4 +103,4 @@ pnpm check-content && pnpm build && pnpm check-i18n,全绿才算完成。
 
 ## 下一步
 
-广告、评论、统计、CI——[集成与工程章](/landing/docs/integrations)给出全部 env 的门控机制和配置全表。
+广告、评论、统计、CI——[集成与工程章](/zh/landing/docs/integrations)给出全部 env 的门控机制和配置全表。

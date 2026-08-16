@@ -19,7 +19,7 @@ updated: 2026-08-16
 
 申请:[AdSense](https://adsense.google.com) → Add site → 等审核(几天到两周)。被拒就看原因(通常回「valueless content」),补 5-10 篇高质量攻略再申请。
 
-通过后填 4 个 env(位置按[部署章](/landing/docs/deploy-and-get-indexed)的二选一):
+通过后填 4 个 env(位置按[部署章](/zh/landing/docs/deploy-and-get-indexed)的二选一):
 
 | 变量 | 值 |
 |---|---|
@@ -47,9 +47,27 @@ updated: 2026-08-16
 
 固定节奏是保鲜的唯一秘诀——过期内容在 Google 眼里等于死站。
 
-### 1. 处理自动开的 freshness issue(5 分钟)
+### 1. 跑新鲜度审计并转成行动清单(15 分钟)
 
-仓库已配 **Content freshness audit** 定时工作流(每周一自动跑 `refresh-audit` 并开 issue):P0 = codes 页超过 7 天未更,P1 = 分类超过 90 天无新文。打开仓库 Actions → 对应 issue 按优先级处理。
+```bash
+pnpm refresh-audit
+```
+
+判定规则:P0 = codes 页超过 7 天未更(30 天升级);P1 = bosses/tier-list 分类的文章超过 90 天未更(这两类过时会触发页面上的过期横幅,其他分类不产生 P1)。
+
+> 上游仓库的 **Content freshness audit** 定时工作流(每周一自动跑审计并开 issue)**默认只在 AnvilWiki 上游生效**,fork 不会收到自动 issue——fork 用户每周本地跑一次 `pnpm refresh-audit` 即可;想开启自动 issue,删掉 `.github/workflows/content-pipeline.yml` 里 job 的 `if: github.repository == ...` 条件。
+
+把报告喂给 AI 转成行动清单:
+
+```text
+下面是我的 pnpm refresh-audit 报告:
+<粘贴报告>
+把 P0/P1 转成可执行清单:
+1. 需要我提供新数据的页面 → 逐页列出具体要什么(最新码列表/新版本机制改动)
+2. 我确认内容仍准确、只需刷新的页面 → 把 lastModified 更新为今天
+3. gameVersion 落后的页面单独列出
+不许自行修改任何内容事实。以复选框清单输出。
+```
 
 ### 2. codes 页更新(10 分钟)
 
@@ -70,25 +88,7 @@ updated: 2026-08-16
 写完运行 pnpm check-content && pnpm build,全绿才算完成。
 ```
 
-### 3. 新鲜度复核(10 分钟)
-
-```bash
-pnpm refresh-audit
-```
-
-把报告喂给 AI 转成行动清单:
-
-```text
-下面是我的 pnpm refresh-audit 报告:
-<粘贴报告>
-把 P0/P1 转成可执行清单:
-1. 需要我提供新数据的页面 → 逐页列出具体要什么(最新码列表/新版本机制改动)
-2. 我确认内容仍准确、只需刷新的页面 → 把 lastModified 更新为今天
-3. gameVersion 落后的页面单独列出
-不许自行修改任何内容事实。以复选框清单输出。
-```
-
-### 4. 收尾(5 分钟)
+### 3. 收尾(5 分钟)
 
 `git push`(build 自动校验)→ 看 GA/GSC 搜索词 → 挑 1-2 个上升词定下周产页主题。
 
@@ -106,7 +106,7 @@ git fetch upstream && git merge upstream/main   # 同步上游(见开发手册·
 
 ```text
 对本站做 SEO 体检,只读不改:
-1. src/config/site.ts 的 SITE_URL 含 https:// 且为正式域名
+1. SITE_URL(wrangler.toml [vars] 或 .env)含 https:// 且为正式域名
 2. 全部文章 title≤80、description 40–165、summary 为直答(列违规清单)
 3. og:image/twitter:image 为绝对路径
 4. noindex 是否误用
@@ -129,4 +129,4 @@ git fetch upstream && git merge upstream/main   # 同步上游(见开发手册·
 
 ## 学完之后
 
-三条路:**回到周节奏持续运营**;**进[开发手册](/landing/docs/architecture)深度定制你的站**;或者**把你的站提 PR 进 AnvilWiki 官网 Showcase**(改 `src/config/landing.ts` 的 showcase 数据),反哺模板社区。
+三条路:**回到周节奏持续运营**;**进[开发手册](/zh/landing/docs/architecture)深度定制你的站**;或者**把你的站提 PR 进 AnvilWiki 官网 Showcase**(改 `src/config/landing.ts` 的 showcase 数据),反哺模板社区。

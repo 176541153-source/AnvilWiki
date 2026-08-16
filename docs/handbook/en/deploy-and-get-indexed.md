@@ -43,8 +43,8 @@ git push
 
 | Option | Action | Good for |
 |---|---|---|
-| **A (recommended for beginners)** | `git rm wrangler.toml && git commit`; dashboard env then takes effect | People who don't want to touch config files |
-| **B** | Keep the file and edit the `[vars]` values (`SITE_URL`, ad/comment variables all live here) | People who want env in version control |
+| **A (recommended for beginners)** | `git rm wrangler.toml && git commit`; dashboard env then takes effect (including the `NODE_VERSION` from the table above) | People who don't want to touch config files |
+| **B** | Keep the file and edit the `[vars]` values (`SITE_URL`, ad/comment variables all live here; add `NODE_VERSION = "22"` to `[vars]` too — otherwise the dashboard value is ignored under option B) | People who want env in version control |
 
 Diagnostic: temporarily add `console.log('ENV:', Object.keys(process.env).filter(k => k.startsWith('PUBLIC_')))` at the top of `astro.config.ts`, push, and check the Cloudflare build log to see exactly which variables exist.
 

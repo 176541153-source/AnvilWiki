@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.11.1] — 2026-08-16
+
+**手册文档专家审查修订版:9 项事实校正(P0×2 + P1×4 + P2×3),中英双语 + 3 份关联文档同步。**
+
+### Fixed
+- **[P0] fork 保鲜工作流误导**:monetize 章原称"仓库已配每周自动开 issue 的 freshness 工作流"——实际 `content-pipeline.yml` 带 `if: github.repository == 'PNGTRID/AnvilWiki'`,fork 永远收不到 issue。改为:fork 每周本地跑 `pnpm refresh-audit`(并说明删 `if` 可开启),周 SOP 重排为三步。
+- **[P0] Initialize AnvilWiki workflow 范围夸大**:launch/integrations 章原称与 apply-template CLI"等价"——实际 workflow 只做收尾清理(wrangler vars/删 landing/清 demo),不含游戏名/主题色/语言。改为如实描述。
+- **[P1] 主题色"4 行"错误(连带 3 处文档陈旧)**:v1.9 引入 `--brand-text` 派生后实际是 8 行(`--brand`/`--brand-light`/`--brand-h`/`--brand-s` × 亮/暗);手册 3 处 + **AGENTS.md 约束 #2 + docs/apply-template.md + docs/migration-from-nextjs.md ×3 处**全部改正——只改 4 行会留下旧色相文字色。
+- **[P1] zh 章节内链语言断裂**:10 处站内链接写死 `/landing/docs/…`(英文路由),中文读者点击静默切英文;统一加 `/zh` 前缀。
+- **[P1] refresh-audit P1 语义不准**:P1 仅覆盖 bosses/tier-list 两类文章超 90 天(其他分类不产生 P1),非"分类 90 天无新文"。
+- **[P1] NODE_VERSION 与方案 B 矛盾**:保留 wrangler.toml 时 dashboard 的 NODE_VERSION 被忽略——补充方案 B 需把 `NODE_VERSION = "22"` 写进 `[vars]`。
+- **[P2] SEO 体检提示词 SITE_URL 位置**(site.ts → wrangler.toml/.env)、**CLI 提示表补 Release date 行**、**CI 门禁枚举补全**(八道:lint/typecheck/test/check-config/build/check-content/check-links/check-i18n)。
+
 ## [1.11.0] — 2026-08-16
 
 **站内文档中心版:`/landing/docs` + `/zh/landing/docs`——学习/开发双手册(9 章 × 中英),每步 SOP + 可复制 AI 提示词,四专家(游戏wiki站/SEO/自动化/模板架构)讨论定档。**
@@ -319,7 +332,8 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
-[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v1.11.0...HEAD
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v1.11.1...HEAD
+[1.11.1]: https://github.com/PNGTRID/AnvilWiki/compare/v1.11.0...v1.11.1
 [1.11.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.10.0...v1.11.0
 [1.10.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.9.0...v1.10.0
 [1.9.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.8.2...v1.9.0

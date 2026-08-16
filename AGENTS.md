@@ -48,7 +48,7 @@ Content layer (src/content, src/locales)                   — fully replace per
 ## Engineering Constraints
 
 1. **UI 文案全部走 JSON** (`src/locales/<locale>.json`),组件里不硬编码文字。
-2. **主题色只管 `--brand` / `--brand-light`**(`:root` 2 行 + `.dark` 2 行,共 4 行),组件里所有颜色引用 `var(--brand)`,禁止硬编码 hex/rgba。
+2. **主题色只管 4 个变量 `--brand` / `--brand-light` / `--brand-h` / `--brand-s`**(`:root` 4 行 + `.dark` 4 行,共 8 行;`--brand-text` 由 h/s 自动派生不用手改),组件里所有颜色引用 `var(--brand)`,禁止硬编码 hex/rgba。
 3. **sitemap 扫描实际 MDX 文件**——不从配置数组生成 URL,因为列表页展示的条目可能还没有对应文章。
 4. **分类 key 在 3 个位置保持一致**:`navigation.ts` 的 `NAVIGATION_CONFIG[].key` = `en.json` 的 `nav.<key>` = `src/content/<locale>/<key>/` 目录名。
 5. **语言列表在 3 个位置保持一致**:`routing.ts` 的 `locales` = `src/locales/*.json` 文件 = `src/content/<locale>/` 目录。

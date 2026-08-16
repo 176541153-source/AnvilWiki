@@ -52,15 +52,16 @@ pnpm apply-template
 | Official game URL | 游戏官网/商店页 | 元数据用 |
 | Theme color | `#rrggbb` 十六进制 | CLI 自动转 HSL 写进 `globals.css`,全站配色跟着变 |
 | Platform / Developer / Genre | 按实际填 | 结构化数据用 |
+| Release date | 发行日期(ISO 格式),可留空 | 结构化数据用 |
 | Locales | 逗号分隔,如 `en,zh`;**第一个是默认语言,en 必须在** | 英文无路径前缀,其他语言带前缀 |
 | Categories | 逗号分隔小写 key,如 `codes,guides,bosses` | 常用:bosses/guides/items/codes/tier-list/characters |
 | Clear demo content? | 建议回车(默认 N)先保留 demo 参考,部署前再清 | 删掉 demo MDX,保留目录结构 |
 | Homepage preset | codes 型站选 1(默认),攻略型选 2,想保留 demo 选 3 | 决定首页模块组合 |
 | Remove landing page? | 回车(默认 Y) | /landing 是 AnvilWiki 项目官网页,你的游戏站不需要 |
 
-CLI 做的事:重写 `site.ts`/`navigation.ts`/`routing.ts`/`ui.ts`/`globals.css`(仅 4 行主题色)/`locales/*.json`/`manifest.json`/`wrangler.toml [vars]`,清 demo 作者,可选清 demo 内容并给每个分类生成一篇骨架文章。
+CLI 做的事:重写 `site.ts`/`navigation.ts`/`routing.ts`/`ui.ts`/`globals.css`(仅 8 行主题色变量)/`locales/*.json`/`manifest.json`/`wrangler.toml [vars]`,清 demo 作者,可选清 demo 内容并给每个分类生成一篇骨架文章。
 
-**不想逐项回答?** 也可以在 GitHub 上跑 **Initialize AnvilWiki** workflow(Actions 标签页)完成同样的事,或在 CLI 里用 `pnpm apply-template --dry-run` 先预览所有改动。
+**不想逐项回答?** 在 CLI 里用 `pnpm apply-template --dry-run` 先预览所有改动。仓库另有一个 **Initialize AnvilWiki** workflow(Actions 标签页手动触发),但它只做收尾清理(重置 wrangler.toml vars、删项目 landing 页、可选清 demo 内容并开 PR)——**不含游戏名/主题色/语言替换**,完整初始化仍要本地跑 CLI。
 
 **新手报错 2:改完配置后 build 挂,提示分类 key 不一致。** 分类 key 必须三处一致(CLI 帮你保证了):`navigation.ts` 的 `NAVIGATION_CONFIG[].key` = `en.json` 的 `nav.<key>` = `src/content/wiki/en/<key>/` 目录名。手改配置属于高级操作,参考 [docs/apply-template.md](https://github.com/PNGTRID/AnvilWiki/blob/main/docs/apply-template.md)。
 
@@ -83,7 +84,7 @@ pnpm dev            # 人眼验收
 
 ## wrangler.toml 预警(现在知道,部署章不踩)
 
-仓库自带的 `wrangler.toml` 存在时,它是 Cloudflare Pages env 的**唯一真相源**,dashboard 的环境变量 UI 会被完全忽略。CLI 已经把它的 `[vars]` 重置为你的配置;后续在 dashboard 里配广告/统计变量前,先读[部署章](/landing/docs/deploy-and-get-indexed)的二选一策略。
+仓库自带的 `wrangler.toml` 存在时,它是 Cloudflare Pages env 的**唯一真相源**,dashboard 的环境变量 UI 会被完全忽略。CLI 已经把它的 `[vars]` 重置为你的配置;后续在 dashboard 里配广告/统计变量前,先读[部署章](/zh/landing/docs/deploy-and-get-indexed)的二选一策略。
 
 > **✅ 验收(全部成立才算完成)**
 > - 命令:`pnpm check-config && pnpm build` → 全绿

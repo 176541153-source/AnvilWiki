@@ -30,7 +30,7 @@ What do you want to change?
 │                                      src/locales/<locale>.json home.* (homepage modules)
 ├─ Game name / domain / author       → src/config/site.ts
 ├─ Navigation categories             → src/config/navigation.ts + en.json nav.<key> + content dirs (three-place consistency!)
-├─ Theme colors                      → src/styles/globals.css --brand/--brand-light (4 lines total)
+├─ Theme colors                      → src/styles/globals.css --brand/--brand-light/--brand-h/--brand-s (4 vars × light/dark, 8 lines)
 ├─ Language list                     → src/i18n/routing.ts + locales JSON + content dirs (three-place consistency!)
 ├─ Article content                   → src/content/wiki/<locale>/<category>/*.mdx
 ├─ New components / new pages        → src/components / src/pages (Code layer — weigh the upstream sync cost)
@@ -66,7 +66,7 @@ Multilingual rules (**an intentional asymmetry**): when the requested language v
 ## Engineering constraints quick reference
 
 - All UI copy lives in JSON; components contain zero hard-coded text
-- Theme colors are only the 4 lines of `--brand`/`--brand-light`; components reference only `var(--brand)`
+- Theme colors are only the 4 variables `--brand`/`--brand-light`/`--brand-h`/`--brand-s` (`--brand-text` derives from h/s automatically, never edit it); components reference only `var(--brand)`
 - og:image and other social cards use absolute paths (`${SITE_URL}/...`)
 - Domains come from the `SITE_URL` env, which must include `https://`
 - Empty ad/comment env values render nothing (the out-of-the-box Lighthouse 4×100 contract)

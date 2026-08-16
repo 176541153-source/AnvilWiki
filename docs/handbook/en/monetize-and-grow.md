@@ -47,9 +47,27 @@ Template contract: **if any one is empty, the corresponding slot does not render
 
 A fixed cadence is the only secret to freshness — stale content reads as a dead site in Google's eyes.
 
-### 1. Triage the auto-opened freshness issues (5 minutes)
+### 1. Run the freshness audit and turn it into an action list (15 minutes)
 
-The repo ships a scheduled **Content freshness audit** workflow (runs `refresh-audit` automatically every Monday and opens issues): P0 = a codes page untouched for more than 7 days, P1 = a category with no new article for more than 90 days. Open the repo's Actions → handle the issues by priority.
+```bash
+pnpm refresh-audit
+```
+
+Rules: P0 = a codes page untouched for more than 7 days (escalates at 30 days); P1 = an article in the bosses/tier-list categories untouched for more than 90 days (those two categories show a stale banner on the page when outdated — other categories never produce a P1).
+
+> The upstream repo's scheduled **Content freshness audit** workflow (runs the audit every Monday and opens issues) **only runs on the AnvilWiki upstream by default** — forks never receive the automatic issues. Fork users simply run `pnpm refresh-audit` locally once a week; to enable automatic issues, delete the `if: github.repository == ...` condition on the job in `.github/workflows/content-pipeline.yml`.
+
+Feed the report to an AI and turn it into an action list:
+
+```text
+Here is my pnpm refresh-audit report:
+<paste the report>
+Turn P0/P1 into an actionable list:
+1. Pages where I need to supply new data → list per page exactly what's needed (latest codes / mechanic changes in the new version)
+2. Pages I've confirmed are still accurate and just need a refresh → update lastModified to today
+3. List pages whose gameVersion lags behind separately
+Do not change any content facts on your own. Output as a checklist.
+```
 
 ### 2. Update the codes page (10 minutes)
 
@@ -70,25 +88,7 @@ if other language versions exist, sync their data too (don't translate the code 
 When done, run pnpm check-content && pnpm build; only all-green counts as complete.
 ```
 
-### 3. Freshness re-audit (10 minutes)
-
-```bash
-pnpm refresh-audit
-```
-
-Feed the report to an AI and turn it into an action list:
-
-```text
-Here is my pnpm refresh-audit report:
-<paste the report>
-Turn P0/P1 into an actionable list:
-1. Pages where I need to supply new data → list per page exactly what's needed (latest codes / mechanic changes in the new version)
-2. Pages I've confirmed are still accurate and just need a refresh → update lastModified to today
-3. List pages whose gameVersion lags behind separately
-Do not change any content facts on your own. Output as a checklist.
-```
-
-### 4. Wrap up (5 minutes)
+### 3. Wrap up (5 minutes)
 
 `git push` (the build validates automatically) → check GA/GSC search terms → pick 1-2 rising terms to set next week's page topics.
 
@@ -106,7 +106,7 @@ git fetch upstream && git merge upstream/main   # sync upstream (see the develop
 
 ```text
 Run a read-only SEO health check on this site — analyze, don't change anything:
-1. SITE_URL in src/config/site.ts includes https:// and is the production domain
+1. SITE_URL (in wrangler.toml [vars] or .env) includes https:// and is the production domain
 2. Every article: title ≤80, description 40–165, summary a direct answer (list the violations)
 3. og:image/twitter:image are absolute paths
 4. Any misuse of noindex?

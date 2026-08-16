@@ -43,8 +43,8 @@ git push
 
 | 方案 | 操作 | 适合 |
 |---|---|---|
-| **A(推荐新手)** | `git rm wrangler.toml && git commit`,之后 dashboard 配 env 生效 | 不想碰配置文件 |
-| **B** | 保留文件,改 `[vars]` 段的值(`SITE_URL`、广告/评论变量都写在这) | 想把 env 进版本库 |
+| **A(推荐新手)** | `git rm wrangler.toml && git commit`,之后 dashboard 配 env 生效(含上表的 `NODE_VERSION`) | 不想碰配置文件 |
+| **B** | 保留文件,改 `[vars]` 段的值(`SITE_URL`、广告/评论变量都写在这;`NODE_VERSION = "22"` 也要加进 `[vars]`,否则方案 B 下 dashboard 设的版本号被忽略) | 想把 env 进版本库 |
 
 诊断法:在 `astro.config.ts` 顶部临时加 `console.log('ENV:', Object.keys(process.env).filter(k => k.startsWith('PUBLIC_')))` ,push 后看 Cloudflare build 日志里到底有哪些变量。
 

@@ -30,7 +30,7 @@ AnvilWiki 的每个设计都服务于同一个目标:**fork 用户改内容不�
 │                       src/locales/<locale>.json 的 home.*(首页模块)
 ├─ 游戏名/域名/作者   → src/config/site.ts
 ├─ 导航分类           → src/config/navigation.ts + en.json nav.<key> + 内容目录(三处一致!)
-├─ 主题色             → src/styles/globals.css 的 --brand/--brand-light(共 4 行)
+├─ 主题色             → src/styles/globals.css 的 --brand/--brand-light/--brand-h/--brand-s(4 变量 × 亮/暗,共 8 行)
 ├─ 语言列表           → src/i18n/routing.ts + locales JSON + 内容目录(三处一致!)
 ├─ 文章内容           → src/content/wiki/<locale>/<category>/*.mdx
 ├─ 新组件/新页面      → src/components / src/pages(Code 层,改了要考虑上游同步成本)
@@ -66,7 +66,7 @@ postbuild → Pagefind 索引正文 → 搜索零运行时
 ## 工程约束速查
 
 - UI 文案全部走 JSON,组件零硬编码文字
-- 主题色只管 `--brand`/`--brand-light` 4 行,组件只引用 `var(--brand)`
+- 主题色只管 `--brand`/`--brand-light`/`--brand-h`/`--brand-s` 4 个变量(`--brand-text` 由 h/s 自动派生,不用手改),组件只引用 `var(--brand)`
 - og:image 等社交卡片用绝对路径(`${SITE_URL}/...`)
 - 域名走 `SITE_URL` env,必须含 `https://`
 - 广告/评论 env 空值 = 组件不渲染(开箱 Lighthouse 4×100 契约)
@@ -84,7 +84,7 @@ pnpm build && pnpm check-links   # schema + 构建 + 内链对账
 
 ## 深入设计依据
 
-每个模块的「为什么这样设计」在 [docs/PRD.md](https://github.com/PNGTRID/AnvilWiki/blob/main/docs/PRD.md)(15 章 + 3 附录,单一真相源);贡献级细节(发版流程/SemVer)在[同步与贡献章](/landing/docs/sync-and-contribute)。
+每个模块的「为什么这样设计」在 [docs/PRD.md](https://github.com/PNGTRID/AnvilWiki/blob/main/docs/PRD.md)(15 章 + 3 附录,单一真相源);贡献级细节(发版流程/SemVer)在[同步与贡献章](/zh/landing/docs/sync-and-contribute)。
 
 > **✅ 验收(全部成立才算完成)**
 > - ☐ 能对任意一个改动需求,30 秒内说出它落在哪一层、哪些文件
@@ -93,4 +93,4 @@ pnpm build && pnpm check-links   # schema + 构建 + 内链对账
 
 ## 下一步
 
-进入[定制章](/landing/docs/customize):加分类、加语言、换主题、改首页——每一步的 SOP 和配套 AI 提示词。
+进入[定制章](/zh/landing/docs/customize):加分类、加语言、换主题、改首页——每一步的 SOP 和配套 AI 提示词。

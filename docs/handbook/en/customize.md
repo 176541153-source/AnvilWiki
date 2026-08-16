@@ -4,7 +4,7 @@ description: "Add categories, languages, theme colors, and homepage copy: comman
 manual: dev
 order: 2
 icon: lucide:palette
-tldr: "Adding a category means three-place consistency (navigation.ts + locale JSON + content directory). Adding a language: run pnpm new-locale first, then let AI translate the JSON and articles. Theme colors are just 4 lines in globals.css. All homepage copy lives in the home.* section of the locale JSON. Every step has a companion prompt to delegate to AI."
+tldr: "Adding a category means three-place consistency (navigation.ts + locale JSON + content directory). Adding a language: run pnpm new-locale first, then let AI translate the JSON and articles. Theme colors are just 8 lines (4 vars × light/dark) in globals.css. All homepage copy lives in the home.* section of the locale JSON. Every step has a companion prompt to delegate to AI."
 updated: 2026-08-16
 ---
 
@@ -70,14 +70,14 @@ pnpm check-content && pnpm build && pnpm check-i18n — only all-green counts as
 
 ## Change the theme colors (2 minutes)
 
-Edit only the 4 lines at the top of `src/styles/globals.css`:
+Edit only the 8 lines at the top of `src/styles/globals.css` (4 variables × light/dark):
 
 ```css
-:root { --brand: hsl(...); --brand-light: hsl(...); }
-.dark { --brand: hsl(...); --brand-light: hsl(...); }
+:root { --brand: hsl(...); --brand-light: hsl(...); --brand-h: ...; --brand-s: ...%; }
+.dark { --brand: hsl(...); --brand-light: hsl(...); --brand-h: ...; --brand-s: ...%; }
 ```
 
-Components across the site reference `var(--brand)`; hard-coded hex is not allowed. Hex to HSL: the theme-color step of `pnpm apply-template` converts automatically, or use any online tool. At fork time the CLI does it in one step (see the site launch chapter).
+`--brand-text` (the text-safe shade) derives from `--brand-h/--brand-s` automatically — never edit it by hand, which also means changing only `--brand`/`--brand-light` leaves the old hue in text colors: always replace all 8 lines together. Components across the site reference `var(--brand)`; hard-coded hex is not allowed. Hex to HSL: the theme-color step of `pnpm apply-template` converts all 8 lines automatically, or use any online tool. At fork time the CLI does it in one step (see the site launch chapter).
 
 ## Edit homepage copy and modules
 

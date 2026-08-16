@@ -42,9 +42,9 @@ A local `.env` file works too (read via `import.meta.env`; `.env` is already in 
 
 | Workflow | Trigger | What it guards |
 |---|---|---|
-| **CI** (ci.yml) | Every push/PR | lint + typecheck + test + build — all gates; a red run blocks the merge |
-| **Content freshness audit** (content-pipeline.yml) | Weekly cron (Mondays) | Runs `refresh-audit`; P0/P1 automatically open issues; **it only opens issues and never edits content** (the supply-chain risk of an LLM editing content is uncontrollable — human gating must stay) |
-| **Initialize AnvilWiki** (setup.yml) | Manual trigger | One-click initialization after forking (the workflow version of the apply-template CLI) |
+| **CI** (ci.yml) | Every push/PR | lint + typecheck + test + check-config + build + check-content + check-links + check-i18n — all eight gates; a red run blocks the merge |
+| **Content freshness audit** (content-pipeline.yml) | Weekly cron (Mondays; **upstream repo only** — forks must delete the `if` condition to enable it) | Runs `refresh-audit`; P0/P1 automatically open issues; **it only opens issues and never edits content** (the supply-chain risk of an LLM editing content is uncontrollable — human gating must stay) |
+| **Initialize AnvilWiki** (setup.yml) | Manual trigger | Post-fork cleanup: resets wrangler.toml `[vars]`, removes the project landing page, optionally clears demo content and opens a PR. **It does not replace the game name / theme color / locales** — those still need a local `pnpm apply-template` run |
 
 Local equivalents: the gate commands live in `package.json` scripts (`check-config`/`check-content`/`check-i18n`/`check-links`/`check-sitemap`/`refresh-audit`); running `pnpm build` before a push is CI in miniature.
 

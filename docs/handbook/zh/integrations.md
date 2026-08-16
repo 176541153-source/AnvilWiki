@@ -23,7 +23,7 @@ if (!client) return null;   // 空值 = 不渲染 = 零 JS 零请求
 
 ## 环境变量总表
 
-构建时注入,声明位置:保留 `wrangler.toml` 就写 `[vars]`,删了就在 Cloudflare dashboard(二选一,见[部署章](/landing/docs/deploy-and-get-indexed)):
+构建时注入,声明位置:保留 `wrangler.toml` 就写 `[vars]`,删了就在 Cloudflare dashboard(二选一,见[部署章](/zh/landing/docs/deploy-and-get-indexed)):
 
 | 变量 | 功能 | 空值行为 |
 |---|---|---|
@@ -42,9 +42,9 @@ if (!client) return null;   // 空值 = 不渲染 = 零 JS 零请求
 
 | 工作流 | 触发 | 守护什么 |
 |---|---|---|
-| **CI**(ci.yml) | 每次 push/PR | lint + typecheck + test + build——所有门禁,红了不许合 |
-| **Content freshness audit**(content-pipeline.yml) | 每周一定时 | 跑 `refresh-audit`,P0/P1 自动开 issue;**只开 issue 绝不改内容**(LLM 改内容的供应链风险不可控,人工门控必须保留) |
-| **Initialize AnvilWiki**(setup.yml) | 手动触发 | fork 后一键初始化(等价 apply-template CLI 的 workflow 版) |
+| **CI**(ci.yml) | 每次 push/PR | lint + typecheck + test + check-config + build + check-content + check-links + check-i18n——全部八道门禁,红了不许合 |
+| **Content freshness audit**(content-pipeline.yml) | 每周一定时(**仅上游仓库生效**,fork 需删 `if` 条件开启) | 跑 `refresh-audit`,P0/P1 自动开 issue;**只开 issue 绝不改内容**(LLM 改内容的供应链风险不可控,人工门控必须保留) |
+| **Initialize AnvilWiki**(setup.yml) | 手动触发 | fork 后的收尾清理:重置 wrangler.toml `[vars]`、删项目 landing 页、可选清 demo 内容并开 PR。**不含游戏名/主题色/语言替换**——那些仍要本地跑 `pnpm apply-template` |
 
 本地等价物:门禁命令见 `package.json` scripts(`check-config`/`check-content`/`check-i18n`/`check-links`/`check-sitemap`/`refresh-audit`);push 前 `pnpm build` 就是 CI 的缩影。
 
@@ -68,4 +68,4 @@ if (!client) return null;   // 空值 = 不渲染 = 零 JS 零请求
 
 ## 下一步
 
-上游会持续进化——[同步与贡献章](/landing/docs/sync-and-contribute):怎么 merge 上游不丢配置,以及怎么把你的改进回流给社区。
+上游会持续进化——[同步与贡献章](/zh/landing/docs/sync-and-contribute):怎么 merge 上游不丢配置,以及怎么把你的改进回流给社区。

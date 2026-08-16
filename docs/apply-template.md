@@ -92,24 +92,28 @@ export const NAVIGATION_CONFIG = [
 
 ## 3. 主题色
 
-**文件**：`src/styles/globals.css`（顶部 4 行）
+**文件**：`src/styles/globals.css`（顶部 8 行：4 个变量 × 亮/暗）
 
 ```css
 :root {
   --brand: 22 90% 52%;        /* 亮色主色（HSL，空格分隔） */
   --brand-light: 22 90% 62%;  /* 亮色浅色变体 */
+  --brand-h: 22;              /* 色相（--brand-text 派生用） */
+  --brand-s: 90%;             /* 饱和度（--brand-text 派生用） */
 }
 .dark {
   --brand: 22 85% 48%;        /* 暗色主色 */
   --brand-light: 22 85% 58%;  /* 暗色浅色变体 */
+  --brand-h: 22;
+  --brand-s: 85%;
 }
 ```
 
-**怎么换色**：把你的 hex 色值转成 HSL（用 [w3schools HSL 转换器](https://www.w3schools.com/colors/colors_hsl.asp) 或任何工具），替换这 4 行的值。其他 CSS 变量（`--background` / `--foreground` / `--border` 等）通过 `var(--brand)` 自动跟随，不用改。
+**怎么换色**：把你的 hex 色值转成 HSL（用 [w3schools HSL 转换器](https://www.w3schools.com/colors/colors_hsl.asp) 或任何工具），替换这 8 行的值（`--brand-text` 由 `--brand-h/--brand-s` 自动派生，不用手改——漏改 h/s 会让文字色残留旧色相）。其他 CSS 变量（`--background` / `--foreground` / `--border` 等）通过 `var(--brand)` 自动跟随，不用改。
 
 **验证**：
 ```bash
-grep "brand" src/styles/globals.css          # 确认 4 行已更新
+grep "brand" src/styles/globals.css          # 确认 8 行已更新
 grep -rn "#[0-9a-fA-F]\{6\}" src/components/  # 确认组件里无硬编码 hex
 ```
 
