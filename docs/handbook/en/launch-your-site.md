@@ -1,97 +1,171 @@
 ---
-title: "Launch a Site in Half an Hour: From Fork to Running Locally"
-description: "Fork the repo, install dependencies, and run apply-template to swap the demo site for your game — every CLI prompt explained, plus the top three beginner errors."
+title: "Chapter 2 · Get the Site onto Your Computer"
+description: "Install 6 tools (terminal, GitHub, Node, pnpm, Git, AI helper), fork the template as yours, and your game's site runs in 30 minutes. Each step says what you'll see."
 manual: learn
 order: 2
 icon: lucide:rocket
-tldr: "Fork, clone, run pnpm install and pnpm dev to see the demo site, then run pnpm apply-template to replace the game name, theme color, locales, and categories in one pass. Run pnpm check-config to verify three-place consistency. The whole process takes about 30 minutes and requires writing zero code."
-updated: 2026-08-16
+tldr: "This chapter has two acts. Act one installs all six tools — terminal, GitHub account, Node, pnpm, Git, and an AI coding assistant; not one can be skipped, and they are your ticket to every later chapter. Act two copies the template, runs one command to swap the demo site for your game, and ends with your own site open at localhost:4321. Every step tells you what you'll see."
+updated: 2026-08-17
 ---
 
-## What you will accomplish in this chapter
+## Where you are, and what this chapter solves
 
-A complete wiki site for the game you selected, running at `http://localhost:4321` — with your theme color, navigation, multilingual skeleton, and search. The next two chapters (page production, deployment) build on this foundation.
+Last chapter you picked your game. Right now you still have nothing — by the end of this chapter, your computer holds a full set of website files, and the browser opens a running site that carries your game's name.
 
-## Step 1: Fork and clone (5 minutes)
+Think of it as opening a bakery: the AnvilWiki template is a **bakery already fully decorated** (shelves, counter, and lights all in place, with a set of sample cakes on display). Your job is to copy the whole bakery and make it yours, then swap the samples for your own cakes.
+
+## What you'll have when this chapter is done
+
+- A working website on your computer — open `http://localhost:4321` in a browser to see it
+- It shows your game's name, your theme color, and your categories
+
+## Act one: before you set off, install 6 things
+
+This act is the biggest dropout point of the whole book. Take them one at a time; install one, tick it off. **You install these 6 exactly once and use them forever.**
+
+### Tool 1: the terminal (the window where you type commands)
+
+The terminal is the window where you give your computer orders by typing.
+
+- **Mac**: press `Command + Space`, type "Terminal", press Enter to open it.
+- **Windows**: open the Start menu, type "PowerShell", press Enter to open it.
+
+**Confirm you got it right**: the window shows a blinking cursor next to your computer's name and a `~` or `>` symbol. This is the terminal. Whenever the book says "in the terminal, type", this is where you type and press Enter.
+
+### Tool 2: a GitHub account (the warehouse that holds your site's files)
+
+GitHub is where your website files live — your storefront warehouse, so to speak.
+
+Open [github.com](https://github.com), click Sign up at the top right, and register a free account with your email. Pick a sensible username — it appears in your website address.
+
+**Confirm you got it right**: you can log in, and your avatar shows at the top right.
+
+### Tool 3: Node (the foundation the site engine sits on)
+
+Node is the base software this website template runs on; you need version **22.13 or newer**.
+
+- Open [nodejs.org](https://nodejs.org), download the LTS (long-term support) version on the left, double-click to install, keep clicking Next.
+- After installing, **open a new terminal** (close the old one and reopen it), type `node -v`, press Enter.
+
+**What you'll see**: a line like `v22.14.0`.
+**Confirm you got it right**: the number starts with 22 or higher. If you see command not found, either the terminal wasn't reopened or the install didn't finish — do it again.
+
+### Tool 4: pnpm (the mover — one command installs every site part)
+
+In the terminal, type:
 
 ```bash
-# 1. Fork https://github.com/PNGTRID/AnvilWiki on GitHub to your account
+npm install -g pnpm
+```
 
-# 2. Clone locally (replace <your-username> with your GitHub username)
+**What you'll see**: a few lines of progress, with no red error at the end.
+**Confirm you got it right**: type `pnpm -v`, press Enter, and a version number appears.
+
+### Tool 5: Git (the delivery truck that carries files into the warehouse)
+
+- **Mac**: type `brew install git` in the terminal (no brew? Install it first with the command on brew.sh's homepage). Or simpler: after installing Node, many Macs already ship Git — try `git -v` first; if a version number shows, skip this.
+- **Windows**: download from [git-scm.com](https://git-scm.com), install, keep clicking Next.
+
+**Confirm you got it right**: type `git -v` in the terminal and a version number appears.
+
+### Tool 6: an AI coding assistant (your content-writing partner — every later chapter uses it)
+
+Install **any one** of ZCode / Claude Code / Codex / Cursor (all have free tiers). You won't need it this chapter; in Chapter 3 it becomes the star.
+
+**Confirm you got it right**: the app opens, and you know how to start a new chat.
+
+## Act two: copy the bakery, hang your own sign
+
+### Step 1: Copy the template repo into your GitHub (fork)
+
+**What to do**: copy the entire AnvilWiki bakery under your name. The original store keeps running as usual; the copy you made is yours to change freely.
+**How to do it**: log into GitHub, open [github.com/PNGTRID/AnvilWiki](https://github.com/PNGTRID/AnvilWiki), click the **Fork** button at the top right, then click **Create fork**.
+**What you'll see**: you land on the `your-username/AnvilWiki` repo page.
+**Confirm you got it right**: the repo name at the top left shows your username, not PNGTRID.
+
+### Step 2: Move the repo onto your computer (clone)
+
+**What to do**: download your GitHub copy, the whole thing, to your local machine.
+**How to do it**: on your repo page, click the green **Code** button and copy the address; open the terminal and enter in order (replace `<your-username>` with your GitHub username):
+
+```bash
 git clone https://github.com/<your-username>/AnvilWiki.git
 cd AnvilWiki
-
-# 3. Install dependencies (requires Node 22+ and pnpm 11)
 pnpm install
+```
 
-# 4. Start the dev server
+**What you'll see**: `pnpm install` runs for ten seconds to a few minutes, scrolls a pile of package names, and stops with no red error.
+**Confirm you got it right**: type `ls`, press Enter, and you can see `package.json` among a row of files.
+
+### Step 3: Run it locally and take a look
+
+**What to do**: first see what this "sample bakery" looks like.
+**How to do it**: in the terminal, type:
+
+```bash
 pnpm dev
-# Open http://localhost:4321 — you are looking at the demo site for the fictional game "Anvil Quest"
 ```
 
-No pnpm? Install it first: `npm install -g pnpm` (or `corepack enable`). Check your Node version with `node -v`; it must be ≥ 22.13.
+**What you'll see**: a few green startup lines containing `localhost:4321`.
+**Confirm you got it right**: open [localhost:4321](http://localhost:4321) in a browser — a guide site for a fictional game, "Anvil Quest". That's the look you're about to replace. When you've seen enough, go back to the terminal and press `Control + C` to stop it.
 
-**Beginner error 1: build script warnings during install.** pnpm 11 requires approval for the esbuild/sharp build scripts; the repo's `pnpm-workspace.yaml` already configures `allowBuilds`, so this normally passes as-is. If you touched that file, restore it.
+### Step 4: Swap in your game (one question-and-answer command)
 
-## Step 2: Run the apply-template CLI to switch to your game (10 minutes)
+**What to do**: replace the demo site's game name, colors, categories, and languages — all of them — with yours.
+**How to do it**: type `pnpm apply-template` in the terminal. It asks you one question at a time; answer using the table below (press Enter after each answer; when unsure, just press Enter to take the default):
 
-```bash
-pnpm apply-template
-```
-
-The interactive CLI asks for each item; here is how to fill everything in:
-
-| Prompt | What to enter | Notes |
+| What it asks | What you enter | Why |
 |---|---|---|
-| Full game name | The full game name (e.g. `Blade Ball`) | Used in titles, SEO, and legal notices |
-| Short name | Defaults to an initialism; pressing Enter is fine | PWA/mobile display name |
-| Domain | Your domain, e.g. `mygame-wiki.com`; if you don't have one yet, enter `<you>.pages.dev` | Feeds canonical/og:image absolute URLs; **must be the real domain before deploy** |
-| Hero tagline | The sub-line under the homepage headline | A one-sentence value proposition |
-| Site description | A 40-165 character site description (SEO) | Include the game name and content-type keywords |
-| Legal notice | The default template is fine | Disclaimer (unofficial, not affiliated) |
-| Official game URL | The game's official site/store page | Used in metadata |
-| Theme color | `#rrggbb` hex | The CLI converts to HSL and writes it into `globals.css`; the whole site's palette follows |
-| Platform / Developer / Genre | Fill in as appropriate | Used in structured data |
-| Release date | Release date (ISO format); can be left empty | Used in structured data |
-| Locales | Comma-separated, e.g. `en,zh`; **the first is the default language, en must be included** | English gets no path prefix; other languages are prefixed |
-| Categories | Comma-separated lowercase keys, e.g. `codes,guides,bosses` | Common ones: bosses/guides/items/codes/tier-list/characters |
-| Clear demo content? | Press Enter (default N) to keep the demo for reference; clear it before deploy | Deletes demo MDX, keeps the directory structure |
-| Homepage preset | 1 for a codes-style site (default), 2 for a guides-style site, 3 to keep the demo | Decides the homepage module mix |
-| Remove landing page? | Enter (default Y) | /landing is the AnvilWiki project's own site page; your game site doesn't need it |
+| Full game name | Your game's full English name, e.g. `Blade Ball` | Used in the site title and search results |
+| Short name | Just press Enter (auto-abbreviates) | The short name shown on phones |
+| Domain | Your domain; if you don't have one, enter `your-username.pages.dev` (e.g. `xiaoming.pages.dev` — this address doesn't exist yet; it's auto-created after deploy) | Tells the site "which is my official address"; change it back once you buy a domain |
+| Hero tagline | A one-sentence hook, e.g. `Your home for everything Blade Ball` | The line under the homepage headline |
+| Site description | A 40 to 165 character site intro that includes the game name | The description Google shows in search results |
+| Legal notice | Just press Enter (default) | Disclaimer: unofficial, not affiliated with the game maker |
+| Official game URL | The game's official site or store page | Used in site metadata |
+| Theme color | A six-digit hex starting with `#`, e.g. `#7c3aed` | The site's brand color; the command builds the light and dark sets automatically |
+| Platform / Developer / Genre | Fill in as true; if unsure, press Enter | Display use |
+| Release date | The game's release date, format like `2026-01-15`; if unknown, press Enter to leave it empty | Display use |
+| Locales | How many languages you'll run. English only? Press Enter (`en`). English + Chinese? Enter `en,zh`. **The first is the default language, and en must be included** | English players have the largest search volume — build English-first |
+| Categories | Your site's categories, lowercase and comma-separated, e.g. `codes,guides,bosses`. Common: codes / guides / bosses / items / tier-list / characters | The top navigation is generated from this |
+| Clear demo content? | Press Enter (default no) | Keep the demo articles as reference for now; clear them before launch |
+| Homepage preset | Press Enter (picks 1) | 1 = codes-style homepage (most people), 2 = guides-style, 3 = keep the demo |
+| Remove landing page? | Press Enter (default yes) | /landing is the AnvilWiki project's own intro page; your game site doesn't need it, auto-removed |
 
-What the CLI does: rewrites `site.ts`/`navigation.ts`/`routing.ts`/`ui.ts`/`globals.css` (only the 8 theme-color variable lines)/`locales/*.json`/`manifest.json`/`wrangler.toml [vars]`, clears demo authors, and optionally clears demo content and generates one skeleton article per category.
+**What you'll see**: the command rewrites files one by one, each line prefixed with a green ✅, and it reports done at the end.
+**Confirm you got it right**: type `pnpm check-config` in the terminal, press Enter, and it prints "✅ Config is consistent".
 
-**Don't want to answer item by item?** Preview every change first with `pnpm apply-template --dry-run`. There is also an **Initialize AnvilWiki** workflow (Actions tab, manual trigger), but it only does cleanup (resets wrangler.toml vars, removes the project landing page, optionally clears demo content and opens a PR) — **it does not replace the game name, theme color, or locales**; full initialization still means running the CLI locally.
+Small tip: to preview what it will change before letting it act, run `pnpm apply-template --dry-run` first (prints the plan only, changes nothing). Also, GitHub has a button called **Initialize AnvilWiki** (in the repo's Actions tab), but it **only does final cleanup** — it does not swap in your game name, your theme color, or your languages. The full replacement only happens with this local command.
 
-**Beginner error 2: build fails after editing config, complaining about category key mismatch.** Category keys must stay consistent in three places (the CLI guarantees this for you): the `NAVIGATION_CONFIG[].key` in `navigation.ts` = `nav.<key>` in `en.json` = the directory name under `src/content/wiki/en/<key>/`. Editing config by hand is an advanced move; see [docs/apply-template.md](https://github.com/PNGTRID/AnvilWiki/blob/main/docs/apply-template.md).
+### Step 5: Verify your site with your own eyes
 
-## Step 3: Self-check + preview (5 minutes)
+**What to do**: confirm the store sign really changed.
+**How to do it**: type `pnpm dev` in the terminal, open [localhost:4321](http://localhost:4321) in the browser.
+**What you'll see**: the homepage shows your game's name and theme color, and the navigation bar shows the categories you chose.
+**Confirm you got it right** — check item by item:
 
-```bash
-pnpm check-config   # category/locale three-place consistency
-pnpm build          # full validation (schema + types + build)
-pnpm dev            # visual acceptance check
-```
-
-**Beginner error 3: `astro build` fails with a SITE_URL format error.** `SITE_URL` must include the `https://` protocol; a bare domain fails the build. The CLI writes it correctly — don't strip the protocol if you edit `wrangler.toml` by hand.
-
-Local checklist:
-
-- ☐ The homepage shows your game's name and theme color (not Anvil Quest/orange)
+- ☐ The homepage title is your game (no longer Anvil Quest)
+- ☐ The brand color is the one you picked (no longer orange)
 - ☐ Navigation shows only the categories you chose
-- ☐ The browser tab title is correct
-- ☐ The layout holds up at mobile widths (switch device emulation in DevTools)
+- ☐ It also holds up at phone width (press F12 in the browser, then click the device icon to switch to a phone view)
 
-## A wrangler.toml heads-up (know it now, skip the trap in the deploy chapter)
+When you've seen enough, `Control + C` to stop it.
 
-When the repo's `wrangler.toml` exists, it is the **single source of truth** for Cloudflare Pages env, and the dashboard's Environment variables UI is ignored entirely. The CLI has already reset its `[vars]` to your configuration; before configuring ad/analytics variables in the dashboard later, read the two-way strategy in the [deployment chapter](/landing/docs/deploy-and-get-indexed).
+## If you get stuck
 
-> **✅ Acceptance criteria (all must hold)**
-> - Commands: `pnpm check-config && pnpm build` → all green
-> - Pages: `pnpm dev`, open localhost:4321 — game name/theme color/categories are all yours
-> - ☐ Git shows the files the CLI changed (config layer), and `git diff` touched nothing unexpected in src/pages, src/components
-> - ☐ The Domain field is confirmed (a pages.dev placeholder is fine until you have a real domain)
+- **"Typing pnpm says command not found"**: pnpm didn't install, or you didn't reopen the terminal after installing. Close the terminal, reopen it, try again.
+- **`pnpm install` or build prints a wall of red**: read the **last line** first — 90% of the answer lives there; if you really can't parse it, copy the whole red block, hand it to your AI assistant, and ask "how do I fix this error".
+- **localhost:4321 won't open**: make sure `pnpm dev` is still running in the terminal (window not closed, no Control + C pressed); and don't type the address as https.
+- **You answered apply-template wrong mid-way**: press `Control + C` to cancel and run it again — it overwrites with the new answers.
+- **"After reopening the terminal every command says not a git repository"**: a fresh terminal starts in your home folder — type `cd AnvilWiki` first to go back to the site folder, then continue.
 
-## Next steps
+## ✅ Acceptance criteria (all must hold)
 
-The site shell exists, but the content is still demo (or empty). The next chapter is the heart of the whole methodology: have AI produce 10 build-passing, search-intent-shaped pages in a single day — complete prompts included.
+- Commands: `pnpm check-config` shows ✅, and `pnpm build` finishes with no red error on the last line
+- Pages: on localhost:4321, the game name, theme color, and categories are all yours
+- ☐ All 6 tools are in place (Chapter 3 needs the AI assistant right away)
+- ☐ You remember what you entered for Domain (a pages.dev placeholder for now is fine; come back and change it after you buy a domain)
+
+## Next step
+
+The store is decorated, but the shelves still hold sample goods. The next chapter is the best part of the whole book: have AI write 10 build-check-passing guides in one day. [Go to Chapter 3 · Let AI write 10 guides for you](/landing/docs/first-10-pages)

@@ -1,100 +1,142 @@
 ---
-title: "Deploy and Get Indexed: Cloudflare + Google in One Go"
-description: "Push to GitHub, connect Cloudflare Pages, settle the wrangler.toml env choice, and do launch-day SEO: verify GSC, submit the sitemap, request indexing."
+title: "Chapter 4 · Let the Whole World See Your Site"
+description: "Push to GitHub, connect Cloudflare's free shelf for a live URL, then verify Search Console, submit the sitemap, and request indexing. Free throughout."
 manual: learn
 order: 4
 icon: lucide:cloud
-tldr: "After git push, connect the repo in Cloudflare Pages (Astro is auto-detected; build command pnpm build, output dist) and get unlimited bandwidth free. On launch day do three things: verify the domain in GSC, submit sitemap.xml, and request indexing for new pages; Cloudflare auto-submits IndexNow so Bing discovers you instantly."
-updated: 2026-08-16
+tldr: "Push the site files to GitHub, then click through Cloudflare to connect — in two or three minutes you own a free URL the whole world can open. Same day, do three things: register Google Search Console, submit the sitemap, and click request indexing for your most important URLs. Google then starts shelving your pages in its library."
+updated: 2026-08-17
 ---
 
-## Deploy: 10 minutes, then every push goes live automatically
+## Where you are, and what this chapter solves
 
-### Step 1: Push the code
+Your 10 pages sit inside your computer — players can't reach them, and Google doesn't know you exist. It's like you've printed a book at the print shop but haven't put it on any bookstore shelf.
 
-The fork's remote is already configured; just run:
+This chapter does two things: first, **put the book on a shelf** (Cloudflare's free shelf — unlimited traffic, zero cost); then **have Google's librarian register your book** (indexing begins — that's where traffic starts).
+
+## What you'll have when this chapter is done
+
+- A URL anyone in the world can open (a free domain first, your own later)
+- Google Search Console (GSC) set up, and the sitemap submitted
+
+## A few words to know
+
+- **Deploy**: putting your website files on a server everyone can reach. Here that means Cloudflare Pages; the free tier is nearly unlimited for beginners.
+- **sitemap**: an auto-generated "table of contents page" handed to Google, telling it which pages you have and which were updated recently. You don't make it — the template generates it.
+- **GSC (Google Search Console)**: the backstage where Google hands out report cards — who searched what, and whether they clicked your site; from now on you read it all here.
+- **Indexing**: Google shelving your pages into its "library". Indexed first, then ranked; ranked first, then traffic.
+
+## Act one: shelving (about 15 minutes)
+
+### Step 1: Push the files to GitHub
+
+**What to do**: your local site files have to reach Cloudflare, and they travel via GitHub first.
+**How to do it**: in the terminal (inside the AnvilWiki folder), enter in order:
 
 ```bash
 git add .
-git commit -m "Launch: my game wiki"
+git commit -m "First version of my game wiki"
 git push
 ```
 
-### Step 2: Connect Cloudflare Pages
+**What you'll see**: the first push pops up a GitHub login window; log into your account, and the terminal shows the upload progress.
+**Confirm you got it right**: refresh your GitHub repo page — you can see `docs`, `src`, and the other folders.
 
-1. Log in to the [Cloudflare dashboard](https://dash.cloudflare.com) → **Workers & Pages** → **Create** → **Pages** → **Connect to Git**
-2. Authorize GitHub, select your repository → **Begin setup**
-3. Confirm the build configuration (Cloudflare auto-detects Astro):
+### Step 2: Connect Cloudflare's shelf
 
-| Field | Value |
+**What to do**: tell Cloudflare "my repo is here; every time I update, re-shelve automatically".
+**How to do it**:
+
+1. Register/log in at [dash.cloudflare.com](https://dash.cloudflare.com) (free).
+2. Left sidebar: **Workers & Pages** → **Create** → **Pages** → **Connect to Git**.
+3. Authorize GitHub, pick your AnvilWiki repo, click **Begin setup**.
+4. Copy the build settings as-is:
+
+| What it asks | What you enter |
 |---|---|
-| Project name | Your site name |
+| Project name | Anything you like, e.g. your game's name (it becomes part of the URL) |
 | Production branch | `main` |
-| Framework preset | Astro (automatic) |
+| Framework preset | Astro (usually auto-detected) |
 | Build command | `pnpm build` |
 | Build output directory | `dist` |
-| NODE_VERSION (env) | `22` |
 
-4. **Save and Deploy**. The first build takes 2-3 minutes; you then get `https://<project>.pages.dev`.
+5. In the **Environment variables** section, add one variable: name `NODE_VERSION`, value `22`.
+6. Click **Save and Deploy**.
 
-### Step 3: The wrangler.toml two-way choice (the biggest trap — read this)
+**What you'll see**: the build runs 2 to 3 minutes and ends with a `https://project-name.pages.dev` URL.
+**Confirm you got it right**: open that URL — your game site is there. From this moment on, the whole world can visit it.
 
-**When the repo's `wrangler.toml` exists, it is the single source of truth for Pages env, and the dashboard's Environment variables UI is ignored completely.** You configured variables in the dashboard but the build can't see them (symptoms: ads don't render, `process.env` reads nothing) — 99% of the time this is why.
+### Step 3: Handle the biggest beginner trap (which settings count)
 
-| Option | Action | Good for |
-|---|---|---|
-| **A (recommended for beginners)** | `git rm wrangler.toml && git commit`; dashboard env then takes effect (including the `NODE_VERSION` from the table above) | People who don't want to touch config files |
-| **B** | Keep the file and edit the `[vars]` values (`SITE_URL`, ad/comment variables all live here; add `NODE_VERSION = "22"` to `[vars]` too — otherwise the dashboard value is ignored under option B) | People who want env in version control |
-
-Diagnostic: temporarily add `console.log('ENV:', Object.keys(process.env).filter(k => k.startsWith('PUBLIC_')))` at the top of `astro.config.ts`, push, and check the Cloudflare build log to see exactly which variables exist.
-
-### Step 4: Point SITE_URL at the real domain (when you have one)
-
-`SITE_URL` drives every absolute URL on the site (sitemap/og:image/robots.txt/canonical):
-
-- The value must include the `https://` protocol; a bare domain fails the build outright
-- Start with `https://<project>.pages.dev`, then switch it after binding a custom domain and redeploy
-- Domain binding: Cloudflare Pages → Custom domains → Add, then add the CNAME as instructed; if your DNS is hosted on Cloudflare it's zero-config
-
-After changing it, run `pnpm check-sitemap` (with BASE_URL pointing at your domain) to confirm every URL in the sitemap returns 200.
-
-## The three launch-day SEO tasks
-
-### 1. Verify Google Search Console
-
-[GSC](https://search.google.com/search-console) → Add property → the **Domain** type (covers all subdomains, recommended) → add the TXT record to DNS as instructed → Verify. Without a custom domain, use the URL prefix type + the HTML tag method (the template supports the `PUBLIC_GSC_VERIFICATION` env; fill in the verification code and the meta tag is emitted automatically).
-
-### 2. Submit the sitemap
-
-GSC → Sitemaps → enter `sitemap-index.xml` → Submit. The template's sitemap carries `lastmod` (taken from article frontmatter dates), which Google uses to schedule re-crawls.
-
-### 3. Request indexing (to speed up the cold start)
-
-Paste your 5-10 most important URLs (codes pages first) one by one into the GSC top search bar → **Request Indexing**. Reinforce with:
-
-- Cloudflare Pages auto-submits **IndexNow** on every new deploy (Bing et al. pick it up instantly)
-- The homepage/category "latest articles" modules naturally give new pages internal links
-- Natural mentions in communities like Reddit/Discord (external link signals)
-
-## Post-launch self-check
+**What to do**: delete a file called `wrangler.toml`. The reason in one sentence: the site's settings have two registries — this file inside the repo, and the settings page on Cloudflare's website. **While the file exists, the web settings are all ignored.** Beginners just delete the file and use the web page only from then on — clean and trap-free.
+**How to do it**: in the terminal:
 
 ```bash
-# Works locally or in CI
-pnpm build && pnpm check-links          # audit all internal links
-BASE_URL=https://your-domain.com pnpm check-sitemap   # every sitemap URL returns 200
-curl -s https://your-domain.com/robots.txt     # should reference the sitemap
-curl -s https://your-domain.com/llms.txt       # the AI-crawler discovery entry
+git rm wrangler.toml
+git commit -m "remove wrangler.toml"
+git push
 ```
 
-Browser checks: `view-source:` to confirm og:image/og:title absolute paths are correct and `<link rel="alternate">` hreflang tags come in pairs.
+**What you'll see**: `wrangler.toml` disappears from the GitHub file list; Cloudflare redeploys automatically once.
+**Confirm you got it right**: Cloudflare → your project → **Settings** → **Variables and Secrets** shows `NODE_VERSION = 22` (added in Step 2 — it only truly takes effect after the file is gone). Ads and analytics later all get their variables added on this page.
 
-> **✅ Acceptance criteria (all must hold)**
-> - Commands: `BASE_URL=https://your-domain.com pnpm check-sitemap` → all 200
-> - Pages: open any article on the live site; the share card (og:image) renders correctly
-> - ☐ GSC verified, sitemap submitted, ≥5 URLs have requested indexing
-> - ☐ The wrangler.toml two-way choice is decided (the dashboard env path is clear)
-> - ☐ SITE_URL matches the actual live domain
+> A note for the advanced: keeping the file and recording settings in the repo works too, but every variable — `NODE_VERSION = "22"` included — must then be written into the file's `[vars]` section, and the web settings still don't count — details in the developer manual's "integrations" chapter. Beginners, don't touch this; just delete the file.
 
-## Next steps
+### Step 4: Buy your own domain (skippable for now, required before earning)
 
-The site is live and Google has started crawling — but monetization and long-term growth run on cadence. Final chapter: hook up AdSense, configure comments, and the 30-minute weekly ops SOP (freshness prompts included).
+**What to do**: swap `project-name.pages.dev` for your own address, e.g. `yourgame-wiki.com`. **AdSense review basically requires your own domain**, so you must buy one before monetizing (just a small yearly fee).
+**How to do it**: at [Cloudflare Registrar](https://www.cloudflare.com/products/registrar/) (sells at cost, no markup) or a registrar like Porkbun, search and buy a `.com` / `.wiki` domain; then Cloudflare Pages → your project → **Custom domains** → Set up, and point the domain over as prompted (if your DNS lives on Cloudflare, it's all just Next, Next, Finish).
+**What you'll see**: within minutes (up to a few hours), your domain opens your site.
+**Confirm you got it right**: once the site opens on your own domain, change both the Domain from Chapter 2's config and Cloudflare's `SITE_URL` variable to this domain (starting with `https://` — the protocol can't be missing), and redeploy.
+
+## Act two: get Google to know you (20 minutes, same day)
+
+### Step 1: Register Google Search Console (GSC)
+
+**What to do**: receive your "store operating license" from Google.
+**How to do it**: open [search.google.com/search-console](https://search.google.com/search-console) → log in with a Google account → **Add property**. Beginners pick the **URL prefix** type and enter your `https://project-name.pages.dev` (or your domain); for verification choose the **HTML tag** method, and Google hands you a string of code — you don't paste it yourself: take the letters inside the tag's `content="..."` and put them into a Cloudflare variable: name `PUBLIC_GSC_VERIFICATION`, value exactly that string of letters. Save and redeploy, then go back to GSC and click Verify.
+**What you'll see**: GSC shows "Ownership verified".
+**Confirm you got it right**: the left side of GSC opens pages like "Performance".
+
+### Step 2: Submit the table of contents page (sitemap)
+
+**What to do**: hand Google the table-of-contents page the template auto-generated.
+**How to do it**: GSC left menu → **Sitemaps** → type `sitemap-index.xml` in the input box → click **Submit**.
+**What you'll see**: the status shows "Success".
+**Confirm you got it right**: come back to this page in a day or two — "Discovered URLs" starts growing past 0.
+
+### Step 3: Click "Request indexing" for the key pages
+
+**What to do**: Google might take weeks to crawl a new site's pages on its own — nudge it for the most important few.
+**How to do it**: in GSC's top inspection box, paste the full URL of your codes page, press Enter → click **Request Indexing**. Repeat for your 5 to 10 most important URLs, one by one (codes page first).
+**What you'll see**: each URL shows "Indexing requested".
+
+Two more things happen automatically, no work needed from you: every Cloudflare deploy auto-notifies Bing and other search engines (it's called IndexNow — the automatic Bing nudge); and your `/llms.txt` page tells AI engines like ChatGPT what content you have.
+
+### Post-launch self-check (optional, 5 minutes)
+
+```bash
+pnpm build
+BASE_URL=https://your-site-url pnpm check-sitemap
+pnpm check-links
+```
+
+All three run clean — every URL returns 200 (opens fine) and no internal link is dead — and the site is healthy.
+
+## If you get stuck
+
+- **"Cloudflare build failed"**: open that deploy and read the last line of the log. Nine times out of ten it's one of two things: an env variable not configured right (back to Step 2, check NODE_VERSION), or `SITE_URL` missing `https://`.
+- **"I changed settings on Cloudflare's website but nothing took effect"**: recall Step 3 — did you delete `wrangler.toml`? While it exists, web settings don't count.
+- **"The domain opens but the styling is broken / images are gone"**: nine times out of ten `SITE_URL` still isn't set to the new domain. Change it to `https://your-domain` and redeploy.
+- **"GSC verification fails"**: confirm the `PUBLIC_GSC_VERIFICATION` value is exactly the letters inside the content quotes of the tag (without the quotes), and that you really redeployed after saving.
+
+## ✅ Acceptance criteria (all must hold)
+
+- Your URL opens on phone data (no WiFi needed) and the page renders normally
+- GSC verified, sitemap submitted, and at least 5 URLs have Request Indexing clicked
+- ☐ `wrangler.toml` is deleted — from now on, all settings get added on Cloudflare's web page
+- ☐ If you have a domain: `SITE_URL` changed to `https://your-domain`
+
+## Next step
+
+The site is live and Google is crawling — but turning traffic into money takes two more steps: ads, and weekly freshness. In the final chapter, the store opens for real. [Go to Chapter 5 · Turn on ads and keep the site earning](/landing/docs/monetize-and-grow)

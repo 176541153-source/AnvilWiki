@@ -1,87 +1,78 @@
 ---
-title: "同步上游与贡献回流:merge 策略与发版流程"
-description: "fork 之后如何持续吸收上游新功能(Config/Content 冲突永远保留自己的),SemVer 版本策略与兼容性承诺,以及把改进贡献回 AnvilWiki 的完整流程。"
+title: "开发 4 · 跟上官方更新,和把好东西贡献回去"
+description: "官方仓库的新功能怎么安全合并进你的站(冲突时永远保留你自己的游戏配置和文章),版本号的兼容承诺,以及给 AnvilWiki 提改进、上展示墙的完整路径。"
 manual: dev
 order: 4
 icon: lucide:git-merge
-tldr: "加 upstream remote 后定期 git merge upstream/main:Code 层冲突少,Config/Content 层冲突永远保留你自己的值。上游遵守 SemVer 兼容承诺(字段只增不改名、可选功能默认关闭)。想回流贡献:开 issue 讨论 → fork 分支 → CI 绿 → PR。"
-updated: 2026-08-16
+tldr: "三行命令把官方更新搬进你的站:设好官方仓库为上游、拉取、合并。冲突几乎只在配置层和内容层,而那两层的答案永远一样——保留你自己的。官方遵守兼容承诺(字段只加不改名,新功能默认关闭),合并很安全;不想跟也行,静态站冻结在某版本照样跑,但建议至少收安全修复。你的站做得好,提 PR 上官网展示墙。"
+updated: 2026-08-17
 ---
 
-## 同步上游(每次 10 分钟)
+## 你现在在哪,这章解决什么
+
+模板作者一直在发新版:修 bug、加功能。你的站要不要跟?怎么跟才不会把你自己的游戏名、颜色、文章冲掉?以及反过来——你改出了好东西,怎么让它回到官方模板里。**查询手册,升级时翻。**
+
+## 把官方更新搬进你的站(每次 10 分钟)
 
 ```bash
-# 1. 添加上游 remote(一次性)
+# 1. 第一次才要跑:把官方仓库设为「上游」关注对象
 git remote add upstream https://github.com/PNGTRID/AnvilWiki.git
 
-# 2. 拉取并合并
+# 2. 以后每次升级只跑这三行
 git fetch upstream
 git merge upstream/main
 
-# 3. 冲突时:Config/Content 层永远保留你自己的值
-#    (游戏名、主题色、文案、文章),只收上游 Code 层的改动
-
-# 4. 验证三件套
+# 3. 合并后验证
 pnpm check-config && pnpm typecheck && pnpm test
 pnpm build && pnpm check-links
 ```
 
-为什么 merge 通常很干净:上游新功能(组件/页面/脚本)几乎全落在 Code 层——正是你几乎不碰的层。冲突高发区(Config/Content)恰好是你「本来就该保留自己值」的区域。
+**遇到冲突(终端出现 CONFLICT 字样)时,答案背下来**:
 
-**不想同步也完全没问题**:这是静态模板不是运行时依赖,你的 fork 冻结在某版本能永远跑。建议至少合并 PATCH(安全/bug 修复),`git cherry-pick` 挑选也行。
+- 配置层、内容层的冲突 → **永远保留你自己的**(你的游戏名、颜色、文案、文章)
+- 代码层的冲突 → 优先收官方的(那是修好的东西);你改过代码层才需要动脑,没改过就无冲突
 
-## 版本策略(SemVer)与兼容性承诺
+为什么这么省心:官方的新功能几乎全落在代码层(你最不碰的层),冲突高发区恰好是你「本来就该保留自己」的区域。
 
-| 版本位 | 含义 | 你的动作 |
+**合并完记得**:跑一遍上面的验证;`pnpm check-i18n` 会列出官方新增的界面文字里,你还没翻译的部分。
+
+## 官方的版本号承诺(决定你要不要升)
+
+版本号三段式 `主版本.次版本.补丁`(如 1.13.0):
+
+| 升什么 | 意味着 | 你的动作 |
 |---|---|---|
-| MAJOR(v2.0) | breaking change | 按 CHANGELOG 迁移说明操作 |
-| MINOR(v1.10 → v1.11) | 新功能,默认关闭/向后兼容 | merge 后开箱行为不变,想要再开 |
-| PATCH | bug 修复 | 直接 merge |
+| 补丁号变(1.13.0 → 1.13.1) | 修 bug | 直接合并,放心 |
+| 次版本变(1.12 → 1.13) | 新功能,**默认关闭或向后兼容** | 合并后行为不变,想要的新功能自己去开 |
+| 主版本变(1.x → 2.0) | 有不兼容改动 | 看官方 CHANGELOG 的迁移说明再动手 |
 
-上游承诺(详见 [docs/staying-up-to-date.md](https://github.com/PNGTRID/AnvilWiki/blob/main/docs/staying-up-to-date.md)):
+三条长期承诺:文章登记卡的字段**只加不改名**(你的旧文章永远能构建);所有可选功能默认关闭(升级不会偷偷开广告);语言 JSON 缺条目自动用英文兜底(不会因为官方加了新文字你就构建失败)。
 
-- frontmatter 字段**只增不改名**,旧文章永远能构建
-- 可选功能(广告/评论/赞助/分析)全部 env 门控 + 默认关闭,新版本不会让它们自动开启
-- locale JSON 缺 key 运行时回退英文;`pnpm check-i18n` 列出上游新增的待翻译 key
+**完全不想跟行不行**:行。这是静态站,不是订阅服务——冻结在某个版本永远能跑。但建议至少合并补丁级更新(安全和 bug 修复),用 `git cherry-pick` 挑着合也行。
 
-## 每次同步后的检查清单
+## 把你的改进贡献回去
 
-```bash
-pnpm check-config    # 配置三处一致
-pnpm check-i18n      # 上游新增 UI key → 待翻译清单
-pnpm typecheck && pnpm test && pnpm build
-pnpm check-links     # dist/ 内链全检
-```
+1. **先开 issue 讨论**:到仓库 Issues 描述你的场景和想法(大改动先看官方 PRD 有没有相关决策,避免白做)。
+2. 开分支写代码,遵守架构章的楼层规矩(文字进 JSON、颜色用变量、零 JS 框架)。
+3. 自验:`pnpm lint && pnpm typecheck && pnpm test && pnpm build` 全绿。
+4. 提 PR,描述里贴验证输出,等 CI 绿、等作者审。
+5. 加了纯函数(放 `src/lib/` 的)记得配测试;加了组件记得补文档。
 
-## 贡献回流(把你的改进变成上游功能)
+**你的站本身也能贡献**:提 PR 把它加进官网展示墙(改 `src/config/landing.ts` 里的 showcase 数据)——真实的成功站,是这套模板最有说服力的广告。
 
-1. **先开 issue 讨论**:描述场景与方案(避免和 roadmap 撞车;重大设计看 [docs/PRD.md](https://github.com/PNGTRID/AnvilWiki/blob/main/docs/PRD.md) 是否已有 ADR)
-2. fork 分支开发,遵守工程约束(文案走 JSON/主题色走 var/零 JS runtime)
-3. 自验证:`pnpm lint && pnpm typecheck && pnpm test && pnpm build`
-4. PR 描述附验证输出;CI 绿后等待 review
-5. 组件/脚本类贡献请同步补文档(docs/)和测试(纯函数下沉 `src/lib/` + vitest)
+(给模板本身发版本的完整流程是维护者视角的事,记录在仓库 docs/development.md,这里不重复。)
 
-**用 AnvilWiki 上线了站点?** 提 PR 把它加进官网 Showcase(改 `src/config/landing.ts` 的 showcase 数据)——真实案例是这个模板最有力的证明。
+## 卡住了怎么办
 
-## 发版流程(模板维护者视角)
+- **「merge 冲突看不懂」**:把冲突文件的冲突段贴给 AI 助手,告诉它「配置和内容保留我的,代码听官方的」,让它逐个解决,解决完跑验证三件套。
+- **「合并完构建挂了」**:跑 `pnpm build` 看报错的文件——多半是官方改了结构、你本地改过同一处;按「配置保留我的」原则处理后重试。
 
-给模板本身发一个新版本的完整流程(贡献者了解即可,详见 [docs/development.md](https://github.com/PNGTRID/AnvilWiki/blob/main/docs/development.md)):
+## ✅ 验收(全部成立才算完成)
 
-```
-1. 全部改动合入 main,验证清单全绿
-2. 版本号三处同步:package.json / landing.ts PROJECT_VERSION / 中英发布公告文案
-3. CHANGELOG.md:Unreleased 段落改日期标题 + compare 链接
-4. docs/PRD.md §14.2 路线图标 ✅
-5. commit:feat/fix 一个 + git commit --allow-empty -m "chore(release): vX.Y.Z" 一个
-6. git push(CI 绿 + Cloudflare Pages 自动部署)
-7. gh release create vX.Y.Z --latest --notes "<中英摘要>"
-```
+- 合并官方更新后,验证三件套全绿
+- ☐ 所有配置/内容冲突都保留了你自己的值(逐个看过 diff)
+- ☐ check-i18n 列出的新增文字,要么已翻译、要么明确接受英文兜底
 
-> **✅ 验收(全部成立才算完成)**
-> - 命令:merge 上游后验证三件套全绿
-> - ☐ Config 层冲突全部保留了自己的值(逐个 diff 确认)
-> - ☐ check-i18n 列出的新增 key 已翻译或明确接受英文回退
+## 开发手册到此完结
 
-## 开发手册完结
-
-三层架构 → 定制 → 集成 → 同步,你现在对这套模板的掌控是「维护者级」的。回到[学习手册](/zh/landing/docs/monetize-and-grow)的周节奏把站运营好,或开始下一个站的选品。
+地图(架构)→ 定制 → 集成 → 同步,你对这套模板已是维护者级掌控。回到[学习手册第 5 章](/zh/landing/docs/monetize-and-grow)的每周节奏,把站经营好——或开始下一个站的选品。

@@ -1,96 +1,109 @@
 ---
-title: "Dev Manual · Architecture Overview: Three-Layer Separation and the Change Map"
-description: "AnvilWiki's code/config/content three-layer separation, the decision tree for every change, the data flow, and the six Astro 5 gotchas to avoid after forking."
+title: "Dev 1 · Read the Map First: What to Change, What to Leave Alone"
+description: "Three layers — code (rarely touched), config (once per game), content (daily). The decision tree locates any change in 30 seconds, plus six Astro 5 gotchas."
 manual: dev
 order: 1
 icon: lucide:layers
-tldr: "Three-layer separation is the foundation of every architecture decision: the Code layer (src/pages, components, lib) is almost never touched after forking; the Config layer (src/config, locales, globals.css) changes once per game; the Content layer changes with every article. Locate each change with the decision tree first, then finish with the three checks."
-updated: 2026-08-16
+tldr: "Your site is a three-story building: the first floor is content, new articles daily; the second floor is config, changing the sign and wall color once; the third floor is code, the load-bearing structure barely touched after forking. Locate each change on the decision tree before acting — the wrong floor gets your edits wiped or the site broken at the next upstream sync. Then run the three checks."
+updated: 2026-08-17
 ---
 
-## Why read this chapter first
+## Where you are now and what this chapter solves
 
-Every design decision in AnvilWiki serves one goal: **fork users change content without touching the framework, change configuration without rewriting the framework, and the framework layer carries zero game-specific strings**. Once you understand the code/config/content three-layer separation, you know where each of your changes belongs — and whether it will be wiped out the next time you sync upstream.
+Your site is already earning money, and now you want to touch the template itself — add a feature, reshape something, or just find out whether "this thing" can be changed at all. Before you touch anything, spend 10 minutes understanding which layer any change belongs to. Change it in the wrong place and at best you waste the work; at worst you break the site, or lose every edit the next time you upgrade the template.
 
-## The three-layer map
+## What you'll have when this chapter is done
 
-| Layer | Directories | Will you touch it after forking | Merge conflict likelihood |
+- A decision tree that pins any request to a file within 30 seconds
+- A complete picture of how an article travels from draft to web page
+
+## The three-story building: who lives on which floor, and who should touch whom
+
+| Layer | Directories it hosts | Do you touch it | When you upgrade the template |
 |---|---|---|---|
-| **Code** | `src/pages` `src/components` `src/lib` `src/i18n` | Almost never | Low |
-| **Config** | `src/config` `src/locales` `src/styles/globals.css` `wrangler.toml` `astro.config.ts` `public/` | Definitely | **High (expected)** |
-| **Content** | `src/content/wiki`, the home data in `src/locales/<loc>.json` | Fully replaced | High (expected) |
+| **Content** (first floor) | `src/content/wiki/`, the home data in each locale JSON | Daily (writing articles) | Almost no conflicts |
+| **Config** (second floor) | `src/config/`, `src/locales/`, `src/styles/globals.css` | Once per game switch | Few conflicts — **always keep yours** |
+| **Code** (third floor) | `src/pages/`, `src/components/`, `src/lib/`, `src/i18n/` | Basically never | The template author ships you new features |
 
-The governing rules: changing content must not touch the framework; changing config must not rewrite the framework; the framework layer must contain no game-specific strings (all UI copy lives in `src/locales/<locale>.json`).
+Three house rules:
 
-## The change decision tree
+1. Changing content never touches the framework; changing config never rewrites the framework.
+2. The code layer must **never contain** strings specific to your game — all interface text lives in the locale JSONs.
+3. Before touching the code layer, ask yourself: can this honestly not be solved with configuration? (Most of the time it can.)
+
+## The change decision tree (pin it next to you)
 
 ```
 What do you want to change?
-├─ Copy / labels / homepage modules → src/locales/<locale>.json (UI copy)
-│                                      src/locales/<locale>.json home.* (homepage modules)
-├─ Game name / domain / author       → src/config/site.ts
-├─ Navigation categories             → src/config/navigation.ts + en.json nav.<key> + content dirs (three-place consistency!)
-├─ Theme colors                      → src/styles/globals.css --brand/--brand-light/--brand-h/--brand-s (4 vars × light/dark, 8 lines)
-├─ Language list                     → src/i18n/routing.ts + locales JSON + content dirs (three-place consistency!)
-├─ Article content                   → src/content/wiki/<locale>/<category>/*.mdx
-├─ New components / new pages        → src/components / src/pages (Code layer — weigh the upstream sync cost)
-└─ env toggles (ads/comments/analytics) → wrangler.toml [vars] or dashboard (pick one)
+├─ UI text / homepage modules → src/locales/<locale>.json (UI text at the root, homepage modules under home.*)
+├─ Game name / domain / author info → src/config/site.ts
+├─ Navigation categories → three places must match (see below)
+├─ Theme color → top 8 lines of src/styles/globals.css (4 variables × light/dark)
+├─ Language list → three places must match (see below)
+├─ Article content → .mdx under src/content/wiki/<locale>/<category>/
+├─ New components / new pages → Code layer; weigh the upgrade cost before touching
+└─ Ads / comments / analytics toggles → Cloudflare dashboard variables or wrangler.toml (pick one; see the integrations chapter)
 ```
 
-Two iron rules of three-place consistency (both validated automatically by `pnpm check-config`):
+Two "three-place consistency" iron rules (both checked automatically by `pnpm check-config`):
 
-1. Category keys: `NAVIGATION_CONFIG[].key` in `navigation.ts` = `nav.<key>` in `en.json` = the `src/content/<locale>/<key>/` directory name
-2. Languages: `locales` in `routing.ts` = the `src/locales/*.json` files = the `src/content/<locale>/` directories
+1. **Categories**: the category keys registered in config = `nav.<key>` in the locale JSON = the `src/content/wiki/en/<key>/` directory — identical in all three places; one missing and the build fails.
+2. **Languages**: the language list = the locale JSON files = the content directories — three places again, all identical.
 
-## Data flow of a page request (at static build time)
+## How an article becomes a web page
+
+Short answer: from draft to live, an article passes through four stations.
 
 ```
-MDX frontmatter → Zod schema validation (src/content.config.ts; invalid data fails the build)
-    → getCollection() fetches the collection (i18n fallback: detail pages fall back to English, list pages do not)
-    → getStaticPaths() generates the static routes
-    → Astro components render → pure HTML in dist/
-postbuild → Pagefind indexes the body text → search with zero runtime
+1. You (or AI) write the .mdx article; it opens with a registration card (frontmatter)
+2. The inspector (Zod schema) checks the card; bad format → the build fails outright and tells you what's wrong
+3. The site generates a fixed URL for every article
+4. Everything gets printed as plain HTML files, and the search index is generated automatically
 ```
 
-Multilingual rules (**an intentional asymmetry**): when the requested language version of an article doesn't exist, the detail page falls back to English (direct URLs never 404); list pages never fall back (they never show content that doesn't exist).
+Multilingual has one **deliberately asymmetric** rule: when a player opens the URL of an article you only wrote in English, the site shows the English version (that URL never fails to open); but a category list page only shows articles that really exist in that language (no fake empty pages). The former optimizes for "always opens"; the latter for "never lies".
 
-## Six Astro 5 gotchas (field-tested; full version in AGENTS.md)
+## Six Astro 5 gotchas (only needed when you edit the code layer)
 
-1. `entry.id` includes `.mdx`, but `getEntry()` doesn't want the extension — `parseEntryId` handles this uniformly
-2. `entry.render()` doesn't exist in the Content Layer API — use the standalone `render()` function
-3. `getStaticPaths` compiles into its own module, and top-level `const` in the file are invisible to it — inline the data into the function body
-4. Read rest params from `Astro.params.slug`, not `Astro.props.slug`
-5. Content placed directly under `src/content/<locale>/` triggers legacy auto-collection — it must live under `src/content/wiki/<locale>/`
-6. `prefixDefaultLocale: false` means the English site lives at the root (`/`) — don't add a `/` → `/en/` redirect
+All six were hit in real debugging. Content-layer and config-layer work never needs them:
 
-## Engineering constraints quick reference
+1. An article's internal id carries the `.mdx` suffix, but queries must strip it (the repo already wraps this — don't concatenate strings yourself).
+2. The old Astro `entry.render()` style is gone; use the standalone `render()` function.
+3. `getStaticPaths` compiles into its own module and can't see variables at the top of the page file — the data must live inside the function body.
+4. Read parameters from the URL with `Astro.params.slug`, not `Astro.props.slug`.
+5. Articles must sit under `src/content/wiki/<locale>/`; dropping them directly into `src/content/<locale>/` triggers the legacy mechanism and errors out.
+6. English is the default language and lives at the root (`/`) — don't add a `/` → `/en/` redirect.
 
-- All UI copy lives in JSON; components contain zero hard-coded text
-- Theme colors are only the 4 variables `--brand`/`--brand-light`/`--brand-h`/`--brand-s` (`--brand-text` derives from h/s automatically, never edit it); components reference only `var(--brand)`
-- og:image and other social cards use absolute paths (`${SITE_URL}/...`)
-- Domains come from the `SITE_URL` env, which must include `https://`
-- Empty ad/comment env values render nothing (the out-of-the-box Lighthouse 4×100 contract)
-- No emoji in the UI; icons come from lucide (`astro-icon` or inline SVG)
+## Engineering rules quick reference (follow when editing the code layer)
 
-## The three checks (after every change)
+- All interface text lives in the locale JSONs; components never hard-code strings
+- Theme color means exactly 4 variables (`--brand` / `--brand-light` / `--brand-h` / `--brand-s`; the text-safe color `--brand-text` is computed automatically from the latter two — never edit it by hand); components may only reference `var(--brand)`, hard-coded color values are forbidden
+- Share-card images and canonical URLs always use full `https://` addresses
+- The domain is read only from the `SITE_URL` variable and must include `https://`
+- An empty ads/comments variable = the matching component renders nothing (keeps the out-of-the-box perfect score)
+- No emoji in the UI; icons come uniformly from lucide
+
+## The three checks after every change
 
 ```bash
-pnpm check-config        # three-place consistency
-pnpm typecheck           # astro check, 0 errors
-pnpm build && pnpm check-links   # schema + build + internal link reconciliation
+pnpm check-config              # three-place consistency
+pnpm typecheck                 # type check, 0 errors
+pnpm build && pnpm check-links # build + full-site dead-link check
 ```
 
-If you changed pure functions (`src/lib/`), also run `pnpm test`; if you changed content, also run `pnpm check-content`.
+If you touched pure functions under `src/lib/`, add tests (`pnpm test`); if you changed article content, also run `pnpm check-content`.
 
-## Design rationale in depth
+## If you get stuck
 
-The "why behind every module" lives in [docs/PRD.md](https://github.com/PNGTRID/AnvilWiki/blob/main/docs/PRD.md) (15 chapters + 3 appendices, the single source of truth); contributor-level detail (release process / SemVer) is in the [sync-and-contribute chapter](/landing/docs/sync-and-contribute).
+- **"The build fails on a category/language mismatch"**: run `pnpm check-config`; it points out which of the three places doesn't line up.
+- **"The style I changed doesn't take effect"**: first confirm you edited the variable layer (the 4 variables) instead of hard-coding color values in a component; then confirm you changed both light and dark sets (8 lines total).
 
-> **✅ Acceptance criteria (all must hold)**
-> - ☐ For any change request, you can name which layer and which files it belongs to within 30 seconds
-> - ☐ You understand what each of the two three-place consistency rules covers
-> - ☐ The three checks pass locally, all green
+## ✅ Acceptance criteria (all must hold)
+
+- ☐ Take three real requests (say, "change the homepage headline", "add an article", "switch the brand color") and locate each on the decision tree within 30 seconds
+- ☐ You can say what each of the two three-place consistency rules covers
+- ☐ The three checks pass locally, all green
 
 ## Next steps
 
-Continue to the [customization chapter](/landing/docs/customize): add categories, add languages, change the theme, edit the homepage — the SOP and companion AI prompts for every step.
+The map is yours. Head to [Dev 2 · the customization handbook](/landing/docs/customize): add categories, add languages, change the theme, edit homepage copy — step-by-step instructions and a companion AI prompt for every request.

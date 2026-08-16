@@ -1,71 +1,94 @@
 ---
-title: "Integrations and Engineering: Env Gating, CI Gates, and Security Baseline"
-description: "The full env variable table, the empty-value-renders-nothing gating pattern, what each CI workflow guards, and the built-in security baseline."
+title: "Dev 3 · Integrations and Engineering: The Full Toggle Table and the Mechanics"
+description: "One toggle for every optional feature: empty variable = nothing rendered. Full variable table, wrangler.toml, three CI pipelines, and the built-in security baseline."
 manual: dev
 order: 3
 icon: lucide:plug
-tldr: "Every optional feature follows one pattern: the component reads a PUBLIC_* env and returns null when it is empty — an empty value renders nothing, which is why a fork ships Lighthouse 4×100. Three CI workflows (CI, Content freshness audit, Initialize AnvilWiki) automate verification; the security baseline (JSON-LD escaping, sponsored rel, consent gating) is built into the framework layer."
-updated: 2026-08-16
+tldr: "One mechanism for every optional feature: the component reads its env variable and renders nothing when it's empty — hence the perfect out-of-the-box score; enable features one at a time and verify each. One table lists every variable. Keeping wrangler.toml makes it the single source of truth, NODE_VERSION included. Three CI pipelines run eight gates. The security baseline (escaping, sponsored links, consent gating) is built in — don't break it."
+updated: 2026-08-17
 ---
 
-## The env gating pattern (shared by every optional feature)
+## Where you are now and what this chapter solves
 
-Every optional component follows the exact same pattern:
+You want to switch on ads, wire in comments, install analytics — or you just want to understand what those automated checks in the repo actually do. This chapter is the toggle table + the mechanics. **A lookup manual; open it as needed.**
+
+## The toggle mechanism: one pattern everywhere
+
+Every optional feature (ads, comments, analytics, sponsor card) follows the same recipe:
 
 ```astro
 ---
 const client = import.meta.env.PUBLIC_ADSENSE_CLIENT;
-if (!client) return null;   // empty value = renders nothing = zero JS, zero requests
+if (!client) return null;   // empty variable = this component disappears entirely
 ---
 ```
 
-This yields two contracts: **off by default** (a fresh fork ships Lighthouse 4×100) and **progressive opt-in** (fill in env values one at a time and run a build after each to watch the score). Giving ad/comment envs default values or hard-coding demo configuration violates the contract.
+That gives you two guarantees:
 
-## Full environment variable table
+1. **Fill in nothing**: the site stays clean and scores a perfect four-part Lighthouse run.
+2. **Fill in whatever you want**: features don't affect each other; after enabling one, run a build and confirm the score held.
 
-Injected at build time. Where to declare them: if you keep `wrangler.toml`, write them under `[vars]`; if you delete it, use the Cloudflare dashboard (pick one — see the [deployment chapter](/landing/docs/deploy-and-get-indexed)):
+So do **not** give these variables default values or copy someone else's demo values — empty is the correct state. A local `.env` file can hold these variables too (it never enters git; secrets never land in the repo).
 
-| Variable | Purpose | Behavior when empty |
+## The full variable table
+
+Where to fill them in: pick one — the **Cloudflare dashboard** (Settings → Variables; the route the learning manual teaches, recommended) or **the repo's `wrangler.toml` file** (advanced, next section).
+
+| Variable | What it does | When empty |
 |---|---|---|
-| `SITE_URL` | Absolute site URL (**required**, include `https://`) | Build output URLs are wrong |
-| `PUBLIC_ADSENSE_CLIENT` | AdSense loader | Ad script not loaded |
-| `PUBLIC_ADSENSE_SLOT_STICKY` / `_SIDEBAR` / `_INCONTENT` | The three ad slots | The matching ad slot renders nothing |
-| `PUBLIC_GISCUS_REPO` / `_REPO_ID` / `_CATEGORY` / `_CATEGORY_ID` | Giscus comments | Comment section not rendered |
+| `SITE_URL` | The site's official URL (**the only required one**, must start with `https://`) | Site-wide share cards and sitemap URLs come out wrong |
+| `PUBLIC_ADSENSE_CLIENT` | AdSense master switch (publisher ID) | No ads load at all |
+| `PUBLIC_ADSENSE_SLOT_STICKY` / `_SIDEBAR` / `_INCONTENT` | The three ad slots | The matching slot doesn't show |
+| `PUBLIC_GISCUS_REPO` / `_REPO_ID` / `_CATEGORY` / `_CATEGORY_ID` | Giscus comments (backed by GitHub Discussions) | The comment section doesn't show |
 | `PUBLIC_GA_ID` | Google Analytics 4 | GA not loaded |
-| `PUBLIC_CF_BEACON_TOKEN` | Cloudflare Web Analytics | Beacon not loaded |
-| `PUBLIC_GSC_VERIFICATION` | GSC verification meta | Verification tag not emitted |
-| `PUBLIC_SPONSOR_URL` / `PUBLIC_SPONSOR_IMAGE_URL` | Sponsor card | Sponsor card not rendered |
+| `PUBLIC_CF_BEACON_TOKEN` | Cloudflare's built-in analytics (no cookies) | Not loaded |
+| `PUBLIC_GSC_VERIFICATION` | Google Search Console verification code | No verification tag emitted |
+| `PUBLIC_SPONSOR_URL` / `_IMAGE_URL` | Sponsor card | Sponsor card doesn't show |
 
-A local `.env` file works too (read via `import.meta.env`; `.env` is already in `.gitignore` — secrets never enter the repo).
+## Advanced: keep wrangler.toml (settings recorded in the repo)
 
-## The three CI workflows (.github/workflows/)
+The learning manual had you delete `wrangler.toml`, so settings come only from the Cloudflare dashboard. If you'd rather do the opposite and **keep it** (the benefit: settings version-track with your code), there is exactly one rule: **while it exists, the dashboard settings are all ignored** — including the Node version used at deploy time. So if you keep it, write every variable into its `[vars]` section, at minimum:
 
-| Workflow | Trigger | What it guards |
+```toml
+[vars]
+NODE_VERSION = "22"
+SITE_URL = "https://your-domain.com"
+```
+
+A diagnostic trick (for when a setting seems to have no effect): temporarily add `console.log('ENV:', Object.keys(process.env).filter(k => k.startsWith('PUBLIC_')))` as the first line of `astro.config.ts`, push, and read the Cloudflare build log to see which variables actually arrived; delete the line when done.
+
+## The three automated pipelines (.github/workflows/)
+
+| Pipeline | When it runs | What it guards for you |
 |---|---|---|
-| **CI** (ci.yml) | Every push/PR | lint + typecheck + test + check-config + build + check-content + check-links + check-i18n — all eight gates; a red run blocks the merge |
-| **Content freshness audit** (content-pipeline.yml) | Weekly cron (Mondays; **upstream repo only** — forks must delete the `if` condition to enable it) | Runs `refresh-audit`; P0/P1 automatically open issues; **it only opens issues and never edits content** (the supply-chain risk of an LLM editing content is uncontrollable — human gating must stay) |
-| **Initialize AnvilWiki** (setup.yml) | Manual trigger | Post-fork cleanup: resets wrangler.toml `[vars]`, removes the project landing page, optionally clears demo content and opens a PR. **It does not replace the game name / theme color / locales** — those still need a local `pnpm apply-template` run |
+| **CI** | Every push / PR | Eight gates: lint → typecheck → test → check-config → build → check-content → check-links → check-i18n — one red gate and the merge is blocked |
+| **Content freshness audit** | Every Monday (scheduled) | Runs the freshness audit; stale pages automatically open reminder issues. **On by default only in the official AnvilWiki repo** (a fork stays quiet, sparing you a pile of reminders); to enable it on your own site, have AI delete the `if: github.repository ==` line in the file. It **only reminds, never edits content** — the risk of automation touching content is uncontrollable |
+| **Initialize AnvilWiki** | Manual trigger | Post-fork cleanup: resets wrangler.toml variables, removes the project landing page, optionally clears demo content. **It does not swap the game name / theme color / languages** — those still require a local `pnpm apply-template` run |
 
-Local equivalents: the gate commands live in `package.json` scripts (`check-config`/`check-content`/`check-i18n`/`check-links`/`check-sitemap`/`refresh-audit`); running `pnpm build` before a push is CI in miniature.
+## Security baseline (built in; don't dismantle it while customizing)
 
-## Security baseline (built into the framework layer — don't break it while customizing)
+- **Structured-data escaping**: the data cards served to Google are uniformly character-escaped; even malicious code smuggled into an article can't break out. Any new data component must reuse the existing `JsonLd.astro` — never hand-concatenate the serialization yourself.
+- **Sponsored links**: the affiliate link component automatically carries the `sponsored nofollow` marking (telling Google these are paid links); external links uniformly use `noopener`.
+- **No tracking before consent**: until the user accepts cookies, GA and AdSense simply don't load — really don't load, not a decorative banner.
+- **No secrets in the repo**: every sensitive value goes through variables; `.env` is already on the ignore list.
 
-- **JSON-LD escaping**: serialization uniformly escapes as `\u003c`, so a `</script>` in frontmatter cannot escape the script tag (the stored-XSS surface is closed); any new structured-data component must reuse `JsonLd.astro`
-- **External/sponsored links**: `AffiliateLink` automatically adds `rel="sponsored nofollow"`; external links uniformly use `rel="noopener"`
-- **Cookie consent is real gating**: GA/AdSense load only after the user consents (not a decorative banner)
-- **No secrets in the repo**: every sensitive value goes through env; `.env` never enters git
+## Performance baseline (hold it when you edit the code layer)
 
-## Performance budget (hold this line when editing the Code layer)
+- Zero JS framework: no React/Vue-style runtimes; interactivity uses native browser abilities (collapsible blocks, dialogs) plus a tiny amount of vanilla script.
+- Images go through the template's image pipeline (auto-compressed to WebP, auto-fitted for phones).
+- To verify scores after a change: `pnpm build && npx wrangler pages dev dist`, then run the browser's Lighthouse panel.
 
-- Zero JS runtime (ADR-002): no React/Vue/Svelte islands; interactivity uses `<details>`/`<dialog>` plus minimal vanilla JS
-- Images go through Astro Image (automatic WebP/srcset + explicit dimensions to prevent CLS)
-- Run Lighthouse after every change (CI doesn't check this — it's manual): after `pnpm build && npx wrangler pages dev dist`, point Lighthouse CLI at localhost
+## If you get stuck
 
-> **✅ Acceptance criteria (all must hold)**
-> - Command: after filling in a new env, `pnpm build` is all green and `curl` on the matching page confirms the component renders (or doesn't) as expected
-> - ☐ The "empty value renders nothing" pattern is respected in any new component you added (if you added one)
-> - ☐ CI is green on your fork (Actions tab)
+- **"Filled in a variable, nothing happened"**: first check you filled the right place (dashboard or wrangler.toml — the latter wins); then verify the variable name matches character for character (case-sensitive); finally confirm you redeployed after saving.
+- **"CI is red"**: click into the red run — the log's beginning names which of the eight gates failed.
+
+## ✅ Acceptance criteria (all must hold)
+
+- ☐ For every feature you enable, `pnpm build` is all green, and on the live site the component that should appear appears (or disappears) as expected
+- ☐ You can say which settings route your site uses (dashboard or wrangler.toml), and you use only one
+- ☐ CI is green on your own fork's Actions page
 
 ## Next steps
 
-Upstream keeps evolving — the [sync-and-contribute chapter](/landing/docs/sync-and-contribute) covers how to merge upstream without losing your configuration, and how to contribute your improvements back to the community.
+The template author keeps shipping new versions — [Dev 4 · sync and contribute](/landing/docs/sync-and-contribute): how to merge upstream updates safely, and how to contribute your good improvements back to the official project.

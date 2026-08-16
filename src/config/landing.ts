@@ -11,7 +11,7 @@
  */
 
 /** Keep in sync with package.json "version" (used by the announcement bar). */
-export const PROJECT_VERSION = '1.12.1';
+export const PROJECT_VERSION = '1.13.0';
 
 export type LandingLocale = 'en' | 'zh';
 
@@ -109,7 +109,7 @@ const en: LandingContent = {
   description:
     'An open-source game wiki template with an AI-native content workflow: pick the right game, generate pages by talking to your AI tool, codes pages stay fresh on autopilot. Lighthouse 4×100, free on Cloudflare, 100% ad revenue yours.',
   announcement: {
-    text: `v${PROJECT_VERSION} shipped — CLI cleanup fix: the landing's showcase screenshots are now removed with the rest of the project pages, keeping forks residue-free (verified by full simulation).`,
+    text: `v${PROJECT_VERSION} shipped — both manuals rewritten for complete beginners: first-principles structure, fixed analogies, "what you'll see" on every step, and a new tools-install warm-up (the old #1 drop-off point).`,
     href: RELEASES,
   },
   hero: {
@@ -364,7 +364,7 @@ const zh: LandingContent = {
   description:
     '开源游戏 wiki 模板 + AI 原生内容工作流:选对游戏、和 AI 对话就能产页、codes 页自动保鲜。Lighthouse 4×100、Cloudflare 免费部署、广告收入 100% 归你。',
   announcement: {
-    text: `v${PROJECT_VERSION} 发布 —— CLI 清理修复:landing 的 showcase 截图随项目页一并删除,fork 仓库零残留(全量模拟验证)。`,
+    text: `v${PROJECT_VERSION} 发布 —— 双手册按「小学生也能跟着走」标准全部重写:第一性原理主线、固定类比、每步写明「你会看到什么」、新增装备安装序幕(旧版最大流失点)。`,
     href: RELEASES,
   },
   hero: {

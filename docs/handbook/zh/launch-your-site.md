@@ -1,97 +1,171 @@
 ---
-title: "半小时建站:从 fork 到本地跑起来"
-description: "Fork 仓库、安装依赖、跑交互式 apply-template CLI 把 demo 站换成你的游戏,每一步的命令、每个 CLI 提示词怎么填、以及新手最常见的三类报错。"
+title: "第 2 章 · 把网站装进你的电脑:从装软件到看见自己的站"
+description: "先装好 6 样工具(终端、GitHub、Node、pnpm、Git、AI 助手),再把模板复制成你的,30 分钟让一个属于你游戏的网站在浏览器里跑起来。每步都写清你会看到什么。"
 manual: learn
 order: 2
 icon: lucide:rocket
-tldr: "Fork → clone → pnpm install → pnpm dev 看到 demo 站,然后跑 pnpm apply-template 一次性替换游戏名、主题色、语言和分类;跑 pnpm check-config 自检三处一致性。全程约 30 分钟,不需要写任何代码。"
-updated: 2026-08-16
+tldr: "这一章分两幕:第一幕装齐 6 样工具——终端、GitHub 账号、Node、pnpm、Git、AI 编程助手,一个都不能少,这是后面所有章节的入场券;第二幕复制模板、跑一条命令把示例站换成你的游戏,最后在浏览器打开 localhost:4321 看到属于你的站。每一步都告诉你做完会看到什么。"
+updated: 2026-08-17
 ---
 
-## 你会在这一章完成什么
+## 你现在在哪,这章解决什么
 
-一个跑在 `http://localhost:4321` 的、属于你选好的游戏的完整 wiki 站——带主题色、导航、多语言骨架和搜索。之后两章(产页、部署)都建立在这个基础上。
+上一章你选好了游戏。现在你手上还什么都没有——这一章结束后,你的电脑里会有一整套网站文件,浏览器里能打开一个跑着的、印着你游戏名字的网站。
 
-## 第一步:Fork 并克隆(5 分钟)
+把这事想成开蛋糕店:AnvilWiki 模板是一家**已经装修好的蛋糕店**(货架、收银台、灯光全部齐备,还摆着一套样品蛋糕)。你要做的是把整店复制一份变成自己的,再把样品换成你的蛋糕。
+
+## 这章做完你会得到
+
+- 电脑里一个能跑的网站,浏览器打开 `http://localhost:4321` 就能看到
+- 网站上是你游戏的名字、你选的主题色、你定的栏目
+
+## 第一幕:出发前,装好 6 样东西
+
+这一幕是全书最大的劝退点,请一个一个来,装好一样勾掉一样。**这 6 样只装一次,以后永远用。**
+
+### 装备 1:终端(打字指挥电脑的窗口)
+
+终端就是你用打字方式向电脑下命令的窗口。
+
+- **Mac**:按 `Command + 空格`,输入「终端」(或 Terminal),回车打开。
+- **Windows**:按开始菜单,输入「PowerShell」,回车打开。
+
+**确认做对了**:窗口里有一个闪烁的光标,前面显示着你的电脑名和 `~` 或 `>` 符号。这就是终端,以后书里说「在终端输入」,就是在这里打字然后按回车。
+
+### 装备 2:GitHub 账号(放你网站文件的仓库)
+
+GitHub 是存放网站文件的地方,相当于你的「店面仓库」。
+
+打开 [github.com](https://github.com),点右上角 Sign up,用邮箱注册一个免费账号。用户名起个正经的,它会出现在你的网站地址里。
+
+**确认做对了**:能登录,右上角显示你的头像。
+
+### 装备 3:Node(网站引擎的底座)
+
+Node 是让这套网站模板能跑起来的底座软件,版本需要 **22.13 或更新**。
+
+- 打开 [nodejs.org](https://nodejs.org),下载左边 LTS(长期支持)版本,双击安装,一路下一步。
+- 装完**新开一个终端**(旧的要关掉重开),输入 `node -v` 回车。
+
+**你会看到**:类似 `v22.14.0` 的一行字。
+**确认做对了**:数字开头是 22 或更大。如果提示 command not found,说明终端没重开,或安装没完成,重来一次。
+
+### 装备 4:pnpm(搬运工,一条命令装齐网站零件)
+
+在终端输入:
 
 ```bash
-# 1. 在 GitHub 上 fork https://github.com/PNGTRID/AnvilWiki 到你的账号
+npm install -g pnpm
+```
 
-# 2. 本地克隆(换成你的 GitHub 用户名)
+**你会看到**:几行进度,最后没有红色的 error。
+**确认做对了**:输入 `pnpm -v` 回车,显示一个版本号。
+
+### 装备 5:Git(把文件送进仓库的搬运车)
+
+- **Mac**:终端输入 `brew install git`(没装 brew 就先到 brew.sh 按首页那行命令装)。或者更简单:装完 Node 后很多 Mac 直接自带 Git,先输 `git -v` 试试,有版本号就跳过。
+- **Windows**:到 [git-scm.com](https://git-scm.com) 下载安装,一路下一步。
+
+**确认做对了**:终端输入 `git -v`,显示版本号。
+
+### 装备 6:AI 编程助手(帮你写内容的搭档,后面每章都用)
+
+从 ZCode / Claude Code / Codex / Cursor 里**任选一个**装上(都有免费额度)。这一章还用不到,第 3 章它就是主角。
+
+**确认做对了**:软件能打开,你知道怎么新建一个对话。
+
+## 第二幕:复制蛋糕店,换成你的招牌
+
+### 第 1 步:把模板仓库复制到你的 GitHub(fork)
+
+**做什么**:把 AnvilWiki 整店复制一份到你名下。原店照常营业,你复制的这份随便改。
+**怎么做**:登录 GitHub,打开 [github.com/PNGTRID/AnvilWiki](https://github.com/PNGTRID/AnvilWiki),点右上角 **Fork** 按钮,再点 **Create fork**。
+**你会看到**:跳转到 `你的用户名/AnvilWiki` 仓库页面。
+**确认做对了**:页面左上角的仓库名显示的是你的用户名,不是 PNGTRID。
+
+### 第 2 步:把仓库搬到你的电脑(clone)
+
+**做什么**:把你在 GitHub 的那份,整套下载到本地。
+**怎么做**:在你的仓库页面点绿色 **Code** 按钮,复制地址;打开终端,依次输入(把 `<你的用户名>` 换成你的 GitHub 用户名):
+
+```bash
 git clone https://github.com/<你的用户名>/AnvilWiki.git
 cd AnvilWiki
-
-# 3. 安装依赖(需要 Node 22+ 和 pnpm 11)
 pnpm install
+```
 
-# 4. 启动开发服务器
+**你会看到**:`pnpm install` 跑十几秒到几分钟,滚动一堆包名,最后停住且没有红色 error。
+**确认做对了**:终端输入 `ls` 回车,能看到 `package.json` 等一排文件。
+
+### 第 3 步:本地跑起来看一眼
+
+**做什么**:先看看这个「样品蛋糕店」长什么样。
+**怎么做**:终端输入:
+
+```bash
 pnpm dev
-# 打开 http://localhost:4321 —— 现在看到的是虚构游戏「Anvil Quest」的 demo 站
 ```
 
-没有 pnpm?先装:`npm install -g pnpm`(或 `corepack enable`)。Node 版本用 `node -v` 检查,需要 ≥ 22.13。
+**你会看到**:几行绿色的启动信息,里面有 `localhost:4321`。
+**确认做对了**:浏览器打开 [localhost:4321](http://localhost:4321),看到一个虚构游戏「Anvil Quest」的攻略站——这就是你即将换掉的样子。看完回到终端按 `Control + C` 停掉它。
 
-**新手报错 1:安装时报 build script 警告。** pnpm 11 需要批准 esbuild/sharp 的构建脚本,仓库的 `pnpm-workspace.yaml` 已经配好 `allowBuilds`,正常情况直接通过;如果你动过该文件,恢复它即可。
+### 第 4 步:换成你的游戏(一条问答式命令)
 
-## 第二步:跑 apply-template CLI 换成你的游戏(10 分钟)
+**做什么**:把示例站的游戏名、颜色、栏目、语言全部换成你的。
+**怎么做**:终端输入 `pnpm apply-template`,它会一个问题一个问题地问你,照下面的表回答(每题输入完按回车;不知道怎么填就直接回车用默认值):
 
-```bash
-pnpm apply-template
-```
-
-交互式 CLI 会逐项询问,每项的填法:
-
-| 提示 | 怎么填 | 说明 |
+| 它问什么 | 你填什么 | 为什么 |
 |---|---|---|
-| Full game name | 游戏完整名(如 `Blade Ball`) | 用于标题、SEO、法律声明 |
-| Short name | 默认取首字母缩写,可直接回车 | PWA/手机端显示名 |
-| Domain | 你的域名,如 `mygame-wiki.com`;没有就先填 `<你>.pages.dev` | 进 canonical/og:image 绝对路径;**部署前必须改成真域名** |
-| Hero tagline | 首页大标题副句 | 一句话卖点 |
-| Site description | 40-165 字符的站点描述(SEO) | 含游戏名和内容类型关键词 |
-| Legal notice | 默认模板即可 | 免责声明(非官方、非隶属) |
-| Official game URL | 游戏官网/商店页 | 元数据用 |
-| Theme color | `#rrggbb` 十六进制 | CLI 自动转 HSL 写进 `globals.css`,全站配色跟着变 |
-| Platform / Developer / Genre | 按实际填 | 结构化数据用 |
-| Release date | 发行日期(ISO 格式),可留空 | 结构化数据用 |
-| Locales | 逗号分隔,如 `en,zh`;**第一个是默认语言,en 必须在** | 英文无路径前缀,其他语言带前缀 |
-| Categories | 逗号分隔小写 key,如 `codes,guides,bosses` | 常用:bosses/guides/items/codes/tier-list/characters |
-| Clear demo content? | 建议回车(默认 N)先保留 demo 参考,部署前再清 | 删掉 demo MDX,保留目录结构 |
-| Homepage preset | codes 型站选 1(默认),攻略型选 2,想保留 demo 选 3 | 决定首页模块组合 |
-| Remove landing page? | 回车(默认 Y) | /landing 是 AnvilWiki 项目官网页,你的游戏站不需要 |
+| Full game name | 游戏的完整英文名,如 `Blade Ball` | 会用在网站标题和搜索结果里 |
+| Short name | 直接回车(自动缩写) | 手机上显示的短名字 |
+| Domain | 你的域名;没有域名就填 `你的用户名.pages.dev`(如 `xiaoming.pages.dev`,这个地址现在还不存在,部署后会自动生成) | 告诉网站「我的正式门牌是哪个」;以后买了域名改回来即可 |
+| Hero tagline | 一句话卖点,如 `Your home for everything Blade Ball` | 首页大标题下面那行字 |
+| Site description | 40 到 165 个字符的网站简介,带上游戏名 | Google 搜索结果里显示的说明文字 |
+| Legal notice | 直接回车(默认) | 免责声明:非官方、和游戏厂商无关 |
+| Official game URL | 游戏官网或商店页 | 网站元数据用 |
+| Theme color | 一个 `#` 开头的六位色号,如 `#7c3aed` | 整站主色,命令会自动配好深浅两套 |
+| Platform / Developer / Genre | 按实际填,不知道就回车 | 展示用 |
+| Release date | 游戏发行日期,格式如 `2026-01-15`;不知道就回车留空 | 展示用 |
+| Locales | 你要做几种语言。只做英文就回车(`en`);要中英就填 `en,zh`。**第一个是默认语言,且必须有 en** | 英文玩家搜索量最大,建议以英文为主 |
+| Categories | 你网站的栏目,小写英文逗号分隔,如 `codes,guides,bosses`。常用:codes / guides / bosses / items / tier-list / characters | 顶栏导航按这个生成 |
+| Clear demo content? | 回车(默认否) | 先留着示例文章当参考,上线前再清 |
+| Homepage preset | 回车(选 1) | 1=兑换码型首页(多数人选),2=攻略型,3=保留示例 |
+| Remove landing page? | 回车(默认是) | /landing 是 AnvilWiki 项目自己的介绍页,你的游戏站用不到,自动删掉 |
 
-CLI 做的事:重写 `site.ts`/`navigation.ts`/`routing.ts`/`ui.ts`/`globals.css`(仅 8 行主题色变量)/`locales/*.json`/`manifest.json`/`wrangler.toml [vars]`,清 demo 作者,可选清 demo 内容并给每个分类生成一篇骨架文章。
+**你会看到**:命令逐个改写文件,每行前面一个绿色 ✅,最后提示完成。
+**确认做对了**:终端输入 `pnpm check-config` 回车,显示「✅ Config is consistent」。
 
-**不想逐项回答?** 在 CLI 里用 `pnpm apply-template --dry-run` 先预览所有改动。仓库另有一个 **Initialize AnvilWiki** workflow(Actions 标签页手动触发),但它只做收尾清理(重置 wrangler.toml vars、删项目 landing 页、可选清 demo 内容并开 PR)——**不含游戏名/主题色/语言替换**,完整初始化仍要本地跑 CLI。
+小提示:想先预览它会改什么再动手,可以先跑 `pnpm apply-template --dry-run`(只打印计划,不真改)。另外,GitHub 上还有个叫 **Initialize AnvilWiki** 的按钮(仓库 Actions 页),但它**只做收尾清理**,不会帮你换游戏名、换主题色、换语言——完整替换只能用本地的这条命令。
 
-**新手报错 2:改完配置后 build 挂,提示分类 key 不一致。** 分类 key 必须三处一致(CLI 帮你保证了):`navigation.ts` 的 `NAVIGATION_CONFIG[].key` = `en.json` 的 `nav.<key>` = `src/content/wiki/en/<key>/` 目录名。手改配置属于高级操作,参考 [docs/apply-template.md](https://github.com/PNGTRID/AnvilWiki/blob/main/docs/apply-template.md)。
+### 第 5 步:亲眼验收你的站
 
-## 第三步:自检 + 预览(5 分钟)
+**做什么**:确认店招牌真的换了。
+**怎么做**:终端输入 `pnpm dev`,浏览器打开 [localhost:4321](http://localhost:4321)。
+**你会看到**:首页是你游戏的名字和主题色,导航栏是你选的栏目。
+**确认做对了**,逐项检查:
 
-```bash
-pnpm check-config   # 分类/语言三处一致性
-pnpm build          # 全量校验(schema + 类型 + 构建)
-pnpm dev            # 人眼验收
-```
+- ☐ 首页标题是你的游戏(不再是 Anvil Quest)
+- ☐ 主色是你选的颜色(不再是橙色)
+- ☐ 导航只有你选的栏目
+- ☐ 手机宽度下也正常(浏览器按 F12,再点设备图标切换手机视图)
 
-**新手报错 3:`astro build` 报 SITE_URL 格式错。** `SITE_URL` 必须含 `https://` 协议,裸域名会构建失败。CLI 已按规范写入,手改 `wrangler.toml` 时别去掉协议。
+看完 `Control + C` 停掉。
 
-本地检查清单:
+## 卡住了怎么办
 
-- ☐ 首页是你游戏的名字和主题色(不是 Anvil Quest/橙色)
-- ☐ 导航只显示你选的分类
-- ☐ 浏览器标签页标题正确
-- ☐ 移动端宽度下布局正常(DevTools 切换设备模拟)
+- **「输入 pnpm 提示 command not found」**:pnpm 没装成,或装完没重开终端。关掉终端重新打开再试。
+- **`pnpm install` 或 build 报一堆红色**:先看**最后一行**写了什么,90% 的答案在最后一行;实在看不懂,把红色部分整段复制,丢给 AI 助手问「这个报错怎么修」。
+- **localhost:4321 打不开**:确认终端里 `pnpm dev` 还在跑着(窗口没关、没按 Control + C);地址别打成 https。
+- **apply-template 中途填错了**:按 `Control + C` 取消,重新跑一遍,它会用新答案覆盖。
+- **「重开终端后命令都报 not a git repository」**:关过终端再打开,电脑回到了你的用户主目录——先输 `cd AnvilWiki` 回到网站文件夹,再继续操作。
 
-## wrangler.toml 预警(现在知道,部署章不踩)
+## ✅ 验收(全部成立才算完成)
 
-仓库自带的 `wrangler.toml` 存在时,它是 Cloudflare Pages env 的**唯一真相源**,dashboard 的环境变量 UI 会被完全忽略。CLI 已经把它的 `[vars]` 重置为你的配置;后续在 dashboard 里配广告/统计变量前,先读[部署章](/zh/landing/docs/deploy-and-get-indexed)的二选一策略。
-
-> **✅ 验收(全部成立才算完成)**
-> - 命令:`pnpm check-config && pnpm build` → 全绿
-> - 页面:`pnpm dev` 打开 localhost:4321 —— 游戏名/主题色/分类都是你的
-> - ☐ git 里能看到 CLI 改过的文件(config 层),且 `git diff` 没有意外触碰 src/pages、src/components
-> - ☐ Domain 字段已确认(没有域名先用 pages.dev 占位)
+- 命令:`pnpm check-config` 显示 ✅,`pnpm build` 跑完最后一行没有红色 error
+- 页面:localhost:4321 上,游戏名、主题色、栏目都是你的
+- ☐ 6 样装备全部就位(第 3 章直接要用 AI 助手)
+- ☐ 域名一栏填了什么,你自己记得(没有域名就先用了 pages.dev 占位,买好域名后回来改)
 
 ## 下一步
 
-站壳有了,但内容还是 demo(或空)。下一章是整个方法论的核心:让 AI 在一天内产出 10 个能过构建校验、面向搜索意图的页面——含完整提示词。
+店装修好了,但货架还是示例商品。下一章是全书最精彩的部分:让 AI 一天写出 10 篇能通过质检的攻略。[去第 3 章 · 让 AI 帮你写 10 篇攻略](/zh/landing/docs/first-10-pages)

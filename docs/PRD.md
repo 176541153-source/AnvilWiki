@@ -1339,6 +1339,7 @@ describe('sitemap', () => {
 | v1.8 | AI 原生内容生产 + 新鲜度管道（第一性原理路线②③①④） | 高 | ✅ 已实现（`.agent/skills/` 3 技能 + AGENTS.md 对话式产页章节 / `codes` frontmatter + CodesTable 自动分区 + FAQPage JSON-LD / `pnpm refresh-audit` 确定性审计 + content-pipeline.yml 每周定时开 issue（绝不自动改内容）/ docs/game-selection.md 选品漏斗 + 首日 10 页） |
 | v1.10 | 官网开发指南板块（landing「怎么用」5 步上手向导） | 低 | ✅ 已实现（`DevGuide.astro` 时间线：fork → apply-template CLI → AI 对话产页 → 免费部署 → 保持新鲜，每步附命令 + 文档链接，底部通向 docs/README.md 四条阅读路径；文案在 `landing.ts` `devGuide`，随 CLI 整目录删除，fork 零残留） |
 | v1.11 | 站内文档中心（/landing/docs 双手册：SOP + AI 提示词） | 高 | ✅ 已实现（四专家定档；`handbook` collection 源于 `docs/handbook/{en,zh}/` 9 章（学习 5 + 开发 4），每步 SOP + P01-P11 提示词模板 + 验收三件套；中英 1:1 parity 测试硬门禁；BreadcrumbList/TechArticle JSON-LD + sitemap lastmod + llms.txt 门控段；CLI 删 landing 路由但**保留手册**（fork 站长可直接用提示词 SOP），fork 模拟构建绿） |
+| v1.13 | 手册零基础化全量重写（第一性原理体系 + 白话规范） | 高 | ✅ 已实现（第二轮四专家定档:科普写作/第一性原理架构/新手测试员/模板守门；统一七段骨架+四段式步骤（做什么/怎么做/你会看到/确认做对了）+固定类比库+首现术语定义；补「装好 6 样工具」序幕（旧版最大流失点）与域名/广告位/upstream 等断链；13 提示词块守恒、事实限定词逐条 grep 验收存活；中英 18 章同源重写） |
 
 **v1.3 范围说明**：
 - `timeline`：✅ 实现 —— 版本日志/活动时序，零副作用，商业价值正（老玩家点进 patch notes 文章页）。

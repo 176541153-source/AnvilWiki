@@ -1,96 +1,109 @@
 ---
-title: "开发手册·架构总览:三层分离与改动地图"
-description: "AnvilWiki 的代码/配置/内容三层分离设计,每个改动该落在哪一层的决策树,目录地图、数据流,以及 fork 后最容易踩的 Astro 5 六个坑。"
+title: "开发 1 · 先看这张地图:改哪里,不改哪里"
+description: "AnvilWiki 分三层:代码层(几乎别动)、配置层(每游戏改一次)、内容层(天天加)。用改动决策树 30 秒定位任何需求该落在哪,附数据流和 Astro 5 的六个坑。"
 manual: dev
 order: 1
 icon: lucide:layers
-tldr: "三层分离是全部架构决策的地基:Code 层(src/pages、components、lib)fork 后几乎不碰;Config 层(src/config、locales、globals.css)每游戏改一次;Content 层每篇文章都改。动手前先用决策树定位改动落点,再用验证三件套收尾。"
-updated: 2026-08-16
+tldr: "你的站像一栋三层的楼:一楼内容层天天进新文章,二楼配置层换一次招牌和墙色,三楼代码层是承重结构——fork 之后基本不动它。动手前先在决策树上找到你要改的东西在哪层,改错层的代价是:下次同步上游更新时,你的改动会被冲掉或者把站改坏。每次改完跑三件套验证。"
+updated: 2026-08-17
 ---
 
-## 为什么先读这一章
+## 你现在在哪,这章解决什么
 
-AnvilWiki 的每个设计都服务于同一个目标:**fork 用户改内容不改框架,改配置不重写框架,框架层零游戏字符串**。理解三层分离,你才知道自己的每个改动该落在哪、会不会在下次同步上游时被冲掉。
+你的站已经在赚钱,现在想动模板本身了——加个功能、换个结构、或者只是想知道「这个东西能不能改」。动手前先花 10 分钟搞清楚:任何一个改动,应该落在哪一层。改错位置,轻则白干,重则把站改坏、或下次升级模板时改动全被冲掉。
 
-## 三层地图
+## 这章做完你会得到
 
-| 层 | 目录 | fork 后你会改吗 | merge 冲突概率 |
+- 一张「任何需求 30 秒定位到文件」的决策树
+- 看懂一篇文章从草稿变成网页的完整流程
+
+## 三层楼:谁住哪层,谁该动谁
+
+| 层 | 住哪些目录 | 你会动它吗 | 升级模板时 |
 |---|---|---|---|
-| **Code** | `src/pages` `src/components` `src/lib` `src/i18n` | 几乎不碰 | 低 |
-| **Config** | `src/config` `src/locales` `src/styles/globals.css` `wrangler.toml` `astro.config.ts` `public/` | 一定会改 | **高(预期内)** |
-| **Content** | `src/content/wiki` `src/locales/<loc>.json` 的 home 数据 | 一定会替换 | 高(预期内) |
+| **内容层**(一楼) | `src/content/wiki/`、各语言 JSON 里的首页数据 | 天天动(写文章) | 几乎不冲突 |
+| **配置层**(二楼) | `src/config/`、`src/locales/`、`src/styles/globals.css` | 换游戏时动一次 | 少量冲突,**永远保留你的** |
+| **代码层**(三楼) | `src/pages/`、`src/components/`、`src/lib/`、`src/i18n/` | 基本不动 | 模板作者给你新功能 |
 
-上层规则:改内容不碰框架;改配置不重写框架;框架层不得出现游戏特定字符串(UI 文案全部走 `src/locales/<locale>.json`)。
+三条楼层规矩:
 
-## 改动决策树
+1. 改内容不碰框架,改配置不重写框架。
+2. 代码层里**不允许出现**你这个游戏专属的文字——所有界面文字都住在语言 JSON 里。
+3. 想改代码层之前,先问自己:这事真的不能靠配置解决吗?(多数时候能。)
+
+## 改动决策树(贴在手边)
 
 ```
 你要改什么?
-├─ 文案/标签/首页模块 → src/locales/<locale>.json(UI 文案)
-│                       src/locales/<locale>.json 的 home.*(首页模块)
-├─ 游戏名/域名/作者   → src/config/site.ts
-├─ 导航分类           → src/config/navigation.ts + en.json nav.<key> + 内容目录(三处一致!)
-├─ 主题色             → src/styles/globals.css 的 --brand/--brand-light/--brand-h/--brand-s(4 变量 × 亮/暗,共 8 行)
-├─ 语言列表           → src/i18n/routing.ts + locales JSON + 内容目录(三处一致!)
-├─ 文章内容           → src/content/wiki/<locale>/<category>/*.mdx
-├─ 新组件/新页面      → src/components / src/pages(Code 层,改了要考虑上游同步成本)
-└─ env 开关(广告/评论/统计) → wrangler.toml [vars] 或 dashboard(二选一)
+├─ 界面上的文字/首页模块 → src/locales/<语言>.json(界面文字在根部,首页模块在 home.* 段)
+├─ 游戏名/域名/作者信息  → src/config/site.ts
+├─ 导航栏目              → 三处必须同时一致(见下)
+├─ 主题色                → src/styles/globals.css 顶部 8 行(4 个变量 × 亮/暗两套)
+├─ 语言列表              → 三处必须同时一致(见下)
+├─ 文章内容              → src/content/wiki/<语言>/<栏目>/ 下的 .mdx
+├─ 新组件/新页面         → 代码层,动了要考虑升级成本
+└─ 广告/评论/统计开关    → Cloudflare 网页变量或 wrangler.toml(二选一,见集成章)
 ```
 
-两条「三处一致」铁律(`pnpm check-config` 自动校验):
+两条「三处一致」铁律(跑 `pnpm check-config` 自动检查):
 
-1. 分类 key:`navigation.ts` 的 `NAVIGATION_CONFIG[].key` = `en.json` 的 `nav.<key>` = `src/content/<locale>/<key>/` 目录名
-2. 语言:`routing.ts` 的 `locales` = `src/locales/*.json` 文件 = `src/content/<locale>/` 目录
+1. **栏目**:配置里登记的栏目名 = 语言 JSON 里 `nav.栏目名` = 内容目录 `src/content/wiki/en/栏目名/`,三处一模一样,少一处构建就报错。
+2. **语言**:语言列表 = 语言 JSON 文件 = 内容目录,同样三处一致。
 
-## 一次页面请求的数据流(静态构建时)
+## 一篇文章是怎么变成网页的
+
+先说结论:文章从草稿到上线,走四道工序。
 
 ```
-MDX frontmatter → Zod schema 校验(src/content.config.ts,不合法直接构建失败)
-    → getCollection() 取集合(i18n 回退:详情页回退英文,列表页不回退)
-    → getStaticPaths() 生成静态路由
-    → Astro 组件渲染 → dist/ 纯 HTML
-postbuild → Pagefind 索引正文 → 搜索零运行时
+1. 你(或 AI)写 .mdx 文章,开头是登记卡(frontmatter)
+2. 质检员(Zod schema)检查登记卡,格式不对 → 构建直接失败,告诉你哪里错
+3. 网站为每篇文章生成一个固定网址
+4. 全部印成纯 HTML 文件,自动生成搜索索引
 ```
 
-多语言规则(**有意的不对称**):文章详情页请求的语言版本不存在时回退英文(直链永不 404);列表页不回退(不展示不存在的内容)。
+多语言有一条**故意不对称**的规矩:玩家打开一篇你只写了英文版的文章网址,网站会显示英文版(网址永不打不开);但栏目列表页只显示该语言真实存在的文章(不显示「骗人」的空页)。前者求「打得开」,后者求「不撒谎」。
 
-## Astro 5 六个坑(实测,AGENTS.md 完整版)
+## Astro 5 的六个坑(只在改代码层时才需要读)
 
-1. `entry.id` 带 `.mdx`,但 `getEntry()` 不要扩展名——用 `parseEntryId` 统一处理
-2. Content Layer API 里 `entry.render()` 不存在——用独立 `render()` 函数
-3. `getStaticPaths` 编译为独立模块,文件顶层 `const` 对它不可见——数据 inline 进函数体
-4. rest 参数读 `Astro.params.slug`,不是 `Astro.props.slug`
-5. `src/content/<locale>/` 直放内容触发 legacy 自动收集——必须放 `src/content/wiki/<locale>/`
-6. `prefixDefaultLocale: false` 意味着英文站在根路径(`/`),不要做 `/` → `/en/` 重定向
+这六条全是实测踩出来的,改内容层/配置层用不到:
 
-## 工程约束速查
+1. 文章的内部编号自带 `.mdx` 后缀,但查询时要去掉后缀(仓库已封装,别自己拼字符串)。
+2. 旧版 Astro 的 `entry.render()` 写法已废除,用独立的 `render()` 函数。
+3. `getStaticPaths` 函数是单独编译的,页面文件顶部的变量它看不见——数据要写进函数体内。
+4. 读取网址里的参数用 `Astro.params.slug`,不是 `Astro.props.slug`。
+5. 文章必须放在 `src/content/wiki/<语言>/` 下,直接丢在 `src/content/<语言>/` 会触发旧机制报错。
+6. 英文是默认语言,住在根路径(`/`),不要做 `/` 跳 `/en/` 的重定向。
 
-- UI 文案全部走 JSON,组件零硬编码文字
-- 主题色只管 `--brand`/`--brand-light`/`--brand-h`/`--brand-s` 4 个变量(`--brand-text` 由 h/s 自动派生,不用手改),组件只引用 `var(--brand)`
-- og:image 等社交卡片用绝对路径(`${SITE_URL}/...`)
-- 域名走 `SITE_URL` env,必须含 `https://`
-- 广告/评论 env 空值 = 组件不渲染(开箱 Lighthouse 4×100 契约)
-- UI 不用 emoji,图标用 lucide(`astro-icon` 或 inline SVG)
+## 工程规矩速查(改代码层时遵守)
 
-## 验证三件套(每次改动后)
+- 界面文字全部走语言 JSON,组件里不硬编码文字
+- 主题色只动 4 个变量(`--brand` / `--brand-light` / `--brand-h` / `--brand-s`,文字安全色 `--brand-text` 由后两个自动算出,不用手改),组件里只许引用 `var(--brand)`,禁止写死色号
+- 分享卡片图、canonical 网址全用 `https://` 开头的完整地址
+- 域名只从 `SITE_URL` 变量读,必须带 `https://`
+- 广告/评论变量空着 = 对应组件不渲染(保住开箱跑分满分)
+- 界面不用 emoji,图标统一用 lucide
+
+## 每次改完的三件套
 
 ```bash
-pnpm check-config        # 三处一致性
-pnpm typecheck           # astro check,0 errors
-pnpm build && pnpm check-links   # schema + 构建 + 内链对账
+pnpm check-config              # 三处一致性
+pnpm typecheck                 # 类型检查,0 错误
+pnpm build && pnpm check-links # 构建 + 全站死链检查
 ```
 
-改了纯函数(`src/lib/`)加跑 `pnpm test`;改了内容加跑 `pnpm check-content`。
+动了 `src/lib/` 下的纯函数要加测试(`pnpm test`);动了文章内容加跑 `pnpm check-content`。
 
-## 深入设计依据
+## 卡住了怎么办
 
-每个模块的「为什么这样设计」在 [docs/PRD.md](https://github.com/PNGTRID/AnvilWiki/blob/main/docs/PRD.md)(15 章 + 3 附录,单一真相源);贡献级细节(发版流程/SemVer)在[同步与贡献章](/zh/landing/docs/sync-and-contribute)。
+- **「build 报错说栏目/语言不一致」**:跑 `pnpm check-config`,它会指出哪三处对不上。
+- **「我想改的样式不生效」**:先确认你改的是变量层(4 个变量)而不是在组件里写死了色号;亮色和暗色两套都要改(共 8 行)。
 
-> **✅ 验收(全部成立才算完成)**
-> - ☐ 能对任意一个改动需求,30 秒内说出它落在哪一层、哪些文件
-> - ☐ 理解「三处一致」的两条铁律各覆盖什么
-> - ☐ 本地验证三件套全绿
+## ✅ 验收(全部成立才算完成)
+
+- ☐ 拿三个真实需求(如「改首页标题」「加一篇文章」「换个主色」)在决策树上各 30 秒内找到落点
+- ☐ 说得出两条「三处一致」各管什么
+- ☐ 本地三件套全绿
 
 ## 下一步
 
-进入[定制章](/zh/landing/docs/customize):加分类、加语言、换主题、改首页——每一步的 SOP 和配套 AI 提示词。
+地图有了,去[开发 2 · 定制手册](/zh/landing/docs/customize):加栏目、加语言、换主题、改首页文案,每个需求的分步操作和配套 AI 提示词。

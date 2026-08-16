@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.13.0] — 2026-08-17
+
+**双手册全量重写:按「完全零基础也能跟着走」标准,四专家(科普写作/第一性原理架构/新手测试员/模板守门)定档。旧版实测服务的是「半熟手」,新版服务真正的目标用户。**
+
+### Changed
+- **统一七段骨架(9 章)**:①你在哪·解决什么(第一性原理链:赚钱←广告←流量←排名←收录←上线←你的文件←选品,每章开头「已有 X 缺 Y 本章给 Y」)②本章产出清单 ③概念垫底(新术语=一句白话+固定类比,首现定义后文直用)④分步实操(**四段式:做什么/怎么做/你会看到/确认做对了**)⑤卡住了怎么办(症状→原因→修法)⑥验收 ⑦下一步。
+- **补最大流失点**:学习手册第 2 章新增「第一幕:出发前装好 6 样东西」——终端怎么打开(Mac/Win)、注册 GitHub、装 Node 22、装 pnpm、装 Git、装 AI 助手,每样带确认点(小白实测:旧版最大劝退环节,装环境从一句话变成完整序幕)。另补:域名购买支线(Cloudflare Registrar/Porkbun)、AdSense 广告位编号从哪来、upstream 月度同步完整三行命令(旧版断链)、GSC 验证的逐步点击路径。
+- **小白实测卡点清零式修复**:wrangler.toml 二选一给新手唯一答案(删文件)+进阶折叠;`<你>.pages.dev` 占位符讲清含义;pnpm install/dev/build 全部补「你会看到」;frontmatter/SERP/RPM/搜索意图/Lighthouse 全部首现定义;意图决策表从第 1 章后移第 3 章(读者见到页面再讲页型);删前置噪音(第 2 章 wrangler 预警段、报错 2 三处一致、第 4 章 hreflang 检查、console.log 诊断法→挪开发手册)。
+- **固定类比库全书统一**:fork=整店复制蛋糕店(并声明边界:原店新品要 merge 才进来)、部署=书上货架、env=开关面板、build=印刷厂、终端=打字指挥电脑的窗口、三层=一栋三层楼。类比只用于「是什么/为什么」,操作句保持逐字精确。
+- **中英 18 章全部重写同源**(2 并行 agent + 事实守恒校验):13 个提示词块数量守恒、验证条款与禁令原义保留、全部数字与限定词(仅上游生效/不含换肤/8 行主题变量/P1 仅 bosses+tier-list/NODE_VERSION 进 [vars]/2-8 周/15-20 篇/≥60 分/双源)逐条 grep 验收存活。
+
+### Fixed
+- en 两章 title 超 80 字符(schema 拒收)裁剪;frontmatter 全部双引号转义防 YAML 冒号问题。
+
 ## [1.12.1] — 2026-08-17
 
 **CLI 清理完整性修复:landing 专属 showcase 截图此前不在删除清单,fork 仓库会残留 3 张无用图片。**
@@ -357,7 +371,8 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
-[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v1.12.1...HEAD
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v1.13.0...HEAD
+[1.13.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.12.1...v1.13.0
 [1.12.1]: https://github.com/PNGTRID/AnvilWiki/compare/v1.12.0...v1.12.1
 [1.12.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.11.2...v1.12.0
 [1.11.2]: https://github.com/PNGTRID/AnvilWiki/compare/v1.11.1...v1.11.2

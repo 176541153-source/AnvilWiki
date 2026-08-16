@@ -1,132 +1,164 @@
 ---
-title: "Monetization and Weekly Ops: AdSense, Freshness, and Growth Cadence"
-description: "AdSense setup, Giscus comments, and GA4 with every env var, plus the weekly 30-minute ops SOP: codes updates, freshness audits, and the monthly review."
+title: "Chapter 5 · Turn On Ads and Keep the Site Earning"
+description: "Apply for Google AdSense, fill the ad switch panel, and build a 30-minute weekly freshness routine: codes updates, data checks, monthly reviews."
 manual: learn
 order: 5
 icon: lucide:dollar-sign
-tldr: "Monetization in three steps: after accumulating 15-20 content pages, apply for AdSense, fill the four ad env vars into wrangler.toml or the dashboard, and slots render automatically without hurting Lighthouse. Ops run on cadence: 30 minutes every Monday for freshness issues and codes updates, plus a monthly review of RPM and an upstream sync."
-updated: 2026-08-16
+tldr: "Stack 15 to 20 content pages and buy a domain, then pass Google AdSense review and fill 4 ad IDs into Cloudflare; ads appear automatically without slowing the site. Then it's cadence: every Monday, 30 minutes to update codes and run a freshness check; once a month, review the data. Zero revenue in the first 1 to 2 weeks is normal; the golden window is 2 to 8 weeks."
+updated: 2026-08-17
 ---
 
-## Monetization step one: AdSense (hold on — build content first)
+## Where you are, and what this chapter solves
 
-**Pre-application checklist** (thin content gets rejected):
+The site is live and Google is indexing. But visitors arrive and you have nothing to sell — this chapter switches on the **ad slots**. Visitors see ads, and Google splits the money with you.
 
-- ☐ Your own domain (pages.dev subdomains have low approval rates)
-- ☐ 15-20 real content pages (not empty shells or demo)
-- ☐ Privacy policy / terms of service pages (the template ships `/privacy-policy`, `/terms-of-service` built in)
-- ☐ The site is reachable with no dead links (`pnpm check-links` passes)
+At the same time you'll build a **freshness routine**: game guides fear nothing more than going stale. Codes expired and nobody cares, the boss got reworked but your guide still teaches the old fight — a player who finds waste paper once never comes back for a second visit, and Google hands your ranking to someone else too.
 
-Apply: [AdSense](https://adsense.google.com) → Add site → wait for review (a few days to two weeks). If rejected, read the reason (usually "valueless content"), add 5-10 high-quality guides, and apply again.
+## What you'll have when this chapter is done
 
-Once approved, fill in the 4 env vars (location follows the two-way choice in the [deployment chapter](/landing/docs/deploy-and-get-indexed)):
+- Ad slots live, revenue accruing
+- A fixed 30-minute-every-Monday routine that keeps the site from ever going stale
 
-| Variable | Value |
+## A few words to know
+
+- **AdSense**: Google's ad middleman. It puts ads into your pages; when the ads get seen or clicked, Google pays you monthly.
+- **RPM**: how much you earn per thousand views. Tier list pages and codes pages usually carry the highest RPM.
+- **Lighthouse 4×100**: Google's health check for websites — four scores of 100 each, for speed/accessibility/best practices/SEO. This template scores full marks out of the box — the ad slots lazy-load, so turning them on costs no points.
+
+## Step one: apply for AdSense (self-check first, don't rush the form)
+
+**Pre-application checklist** (missing any one item invites rejection):
+
+- ☐ Your own domain (bought in Chapter 4; pages.dev free domains basically never pass review)
+- ☐ 15 to 20 pages of real content (not empty shells)
+- ☐ Privacy policy and terms of service pages (**the template ships them built in** at `/privacy-policy` and `/terms-of-service` — nothing for you to do)
+- ☐ The site opens with no dead links (`pnpm check-links` passes)
+
+**How to do it**: open [adsense.google.com](https://adsense.google.com) → add your site → wait for review (a few days to two weeks).
+**If rejected**: read the reason they give — nine times out of ten it's "not enough content value". Go back to the Chapter 3 routine and write 5 to 10 more pages, then apply again in two weeks; a rejection costs you nothing later.
+
+## Step two: fill the ad IDs into the site
+
+**What to do**: once approved, AdSense gives you 1 publisher ID and several ad slot IDs. The site has 4 switches reserved on the switch panel — fill them in and the lights come on.
+**How to do it**:
+
+1. AdSense console → **Ads** → by ad unit, grab your publisher ID (looks like `ca-pub-digits`) and each slot ID.
+2. Cloudflare → your project → **Settings** → **Variables and Secrets**, add 4 variables:
+
+| Variable name (copy exactly, case-sensitive) | What to fill in |
 |---|---|
-| `PUBLIC_ADSENSE_CLIENT` | Publisher ID (`ca-pub-…`) |
-| `PUBLIC_ADSENSE_SLOT_STICKY` | Bottom sticky ad slot ID |
-| `PUBLIC_ADSENSE_SLOT_SIDEBAR` | Sidebar ad slot ID |
-| `PUBLIC_ADSENSE_SLOT_INCONTENT` | In-content ad slot ID |
+| `PUBLIC_ADSENSE_CLIENT` | Your publisher ID (starts with ca-pub-) |
+| `PUBLIC_ADSENSE_SLOT_STICKY` | The bottom banner slot ID |
+| `PUBLIC_ADSENSE_SLOT_SIDEBAR` | The sidebar slot ID |
+| `PUBLIC_ADSENSE_SLOT_INCONTENT` | The in-article slot ID |
 
-Template contract: **if any one is empty, the corresponding slot does not render** — so you can enable only the in-content slot first and scale up gradually. Ad components lazy-load and don't hurt Lighthouse scores (out-of-the-box 4×100 is the contract). Revenue is 100% yours; no platform cut.
+3. Save and redeploy.
 
-## Optional integrations: comments and analytics
+**What you'll see**: ads appear at the bottom/sidebar/middle of articles (a new slot may take a few hours to a few days to fill with real ads — blank at first is normal).
+**Confirm you got it right**: all four variables are in Cloudflare (leave one empty and that spot shows nothing — that's by design; want only one spot on? Fill only that one). All revenue is yours — no platform cut.
 
-**Giscus comments** (backed by GitHub Discussions): follow the wizard at giscus.app to configure your repo, then fill the 4 values into env — `PUBLIC_GISCUS_REPO` / `PUBLIC_GISCUS_REPO_ID` / `PUBLIC_GISCUS_CATEGORY` / `PUBLIC_GISCUS_CATEGORY_ID`. If any is empty, comments don't render. See [docs/comments.md](https://github.com/PNGTRID/AnvilWiki/blob/main/docs/comments.md).
+> Comments and traffic analytics work the same switch-panel way (comments are called Giscus, powered by your GitHub repo's Discussions; analytics: Google Analytics or Cloudflare's built-in). When you need them, the developer manual's "integrations" chapter has the full steps.
 
-**Analytics — pick one** (or enable both):
+## Step three: build the Monday 30-minute routine
 
-| Option | env | Notes |
-|---|---|---|
-| Cloudflare Web Analytics | `PUBLIC_CF_BEACON_TOKEN` | No cookies, privacy-friendly by default |
-| Google Analytics 4 | `PUBLIC_GA_ID` | Strong on search terms/funnel analysis; pairs with cookie consent gating |
+Fixed time, fixed actions — the only secret to a site that never goes stale.
 
-**AI search visibility**: the site's `/llms.txt` automatically lists every default-language article; AI engines like ChatGPT/Perplexity rely on it to discover and cite your content. Zero configuration — just verify with `curl https://your-domain.com/llms.txt`.
+### Move 1: run the freshness check and turn the report into a to-do list (15 minutes)
 
-## Every Monday, 30 minutes: the ops SOP
-
-A fixed cadence is the only secret to freshness — stale content reads as a dead site in Google's eyes.
-
-### 1. Run the freshness audit and turn it into an action list (15 minutes)
+**What to do**: let the site tell you which pages have gone stale.
+**How to do it**: in the terminal:
 
 ```bash
 pnpm refresh-audit
 ```
 
-Rules: P0 = a codes page untouched for more than 7 days (escalates at 30 days); P1 = an article in the bosses/tier-list categories untouched for more than 90 days (those two categories show a stale banner on the page when outdated — other categories never produce a P1).
-
-> The upstream repo's scheduled **Content freshness audit** workflow (runs the audit every Monday and opens issues) **only runs on the AnvilWiki upstream by default** — forks never receive the automatic issues. Fork users simply run `pnpm refresh-audit` locally once a week; to enable automatic issues, delete the `if: github.repository == ...` condition on the job in `.github/workflows/content-pipeline.yml`.
-
-Feed the report to an AI and turn it into an action list:
+**What you'll see**: a list with two levels — **P0, most urgent: a codes page not updated for more than 7 days (past 30 days, the problem escalates); P1, next most urgent: boss guides and tier lists — those two categories only — not updated for more than 90 days** (only these two can produce a P1, because stale ones mislead players; other pages never do). Then paste the list to your AI assistant and have it organized into a to-do:
 
 ```text
 Here is my pnpm refresh-audit report:
 <paste the report>
 Turn P0/P1 into an actionable list:
-1. Pages where I need to supply new data → list per page exactly what's needed (latest codes / mechanic changes in the new version)
-2. Pages I've confirmed are still accurate and just need a refresh → update lastModified to today
+1. Pages where I need to supply new data → list per page exactly what's needed (the latest codes list / mechanic changes in the new version)
+2. Pages I've confirmed are still accurate and only need a refresh → update lastModified to today
 3. List pages whose gameVersion lags behind separately
-Do not change any content facts on your own. Output as a checklist.
+Do not change any content facts on your own. Output as a checkbox list.
 ```
 
-### 2. Update the codes page (10 minutes)
+> Note: that "weekly auto-check that opens issues" in the repo **runs only on the official AnvilWiki repository by default — your fork never receives the automatic reminders** — so run this command yourself every week. If you want GitHub to open issue reminders for you, that works too: delete the `if: github.repository ==` condition line in `.github/workflows/content-pipeline.yml` (let your AI assistant delete it — a one-sentence job).
 
-Collect new/expired codes (official social media/Discord), then:
+### Move 2: update the codes (10 minutes)
 
-On skill-capable tools, directly:
+Collect new codes and confirmed-expired old ones from official Twitter/Discord, then:
+
+On skill-capable AI assistants, just say it (slash command):
 
 ```text
 /anvil-update-codes new codes: <code list>; confirmed expired: <code list>
 ```
 
-Raw prompt version:
+Plain prompt version:
 
 ```text
 Update the codes article under src/content/wiki/en/codes/: prepend new codes to the frontmatter active list;
 change expired codes to status expired (keep them, don't delete); set lastModified to today; sync the code count and year/month in title/summary;
-if other language versions exist, sync their data too (don't translate the code field; translate reward and other copy).
+if other language versions exist, sync their data (don't translate the code field; translate reward and other copy).
 When done, run pnpm check-content && pnpm build; only all-green counts as complete.
 ```
 
-### 3. Wrap up (5 minutes)
+**Confirm you got it right**: the codes page shows the new codes, and the expired ones move into the "Expired" table (not deleted — people still search "do old codes still work", and keeping them catches that long-tail traffic).
 
-`git push` (the build validates automatically) → check GA/GSC search terms → pick 1-2 rising terms to set next week's page topics.
+### Move 3: wrap up (5 minutes)
 
-## Once a month
+`git push` (Cloudflare re-shelves automatically) → open GSC's "Performance" page and see which terms brought clicks over the last two days → pick 1 to 2 rising terms and write matching new pages next week with the Chapter 3 routine.
+
+## Once a month (10 minutes each)
 
 ```bash
-pnpm check-i18n --strict   # multilingual coverage (only needed if you run translated locales)
-git fetch upstream && git merge upstream/main   # sync upstream (see the developer manual · sync chapter)
+# 1. Multilingual sites only: see how much translation is missing
+pnpm check-i18n --strict
+
+# 2. Pull in the template author's updates (first time: run all three lines)
+git remote add upstream https://github.com/PNGTRID/AnvilWiki.git
+git fetch upstream
+git merge upstream/main
 ```
 
-- AdSense report review: which page types have high RPM (tier list/codes usually highest) → produce more of them next month
-- GSC performance report: queries with rising clicks → deepen the matching content
+What the second block means: register the official repo (called upstream) as the one you follow, fetch its latest version, and merge it into your site. **If the terminal shows the word CONFLICT, don't panic**: tell your AI assistant which files conflict and say "keep mine for config and content, take the official version for code" — this step is exactly what AI is good at. Conflicts-wise: always keep **your own** files (game name, colors, articles) and take only the official code improvements. The full walkthrough is in the developer manual's "sync" chapter.
 
-## SEO health-check prompt (quarterly, or when traffic looks wrong)
+Spend 10 more minutes on the AdSense report: which page types have the highest RPM (usually tier lists and codes) → write more of those next month.
+
+## Quarterly action: the SEO health check (send this block to your AI assistant)
 
 ```text
-Run a read-only SEO health check on this site — analyze, don't change anything:
-1. SITE_URL (in wrangler.toml [vars] or .env) includes https:// and is the production domain
+Run an SEO health check on this site — read-only, change nothing:
+1. SITE_URL (wrangler.toml [vars] or .env) includes https:// and is the production domain
 2. Every article: title ≤80, description 40–165, summary a direct answer (list the violations)
 3. og:image/twitter:image are absolute paths
-4. Any misuse of noindex?
+4. Any misuse of noindex
 5. Run pnpm check-sitemap; after a build, run pnpm check-links and report non-200/dead links
-6. Is multilingual hreflang coverage complete?
-Output an issue table: file / problem / suggested fix — change anything only after I confirm.
+6. Is multilingual hreflang coverage complete
+Output an issue table: file / problem / suggested fix; change only after I confirm.
 ```
 
-## Managing expectations
+## Reasonable expectations for revenue
 
-- The golden window is the 2-8 weeks after a game explodes: Google grants rankings gradually within the window, and zero revenue in weeks 1-2 is normal
-- Revenue ≈ page count × ranking × RPM: the first 30 days are about page count, after that about rankings (freshness + internal links)
-- Once one site works, the marginal cost of a second site is tiny (you have already walked the full game selection → site launch → page production SOP once)
+- The golden window is the **2 to 8 weeks** after a game explodes. Inside the window, Google grants you rankings gradually — **zero revenue in the first 1 to 2 weeks is normal**, not failure.
+- The revenue formula ≈ page count × ranking × per-thousand-views earnings. The first 30 days fight for page count; after that, for rankings (freshness + internal links).
+- Once the first site works, a second site costs marginal effort — selection, site setup, page production, deploy, operations: you've now walked this manual end to end once.
 
-> **✅ Acceptance criteria (the ops cadence is established)**
-> - Commands: `pnpm refresh-audit` reports no P0 (all codes pages within 7 days)
-> - Pages: AdSense slots render on the live site (if configured)
-> - ☐ The weekly SOP completed at the same time slot for 3 consecutive weeks
-> - ☐ GA or CF Analytics (at least one) is wired up and showing search terms
+## If you get stuck
+
+- **"The ad slots stay blank"**: new site, new slots — filling takes a few hours to a few days; also confirm the 4 variable names are spelled exactly right (case-sensitive).
+- **"AdSense rejected me"**: it's almost always not enough content; add 5 to 10 real guides and apply again.
+- **"I forget the weekly check"**: create a recurring Monday reminder in your phone calendar, titled "30-minute freshness".
+
+## ✅ Acceptance criteria (all must hold)
+
+- Ads really display on the live site (if AdSense has approved you)
+- This week you ran `pnpm refresh-audit` once and P0 is zero (the codes page updated within 7 days)
+- ☐ Three weeks in a row, same time slot, all three moves done
+- ☐ You can read GSC's "Performance" page: which terms brought the clicks
 
 ## After you finish
 
-Three paths: **settle into the weekly cadence and keep operating**; **go deep with the [developer manual](/landing/docs/architecture) to customize your site**; or **submit your site via PR to the AnvilWiki official Showcase** (edit the showcase data in `src/config/landing.ts`) and give back to the template community.
+Three-way fork in the road: **keep operating on the weekly routine**; **go deep with the [developer manual](/landing/docs/architecture) to customize your site** (add categories, add languages, reskin, enable comments and analytics); or **submit a PR adding your site to the AnvilWiki official showcase wall** (edit the showcase data in `src/config/landing.ts`) — your real case is the best ad this template can get.

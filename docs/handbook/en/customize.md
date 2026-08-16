@@ -1,87 +1,93 @@
 ---
-title: "Customization SOP: Categories, Languages, Theme, and Homepage"
-description: "Add categories, languages, theme colors, and homepage copy: commands, three-place consistency checks, and AI prompt templates for every step."
+title: "Dev 2 · The Customization Handbook: Categories, Languages, Theme, Homepage Copy"
+description: "Add a category, add a language, change the theme, edit homepage copy: step-by-step recipes with three-place consistency checks and a copyable AI prompt for each."
 manual: dev
 order: 2
 icon: lucide:palette
-tldr: "Adding a category means three-place consistency (navigation.ts + locale JSON + content directory). Adding a language: run pnpm new-locale first, then let AI translate the JSON and articles. Theme colors are just 8 lines (4 vars × light/dark) in globals.css. All homepage copy lives in the home.* section of the locale JSON. Every step has a companion prompt to delegate to AI."
-updated: 2026-08-16
+tldr: "Four requests, four recipes. Add a category: config, locale JSON, and content directory agree in three places. Add a language: scaffold with pnpm new-locale, then AI translates against the English file. Change the theme: 8 lines at the top of globals.css, light and dark together — skip half and text keeps the old hue. Homepage copy lives only in the JSON's home section. Verify with pnpm check-config && pnpm build."
+updated: 2026-08-17
 ---
 
-## Add a navigation category (10 minutes)
+## Where you are now and what this chapter solves
 
-Taking `weapons` as the example — all three places must line up:
+Sooner or later after launch you'll want to add a weapons category, ship a Japanese version, switch the color scheme, or rework the homepage pitch. This chapter turns each of those four tasks into a fixed recipe — follow it and you can't go wrong.
+
+**This chapter is a lookup manual: jump to the section you need; no need to read in order.**
+
+## Task 1: Add a navigation category (e.g. "weapons")
+
+You met the category rule in the architecture chapter: **three-place consistency, no place optional**. Adding `weapons`:
 
 ```bash
-# 1. Content directory (create a skeleton article, otherwise the list page is empty)
+# 1. Content directory (create the directory first, then add the first article)
 mkdir -p src/content/wiki/en/weapons
-# Create the first article (or use /anvil-new-article)
 
-# 2. navigation.ts: add { key: 'weapons', icon: 'lucide:sword' } to NAVIGATION_CONFIG
+# 2. Config: add to src/config/navigation.ts following the existing entries' style
+#    { key: 'weapons', icon: 'lucide:sword' }
 
-# 3. src/locales/en.json: nav.weapons + overview.weapons (list page title/description)
+# 3. Locale: add nav.weapons (navigation label) to src/locales/en.json
+#    and overview.weapons (list page title and description)
 ```
 
-Then run `pnpm check-config` to verify three-place consistency and `pnpm build` to validate against the schema. Add the key to the other languages' JSON as well (a missing key falls back to English at runtime, but `pnpm check-i18n` will list it).
+Then run `pnpm check-config` (three-place consistency) + `pnpm build` (format check). The other languages' JSONs need the same key too (missing it won't break anything — the UI falls back to English — but `pnpm check-i18n` will list it to remind you).
 
-Delegate to AI:
+Delegate to AI (copy the whole block, replace `weapons` with your category name):
 
 ```text
 Add a new category "weapons" to the site. Change all three places consistently:
-1. Add { key: 'weapons', icon: 'lucide:sword' } to src/config/navigation.ts, matching the style of existing entries
+1. Add { key: 'weapons', icon: 'lucide:sword' } to src/config/navigation.ts, following the style of existing entries
 2. Add nav.weapons and overview.weapons to src/locales/en.json, matching the copy style of existing categories
-3. Create a skeleton article in src/content/wiki/en/weapons/ with schema-valid frontmatter and draft: true
-Also add the new key to the JSON of every other existing language. When finished, run pnpm check-config && pnpm build — only all-green counts as done.
+3. Create a skeleton article under src/content/wiki/en/weapons/ (schema-valid frontmatter, draft: true)
+Also add the key to every other existing language's JSON. When finished, run pnpm check-config && pnpm build — only all-green counts as done.
 ```
 
-## Add a language (30 minutes)
+## Task 2: Add a language (Japanese as the example)
 
-Three-place consistency: `locales` in `src/i18n/routing.ts` = `src/locales/*.json` = `src/content/<locale>/`.
+Language three-place consistency: the language list config = the locale JSON files = the content directories.
 
 ```bash
-# 1. Scaffold (generates the JSON skeleton + content directory)
+# Step 1: run the scaffold (it asks for the language code, e.g. ja) — it generates the JSON skeleton and the content directory
 pnpm new-locale
-# Enter the language code when prompted, e.g. ja
-
-# 2. Have AI translate the UI JSON
 ```
 
-UI translation prompt:
+Step 2 — have AI translate the interface text (copy the whole block):
 
 ```text
 I just added <language-code> with pnpm new-locale. Translate that language file:
-translate src/locales/<language-code>.json key by key against src/locales/en.json.
-Do not add or remove keys; keep category keys consistent with navigation.ts.
+translate src/locales/<language-code>.json key by key against src/locales/en.json;
+do not add or remove keys; keep category keys consistent with navigation.ts.
 Run pnpm check-config && pnpm check-i18n to verify — only all-green counts as done.
 ```
 
-Article translation prompt (per article):
+Step 3 — translate the articles (one at a time):
 
 ```text
 Translate src/content/wiki/en/<category>/<slug>.mdx into <target-language> and
-write it to the same path under src/content/wiki/<target-language>/. Rules: translate
-only title/description/summary and the body; leave slug, dates, internal link paths,
-and the code field of codes entries untouched; keep tags in English when no equivalent
-exists; draft a glossary first to keep terminology consistent throughout. When done, run
+write it to the same path under src/content/wiki/<target-language>/. Rules: translate only
+title/description/summary and the body; leave slug, dates, internal link paths, and the
+code field of codes entries untouched; keep tags in English when no equivalent exists;
+draft a glossary first so terminology stays consistent throughout. When done, run
 pnpm check-content && pnpm build && pnpm check-i18n — only all-green counts as done.
 ```
 
-**The language switcher only lists languages that already have content** — a new language with no articles won't appear in the switcher (prevents 404s).
+Note: the codes themselves (the `code` field) are never translated — they are alphanumeric strings shared worldwide.
 
-## Change the theme colors (2 minutes)
+**The language switcher only lists languages that really have content** — while Japanese has zero articles, Japanese won't appear in the switcher. This prevents tap-into-a-blank-page moments.
 
-Edit only the 8 lines at the top of `src/styles/globals.css` (4 variables × light/dark):
+## Task 3: Change the theme color (5 minutes)
+
+Edit only the top **8 lines** of `src/styles/globals.css` (4 variables × light/dark):
 
 ```css
 :root { --brand: hsl(...); --brand-light: hsl(...); --brand-h: ...; --brand-s: ...%; }
 .dark { --brand: hsl(...); --brand-light: hsl(...); --brand-h: ...; --brand-s: ...%; }
 ```
 
-`--brand-text` (the text-safe shade) derives from `--brand-h/--brand-s` automatically — never edit it by hand, which also means changing only `--brand`/`--brand-light` leaves the old hue in text colors: always replace all 8 lines together. Components across the site reference `var(--brand)`; hard-coded hex is not allowed. Hex to HSL: the theme-color step of `pnpm apply-template` converts all 8 lines automatically, or use any online tool. At fork time the CLI does it in one step (see the site launch chapter).
+Why all 8 lines go together: the text-safe color `--brand-text` is computed automatically from `--brand-h` (hue) and `--brand-s` (saturation) — replace only the first two variables and text colors keep the old hue; the whole site looks "dirty". Can't convert a hex code to HSL? Have AI do it, or run the recolor step of `pnpm apply-template` (it handles all 8 lines automatically). After changing, check contrast once in light mode and once in dark mode.
 
-## Edit homepage copy and modules
+## Task 4: Edit homepage copy
 
-The homepage is driven entirely by the `home.*` section of `src/locales/<locale>.json` (hero/start/explore/faq/updates) — change copy, not components. Have AI draft it:
+Every block of homepage text (hero headline, quick links, featured, FAQ, changelog) lives in the `home.*` section of the locale JSON — **editing copy touches zero component code**. Have AI draft it (copy the whole block):
 
 ```text
 Rewrite the homepage copy. Game: <game name>; selling point: <one-liner>; target players: <description>.
@@ -90,18 +96,25 @@ Give me 3 versions of each string to choose from, each close to the current fiel
 After I pick, apply the replacements and run pnpm build to verify — only all-green counts as done.
 ```
 
-Reordering or adding/removing modules is a Config-layer structural change; see the homepage presets in [docs/apply-template.md](https://github.com/PNGTRID/AnvilWiki/blob/main/docs/apply-template.md) (codes-style / guides-style).
+The "close to current length" rule is deliberate: the homepage layout is designed around the current text lengths — copy that suddenly doubles will blow the layout apart.
 
-## Extend frontmatter fields (advanced)
+## Advanced: add a new field to the article registration card
 
-To add structured data to articles (a new data card, for example): add a Zod field in `src/content.config.ts` → consume it in a component → validate with `pnpm build`. Fields are **added only, never renamed** (a backward-compatibility promise: old articles always build). Once added, have AI produce pages with the new field, and put the field documentation in the Requirements section of your prompt.
+Want to hang new data on articles (a new stat card, say)? The flow: add a Zod field in `src/content.config.ts` → consume it in a component → verify with `pnpm build`. Iron rule: **fields are only added, never renamed** — renaming retires every old article on the site. Once the field exists, write its rules into the Requirements section of your page-production prompt, and AI will carry it from then on.
 
-> **✅ Acceptance criteria (all must hold)**
-> - Command: `pnpm check-config && pnpm check-i18n && pnpm build` → all green
-> - Page: the new category/language is visible in the navigation and language switcher, and its list page is non-empty
-> - ☐ Translations are filled in for every new key (check-i18n reports nothing missing)
-> - ☐ Contrast checked in both light and dark modes after changing theme colors
+## If you get stuck
+
+- **"check-config reports a category mismatch"**: its output names exactly which of the three places doesn't line up — fill in what's missing.
+- **"The build broke after translating articles into the new language"**: nine times out of ten a registration-card field got mangled during translation (a stray period in a date, that kind of thing); look at the exact file and line in the build error.
+- **"Some spots kept the old color after recoloring"**: odds are you changed 4 lines instead of 8, or missed the `.dark` set.
+
+## ✅ Acceptance criteria (check the tasks you did)
+
+- ☐ Added a category: `pnpm check-config && pnpm build` all green, the new category shows in navigation with a non-empty list
+- ☐ Added a language: `pnpm check-i18n` reports nothing missing, the new language appears in the switcher
+- ☐ Changed the theme: checked both light and dark modes, no old hue left in text colors
+- ☐ Edited copy: `pnpm build` all green, homepage layout not blown apart
 
 ## Next steps
 
-Ads, comments, analytics, CI — the [integrations and engineering chapter](/landing/docs/integrations) covers the env-gated mechanism behind them all, plus the full configuration table.
+Ads, comments, analytics, CI gates, security — [Dev 3 · integrations and engineering](/landing/docs/integrations): the full table of toggle variables and the mechanics behind them.
