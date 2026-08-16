@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.14.1] — 2026-08-17
+
+**状态同步版:README 重构升级 + 官网/仓库文档全面刷新到最新状态(v1.14 手册分册、8+6 章、零基础优先)。**
+
+### Changed
+- **README.md 重构**:新增「快速链接」表(零基础→学习手册 8 章/全景→文档中心/定制→开发手册/在线 Demo,一眼分流);核心特性压缩为 8 条并把「零基础双手册」提为第一条;快速开始压缩为 4 步并引导新手去学习手册第 2 章;新增「常见问题」(要花多少钱/不会编程能做吗/多久有收入/会被上游覆盖吗);对比表加「AI 产页/上手门槛」两行;英文区同步镜像重写;尾部新增 Design Notes。badges 的 Project page 更新为 Docs 徽章。
+- **Landing 首页文案刷新**:hub 副标题与两本手册卡片描述改为最新事实(相互独立、8 章/6 章、零基础标准、每步 SOP+提示词)。
+- **仓库文档同步**:`docs/README.md` 手册条目改为 8+6 章 + 两个手册独立页链接;`AGENTS.md` 状态行从 v1.9.0(严重滞后)更新到 v1.14.0(含文档中心/手册结构/源码位置说明)。
+
 ## [1.14.0] — 2026-08-17
 
 **手册分册成页 + 章节拆细:学习手册与开发手册各自独立页面,5+4 章拆为 8+6 章,手册页改编号列表展示。**
@@ -390,7 +399,8 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
-[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v1.14.0...HEAD
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v1.14.1...HEAD
+[1.14.1]: https://github.com/PNGTRID/AnvilWiki/compare/v1.14.0...v1.14.1
 [1.14.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.13.1...v1.14.0
 [1.13.1]: https://github.com/PNGTRID/AnvilWiki/compare/v1.13.0...v1.13.1
 [1.13.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.12.1...v1.13.0

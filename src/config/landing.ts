@@ -11,7 +11,7 @@
  */
 
 /** Keep in sync with package.json "version" (used by the announcement bar). */
-export const PROJECT_VERSION = '1.14.0';
+export const PROJECT_VERSION = '1.14.1';
 
 export type LandingLocale = 'en' | 'zh';
 
@@ -119,7 +119,7 @@ const en: LandingContent = {
   description:
     'An open-source game wiki template with an AI-native content workflow: pick the right game, generate pages by talking to your AI tool, codes pages stay fresh on autopilot. Lighthouse 4×100, free on Cloudflare, 100% ad revenue yours.',
   announcement: {
-    text: `v${PROJECT_VERSION} shipped — the two manuals now live on separate pages (Learning 8 chapters / Development 6, split finer along natural seams) and each manual's page shows a numbered chapter list.`,
+    text: `v${PROJECT_VERSION} shipped — README restructured, the landing and repo docs refreshed to the current state (separate manuals, 8+6 chapters, beginner-first).`,
     href: RELEASES,
   },
   hero: {
@@ -320,17 +320,17 @@ pnpm install && pnpm dev`,
   handbook: {
     hubTitle: 'AnvilWiki Docs',
     hubSubtitle:
-      'Two hands-on manuals, written as step-by-step SOPs with copy-paste AI prompts. The Learning Manual takes you from game selection to a live, indexed, monetized wiki; the Development Manual covers architecture, customization, integrations, and upstream sync.',
+      'Two separate hands-on manuals, written for complete beginners: the Learning Manual (8 chapters) walks you from game selection to a live, indexed, monetized wiki; the Development Manual (6 chapters) covers customization and engineering. Every step is a SOP with copy-paste AI prompts.',
     manuals: {
       learn: {
         label: 'Learning Manual',
         description:
-          'From zero to an earning game wiki: pick the right game, set up in 30 minutes, write 10 pages with AI on day one, deploy free, then run a 30-minute weekly ops loop.',
+          '8 chapters, zero experience required: pick the right game, install the tools, launch your site, write 10 pages with AI on day one, get on Google, turn on ads, run a 30-minute weekly ops loop.',
       },
       dev: {
         label: 'Development Manual',
         description:
-          'For deep customizers and contributors: the three-layer architecture and change map, customization SOPs, env-gated integrations, CI, and how to sync upstream or contribute back.',
+          '6 chapters for customizers and contributors: the change map, categories & locales, theme & homepage copy, feature switches, CI & security, and syncing upstream or contributing back.',
       },
     },
     chapterLabel: 'Chapter',
@@ -392,7 +392,7 @@ const zh: LandingContent = {
   description:
     '开源游戏 wiki 模板 + AI 原生内容工作流:选对游戏、和 AI 对话就能产页、codes 页自动保鲜。Lighthouse 4×100、Cloudflare 免费部署、广告收入 100% 归你。',
   announcement: {
-    text: `v${PROJECT_VERSION} 发布 —— 学习手册与开发手册各自独立成页(8 章 + 6 章,沿自然接缝拆细),手册页改为编号列表展示,进度一目了然。`,
+    text: `v${PROJECT_VERSION} 发布 —— README 重构升级,官网与仓库文档全面同步最新状态(手册分册、8+6 章、零基础优先)。`,
     href: RELEASES,
   },
   hero: {
@@ -589,17 +589,17 @@ pnpm install && pnpm dev`,
   handbook: {
     hubTitle: 'AnvilWiki 文档中心',
     hubSubtitle:
-      '两本实操手册,每一步都是 SOP + 可复制的 AI 提示词。学习手册带你从选游戏到上线、收录、变现;开发手册覆盖架构、定制、集成与上游同步。',
+      '两本相互独立的实操手册,按完全零基础标准编写:学习手册 8 章带你从选游戏走到上线、收录、变现;开发手册 6 章覆盖定制与工程。每一步都是 SOP + 可复制的 AI 提示词。',
     manuals: {
       learn: {
         label: '学习手册',
         description:
-          '从零到一个能赚钱的游戏 wiki:选对游戏、30 分钟建站、首日用 AI 产出 10 页、免费部署上线,然后每周 30 分钟的运营节奏。',
+          '8 章,零经验起步:选对游戏、装好工具、建起自己的站、首日用 AI 产出 10 页、被 Google 收录、接上广告、每周 30 分钟运营节奏。',
       },
       dev: {
         label: '开发手册',
         description:
-          '面向深度定制者与贡献者:三层架构与改动地图、定制 SOP、env 门控集成、CI 门禁,以及同步上游与贡献回流。',
+          '6 章,面向定制者与贡献者:改动地图、加栏目与加语言、换主题与改首页、功能开关总表、CI 门禁与安全、同步上游与贡献回流。',
       },
     },
     chapterLabel: '第',

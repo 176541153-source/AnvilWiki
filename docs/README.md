@@ -2,13 +2,13 @@
 
 > 全部文档按**角色**和**使用时机**组织。从下面找到你的路径,按顺序读即可。
 
-**先看这个:[站内文档中心(/landing/docs)](https://anvilwiki.pages.dev/zh/landing/docs)** —— 两本引导式手册(学习手册 5 章 + 开发手册 4 章,中英双语),每一步都是 SOP + 可复制的 AI 提示词;本页的仓库文档是配套的查阅式参考。手册 markdown 源码在 [`handbook/`](handbook/) 目录。
+**先看这个:[站内文档中心](https://anvilwiki.pages.dev/zh/landing/docs)** —— 两本**相互独立**的引导式手册:[学习手册 8 章](https://anvilwiki.pages.dev/zh/landing/docs/learn)(零基础向,从选游戏到赚到钱,每步 SOP + 13 个可复制提示词)+ [开发手册 6 章](https://anvilwiki.pages.dev/zh/landing/docs/dev)(定制/集成/同步,按需查询),中英双语;本页的仓库文档是配套的查阅式参考。手册 markdown 源码在 [`handbook/`](handbook/) 目录(fork 后保留)。
 
 ## 快速索引
 
 | 文档 | 一句话 | 读者 |
 |---|---|---|
-| [handbook/](handbook/) | 📚 站内文档中心源码:学习手册(SOP+提示词)+ 开发手册 | 🎯 新手从这里开始 |
+| [handbook/](handbook/) | 📚 站内手册源码:学习手册 8 章(SOP+提示词)+ 开发手册 6 章,中英双语 | 🎯 新手从[学习手册](https://anvilwiki.pages.dev/zh/landing/docs/learn)开始 |
 | [game-selection.md](game-selection.md) | 做哪个游戏?上线第一天写什么? | 🎯 想建站赚钱的人(从这里开始) |
 | [README](../README.md) | 项目是什么 + 5 分钟跑起来 | 所有人 |
 | [apply-template.md](apply-template.md) | 把 demo 站换成你的游戏(配置层手册) | fork 用户 |
