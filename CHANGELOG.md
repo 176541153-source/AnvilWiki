@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.12.0] — 2026-08-17
+
+**手册章节页三栏布局:左侧手册目录树 + 右侧本页内容目录(scrollspy)。**
+
+### Added
+- **左侧手册目录树**(新组件 `HandbookNav.astro`):两本手册全部章节按序分组列出,当前章高亮(`aria-current="page"`),顶部回文档中心;xlarge 屏吸顶,以下折叠为 `<details>`。纯 HTML/CSS 零 JS。
+- **右侧本页内容目录**:复用 wiki 的 `TableOfContents`(H2/H3 锚点 + IntersectionObserver scrollspy 跟随高亮);组件新增 `desktopAt` prop(`lg` 默认 wiki 不变 / `xl` 手册三栏用),以下屏折叠为 `<details>` 置于 TL;DR 卡之后。
+- 章节页网格 `xl:grid-cols-[13rem_minmax(0,48rem)_13.5rem]`,中列正文 max-w-3xl;`landing.ts` 新增 `onThisPageLabel`/`manualsLabel` 中英文案。
+
 ## [1.11.2] — 2026-08-17
 
 **Landing 导航栏手册入口:头部新增「学习手册 / 开发手册」链接,锚定文档中心对应手册区块。**
@@ -340,7 +349,8 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
-[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v1.11.2...HEAD
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v1.12.0...HEAD
+[1.12.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.11.2...v1.12.0
 [1.11.2]: https://github.com/PNGTRID/AnvilWiki/compare/v1.11.1...v1.11.2
 [1.11.1]: https://github.com/PNGTRID/AnvilWiki/compare/v1.11.0...v1.11.1
 [1.11.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.10.0...v1.11.0

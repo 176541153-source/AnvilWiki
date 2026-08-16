@@ -11,7 +11,7 @@
  */
 
 /** Keep in sync with package.json "version" (used by the announcement bar). */
-export const PROJECT_VERSION = '1.11.2';
+export const PROJECT_VERSION = '1.12.0';
 
 export type LandingLocale = 'en' | 'zh';
 
@@ -79,6 +79,10 @@ export interface LandingContent {
     updatedLabel: string;
     readLabel: string;
     tldrLabel: string;
+    /** Right-hand "On this page" heading TOC label. */
+    onThisPageLabel: string;
+    /** Left-hand manual-tree nav label (mobile <details> summary). */
+    manualsLabel: string;
   };
   finalCta: {
     title: string;
@@ -105,7 +109,7 @@ const en: LandingContent = {
   description:
     'An open-source game wiki template with an AI-native content workflow: pick the right game, generate pages by talking to your AI tool, codes pages stay fresh on autopilot. Lighthouse 4×100, free on Cloudflare, 100% ad revenue yours.',
   announcement: {
-    text: `v${PROJECT_VERSION} shipped — the landing header now links straight to the Learning and Development manuals, anchored to each manual's section in the docs center.`,
+    text: `v${PROJECT_VERSION} shipped — handbook chapters get a three-column layout: manual tree on the left, on-page heading TOC (with scrollspy) on the right.`,
     href: RELEASES,
   },
   hero: {
@@ -328,6 +332,8 @@ pnpm install && pnpm dev`,
     updatedLabel: 'Updated',
     readLabel: 'Read chapter',
     tldrLabel: 'TL;DR',
+    onThisPageLabel: 'On this page',
+    manualsLabel: 'Manual contents',
   },
   finalCta: {
     title: 'Ready to launch your game wiki?',
@@ -358,7 +364,7 @@ const zh: LandingContent = {
   description:
     '开源游戏 wiki 模板 + AI 原生内容工作流:选对游戏、和 AI 对话就能产页、codes 页自动保鲜。Lighthouse 4×100、Cloudflare 免费部署、广告收入 100% 归你。',
   announcement: {
-    text: `v${PROJECT_VERSION} 发布 —— landing 导航栏新增「学习手册 / 开发手册」入口,直达文档中心对应手册区块。`,
+    text: `v${PROJECT_VERSION} 发布 —— 手册章节页升级三栏布局:左侧手册目录树,右侧本页内容目录(scrollspy 跟随高亮)。`,
     href: RELEASES,
   },
   hero: {
@@ -577,6 +583,8 @@ pnpm install && pnpm dev`,
     updatedLabel: '更新于',
     readLabel: '阅读本章',
     tldrLabel: '太长不看',
+    onThisPageLabel: '本页目录',
+    manualsLabel: '手册目录',
   },
   finalCta: {
     title: '准备好上线你的游戏 wiki 了吗?',

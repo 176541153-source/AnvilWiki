@@ -29,7 +29,7 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const slug = Astro.params.slug ?? parseHandbookId(entry.id)?.slug ?? '';
-const { Content } = await render(entry);
+const { Content, headings } = await render(entry);
 
 const t = landingContent.en;
 const all = await getCollection('handbook');
@@ -85,7 +85,15 @@ const jsonLd = [
   togglePath={handbookPath('zh', slug)}
   extraJsonLd={jsonLd}
 >
-  <HandbookChapter locale="en" chapter={entry} t={t} prev={prev} next={next}>
+  <HandbookChapter
+    locale="en"
+    chapter={entry}
+    t={t}
+    chapters={chapters}
+    headings={headings}
+    prev={prev}
+    next={next}
+  >
     <Content />
   </HandbookChapter>
 </LandingLayout>
