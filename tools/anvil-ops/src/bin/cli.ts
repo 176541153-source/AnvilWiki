@@ -50,6 +50,16 @@ program
     });
   });
 
+program
+  .command('mcp')
+  .description('Start the anvil-ops MCP server on stdio (for Claude / ZCode / other MCP clients)')
+  .action(async () => {
+    const { StdioServerTransport } = await import('@modelcontextprotocol/sdk/server/stdio.js');
+    const { buildServer } = await import('../mcp/server.js');
+    const server = buildServer({ cwd: process.cwd() });
+    await server.connect(new StdioServerTransport());
+  });
+
 program.parseAsync(process.argv).catch((e: unknown) => {
   if (e instanceof OpsError) {
     process.stderr.write(`Error: ${e.message}\nFix: ${e.fix}\n`);
