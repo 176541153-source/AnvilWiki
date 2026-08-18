@@ -54,6 +54,12 @@ export interface LandingContent {
     browserUrl: string;
     mobileCaption: string;
   };
+  builtWith: {
+    title: string;
+    subtitle: string;
+    submitLabel: string;
+    submitHref: string;
+  };
   docsEntry: {
     title: string;
     cards: { icon: string; title: string; description: string; href: string }[];
@@ -112,6 +118,45 @@ export interface LandingContent {
 }
 
 const RELEASES = 'https://github.com/PNGTRID/AnvilWiki/releases';
+const SHOWCASE_DATA =
+  'https://github.com/PNGTRID/AnvilWiki/blob/main/src/config/landing.ts';
+
+/**
+ * Community-built sites — locale-independent list shown by CommunitySites.astro.
+ * To add your site, open a PR appending an entry here (README §Showcase explains).
+ */
+export const COMMUNITY_SITES: {
+  name: string;
+  url: string;
+  game: string;
+  descriptionEn: string;
+  descriptionZh: string;
+}[] = [
+  {
+    name: 'Aniimo Wiki',
+    url: 'https://aniimo.wiki/',
+    game: 'Aniimo',
+    descriptionEn:
+      'A community wiki for the Roblox anime game Aniimo — guides, tier lists, and fresh codes.',
+    descriptionZh: 'Roblox 动漫游戏 Aniimo 的社区 wiki——攻略、强度榜与最新兑换码。',
+  },
+  {
+    name: "No Man's Sky Wiki",
+    url: 'https://nomanssky.wiki/',
+    game: "No Man's Sky",
+    descriptionEn:
+      'A wiki for the space sandbox classic No Man\'s Sky — mechanics references and update guides.',
+    descriptionZh: '太空沙盒经典《无人深空》的 wiki——机制资料与版本更新攻略。',
+  },
+  {
+    name: 'Steal an Egg Wiki',
+    url: 'https://steal-anegg.wiki/',
+    game: 'Steal an Egg',
+    descriptionEn:
+      'A wiki for the Roblox hit Steal an Egg — pets, eggs, codes, and strategies.',
+    descriptionZh: 'Roblox 热门游戏 Steal an Egg 的 wiki——宠物、蛋、兑换码与玩法攻略。',
+  },
+];
 
 const en: LandingContent = {
   htmlLang: 'en',
@@ -234,6 +279,13 @@ pnpm install && pnpm dev`,
     cta: { label: 'View live demo →', href: '/' },
     browserUrl: 'anvilwiki.pages.dev/bosses/emberfang',
     mobileCaption: 'Mobile-first: clean first screen, scrollable tables, tap-to-copy codes.',
+  },
+  builtWith: {
+    title: 'Built with AnvilWiki',
+    subtitle:
+      'Real sites launched by the community — from Roblox hits to Steam classics. Yours could be next.',
+    submitLabel: 'Built a site? Submit yours →',
+    submitHref: SHOWCASE_DATA,
   },
   docsEntry: {
     title: 'Get started in minutes',
@@ -506,6 +558,12 @@ pnpm install && pnpm dev`,
     cta: { label: '查看在线 Demo →', href: '/' },
     browserUrl: 'anvilwiki.pages.dev/bosses/emberfang',
     mobileCaption: '移动优先:首屏干净、表格横滑、兑换码点击即复制。',
+  },
+  builtWith: {
+    title: '用 AnvilWiki 建成的站',
+    subtitle: '社区用户的真实案例——从 Roblox 热游到 Steam 经典,下一个可能就是你的站。',
+    submitLabel: '你也建了站?提交案例 →',
+    submitHref: SHOWCASE_DATA,
   },
   docsEntry: {
     title: '几分钟即可上手',

@@ -136,7 +136,15 @@ fork 后用 ZCode / Claude Code / Codex / Cursor 打开仓库,直接对话即可
 
 ### 用 AnvilWiki 建了站?欢迎提交 Showcase
 
-提 PR 修改 `src/config/landing.ts` 的 showcase 数据即可——真实案例是这个模板最有力的证明。
+真实案例是这个模板最有力的证明(按提交顺序排列):
+
+| 站点 | 游戏 | 简介 |
+| --- | --- | --- |
+| [Aniimo Wiki](https://aniimo.wiki/) | Aniimo(Roblox) | 攻略、强度榜与最新兑换码 |
+| [No Man's Sky Wiki](https://nomanssky.wiki/) | 无人深空(Steam) | 机制资料与版本更新攻略 |
+| [Steal an Egg Wiki](https://steal-anegg.wiki/) | Steal an Egg(Roblox) | 宠物、蛋、兑换码与玩法攻略 |
+
+提 PR 在 `src/config/landing.ts` 的 `COMMUNITY_SITES` 追加一条即可——官网([/landing](https://anvilwiki.pages.dev/landing) 与 [/zh/landing](https://anvilwiki.pages.dev/zh/landing))的「Built with AnvilWiki」区块会自动展示。
 
 ### 交流群 / 技术栈
 
@@ -184,9 +192,21 @@ Complete beginner? Start from [Chapter 2 of the Learning Manual](https://anvilwi
 
 Repository reference docs: [game-selection](docs/game-selection.md) · [apply-template](docs/apply-template.md) · [content-format](docs/content-format.md) · [deployment](docs/deployment.md) · [staying-up-to-date](docs/staying-up-to-date.md) · [development](docs/development.md) · [full index](docs/README.md)
 
+### Community Showcase
+
+Real sites built with AnvilWiki (in submission order):
+
+| Site | Game | About |
+| --- | --- | --- |
+| [Aniimo Wiki](https://aniimo.wiki/) | Aniimo (Roblox) | Guides, tier lists, and fresh codes |
+| [No Man's Sky Wiki](https://nomanssky.wiki/) | No Man's Sky (Steam) | Mechanics references and update guides |
+| [Steal an Egg Wiki](https://steal-anegg.wiki/) | Steal an Egg (Roblox) | Pets, eggs, codes, and strategies |
+
+Built a site? Open a PR appending an entry to `COMMUNITY_SITES` in `src/config/landing.ts` — it will show up in the "Built with AnvilWiki" section on the [landing page](https://anvilwiki.pages.dev/landing).
+
 ### Community & License
 
-Built a site with AnvilWiki? Open a PR to add it to the landing Showcase (`src/config/landing.ts`). MIT License — see [LICENSE](LICENSE).
+MIT License — see [LICENSE](LICENSE).
 
 ---
 

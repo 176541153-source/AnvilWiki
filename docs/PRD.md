@@ -1414,6 +1414,20 @@ describe('sitemap', () => {
 3. **GitHub Topic**：打标签 `astro` / `cloudflare-pages` / `wiki-template` / `game-wiki` / `seo` / `open-source`。
 4. **SEO 自证**：AnvilWiki demo 站本身做到 Google 首页（搜 "anvil quest wiki"），证明模板的 SEO 能力。
 
+### 15.6 案例库（Community Showcase）
+
+真实用户站点是最有力的模板证明。首批评审通过 3 个社区站点（2026-08-18）：
+
+| 站点 | 游戏 |
+|---|---|
+| aniimo.wiki | Aniimo（Roblox） |
+| nomanssky.wiki | 无人深空（Steam） |
+| steal-anegg.wiki | Steal an Egg（Roblox） |
+
+- **数据源唯一**：`src/config/landing.ts` 的 `COMMUNITY_SITES`（locale 无关数组 + 中英双语简介），用户提 PR 追加即可。
+- **展示位 3 处**：官网 `/landing` 与 `/zh/landing` 的「Built with AnvilWiki」区块（`CommunitySites.astro`，位于 Showcase 之后）+ README 中英双语 Showcase 表格。
+- **fork 自动清理**：案例数据与组件均在 `src/config/landing.ts` / `src/components/landing/` 内，属 `apply-template` 的 `LANDING_PATHS` 删除清单，fork 用户得到纯净模板（零案例残留）。
+
 ---
 
 ## 附录 A 环境变量清单

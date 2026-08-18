@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **社区案例库(Showcase)**:首批 3 个真实用户站点(aniimo.wiki / nomanssky.wiki / steal-anegg.wiki)三处展示——官网中英落地页新增「Built with AnvilWiki」区块(`CommunitySites.astro` + `landing.ts` 的 `COMMUNITY_SITES` 数据)+ README 中英双语案例表格 + PRD §15.6;数据与组件均随 landing 层分发,fork 时被 `apply-template` 自动清理。
+
 ### Fixed
 - **GSC 接入步骤修正**(手册第 7 章 + ops README,中英):服务账号邮箱会被 GSC「添加用户」直接拒收(「无效电子邮件地址」),改为官方推荐的 Google 群组中转四步法,并补「服务账号=机器人编号,非邮箱」概念段。
 - **学习手册第 3 章新增第 5 步「换上你的图标」**(中英):favicon 全套 + hero 图的手把手替换(favicon.io),原验收步顺延为第 6 步;`apply-template` CLI 结尾提示同步扩写——修复零基础主路径不教换图标、站点顶铁砧图标上线的缺口。
