@@ -2,7 +2,7 @@
 
 Ops toolkit for [AnvilWiki](https://github.com/PNGTRID/AnvilWiki) fork sites. Run from your fork's repo root.
 
-> Status: 0.1 (P1). Commands: `doctor`, `metrics`. MCP server, `audit` / `insights` / `submit` ship in later milestones.
+> Status: 0.1 (P1+P2). Commands: `doctor`, `metrics`, `mcp` (stdio MCP server). `audit` / `insights` / `submit` ship in later milestones.
 
 ## Usage
 
@@ -10,6 +10,23 @@ Ops toolkit for [AnvilWiki](https://github.com/PNGTRID/AnvilWiki) fork sites. Ru
 npx anvilwiki-ops doctor
 npx anvilwiki-ops metrics --days 28 --format md
 ```
+
+## MCP (for Claude / ZCode / any MCP client)
+
+Add to your MCP client config:
+
+```json
+{
+  "mcpServers": {
+    "anvil-ops": {
+      "command": "npx",
+      "args": ["-y", "anvilwiki-ops", "mcp"]
+    }
+  }
+}
+```
+
+Tools: `doctor`, `metrics` (markdown output, agent-friendly). Run `doctor` first in any ops session.
 
 ## Configuration (.env in repo root, gitignored)
 
