@@ -1342,6 +1342,7 @@ describe('sitemap', () => {
 | v1.13 | 手册零基础化全量重写（第一性原理体系 + 白话规范） | 高 | ✅ 已实现（第二轮四专家定档:科普写作/第一性原理架构/新手测试员/模板守门；统一七段骨架+四段式步骤（做什么/怎么做/你会看到/确认做对了）+固定类比库+首现术语定义；补「装好 6 样工具」序幕（旧版最大流失点）与域名/广告位/upstream 等断链；13 提示词块守恒、事实限定词逐条 grep 验收存活；中英 18 章同源重写） |
 | v1.14 | 手册分册成页 + 章节拆细（8+6 章、列表展示） | 中 | ✅ 已实现（学习/开发手册各自独立成页 /landing/docs/learn|dev（中英四页）+ 手册页编号列表；学习 5→8 章（装工具/上线/收录/接广告各自独立）、开发 4→6 章（定制/集成各一分为二）；hub 改选择页（全景清单+两张手册卡）；互链全部重接、旧 slug 零残留；en 14 章 2 agent 同源重写） |
 | v1.15 | 站长运营 CLI + MCP（`anvilwiki-ops`：第一性原理路线②④产能闭环） | 高 | ✅ 已实现（`tools/anvil-ops/` 独立 npm 包双 bin：`anvil-ops` CLI + stdio MCP server；doctor/metrics/audit/insights/submit 五命令 = 五 MCP 工具；GSC 服务账号 + CF Web Analytics GraphQL 双数据源，env 门控空=禁用；insights 5 规则引擎（阈值常量集中）；submit=校验→分支→push→gh 开 PR，永不 push main；56 测试+真 git bare 集成测试；开发手册新增第 7 章「AI 自动化运营」中英；**anvilwiki-ops 0.1.1 已上架 npm，`npx anvilwiki-ops` 实名验证通过**；v1.15.0 已发版） |
+| v1.16 | 社区案例库（Showcase：真实用户站点展示） | 低 | ✅ 已实现（首批 3 站点 aniimo.wiki / nomanssky.wiki / steal-anegg.wiki；数据源唯一 `landing.ts` 的 `COMMUNITY_SITES`，展示 3 处：/landing 与 /zh/landing 的 CommunitySites 区块 + README 中英表格；数据与组件均在 CLI `LANDING_PATHS` 内，fork 自动清理；详见 §15.6；v1.16.0 已发版） |
 
 **v1.3 范围说明**：
 - `timeline`：✅ 实现 —— 版本日志/活动时序，零副作用，商业价值正（老玩家点进 patch notes 文章页）。

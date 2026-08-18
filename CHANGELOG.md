@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.16.0] — 2026-08-18
+
+**社区案例库:首批 3 个真实用户站点上线展示。**
+
 ### Added
 - **社区案例库(Showcase)**:首批 3 个真实用户站点(aniimo.wiki / nomanssky.wiki / steal-anegg.wiki)三处展示——官网中英落地页新增「Built with AnvilWiki」区块(`CommunitySites.astro` + `landing.ts` 的 `COMMUNITY_SITES` 数据)+ README 中英双语案例表格 + PRD §15.6;数据与组件均随 landing 层分发,fork 时被 `apply-template` 自动清理。
 
