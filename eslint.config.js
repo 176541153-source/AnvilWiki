@@ -11,7 +11,7 @@ import astro from 'eslint-plugin-astro';
 
 export default [
   {
-    ignores: ['dist/**', 'node_modules/**', '.astro/**', '*.config.{js,ts,mjs}'],
+    ignores: ['dist/**', 'node_modules/**', '.astro/**', '*.config.{js,ts,mjs}', 'tools/**'],
   },
   // TypeScript files
   {
