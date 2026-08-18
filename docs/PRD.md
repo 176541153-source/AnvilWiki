@@ -1426,7 +1426,7 @@ describe('sitemap', () => {
 | steal-anegg.wiki | Steal an Egg（Roblox） |
 
 - **数据源唯一**：`src/config/landing.ts` 的 `COMMUNITY_SITES`（locale 无关数组 + 中英双语简介），用户提 PR 追加即可。
-- **展示位 3 处**：官网 `/landing` 与 `/zh/landing` 的「Built with AnvilWiki」区块（`CommunitySites.astro`，位于 Lighthouse 4×100 社证条之后、特性网格之前——真实案例紧跟性能证明）+ README 中英双语 Showcase 表格。
+- **展示位 3 处**：官网 `/landing` 与 `/zh/landing` 的「Built with AnvilWiki」区块（`CommunitySites.astro`，位于特性网格 6 卡之后、对比表之前）+ README 中英双语 Showcase 表格。
 - **fork 自动清理**：案例数据与组件均在 `src/config/landing.ts` / `src/components/landing/` 内，属 `apply-template` 的 `LANDING_PATHS` 删除清单，fork 用户得到纯净模板（零案例残留）。
 
 ---
