@@ -45,7 +45,7 @@
 |---|---|
 | **零基础从零做一个赚钱的游戏站** | 📚 [学习手册(8 章)](https://anvilwiki.pages.dev/zh/landing/docs/learn)——每步写明「做什么/怎么做/你会看到什么」,含 13 个可复制提示词 |
 | 看「从零到赚钱」的全部工作量 | 🗺️ [文档中心首页](https://anvilwiki.pages.dev/zh/landing/docs)——10 件事全景清单,逐项点入 |
-| 深度定制 / 给模板写代码 | 🔧 [开发手册(6 章)](https://anvilwiki.pages.dev/zh/landing/docs/dev) |
+| 深度定制 / 给模板写代码 | 🔧 [开发手册(7 章)](https://anvilwiki.pages.dev/zh/landing/docs/dev) |
 | 看看做出来长什么样 | 🎮 [在线 Demo](https://anvilwiki.pages.dev/)——虚构游戏「Anvil Quest」的完整 wiki |
 
 ## 📖 中文文档
@@ -60,8 +60,8 @@ AnvilWiki 是一个**游戏 SEO 内容站模板**——用来快速搭建围绕�
 
 ### 核心特性
 
-- 📚 **零基础双手册(站内文档中心)**:学习手册 8 章 + 开发手册 6 章,中英双语,从选游戏到赚到钱每一步都是 SOP + 可复制的 AI 提示词;每章带手册目录树和本页目录
-- 🤖 **AI 内容工作流**:Agent 技能随仓库分发(`.agent/skills/`,Agent Skills 开放标准)——对 ZCode / Claude Code / Codex 说「根据这些笔记写篇攻略」,产出直接通过构建质检
+- 📚 **零基础双手册(站内文档中心)**:学习手册 8 章 + 开发手册 7 章,中英双语,从选游戏到赚到钱每一步都是 SOP + 可复制的 AI 提示词;每章带手册目录树和本页目录
+- 🤖 **AI 全链路**:内容技能随仓库分发(`.agent/skills/`,Agent Skills 开放标准)——对 ZCode / Claude Code / Codex 说「根据这些笔记写篇攻略」,产出直接通过构建质检;上线后还有运营工具包 `anvilwiki-ops`(npx 免安装 + MCP):AI 替你拉 GSC/Cloudflare 数据、给优化清单、改完内容走 PR 上线
 - 💰 **广告收入 100% 归你**:内置 AdSense 广告位(3 个位置,env 驱动,默认关闭)+ 赞助卡 + 联盟链接组件——无平台抽成
 - 🔍 **SEO 工程化**:sitemap(含 lastmod)/ JSON-LD 全套 / hreflang / Quick Answer 摘要块 / llms.txt(AI 搜索),全部自动生成
 - ⚡ **极快**:Astro 零 JS 优先,Lighthouse 4×100 开箱即得(开了广告也不掉分)
@@ -146,7 +146,7 @@ fork 后用 ZCode / Claude Code / Codex / Cursor 打开仓库,直接对话即可
 
 ## 📖 English Documentation
 
-**Start here: the [Learning Manual](https://anvilwiki.pages.dev/landing/docs/learn)** — 8 chapters, written for complete beginners, every step a SOP with copy-paste AI prompts. The [Development Manual](https://anvilwiki.pages.dev/landing/docs/dev) (6 chapters) covers deep customization. Both bilingual, with a [10-job whole-picture checklist](https://anvilwiki.pages.dev/landing/docs) at the docs hub.
+**Start here: the [Learning Manual](https://anvilwiki.pages.dev/landing/docs/learn)** — 8 chapters, written for complete beginners, every step a SOP with copy-paste AI prompts. The [Development Manual](https://anvilwiki.pages.dev/landing/docs/dev) (7 chapters) covers deep customization and AI-driven ops. Both bilingual, with a [10-job whole-picture checklist](https://anvilwiki.pages.dev/landing/docs) at the docs hub.
 
 ### What is this?
 

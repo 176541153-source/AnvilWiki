@@ -73,6 +73,6 @@ Three long-term promises: article registration-card fields are **added only, nev
 - ☐ Every config/content conflict kept your own values (diff each one)
 - ☐ New strings listed by check-i18n are either translated or explicitly accepted as English fallback
 
-## The dev manual ends here
+## Next chapter
 
-Map (architecture) → categories and languages → theme and homepage → feature toggles → CI and security → sync and contribute — your command of this template is now maintainer-level. Head back to the [learning manual, chapter 8](/landing/docs/weekly-ops) weekly rhythm and run the site well — or start scouting the next game for your next site.
+Upstream syncing keeps you current as the template grows. The final chapter puts an AI on ops duty — the anvilwiki-ops CLI and MCP.

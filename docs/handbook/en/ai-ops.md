@@ -1,0 +1,110 @@
+---
+title: "Dev 7 · Put an AI on Ops Duty: anvilwiki-ops and MCP"
+description: "Hand your AI assistant the whole ops loop: health checks, real GSC and Cloudflare data, prioritized actions, and PR-gated publishing — never a push to main."
+manual: dev
+order: 7
+icon: lucide:bot
+tldr: "anvilwiki-ops is the template's companion ops toolkit (an npm package, no install needed with npx). doctor gives a guided health check; after you put a GSC service account and CF token in .env, metrics pulls real traffic and insights returns evidence-backed actions; with MCP registered, Claude/ZCode can pull data, edit content, and open PRs for you — every write goes through a PR with a human in the loop."
+updated: 2026-08-18
+---
+
+## Where you are now and what this chapter solves
+
+The [learning manual, chapter 8](/landing/docs/weekly-ops) weekly 30-minute rhythm works — but most of those minutes are "run a command, read numbers, copy a list", which is exactly what AI is best at. This chapter hands the whole ops loop to your AI assistant: you say "how's the site doing?", and it pulls data, proposes actions, edits content, and opens a PR. You keep only the final merge click.
+
+Two terms, defined once:
+
+- **CLI (command-line tool)**: a program you run in a terminal. This package's command is `anvil-ops`, run via `npx` — no installation.
+- **MCP**: an open protocol that lets AI assistants (Claude, ZCode, …) call external tools directly. Once registered, the AI calls the health-check and data tools itself instead of you relaying commands.
+
+## Step 1: Health check (2 minutes)
+
+**What you do**: confirm the state of your repo and credentials, and get a report of "what's not wired up and how to fix it".
+
+**How**: from the repo root, run:
+
+```bash
+npx anvilwiki-ops doctor
+```
+
+**What you'll see**: a one-line-per-item list — `site-config` (reads SITE_URL from wrangler.toml), `gh` (is the GitHub CLI installed), `gsc-config` / `cf-config` (are data credentials set). Unset items don't count as failures; the tool notes that metrics will run in degraded mode.
+
+**Confirm you did it right**: the report ends with `All checks passed.`, or you know exactly which item is unset and accept not using it for now.
+
+## Step 2: Wire up the two data sources (GSC 5 min, CF 2 min)
+
+**What you do**: let the tool read your real traffic. Google Search Console (GSC) provides queries and rankings; Cloudflare Web Analytics (already beaconed by the template) provides visits.
+
+**How** — GSC (once):
+
+1. Google Cloud Console → new project → enable the **Search Console API**;
+2. IAM → Service Accounts → create → Keys → add a JSON key and download it;
+3. Open Search Console → your property → Settings → Users and permissions → Add user, and add the service account email (looks like `xxx@project.iam.gserviceaccount.com`) as a **Restricted** user;
+4. Create a `.env` file at the repo root (already gitignored, never committed) with one line:
+   `GSC_SERVICE_ACCOUNT_JSON=path/to/downloaded-key.json`
+
+CF (once): Cloudflare dashboard → My Profile → API Tokens → Create Token with permission **Account → Analytics → Read**; add two more lines to `.env`: `CF_API_TOKEN=token` and `CF_ACCOUNT_ID=account-id`.
+
+**What you'll see**: run doctor again — `gsc-access` and `cf-access` both turn green.
+
+**Confirm you did it right**: `All checks passed.`; if `gsc-access` is FAIL, nine times out of ten you skipped sub-step 3 (sharing the property with the service account email).
+
+## Step 3: Read data, get an action list (1 minute a day)
+
+**What you do**: turn both data sources into one readable report, then let the rule engine translate numbers into "what to do next".
+
+**How**:
+
+```bash
+npx anvilwiki-ops metrics --days 28 --format md   # data report
+npx anvilwiki-ops insights                        # action list
+```
+
+**What you'll see**: metrics prints clicks, impressions, CTR, position (by page and by query) plus visits; insights prints severity-sorted suggestions, each with evidence and the skill that handles it (e.g. "codes page unverified for 45 days → use the anvil-update-codes skill").
+
+**Confirm you did it right**: insights gives at least one suggestion whose finding–evidence–action you can follow; zero suggestions means nothing crossed a threshold in this window, which is also a valid result.
+
+## Step 4: Hand the tools to your AI (MCP, 5 minutes)
+
+**What you do**: register the toolkit in your AI assistant's config, then direct it in plain language.
+
+**How**: add this to your Claude / ZCode (or any MCP client) config:
+
+```json
+{
+  "mcpServers": {
+    "anvil-ops": { "command": "npx", "args": ["-y", "anvilwiki-ops", "mcp"] }
+  }
+}
+```
+
+Then tell your AI (copy-paste ready):
+
+> Use anvil-ops doctor to health-check my wiki site, pull the last 28 days of metrics, then act on the top three items from insights: title/description rewrites via the content skill, expired codes via anvil-update-codes. Finish with submit_pr and paste the validation results into the PR description.
+
+**What you'll see**: the AI calls `doctor` → `metrics` → `insights`, edits files, then calls `submit_pr` and hands you a PR link.
+
+**Confirm you did it right**: the tool list shows anvil-ops' five tools (doctor / metrics / audit / insights / submit_pr).
+
+## The safety line: why it can't touch your live site
+
+The tool's write path is exactly one: **validate (check-content + check-i18n strict + full build) → new branch → commit → push → open a PR**. Failed validation stops everything — nothing is committed. It has no ability to push main; the merge button stays yours. Think of it as an intern who puts a drafted contract in the to-sign tray — whether to sign is entirely up to you.
+
+## If you get stuck
+
+- `gsc-access` FAIL: the property wasn't shared with the service account email (Step 2, sub-step 3).
+- `Cloudflare API returned 401/403`: wrong token permissions — recreate with Account → Analytics → Read.
+- `gh CLI not found`: install the GitHub CLI (needed by submit): https://cli.github.com/
+- `No uncommitted changes to submit`: the worktree is clean — the AI hasn't written anything yet; have it produce content first.
+- `npx anvilwiki-ops` can't find the package: you need 0.1.0 or later (ships with template v1.15).
+
+## ✅ Acceptance criteria (all must hold)
+
+- ☐ doctor ends with `All checks passed.` (or you know which item is unset and why that's acceptable)
+- ☐ `metrics --format md` prints real numbers (not zeros or an error)
+- ☐ `insights` suggestions match problems you can eyeball in the GSC console
+- ☐ (if you wired MCP) the AI can list and call the anvil-ops tools
+
+## The dev manual ends here
+
+Map (architecture) → categories and languages → theme and homepage → feature toggles → CI and security → sync and contribute → AI-automated ops — your command of this template is now maintainer-level. Head back to the [learning manual, chapter 8](/landing/docs/weekly-ops) weekly rhythm — except now, AI can do most of those 30 minutes for you.

@@ -320,7 +320,7 @@ pnpm install && pnpm dev`,
   handbook: {
     hubTitle: 'AnvilWiki Docs',
     hubSubtitle:
-      'Two separate hands-on manuals, written for complete beginners: the Learning Manual (8 chapters) walks you from game selection to a live, indexed, monetized wiki; the Development Manual (6 chapters) covers customization and engineering. Every step is a SOP with copy-paste AI prompts.',
+      'Two separate hands-on manuals, written for complete beginners: the Learning Manual (8 chapters) walks you from game selection to a live, indexed, monetized wiki; the Development Manual (7 chapters) covers customization and engineering. Every step is a SOP with copy-paste AI prompts.',
     manuals: {
       learn: {
         label: 'Learning Manual',
@@ -330,7 +330,7 @@ pnpm install && pnpm dev`,
       dev: {
         label: 'Development Manual',
         description:
-          '6 chapters for customizers and contributors: the change map, categories & locales, theme & homepage copy, feature switches, CI & security, and syncing upstream or contributing back.',
+          '7 chapters for customizers and contributors: the change map, categories & locales, theme & homepage copy, feature switches, CI & security, syncing upstream or contributing back, and running ops through AI (anvilwiki-ops CLI + MCP).',
       },
     },
     chapterLabel: 'Chapter',
@@ -589,7 +589,7 @@ pnpm install && pnpm dev`,
   handbook: {
     hubTitle: 'AnvilWiki 文档中心',
     hubSubtitle:
-      '两本相互独立的实操手册,按完全零基础标准编写:学习手册 8 章带你从选游戏走到上线、收录、变现;开发手册 6 章覆盖定制与工程。每一步都是 SOP + 可复制的 AI 提示词。',
+      '两本相互独立的实操手册,按完全零基础标准编写:学习手册 8 章带你从选游戏走到上线、收录、变现;开发手册 7 章覆盖定制与工程。每一步都是 SOP + 可复制的 AI 提示词。',
     manuals: {
       learn: {
         label: '学习手册',
@@ -599,7 +599,7 @@ pnpm install && pnpm dev`,
       dev: {
         label: '开发手册',
         description:
-          '6 章,面向定制者与贡献者:改动地图、加栏目与加语言、换主题与改首页、功能开关总表、CI 门禁与安全、同步上游与贡献回流。',
+          '7 章,面向定制者与贡献者:改动地图、加栏目与加语言、换主题与改首页、功能开关总表、CI 门禁与安全、同步上游与贡献回流、让 AI 替你运营(anvilwiki-ops 命令行与 MCP)。',
       },
     },
     chapterLabel: '第',

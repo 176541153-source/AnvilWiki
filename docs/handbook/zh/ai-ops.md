@@ -1,0 +1,110 @@
+---
+title: "开发 7 · 让 AI 替你运营:anvilwiki-ops 与 MCP"
+description: "一行 npx 给你的 AI 助手装上运营工具:体检配置、拉 GSC 与 Cloudflare 真实数据、自动产出按优先级排序的优化清单、把新内容校验后开 PR 上线——写操作只走 PR 一条路,合并权永远在你手里。"
+manual: dev
+order: 7
+icon: lucide:bot
+tldr: "anvilwiki-ops 是模板配套的运营工具包(npm 包,npx 免安装)。doctor 一次体检看清配置缺什么;GSC 服务账号和 CF token 写进 .env 后,metrics 拉真实流量,insights 给出带证据的行动清单;接入 MCP 后 Claude/ZCode 直接替你查数据、改内容、开 PR——所有写操作只走 PR,人工把关每一步。"
+updated: 2026-08-18
+---
+
+## 你现在在哪,这章解决什么
+
+[学习手册第 8 章](/zh/landing/docs/weekly-ops)的每周 30 分钟节奏很好,但那 30 分钟的大半是「跑命令、看数字、抄清单」——这恰好是 AI 最擅长的事。这一章把整个运营循环交给你的 AI 助手:你说「看看网站最近怎么样」,它拉数据、给建议、改内容、开 PR;你只负责最后的「合并」按钮。
+
+先弄懂两个词,后面不再解释:
+
+- **CLI(命令行工具)**:在终端敲命令用的程序。这个包的命令叫 `anvil-ops`,用 `npx` 运行,不需要安装。
+- **MCP**:让 AI 助手(Claude、ZCode 等)直接调用外部工具的开放协议。接入后 AI 不需要你转述命令,自己就能调体检、拉数据这些能力。
+
+## 第一步:体检(2 分钟)
+
+**做什么**:确认你的仓库和凭据状态,拿到一份「哪里没接好、怎么修」的报告。
+
+**怎么做**:在仓库根目录运行:
+
+```bash
+npx anvilwiki-ops doctor
+```
+
+**你会看到**:一行一项的清单——`site-config`(读到了 wrangler.toml 里的 SITE_URL)、`gh`(GitHub CLI 在不在)、`gsc-config` / `cf-config`(数据凭据配没配)。没配的不算失败,只提示「metrics 将以降级模式运行」。
+
+**确认做对了**:结尾出现 `All checks passed.`,或者你明确知道哪项没配、并且接受暂时不用它。
+
+## 第二步:接上两个数据源(GSC 5 分钟,CF 2 分钟)
+
+**做什么**:让工具能读到你的真实流量。Google Search Console(以下简称 GSC)提供搜索词和排名,Cloudflare Web Analytics(模板已内置埋点)提供访问量。
+
+**怎么做**——GSC(一次性):
+
+1. Google Cloud 控制台 → 新建项目 → 启用 **Search Console API**;
+2. IAM → 服务账号 → 创建 → 密钥 → 新建 JSON 密钥并下载;
+3. 打开 Search Console → 你的资源 → 设置 → 用户和权限 → 添加用户,把服务账号邮箱(形如 `xxx@project.iam.gserviceaccount.com`)加为「受限」用户;
+4. 在仓库根目录建 `.env` 文件(已在 .gitignore 里,不会提交),写一行:
+   `GSC_SERVICE_ACCOUNT_JSON=下载的密钥文件路径`
+
+CF(一次性):Cloudflare 控制台 → 我的资料 → API 令牌 → 创建令牌,权限选 **账户 → Analytics → 阅读**;`.env` 再加两行:`CF_API_TOKEN=令牌` 和 `CF_ACCOUNT_ID=账户ID`。
+
+**你会看到**:再跑一次 doctor,`gsc-access` 和 `cf-access` 两项变绿。
+
+**确认做对了**:`All checks passed.`;如果 `gsc-access` 是 FAIL,九成是第 3 步忘了把资源共享给服务账号邮箱。
+
+## 第三步:看数据、拿行动清单(每天 1 分钟)
+
+**做什么**:把两个数据源的数据拉成一份能读懂的报告,再让规则引擎把数据翻译成「接下来做什么」。
+
+**怎么做**:
+
+```bash
+npx anvilwiki-ops metrics --days 28 --format md   # 数据报告
+npx anvilwiki-ops insights                        # 行动清单
+```
+
+**你会看到**:metrics 输出点击、曝光、CTR、排名(按页、按搜索词)和访问量;insights 输出按严重度排序的建议,每条带证据和对应的处理技能(如「兑换码页 45 天没验证 → 走 anvil-update-codes 技能」)。
+
+**确认做对了**:insights 至少给出一条你能看懂「现象—证据—动作」的建议;一条都没有说明数据窗口内确实没到阈值,也是正常结果。
+
+## 第四步:把工具交给你的 AI(MCP,5 分钟)
+
+**做什么**:在你的 AI 助手配置里登记这个工具,之后直接用自然语言指挥它。
+
+**怎么做**:在 Claude / ZCode 等 MCP 客户端的配置文件里加:
+
+```json
+{
+  "mcpServers": {
+    "anvil-ops": { "command": "npx", "args": ["-y", "anvilwiki-ops", "mcp"] }
+  }
+}
+```
+
+然后对你的 AI 说(可直接复制):
+
+> 用 anvil-ops 的 doctor 体检我的 wiki 站,然后拉最近 28 天 metrics,按 insights 清单把优先级最高的三件事做了:改标题描述的走内容技能,兑换码过期的走 anvil-update-codes。改完用 submit_pr 开 PR,把验证结果贴在 PR 描述里。
+
+**你会看到**:AI 依次调用 `doctor` → `metrics` → `insights`,改文件,最后调用 `submit_pr` 并给你一个 PR 链接。
+
+**确认做对了**:AI 的工具列表里出现 anvil-ops 的五个工具(doctor / metrics / audit / insights / submit_pr)。
+
+## 安全线:为什么它改不了你的线上站
+
+工具的写操作只有一条路:**校验(check-content + check-i18n 严格模式 + 完整构建)→ 开新分支 → 提交 → 推送 → 开 PR**。校验不过就地终止,什么都不会提交;它没有直接 push main 的能力,合并按钮永远在你手里。把它想成「实习生把写好的合同放进待签篮,签不签你说了算」。
+
+## 卡住了怎么办
+
+- `gsc-access` FAIL:资源没共享给服务账号邮箱(第二步的第 3 小步)。
+- `Cloudflare API returned 401/403`:令牌权限不对,重选「账户 → Analytics → 阅读」。
+- `gh CLI not found`:装 GitHub CLI(submit 需要):https://cli.github.com/
+- `No uncommitted changes to submit`:工作区是干净的,AI 还没写任何东西,先让它产出内容。
+- `npx anvilwiki-ops` 找不到包:需要 0.1.0 及以上版本(随模板 v1.15 发布)。
+
+## ✅ 验收(全部成立才算完成)
+
+- ☐ doctor 结尾 `All checks passed.`(或明确知道哪项没配、为什么接受)
+- ☐ `metrics --format md` 输出的是真实数字(不是零或报错)
+- ☐ `insights` 的建议能对上你在 GSC 后台肉眼看到的问题
+- ☐ (接了 MCP 的话)AI 能列出并调用 anvil-ops 的工具
+
+## 开发手册到此完结
+
+地图(架构)→ 栏目语言 → 换肤首页 → 功能开关 → CI 安全 → 同步回流 → AI 自动化运营,你对这套模板已是维护者级掌控。回到[学习手册第 8 章](/zh/landing/docs/weekly-ops)的每周节奏——只是现在,那 30 分钟里的大半可以让 AI 代劳了。
