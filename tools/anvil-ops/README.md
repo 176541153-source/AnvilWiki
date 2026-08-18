@@ -46,8 +46,8 @@ Empty values disable the feature (no error). Run `anvil-ops doctor` for guided s
 ## GSC setup (5 minutes)
 
 1. Google Cloud Console → new project → enable **Search Console API**.
-2. IAM → Service Accounts → create → Keys → add JSON key.
-3. Search Console → your property → Settings → Users and permissions → add the service account email as **Restricted**.
+2. IAM → Service Accounts → create → Keys → add JSON key. Keep this file: it is the robot's credential. The `...gserviceaccount.com` address is **not** a real mailbox (no password, no login) — just Google's robot ID format.
+3. GSC's "Add user" rejects robot IDs ("invalid email"). Relay through a Google Group instead: groups.google.com → create a group → allow external members → add the service-account address (`client_email` in the key JSON) as a **direct** member (not an invite) → then in Search Console add the **group email** as a Restricted user. Fresh groups may take minutes–hours to be accepted; retry later on "unspecified error".
 4. Put the JSON path (or contents) in `.env` as `GSC_SERVICE_ACCOUNT_JSON`.
 
 ## CF Web Analytics setup

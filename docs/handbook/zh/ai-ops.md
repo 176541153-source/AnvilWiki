@@ -35,19 +35,21 @@ npx anvilwiki-ops doctor
 
 **做什么**:让工具能读到你的真实流量。Google Search Console(以下简称 GSC)提供搜索词和排名,Cloudflare Web Analytics(模板已内置埋点)提供访问量。
 
+**先搞懂一个概念(30 秒)**:GSC 的数据是隐私数据,API 只认"授权过的身份"。给机器人授权用的是「服务账号」——它**不是邮箱**:不能收信、没有密码、不能登录,只是 Google 自动生成的一串"机器人编号"(长得像 `xxx@项目名.iam.gserviceaccount.com`,纯命名习惯);它的钥匙是一个 JSON 密钥文件。接下来你要做的就是:造一个机器人,把数据查看权发给它。
+
 **怎么做**——GSC(一次性):
 
-1. Google Cloud 控制台 → 新建项目 → 启用 **Search Console API**;
-2. IAM → 服务账号 → 创建 → 密钥 → 新建 JSON 密钥并下载;
-3. 打开 Search Console → 你的资源 → 设置 → 用户和权限 → 添加用户,把服务账号邮箱(形如 `xxx@project.iam.gserviceaccount.com`)加为「受限」用户;
-4. 在仓库根目录建 `.env` 文件(已在 .gitignore 里,不会提交),写一行:
-   `GSC_SERVICE_ACCOUNT_JSON=下载的密钥文件路径`
+1. **造机器人**:Google Cloud 控制台(console.cloud.google.com,用和 GSC 同一个 Google 账号)→ 新建项目 → 顶部搜 `Google Search Console API` → 启用;菜单 → IAM 和管理 → 服务账号 → 创建(名字随意,如 `anvil-ops`)→ 点进它的「密钥」标签 → 添加密钥 → JSON → 创建,**浏览器自动下载一个 .json 文件**——这就是机器人的钥匙,存好。
+2. **建转发群组**(必须,别跳过):GSC 的"添加用户"只认真人账号,机器人编号直接填会被判为"无效电子邮件"。解法是拿 Google 群组当中转:groups.google.com → 创建群组(名字随意,记下群组邮箱 `xxx@googlegroups.com`)→ 群组设置开启「允许外部成员」→ 成员 → 添加成员 → **直接粘贴**机器人编号(钥匙 JSON 里搜 `client_email` 那串)→ 添加(不要用"邀请",机器人不会点链接)。
+3. **授权**:Search Console → 你的资源 → 设置 → 用户和权限 → 添加用户 → 填**群组邮箱**(不是机器人编号!)→ 权限「受限」。注意:新建群组可能要几分钟到几小时才被 Google 认可,报「未指明的错误」就等等再重试。
+4. **配钥匙路径**:仓库根目录建 `.env` 文件(已在 .gitignore 里,不会提交),写一行:
+   `GSC_SERVICE_ACCOUNT_JSON=钥匙文件的路径`
 
 CF(一次性):Cloudflare 控制台 → 我的资料 → API 令牌 → 创建令牌,权限选 **账户 → Analytics → 阅读**;`.env` 再加两行:`CF_API_TOKEN=令牌` 和 `CF_ACCOUNT_ID=账户ID`。
 
-**你会看到**:再跑一次 doctor,`gsc-access` 和 `cf-access` 两项变绿。
+**你会看到**:再跑一次 doctor,`gsc-config` 和 `gsc-access` 两项变绿。
 
-**确认做对了**:`All checks passed.`;如果 `gsc-access` 是 FAIL,九成是第 3 步忘了把资源共享给服务账号邮箱。
+**确认做对了**:`All checks passed.`;`gsc-access` 报 FAIL 提示 "not in accessible list" 时,九成是第 3 步群组还没生效,或资源共享给了别的地址。
 
 ## 第三步:看数据、拿行动清单(每天 1 分钟)
 

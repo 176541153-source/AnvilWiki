@@ -35,19 +35,21 @@ npx anvilwiki-ops doctor
 
 **What you do**: let the tool read your real traffic. Google Search Console (GSC) provides queries and rankings; Cloudflare Web Analytics (already beaconed by the template) provides visits.
 
+**One concept first (30 seconds)**: GSC data is private — its API only accepts authorized identities. Robots are authorized via a "service account", which is **not an email address**: it cannot receive mail, has no password, and cannot log in. It is just a Google-generated robot ID that happens to look like `xxx@project.iam.gserviceaccount.com` (a naming convention). Its credential is a JSON key file. What follows is: build a robot, then grant it read access to your data.
+
 **How** — GSC (once):
 
-1. Google Cloud Console → new project → enable the **Search Console API**;
-2. IAM → Service Accounts → create → Keys → add a JSON key and download it;
-3. Open Search Console → your property → Settings → Users and permissions → Add user, and add the service account email (looks like `xxx@project.iam.gserviceaccount.com`) as a **Restricted** user;
-4. Create a `.env` file at the repo root (already gitignored, never committed) with one line:
-   `GSC_SERVICE_ACCOUNT_JSON=path/to/downloaded-key.json`
+1. **Build the robot**: Google Cloud Console (console.cloud.google.com, signed in with the same Google account as GSC) → new project → search for `Google Search Console API` → enable; then menu → IAM & Admin → Service Accounts → create (any name, e.g. `anvil-ops`) → open its **Keys** tab → Add key → JSON → Create. **Your browser downloads a .json file** — that is the robot's key. Keep it.
+2. **Create a relay group** (required — do not skip): GSC's "Add user" only accepts real accounts and rejects robot IDs as "invalid email". The fix is a Google Group as middleman: groups.google.com → Create group (any name; note the group email `xxx@googlegroups.com`) → in Group settings, allow external members → Members → Add member → paste the robot ID **directly** (search the key JSON for `client_email`) → Add (do not "invite" — robots cannot click links).
+3. **Grant access**: Search Console → your property → Settings → Users and permissions → Add user → enter the **group email** (not the robot ID!) as a **Restricted** user. Note: freshly created groups can take minutes to hours before Google accepts them; on "unspecified error", wait and retry.
+4. **Wire the key**: create a `.env` file at the repo root (already gitignored, never committed) with one line:
+   `GSC_SERVICE_ACCOUNT_JSON=path/to/the/key/file`
 
 CF (once): Cloudflare dashboard → My Profile → API Tokens → Create Token with permission **Account → Analytics → Read**; add two more lines to `.env`: `CF_API_TOKEN=token` and `CF_ACCOUNT_ID=account-id`.
 
-**What you'll see**: run doctor again — `gsc-access` and `cf-access` both turn green.
+**What you'll see**: run doctor again — `gsc-config` and `gsc-access` both turn green.
 
-**Confirm you did it right**: `All checks passed.`; if `gsc-access` is FAIL, nine times out of ten you skipped sub-step 3 (sharing the property with the service account email).
+**Confirm you did it right**: `All checks passed.`; if `gsc-access` says "not in accessible list", it's almost always the group from step 3 not having propagated yet, or the property shared with the wrong address.
 
 ## Step 3: Read data, get an action list (1 minute a day)
 
