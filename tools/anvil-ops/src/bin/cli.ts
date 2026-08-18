@@ -4,6 +4,9 @@ import { fileURLToPath } from 'node:url';
 import { Command } from 'commander';
 import { doctorCommand } from '../cli/commands/doctor.js';
 import { metricsCommand } from '../cli/commands/metrics.js';
+import { auditCommand } from '../cli/commands/audit.js';
+import { insightsCommand } from '../cli/commands/insights.js';
+import { submitCommand } from '../cli/commands/submit.js';
 import { OpsError } from '../core/errors.js';
 
 const pkg = JSON.parse(readFileSync(fileURLToPath(new URL('../../package.json', import.meta.url)), 'utf8')) as {
@@ -48,6 +51,36 @@ program
       format: opts.format as 'table' | 'json' | 'md',
       source: opts.source as 'gsc' | 'cf' | 'all',
     });
+  });
+
+program
+  .command('audit')
+  .description('Aggregate template checks (refresh-audit / check-i18n / check-content / check-links) into one report')
+  .action(async () => {
+    process.exitCode = await auditCommand();
+  });
+
+program
+  .command('insights')
+  .description('Data-driven action list: GSC x CF rules + stale codes pages')
+  .option('--days <n>', 'metrics lookback window in days', '28')
+  .action(async (opts: { days: string }) => {
+    const days = Number(opts.days);
+    if (!Number.isInteger(days) || days < 1 || days > 365) {
+      process.stderr.write('--days must be an integer between 1 and 365.\n');
+      process.exitCode = 1;
+      return;
+    }
+    process.exitCode = await insightsCommand({ days });
+  });
+
+program
+  .command('submit')
+  .description('Validate changes, then branch + commit + push + open a PR (never pushes main)')
+  .option('--title <t>', 'PR / commit title')
+  .option('--base <b>', 'PR base branch', 'main')
+  .action(async (opts: { title?: string; base?: string }) => {
+    process.exitCode = await submitCommand({ title: opts.title, base: opts.base });
   });
 
 program

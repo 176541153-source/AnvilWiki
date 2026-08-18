@@ -29,10 +29,10 @@ async function connect(cwd: string) {
 }
 
 describe('anvil-ops MCP server', () => {
-  it('lists doctor and metrics tools', async () => {
+  it('lists all five tools', async () => {
     const client = await connect(tmpSite());
     const tools = await client.listTools();
-    expect(tools.tools.map((t) => t.name).sort()).toEqual(['doctor', 'metrics']);
+    expect(tools.tools.map((t) => t.name).sort()).toEqual(['audit', 'doctor', 'insights', 'metrics', 'submit_pr']);
     expect(tools.tools.every((t) => t.description && t.description.length > 0)).toBe(true);
   });
 
@@ -59,5 +59,38 @@ describe('anvil-ops MCP server', () => {
     expect(res.isError).toBe(true);
     const text = (res.content as { type: string; text: string }[])[0].text;
     expect(text).toMatch(/doctor/);
+  });
+
+  it('insights end-to-end: stale codes from injected refresh-audit + degraded metrics', async () => {
+    const run = ((_cmd: string, args: string[]) => {
+      if (args[0] === 'refresh-audit') {
+        return {
+          status: 0,
+          stdout: '| P0 | `src/content/wiki/en/codes/main.mdx` | codes | 45d | dead codes |\n',
+          stderr: '',
+        };
+      }
+      return { status: 0, stdout: '', stderr: '' };
+    }) as never;
+    const dir = mkdtempSync(join(tmpdir(), 'ops-mcp-'));
+    writeFileSync(join(dir, 'wrangler.toml'), '[vars]\nSITE_URL = "https://x.com"\n');
+    const server = buildServer({ cwd: dir, run });
+    const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
+    await server.connect(serverTransport);
+    const client = new Client({ name: 'test', version: '0.0.0' });
+    await client.connect(clientTransport);
+    const res = await client.callTool({ name: 'insights', arguments: {} });
+    const text = (res.content as { type: string; text: string }[])[0].text;
+    expect(text).toContain('stale-codes');
+    expect(text).toContain('src/content/wiki/en/codes/main.mdx');
+    expect(text).toMatch(/Degradated|Degraded/);
+  });
+
+  it('submit_pr with no changes = isError', async () => {
+    const client = await connect(tmpSite());
+    const res = await client.callTool({ name: 'submit_pr', arguments: { title: 'x' } });
+    expect(res.isError).toBe(true);
+    const text = (res.content as { type: string; text: string }[])[0].text;
+    expect(text).toMatch(/No uncommitted changes|not a git|failed/i);
   });
 });

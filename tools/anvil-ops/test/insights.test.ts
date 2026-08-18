@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildInsights, formatInsights, THRESHOLDS } from '../src/core/insights.js';
+import { buildInsights, formatInsights, parseStaleCodes, THRESHOLDS } from '../src/core/insights.js';
 import type { GscQueryResult } from '../src/core/providers/gsc.js';
 import type { CfQueryResult } from '../src/core/providers/cloudflare.js';
 
@@ -99,5 +99,16 @@ describe('formatInsights', () => {
     expect(THRESHOLDS.lowCtr).toBe(0.03);
     expect(THRESHOLDS.rankMin).toBe(5);
     expect(THRESHOLDS.rankMax).toBe(15);
+  });
+
+  it('parseStaleCodes extracts only codes rows', () => {
+    const stdout = [
+      '## Content freshness audit (2026-08-18)',
+      '| Priority | Article | Category | Age | Why |',
+      '|---|---|---|---|---|',
+      '| P0 | `src/content/wiki/en/codes/main.mdx` | codes | 45d | 45d since last verify |',
+      '| P1 | `src/content/wiki/en/bosses/emberfang.mdx` | bosses | 95d | stale 95d |',
+    ].join('\n');
+    expect(parseStaleCodes(stdout)).toEqual(['src/content/wiki/en/codes/main.mdx']);
   });
 });

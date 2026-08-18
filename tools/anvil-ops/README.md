@@ -2,13 +2,16 @@
 
 Ops toolkit for [AnvilWiki](https://github.com/PNGTRID/AnvilWiki) fork sites. Run from your fork's repo root.
 
-> Status: 0.1 (P1+P2). Commands: `doctor`, `metrics`, `mcp` (stdio MCP server). `audit` / `insights` / `submit` ship in later milestones.
+> Status: 0.1 (P1-P3). Commands: `doctor`, `metrics`, `audit`, `insights`, `submit`, `mcp` (stdio MCP server).
 
 ## Usage
 
 ```bash
 npx anvilwiki-ops doctor
 npx anvilwiki-ops metrics --days 28 --format md
+npx anvilwiki-ops audit
+npx anvilwiki-ops insights
+npx anvilwiki-ops submit --title "add emberfang guide"   # validate -> branch -> push -> PR
 ```
 
 ## MCP (for Claude / ZCode / any MCP client)
@@ -26,7 +29,7 @@ Add to your MCP client config:
 }
 ```
 
-Tools: `doctor`, `metrics` (markdown output, agent-friendly). Run `doctor` first in any ops session.
+Tools: `doctor`, `metrics`, `audit`, `insights`, `submit_pr` (markdown output, agent-friendly). Run `doctor` first in any ops session; `submit_pr` requires uncommitted changes + gh and never pushes main.
 
 ## Configuration (.env in repo root, gitignored)
 

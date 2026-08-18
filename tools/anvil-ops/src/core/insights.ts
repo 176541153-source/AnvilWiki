@@ -137,6 +137,16 @@ export function buildInsights(input: InsightsInput): Insight[] {
   return out.sort((a, b) => SEVERITY_ORDER[a.severity] - SEVERITY_ORDER[b.severity]);
 }
 
+// Extracts codes-page paths from refresh-audit's markdown table
+// (rows look like: | P0 | `src/content/wiki/en/codes/x.mdx` | codes | 45d | ... |)
+export function parseStaleCodes(stdout: string): string[] {
+  const out: string[] = [];
+  for (const m of stdout.matchAll(/\| P\d \| `([^`]+)` \| (\w+) \|/g)) {
+    if (m[2] === 'codes') out.push(m[1]!);
+  }
+  return out;
+}
+
 export function formatInsights(list: Insight[], degraded: ('gsc' | 'cf')[]): string {
   const lines = ['# Insights'];
   if (list.length === 0) {
