@@ -129,6 +129,10 @@ export const COMMUNITY_SITES: {
   name: string;
   url: string;
   game: string;
+  /** Screenshot in public/images/showcase/sites/ (CLI-deleted on fork). */
+  image: string;
+  imageAltEn: string;
+  imageAltZh: string;
   descriptionEn: string;
   descriptionZh: string;
 }[] = [
@@ -136,6 +140,9 @@ export const COMMUNITY_SITES: {
     name: 'Aniimo Wiki',
     url: 'https://aniimo.wiki/',
     game: 'Aniimo',
+    image: '/images/showcase/sites/aniimo.jpg',
+    imageAltEn: 'Screenshot of the Aniimo Wiki homepage',
+    imageAltZh: 'Aniimo Wiki 首页截图',
     descriptionEn:
       'A community wiki for the Roblox anime game Aniimo — guides, tier lists, and fresh codes.',
     descriptionZh: 'Roblox 动漫游戏 Aniimo 的社区 wiki——攻略、强度榜与最新兑换码。',
@@ -144,6 +151,9 @@ export const COMMUNITY_SITES: {
     name: "No Man's Sky Wiki",
     url: 'https://nomanssky.wiki/',
     game: "No Man's Sky",
+    image: '/images/showcase/sites/nomanssky.jpg',
+    imageAltEn: "Screenshot of the No Man's Sky Wiki homepage",
+    imageAltZh: '无人深空 Wiki 首页截图',
     descriptionEn:
       'A wiki for the space sandbox classic No Man\'s Sky — mechanics references and update guides.',
     descriptionZh: '太空沙盒经典《无人深空》的 wiki——机制资料与版本更新攻略。',
@@ -152,6 +162,9 @@ export const COMMUNITY_SITES: {
     name: 'Steal an Egg Wiki',
     url: 'https://steal-anegg.wiki/',
     game: 'Steal an Egg',
+    image: '/images/showcase/sites/steal-anegg.jpg',
+    imageAltEn: 'Screenshot of the Steal an Egg Wiki homepage',
+    imageAltZh: 'Steal an Egg Wiki 首页截图',
     descriptionEn:
       'A wiki for the Roblox hit Steal an Egg — pets, eggs, codes, and strategies.',
     descriptionZh: 'Roblox 热门游戏 Steal an Egg 的 wiki——宠物、蛋、兑换码与玩法攻略。',
