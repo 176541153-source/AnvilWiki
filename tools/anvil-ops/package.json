@@ -1,7 +1,6 @@
 {
   "name": "anvilwiki-ops",
-  "version": "0.1.0",
-  "private": true,
+  "version": "0.1.1",
   "type": "module",
   "description": "Ops CLI + MCP server for AnvilWiki fork sites: metrics, SEO insights, PR-gated publishing.",
   "license": "MIT",
@@ -10,6 +9,7 @@
   },
   "bin": {
     "anvil-ops": "dist/bin/cli.js",
+    "anvilwiki-ops": "dist/bin/cli.js",
     "anvil-ops-mcp": "dist/bin/mcp.js"
   },
   "files": [
@@ -33,5 +33,11 @@
     "tsx": "^4.19.2",
     "typescript": "^5.7.2",
     "vitest": "^4.1.10"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PNGTRID/AnvilWiki.git",
+    "directory": "tools/anvil-ops"
+  },
+  "homepage": "https://anvilwiki.pages.dev"
 }
