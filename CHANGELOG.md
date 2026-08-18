@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **GSC 接入步骤修正**(手册第 7 章 + ops README,中英):服务账号邮箱会被 GSC「添加用户」直接拒收(「无效电子邮件地址」),改为官方推荐的 Google 群组中转四步法,并补「服务账号=机器人编号,非邮箱」概念段。
+- **学习手册第 3 章新增第 5 步「换上你的图标」**(中英):favicon 全套 + hero 图的手把手替换(favicon.io),原验收步顺延为第 6 步;`apply-template` CLI 结尾提示同步扩写——修复零基础主路径不教换图标、站点顶铁砧图标上线的缺口。
+- **手册第 6 章两处措辞**(中英):IndexNow 表述修正(仅自有域名接入 Cloudflare 后有 Crawler Hints,纯 pages.dev 无);GSC 验证变量补「网页 Variables vs wrangler.toml [vars]」双模式指引。
+- **anvilwiki-ops 0.1.2**(npm):删了 wrangler.toml 的学习路径用户从 `.env` 读 SITE_URL/PUBLIC_CF_BEACON_TOKEN 回退(原 doctor 必挂且误导);`sc-domain:` 域级资源不再强拼尾斜杠。
+- **根 package.json 设 `private: true`**:模板与 fork 永不可能被误 `npm publish`(当日误发 anvilwiki@1.15.0 已在 72h 窗口内撤回,疫苗性加固)。
+
 ## [1.15.0] — 2026-08-18
 
 **站长运营 CLI + MCP:anvilwiki-ops(npm 包)—— AI 拉数据、给洞察、内容走 PR 上线的自动化运营闭环。**
