@@ -56,6 +56,8 @@ pnpm build             # Zod schema + 全站构建,任何 frontmatter 错误在�
 
 两个都过才算完成。build 失败就修 frontmatter 再跑。
 
+> **可选**(anvilwiki-ops ≥0.1,模板 v1.15+):`npx anvilwiki-ops submit --title "<文章标题>"` 一条命令完成「校验(check-content + check-i18n 严格 + build)→建分支→提交→推送→开 PR」,PR 描述自带校验结果;校验不过就地终止,不会提交任何东西。
+
 ### Step 5 — 汇报
 
 告诉用户:文件路径、预览方式(`pnpm dev` + URL)、建议补充项(封面图/翻译版)。

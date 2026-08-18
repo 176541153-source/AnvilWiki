@@ -21,6 +21,8 @@ pnpm refresh-audit
 
 (仅当脚本不可用时才退回手动 `grep -rE "^(date|lastModified|category):" src/content/wiki/`)。
 
+> **可选增强**(anvilwiki-ops ≥0.1,模板 v1.15+):`npx anvilwiki-ops insights` 会把本审计的过期 codes 页与 GSC/CF 真实流量数据合并,输出按预期收益排序、带证据的行动清单(.env 未配置凭据时自动降级为纯新鲜度规则)。
+
 ### Step 2 — 检查 codes 页
 
 codes 文章的 frontmatter 日期 vs 今天:超 7 天就该提醒(玩家默认 codes 页是日更的);

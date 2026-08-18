@@ -47,6 +47,8 @@ codes:
 pnpm check-content && pnpm build
 ```
 
+> **可选**(anvilwiki-ops ≥0.1,模板 v1.15+):自检通过后 `npx anvilwiki-ops submit --title "codes: 更新兑换码 YYYY-MM-DD"` 一条命令完成「校验→建分支→提交→推送→开 PR」,PR 描述自带校验结果;校验不过就地终止,不会提交任何东西。
+
 ### Step 5 — 汇报
 
 新增 N 码 / 过期 M 码 / 文章路径,提醒用户:codes 类页面建议每周检查一次——注意 codes 分类**不在** STALE_CATEGORIES 里,不会显示页面横幅;保鲜提醒来自每周一的 content-pipeline 审计 issue(codes 超 7 天未验证 = P0)。
