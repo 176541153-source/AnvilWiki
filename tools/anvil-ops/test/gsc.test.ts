@@ -34,4 +34,10 @@ describe('gscQueryUrl', () => {
         '/searchAnalytics/query',
     );
   });
+
+  it('sc-domain: properties are used verbatim (no trailing slash)', () => {
+    const url = gscQueryUrl('sc-domain:example.com');
+    expect(url).toContain(encodeURIComponent('sc-domain:example.com'));
+    expect(url).not.toContain(encodeURIComponent('sc-domain:example.com/'));
+  });
 });

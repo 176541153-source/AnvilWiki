@@ -36,7 +36,13 @@ function windowDays(days: number): { startDate: string; endDate: string } {
 }
 
 export function gscQueryUrl(siteUrl: string): string {
-  const property = siteUrl.endsWith('/') ? siteUrl : siteUrl + '/';
+  // sc-domain: properties must be used verbatim (no trailing slash);
+  // URL-prefix properties require the trailing slash before encoding.
+  const property = siteUrl.startsWith('sc-domain:')
+    ? siteUrl
+    : siteUrl.endsWith('/')
+      ? siteUrl
+      : siteUrl + '/';
   return `https://searchconsole.googleapis.com/webmasters/v3/sites/${encodeURIComponent(property)}/searchAnalytics/query`;
 }
 

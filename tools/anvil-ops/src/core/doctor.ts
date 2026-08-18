@@ -48,14 +48,17 @@ export async function runDoctor(opts: { cwd: string; deps?: DoctorDeps }): Promi
       checks.push({
         name: 'site-config',
         ok: false,
-        detail: 'wrangler.toml found but SITE_URL is not set in [vars]',
-        fix: 'Set SITE_URL = "https://your-domain" under [vars] in wrangler.toml (must include https://).',
+        detail: `config found (${site.source}) but SITE_URL is not set`,
+        fix:
+          site.source === 'wrangler.toml'
+            ? 'Set SITE_URL = "https://your-domain" under [vars] in wrangler.toml (must include https://).'
+            : 'Add SITE_URL=https://your-domain to the .env file (your setup has no wrangler.toml — settings live in the Cloudflare dashboard, which anvil-ops cannot read).',
       });
     } else {
       checks.push({
         name: 'site-config',
         ok: true,
-        detail: `repo root ${site.root}; SITE_URL=${site.siteUrl}; beacon=${site.cfBeaconToken ? 'set' : 'not set'}`,
+        detail: `repo root ${site.root}; SITE_URL=${site.siteUrl} (from ${site.source}); beacon=${site.cfBeaconToken ? 'set' : 'not set'}`,
       });
     }
   } catch (e) {

@@ -1,6 +1,6 @@
 {
   "name": "anvilwiki-ops",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "type": "module",
   "description": "Ops CLI + MCP server for AnvilWiki fork sites: metrics, SEO insights, PR-gated publishing.",
   "license": "MIT",

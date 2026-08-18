@@ -43,4 +43,34 @@ describe('loadSiteConfig', () => {
     const dir = tmpDir();
     expect(() => loadSiteConfig(dir)).toThrow(/wrangler\.toml/);
   });
+
+  it('falls back to .env when wrangler.toml was deleted (learn-manual setup)', () => {
+    const dir = tmpDir();
+    writeFileSync(join(dir, '.env'), 'SITE_URL=https://env-mode.com/\nPUBLIC_CF_BEACON_TOKEN=envtag\nCF_API_TOKEN=x\n');
+    const cfg = loadSiteConfig(dir);
+    expect(cfg.source).toBe('.env');
+    expect(cfg.root).toBe(dir);
+    expect(cfg.siteUrl).toBe('https://env-mode.com');
+    expect(cfg.cfBeaconToken).toBe('envtag');
+  });
+
+  it('neither wrangler.toml nor .env = OpsError naming both options', () => {
+    const dir = tmpDir();
+    try {
+      loadSiteConfig(dir);
+      expect.unreachable('should have thrown');
+    } catch (e) {
+      expect((e as Error).message).toMatch(/wrangler\.toml/);
+      expect((e as Error).message).toMatch(/\.env/);
+    }
+  });
+
+  it('wrangler.toml takes precedence over .env when both exist', () => {
+    const dir = tmpDir();
+    copyFileSync('test/fixtures/wrangler-full.toml', join(dir, 'wrangler.toml'));
+    writeFileSync(join(dir, '.env'), 'SITE_URL=https://should-not-win.com\n');
+    const cfg = loadSiteConfig(dir);
+    expect(cfg.source).toBe('wrangler.toml');
+    expect(cfg.siteUrl).toBe('https://wiki.example.com');
+  });
 });
