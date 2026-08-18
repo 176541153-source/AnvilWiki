@@ -97,6 +97,7 @@ npx anvilwiki-ops insights                        # 行动清单
 - `gsc-access` FAIL:资源没共享给服务账号邮箱(第二步的第 3 小步)。
 - `Cloudflare API returned 401/403`:令牌权限不对,重选「账户 → Analytics → 阅读」。
 - `gh CLI not found`:装 GitHub CLI(submit 需要):https://cli.github.com/
+- `No site config found` / site-config FAIL:你的仓库删过 `wrangler.toml`(学习手册第 5 章的推荐做法,设置在 Cloudflare 网页)——在仓库根目录的 `.env` 里加一行 `SITE_URL=https://你的域名` 即可(需要 CF 数据就再加 `PUBLIC_CF_BEACON_TOKEN`)。**别**为了这个重建 wrangler.toml:文件一回来,你在网页上配的全部变量都会失效。
 - `No uncommitted changes to submit`:工作区是干净的,AI 还没写任何东西,先让它产出内容。
 - `npx anvilwiki-ops` 找不到包:需要 0.1.0 及以上版本(随模板 v1.15 发布)。
 

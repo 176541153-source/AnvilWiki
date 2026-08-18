@@ -80,7 +80,14 @@ pnpm dev
 
 Small tip: to preview what it will change before letting it act, run `pnpm apply-template --dry-run` first (prints the plan only, changes nothing). Also, GitHub has a button called **Initialize AnvilWiki** (in the repo's Actions tab), but it **only does final cleanup** — it does not swap in your game name, your theme color, or your languages. The full replacement only happens with this local command.
 
-### Step 5: Verify your site with your own eyes
+### Step 5: Swap in your icons (2 minutes, strongly recommended)
+
+**What to do**: replace the anvil icons in the browser tab and phone home screens with your game's icon. The previous step rewrites all text, but icons are image files — no command can draw them for you. Skip this and your site ships wearing the template demo's icon.
+**How to do it**: open [favicon.io/favicon-converter](https://favicon.io/favicon-converter/) → upload one image of your game (square works best) → generate and download → unzip, then **drag every icon file into the project's `public/` folder, overwriting the same-named files** (favicon.ico, favicon-16x16.png, favicon-32x32.png, favicon.svg, apple-touch-icon.png, android-chrome-192x192.png, android-chrome-512x512.png). While you're at it, also replace hero.webp / hero.svg in `public/images/` (the homepage hero image) with your own.
+**You'll see**: after refreshing localhost:4321, the tab icon is your image.
+**Confirm it worked**: no anvil icons left in `public/`; "Add to Home Screen" on a phone shows your icon too.
+
+### Step 6: Verify your site with your own eyes
 
 **What to do**: confirm the store sign really changed.
 **How to do it**: type `pnpm dev` in the terminal, open [localhost:4321](http://localhost:4321) in the browser.
@@ -89,6 +96,7 @@ Small tip: to preview what it will change before letting it act, run `pnpm apply
 
 - ☐ The homepage title is your game (no longer Anvil Quest)
 - ☐ The brand color is the one you picked (no longer orange)
+- ☐ The tab icon is your game (no longer the anvil — see Step 5)
 - ☐ Navigation shows only the categories you chose
 - ☐ It also holds up at phone width (press F12 in the browser, then click the device icon to switch to a phone view)
 
@@ -104,7 +112,7 @@ When you've seen enough, `Control + C` to stop it.
 ## ✅ Acceptance criteria (all must hold)
 
 - Commands: `pnpm check-config` shows ✅, and `pnpm build` finishes with no red error on the last line
-- Pages: on localhost:4321, the game name, theme color, and categories are all yours
+- Pages: on localhost:4321, the game name, theme color, categories, and **tab icon** are all yours
 - ☐ You remember what you entered for Domain (a pages.dev placeholder for now is fine; come back and change it after you buy a domain)
 
 ## Next step

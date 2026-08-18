@@ -890,8 +890,13 @@ async function main() {
   console.log('✅ Base config complete.');
   console.log('━'.repeat(60));
   console.log('\n📌 Remaining tasks (see docs/apply-template.md):');
-  console.log('   • Replace favicon files in public/ and hero.webp / hero.svg.');
-  console.log('           (CLI cannot generate binary assets.)');
+  console.log('   • Replace the icon set — your site still shows the demo anvil icons.');
+  console.log('           Generate a full set from one image at https://favicon.io/favicon-converter/,');
+  console.log('           then drag the files into public/ overwriting: favicon.ico, favicon.svg,');
+  console.log('           favicon-16x16.png, favicon-32x32.png, apple-touch-icon.png,');
+  console.log('           android-chrome-192x192.png, android-chrome-512x512.png.');
+  console.log('           Same for the homepage hero image: public/images/hero.webp / hero.svg.');
+  console.log('           (CLI cannot generate binary assets — see the learning manual, chapter 3, step 5.)');
   console.log('   • Fill homepage modules in src/locales/<locale>.json');
   console.log('           (home.hero / start / explore / faq / updates).');
   console.log('   • Add article MDX under src/content/wiki/<locale>/<category>/.');

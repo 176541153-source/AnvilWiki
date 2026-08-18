@@ -80,7 +80,14 @@ pnpm dev
 
 小提示:想先预览它会改什么再动手,可以先跑 `pnpm apply-template --dry-run`(只打印计划,不真改)。另外,GitHub 上还有个叫 **Initialize AnvilWiki** 的按钮(仓库 Actions 页),但它**只做收尾清理**,不会帮你换游戏名、换主题色、换语言——完整替换只能用本地的这条命令。
 
-### 第 5 步:亲眼验收你的站
+### 第 5 步:换上你的图标(2 分钟,强烈建议)
+
+**做什么**:把浏览器标签页和手机主屏上的「铁砧图标」换成你游戏的图标。上一步的命令能改所有文字,但图标是图片文件,机器没法替你画——不换的话,你的站顶着模板示例的图标上线。
+**怎么做**:打开 [favicon.io/favicon-converter](https://favicon.io/favicon-converter/) → 上传一张你游戏的图(正方形最好)→ 点生成并下载 → 解压后把里面的图标文件**全部拖进项目的 `public/` 文件夹覆盖同名文件**(favicon.ico、favicon-16x16.png、favicon-32x32.png、favicon.svg、apple-touch-icon.png、android-chrome-192x192.png、android-chrome-512x512.png)。顺手把 `public/images/` 里的 hero.webp / hero.svg(首页大图)也换成你的图。
+**你会看到**:刷新 localhost:4321,标签页图标变成你的图。
+**确认做对了**:`public/` 里不再有铁砧图;手机「添加到主屏幕」后图标也是你的。
+
+### 第 6 步:亲眼验收你的站
 
 **做什么**:确认店招牌真的换了。
 **怎么做**:终端输入 `pnpm dev`,浏览器打开 [localhost:4321](http://localhost:4321)。
@@ -89,6 +96,7 @@ pnpm dev
 
 - ☐ 首页标题是你的游戏(不再是 Anvil Quest)
 - ☐ 主色是你选的颜色(不再是橙色)
+- ☐ 标签页图标是你的游戏(不再是铁砧,见第 5 步)
 - ☐ 导航只有你选的栏目
 - ☐ 手机宽度下也正常(浏览器按 F12,再点设备图标切换手机视图)
 
@@ -104,7 +112,7 @@ pnpm dev
 ## ✅ 验收(全部成立才算完成)
 
 - 命令:`pnpm check-config` 显示 ✅,`pnpm build` 跑完最后一行没有红色 error
-- 页面:localhost:4321 上,游戏名、主题色、栏目都是你的
+- 页面:localhost:4321 上,游戏名、主题色、栏目、**标签页图标**都是你的
 - ☐ 域名一栏填了什么,你自己记得(没有域名就先用了 pages.dev 占位,买好域名后回来改)
 
 ## 下一步

@@ -97,6 +97,7 @@ The tool's write path is exactly one: **validate (check-content + check-i18n str
 - `gsc-access` FAIL: the property wasn't shared with the service account email (Step 2, sub-step 3).
 - `Cloudflare API returned 401/403`: wrong token permissions — recreate with Account → Analytics → Read.
 - `gh CLI not found`: install the GitHub CLI (needed by submit): https://cli.github.com/
+- `No site config found` / site-config FAIL: your repo deleted `wrangler.toml` (the learning manual's recommended setup — settings live in the Cloudflare dashboard). Fix: add `SITE_URL=https://your-domain` to the `.env` at the repo root (plus `PUBLIC_CF_BEACON_TOKEN` if you want CF data). Do **not** recreate wrangler.toml for this — the moment that file returns, every variable you configured in the dashboard stops working.
 - `No uncommitted changes to submit`: the worktree is clean — the AI hasn't written anything yet; have it produce content first.
 - `npx anvilwiki-ops` can't find the package: you need 0.1.0 or later (ships with template v1.15).
 

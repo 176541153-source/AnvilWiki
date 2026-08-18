@@ -26,7 +26,7 @@ updated: 2026-08-17
 ### 第 1 步:注册 Google 站长后台(GSC)
 
 **做什么**:拿到 Google 发给你的「店铺营业登记」。
-**怎么做**:打开 [search.google.com/search-console](https://search.google.com/search-console) → 登录 Google 账号 → **添加资源**。新手选 **网址前缀** 类型,填你的 `https://项目名.pages.dev`(或你的域名),验证方式选 **HTML 标记**,Google 会给你一串代码——不用自己贴,把标记里 `content="一串字母"` 的那串字母填到 Cloudflare 的变量里:名字 `PUBLIC_GSC_VERIFICATION`,值就是那串字母。保存并重新部署,回 GSC 点「验证」。
+**怎么做**:打开 [search.google.com/search-console](https://search.google.com/search-console) → 登录 Google 账号 → **添加资源**。新手选 **网址前缀** 类型,填你的 `https://项目名.pages.dev`(或你的域名),验证方式选 **HTML 标记**,Google 会给你一串代码——不用自己贴,把标记里 `content="一串字母"` 的那串字母填到环境变量里:名字 `PUBLIC_GSC_VERIFICATION`,值就是那串字母。**变量加在哪取决于你走了哪条路**:第 5 章删了 `wrangler.toml` 的,加在 Cloudflare → Settings → Variables and Secrets;保留了 `wrangler.toml` 的,写进它的 `[vars]` 段(文件在手,网页设置一律无效,见开发手册功能开关章)。保存并重新部署,回 GSC 点「验证」。
 **你会看到**:GSC 显示「已拥有所有权」。
 **确认做对了**:GSC 左侧能点开「效果」等页面。
 
@@ -43,7 +43,7 @@ updated: 2026-08-17
 **怎么做**:GSC 顶部的检查框,粘贴你的兑换码页完整网址,回车 → 点**请求编入索引**。把最重要的 5 到 10 个网址挨个来一遍(兑换码页第一个)。
 **你会看到**:每个网址显示「已请求编入索引」。
 
-另外两件自动发生的事,不用你动手:Cloudflare 每次部署会自动通知 Bing 等搜索引擎(叫 IndexNow,相当于自动催 Bing);你的 `/llms.txt` 页面会告诉 ChatGPT 这类 AI 引擎你有哪些内容。
+另外两件自动发生的事,不用你动手:**买了自己的域名并接入 Cloudflare 之后**,Cloudflare 会自动通知 Bing 等搜索引擎(功能叫 Crawler Hints,相当于自动催 Bing;纯 pages.dev 地址没有这个——好在搜索主力是 Google,不受影响);你的 `/llms.txt` 页面会告诉 ChatGPT 这类 AI 引擎你有哪些内容。
 
 ### 上线后自检(可选,5 分钟)
 
@@ -57,7 +57,7 @@ pnpm check-links
 
 ## 卡住了怎么办
 
-- **「GSC 验证不通过」**:确认 `PUBLIC_GSC_VERIFICATION` 的值是标记里 content 引号内的那串字母(不带引号),保存后确实重新部署过。
+- **「GSC 验证不通过」**:确认 `PUBLIC_GSC_VERIFICATION` 的值是标记里 content 引号内的那串字母(不带引号),保存后确实重新部署过,而且加对了地方(删了 wrangler.toml 的在网页 Variables,保留了的在文件 `[vars]`,见第 1 步)。
 - **「sitemap 提交显示无法获取」**:等几小时再试(Google 抓取有延迟);确认网址是 `https://你的域名/sitemap-index.xml` 能打开。
 - **「过了几天已发现网址还是 0」**:多等几天再点几轮「请求收录」;收录本来就有节奏,第 8 章的每周运营会持续催它。
 
