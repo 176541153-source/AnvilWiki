@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.15.0] — 2026-08-18
+
+**站长运营 CLI + MCP:anvilwiki-ops(npm 包)—— AI 拉数据、给洞察、内容走 PR 上线的自动化运营闭环。**
+
+### Added
+- **`tools/anvil-ops/` 独立 npm 包 `anvilwiki-ops`(0.1.1 已上架 npmjs.com,`npx` 免安装)**:CLI(`anvil-ops`,含包名别名)+ stdio MCP server(`anvil-ops mcp`,一行接入 Claude/ZCode 等 MCP 客户端);core / CLI / MCP 三层解耦,56 测试 + 真实 git bare 仓库集成测试;根 tsconfig/eslint exclude `tools/`,模板与工具互不干扰。
+- **5 命令 = 5 MCP 工具**:`doctor`(wrangler/gh/GSC/CF 配置体检,逐项给修复指引)/ `metrics`(GSC 点击曝光 CTR 排名 + CF Web Analytics 访问,table/json/md 三格式,凭据未配自动降级)/ `audit`(refresh-audit / check-i18n / check-content / check-links 聚合报告)/ `insights`(规则引擎:低 CTR 改写、排名 5-15 加深、零曝光排查、流量结构、过期 codes,阈值常量集中)/ `submit`(check-content + check-i18n --strict + build 校验 → ops/submit-* 分支 → push → gh 开 PR,**永不 push main**)。
+- **数据接入契约**:GSC 服务账号 JSON(`{` 开头内联,否则路径)+ CF API token 存 .env(gitignored,空 = 功能禁用);CF site tag 直接读 `wrangler.toml PUBLIC_CF_BEACON_TOKEN`,零额外配置;错误信息全部带「现象 + 修复指引」。
+- **开发手册第 7 章「让 AI 替你运营:anvilwiki-ops 与 MCP」(中英)**:体检 → 接数据 → 看数据拿清单 → MCP 交给 AI → submit 上线五步(四段式),含「安全线:为什么它改不了你的线上站」与可复制的 AI 指挥提示词;ch6 完结段迁至 ch7,zh「开发 4」标题笔误修正为「开发 6」。
+- **三个 `.agent/skills` 技能补可选引用**:anvil-refresh → `insights` 流量×新鲜度合并巡检;anvil-new-article / anvil-update-codes → `submit` 校验后一键开 PR。
+
+### Changed
+- 全仓手册计数与描述同步(开发手册 6→7 章):landing 中英 hub 副标题 + 手册卡、README 中英、docs/README、AGENTS 状态行 + 新增 Ops Toolkit 章节(含 pnpm workspace 劫持警示)、PRD roadmap v1.15 行。
+- AGENTS.md 产页规则 4 增补 `anvil-ops submit` 可选收尾。
+
 ## [1.14.1] — 2026-08-17
 
 **状态同步版:README 重构升级 + 官网/仓库文档全面刷新到最新状态(v1.14 手册分册、8+6 章、零基础优先)。**

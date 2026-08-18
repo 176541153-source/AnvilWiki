@@ -11,7 +11,7 @@
  */
 
 /** Keep in sync with package.json "version" (used by the announcement bar). */
-export const PROJECT_VERSION = '1.14.1';
+export const PROJECT_VERSION = '1.15.0';
 
 export type LandingLocale = 'en' | 'zh';
 
@@ -119,7 +119,7 @@ const en: LandingContent = {
   description:
     'An open-source game wiki template with an AI-native content workflow: pick the right game, generate pages by talking to your AI tool, codes pages stay fresh on autopilot. Lighthouse 4×100, free on Cloudflare, 100% ad revenue yours.',
   announcement: {
-    text: `v${PROJECT_VERSION} shipped — README restructured, the landing and repo docs refreshed to the current state (separate manuals, 8+6 chapters, beginner-first).`,
+    text: `v${PROJECT_VERSION} shipped — anvilwiki-ops: an ops CLI + MCP on npm. AI pulls GSC/Cloudflare data, ranks SEO actions, and ships content through validated PRs. Dev manual chapter 7 added.`,
     href: RELEASES,
   },
   hero: {
@@ -392,7 +392,7 @@ const zh: LandingContent = {
   description:
     '开源游戏 wiki 模板 + AI 原生内容工作流:选对游戏、和 AI 对话就能产页、codes 页自动保鲜。Lighthouse 4×100、Cloudflare 免费部署、广告收入 100% 归你。',
   announcement: {
-    text: `v${PROJECT_VERSION} 发布 —— README 重构升级,官网与仓库文档全面同步最新状态(手册分册、8+6 章、零基础优先)。`,
+    text: `v${PROJECT_VERSION} 发布 —— anvilwiki-ops 运营 CLI + MCP 上架 npm:AI 拉取 GSC/Cloudflare 数据、给出优化清单、内容走校验 PR 上线;开发手册新增第 7 章。`,
     href: RELEASES,
   },
   hero: {

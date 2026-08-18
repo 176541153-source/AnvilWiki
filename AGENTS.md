@@ -8,7 +8,7 @@ AnvilWiki is an **open-source (MIT) game wiki site template** built with **Astro
 
 Goal: let beginners deploy a game wiki site to Cloudflare Pages for free (unlimited bandwidth) in ~30 minutes, with strong SEO, i18n, and ad-monetization built in.
 
-**Status (as of 2026-08-18)**: v1.14.1 released; `anvilwiki-ops` (ops CLI + MCP, `tools/anvil-ops/`, npm publish + v1.15 release pending) — full template + AI content skills (`.agent/skills/`) + in-site docs center (`/landing/docs`: Learning manual 8 chapters + Development manual 7 chapters, zh/en, beginner-rewritten; markdown source `docs/handbook/`, kept for forks) + 9 scripts + 3 CI workflows. Live demo: anvilwiki.pages.dev (Lighthouse 4×100).
+**Status (as of 2026-08-18)**: v1.15.0 released — ops toolkit `anvilwiki-ops` 0.1.1 published to npm (see Ops Toolkit section below) + full template + AI content skills (`.agent/skills/`) + in-site docs center (`/landing/docs`: Learning manual 8 chapters + Development manual 7 chapters, zh/en, beginner-rewritten; markdown source `docs/handbook/`, kept for forks) + 9 scripts + 3 CI workflows. Live demo: anvilwiki.pages.dev (Lighthouse 4×100).
 
 ## Read These First
 
