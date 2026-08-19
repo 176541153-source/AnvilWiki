@@ -1,6 +1,6 @@
 ---
 title: "Chapter 4 · Let AI Write 10 Guides for You"
-description: "Feed game notes to your AI; three prompts produce guide, codes, and tier list pages that pass the build check. Includes search-intent table and 7 never-do rules."
+description: "Feed game notes to your AI; four prompts produce guide, codes, tier list, and media pages that pass the build check. Includes the intent table and 7 never-do rules."
 manual: learn
 order: 4
 icon: lucide:bot
@@ -51,7 +51,7 @@ How good the AI's writing turns out **is 80% decided by your materials**. Notes 
 
 ## Step 3: Use prompts to produce three kinds of pages
 
-Copy the three prompts below **as whole blocks**, replace the `<>` parts with your materials, and send them to the AI. The last line of each is the build-check clause — the AI runs the build itself after writing, and only all-green counts as delivered.
+Copy the four prompts below **as whole blocks**, replace the `<>` parts with your materials, and send them to the AI. The last line of each is the build-check clause — the AI runs the build itself after writing, and only all-green counts as delivered.
 
 ### Prompt A: a guide page (notes → article)
 
@@ -89,6 +89,28 @@ Write a tier list page from my ratings.
 **Input:** <character/gear list + my ranking reasons>
 Requirements: table-first, one conclusive reason per row; flag contested placements with a Callout warn noting version sensitivity;
 add gameVersion to frontmatter; mark untested entries [to be added] or make the whole page draft: true — no fabricating.
+When done, run pnpm check-content && pnpm build; only all-green counts as complete.
+```
+
+### Prompt D: images and video (pages people can see, not just read)
+
+Text-only pages don't compete in the game-wiki world. The template's media features (cover / gallery / inline images / video) are all built in — what's missing is you feeding the AI the material. **Screenshots and videos must be ones you captured yourself** — the AI cannot generate "gameplay screenshots" for you. Skip this step if you have no material yet, and don't lift images from the web (copyright).
+
+- **Screenshots** (boss close-ups / gear panels / maps): drag them into the chat. Inline body images go to `public/images/articles/`; mechanics/route diagrams go to the bottom gallery. 16:9 landscape works best.
+- **Video** (your own clears, uploaded to YouTube): the AI registers and embeds it — it only loads on click, so it never slows the page down.
+- How many images each page type should carry: see the media-density table in `docs/content-format.md`.
+
+```text
+Add media to the article at <article path>.
+**Input**
+Screenshots: <drag into the chat, or list file paths>
+Video: <YouTube link> (delete this line if none)
+Requirements:
+Place per the media-density guidance in docs/content-format.md: inline body images use
+![alt](/images/articles/...) with alt text describing what's actually in the image;
+mechanics/route diagrams go to frontmatter gallery, each with caption + alt;
+register the video in frontmatter videos and inline it under the matching section.
+Never describe anything the image doesn't show.
 When done, run pnpm check-content && pnpm build; only all-green counts as complete.
 ```
 

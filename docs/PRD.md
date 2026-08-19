@@ -1314,6 +1314,7 @@ describe('sitemap', () => {
 | v1.14 | 手册分册成页 + 章节拆细（8+6 章、列表展示） | 中 | ✅ 已实现（学习/开发手册各自独立成页 /landing/docs/learn|dev（中英四页）+ 手册页编号列表；学习 5→8 章（装工具/上线/收录/接广告各自独立）、开发 4→6 章（定制/集成各一分为二）；hub 改选择页（全景清单+两张手册卡）；互链全部重接、旧 slug 零残留；en 14 章 2 agent 同源重写） |
 | v1.15 | 站长运营 CLI + MCP（`anvilwiki-ops`：第一性原理路线②④产能闭环） | 高 | ✅ 已实现（`tools/anvil-ops/` 独立 npm 包双 bin：`anvil-ops` CLI + stdio MCP server；doctor/metrics/audit/insights/submit 五命令 = 五 MCP 工具；GSC 服务账号 + CF Web Analytics GraphQL 双数据源，env 门控空=禁用；insights 5 规则引擎（阈值常量集中）；submit=校验→分支→push→gh 开 PR，永不 push main；56 测试+真 git bare 集成测试；开发手册新增第 7 章「AI 自动化运营」中英；**anvilwiki-ops 0.1.1 已上架 npm，`npx anvilwiki-ops` 实名验证通过**；v1.15.0 已发版） |
 | v1.16 | 社区案例库（Showcase：真实用户站点展示） | 低 | ✅ 已实现（首批 3 站点 aniimo.wiki / nomanssky.wiki / steal-anegg.wiki；数据源唯一 `landing.ts` 的 `COMMUNITY_SITES`，展示 3 处：/landing 与 /zh/landing 的 CommunitySites 区块 + README 中英表格；数据与组件均在 CLI `LANDING_PATHS` 内，fork 自动清理；详见 §15.6；v1.16.0 已发版） |
+| v1.17 | demo 媒体示范 + 媒体密度指引（拉平「能力 vs 示范」倒挂） | 中 | ✅ 已实现（每类文章完整示范媒体能力：codes 双语封面、boss 机制画廊（`src/assets/gallery/`）、tier-list 正文内联卡片图（`public/images/articles/`）、i18n 视频对齐；`scripts/gen-demo-media.mjs` 生成 7 张示意图可复现；`.prose img:not([class])` 16:9 零 CLS 盒子；媒体密度表进 content-format.md / anvil-new-article skill / AGENTS.md / 学习手册 first-10-pages 章中英；fork 清理：apply-template `clearDemoAssets` + setup.yml 同步按名删 demo 素材（fork 模拟构建绿）；v1.17.0 已发版，v1.17.1 复审补丁（图内事实校正：3 标记/20s puddle/2s 窗口/wind-up 数值对齐正文）） |
 
 **v1.3 范围说明**：
 - `timeline`：✅ 实现 —— 版本日志/活动时序，零副作用，商业价值正（老玩家点进 patch notes 文章页）。

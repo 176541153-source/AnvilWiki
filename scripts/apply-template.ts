@@ -543,6 +543,42 @@ function clearDemoContent() {
       }
     }
   }
+  removed += clearDemoAssets();
+  return removed;
+}
+
+/**
+ * Demo article artwork — the 5 covers, the whole demo gallery dir, and the
+ * inline demo card images. Deleted BY NAME (not a wildcard) so covers a fork
+ * user already replaced with their own art are never touched. Keep in sync
+ * with the "Clear demo content" step in .github/workflows/setup.yml.
+ */
+const DEMO_ASSET_DIRS = ['src/assets/gallery', 'public/images/articles'];
+const DEMO_COVERS = [
+  'beginner-guide-cover.png',
+  'emberfang-cover.png',
+  'stormcaller-cover.png',
+  'weapon-tier-list-cover.png',
+  'codes-cover.png',
+];
+
+function clearDemoAssets() {
+  let removed = 0;
+  for (const dir of DEMO_ASSET_DIRS) {
+    const dirPath = path.resolve(ROOT, dir);
+    if (!fs.existsSync(dirPath)) continue;
+    if (!DRY_RUN) fs.rmSync(dirPath, { recursive: true, force: true });
+    removed++;
+  }
+  const covers = path.resolve(ROOT, 'src/assets/covers');
+  if (fs.existsSync(covers)) {
+    for (const file of fs.readdirSync(covers)) {
+      if (DEMO_COVERS.includes(file)) {
+        if (!DRY_RUN) fs.unlinkSync(path.join(covers, file));
+        removed++;
+      }
+    }
+  }
   return removed;
 }
 

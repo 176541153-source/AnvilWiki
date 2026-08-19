@@ -90,8 +90,16 @@ jobs:
         run: |
           # Remove demo game articles (keep directory structure) + the demo
           # author registry entry, so no "Anvil Quest" / "Forge Master Kael"
-          # residue ships with the fork.
+          # residue ships with the fork. Demo article artwork is removed BY
+          # NAME — keep this list in sync with DEMO_COVERS / DEMO_ASSET_DIRS
+          # in scripts/apply-template.ts (clearDemoAssets).
           find src/content/wiki -name '*.mdx' -delete
+          rm -rf src/assets/gallery public/images/articles
+          rm -f src/assets/covers/beginner-guide-cover.png \
+                src/assets/covers/emberfang-cover.png \
+                src/assets/covers/stormcaller-cover.png \
+                src/assets/covers/weapon-tier-list-cover.png \
+                src/assets/covers/codes-cover.png
           python3 - <<'EOF'
           import re
           p = 'src/config/authors.ts'

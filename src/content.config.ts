@@ -67,7 +67,9 @@ const wiki = defineCollection({
       /**
        * Optional image gallery — rendered as a thumbnail grid below the
        * article body with a native <dialog> lightbox (zero JS until click).
-       * `image` is a path relative to the MDX file (same as the cover).
+       * `image` is a path relative to the MDX file (same as the cover);
+       * demo convention: gallery art lives in `src/assets/gallery/`,
+       * covers in `src/assets/covers/`.
        */
       gallery: z
         .array(

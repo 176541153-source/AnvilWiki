@@ -5,6 +5,18 @@ All notable changes to AnvilWiki are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.17.1] — 2026-08-20
+
+**专家团复审补丁:demo 图内事实校正 + fork 素材清理 + 指引闭环。**
+
+### Fixed
+- **demo 图与正文事实矛盾**(复审 A 批):竞技场图 4 个固定陨石标记→3 个靠边标记(正文"每 30s 标 3 个点,引到边缘");"permanent lava"→"fire puddles last 20s"(正文 20 秒);机制图 "~1.5s dodge window"→"2s to move after each mark"(正文标记后 2 秒落地)、"save your dash for the volley"(Emberfang 的设定串台)→"melee: stand at her side or back" 并补 Flame Whip "1.2s wind-up · 600 damage" 数据;Frostpike 卡 "Freeze on hit"(图自创触发条件)→"Freeze utility"(正文原话);stormcaller gallery 图注同步改"meteor marks near the edges"。
+- **fork 选 "Clear demo content" 后留下 11 张孤儿 demo 图**(约 340KB):`apply-template` 新增 `clearDemoAssets`(按名删 5 张 demo 封面 + 整删 `src/assets/gallery`、`public/images/articles`,不误伤用户自换素材),`setup.yml` 清理步骤同步同一清单(fork 真模拟构建验证)。
+
+### Docs
+- PRD §14 roadmap 补 v1.17 行(v1.15/v1.16 惯例对齐)。
+- 学习手册「前 10 篇文章」章中英新增**提示词 D:配图与视频**(截图/视频来源红线、放置路径、密度表指引),frontmatter description 三段→四段;`content.config.ts` gallery 注释补 demo 目录约定。
+
 ## [1.17.0] — 2026-08-20
 
 **demo 媒体增强:每类文章完整示范模板的媒体能力,补齐 AI 内容工作流的媒体密度指引。**

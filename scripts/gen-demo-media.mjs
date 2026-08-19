@@ -139,11 +139,11 @@ const stormcallerArena = svgDoc(
     <text x='470' y='296' text-anchor='middle' ${FONT} font-size='13' font-weight='700' fill='${C.text}' letter-spacing='2'>STORMCALLER</text>
   </g>
   <g stroke='${C.red}' stroke-width='5' stroke-linecap='round'>
-    <path d='M470 118 l0 22 M470 118 l-8 8 M470 118 l8 8' fill='none' transform='rotate(180 470 129)'/>
-    <path d='M597 245 l-22 0 M597 245 l-8 -8 M597 245 l-8 8' fill='none'/>
-    <path d='M470 372 l0 -22' fill='none'/>
-    <path d='M343 245 l22 0 M343 245 l8 -8 M343 245 l8 8' fill='none'/>
+    <path d='M382 142 l20 20 M402 142 l-20 20' fill='none'/>
+    <path d='M580 230 l20 20 M600 230 l-20 20' fill='none'/>
+    <path d='M490 345 l20 20 M510 345 l-20 20' fill='none'/>
   </g>
+  <text x='392' y='180' text-anchor='middle' ${FONT} font-size='11' font-weight='700' fill='${C.red}'>×3</text>
   <path d='M436 430 Q400 380 430 330 Q455 292 445 275' fill='none' stroke='${C.green}' stroke-width='5' stroke-dasharray='10 8' stroke-linecap='round'/>
   <path d='M445 275 l-10 14 M445 275 l14 6' stroke='${C.green}' stroke-width='5' stroke-linecap='round' fill='none'/>
   <path d='M445 262 A22 22 0 0 0 425 275 L465 275 A22 22 0 0 0 445 262 Z' fill='${C.green}' opacity='0.3' transform='translate(0 -6) rotate(180 445 268)'/>
@@ -154,11 +154,11 @@ const stormcallerArena = svgDoc(
     <line x1='56' y1='170' x2='92' y2='170' stroke='${C.green}' stroke-width='4' stroke-dasharray='8 6'/>
     <text x='102' y='174' ${FONT} font-size='12' fill='${C.text}'>safe route — behind boss</text>
     <path d='M66 188 l0 16 M66 188 l-6 6 M66 188 l6 6' stroke='${C.red}' stroke-width='4' stroke-linecap='round' transform='rotate(180 66 196)' fill='none'/>
-    <text x='102' y='198' ${FONT} font-size='12' fill='${C.text}'>meteor drop · every 30s</text>
+    <text x='102' y='198' ${FONT} font-size='12' fill='${C.text}'>meteor marks — 3 per wave</text>
     <path d='M74 216 L80 228 L76.5 226 L74 236 L71.5 226 L68 228 Z' fill='${C.gold}'/>
     <text x='102' y='228' ${FONT} font-size='12' fill='${C.text}'>Stormcaller · 18,000 HP</text>
   </g>
-  <text x='648' y='432' text-anchor='middle' ${FONT} font-size='12' fill='${C.muted}'>red pools: permanent lava</text>
+  <text x='648' y='432' text-anchor='middle' ${FONT} font-size='12' fill='${C.muted}'>red pools: fire puddles last 20s</text>
 `,
   ),
 );
@@ -174,6 +174,7 @@ const stormcallerMechanics = svgDoc(
   <g>
     <rect x='36' y='100' width='352' height='300' rx='14' fill='${C.panel}' stroke='${C.panelStroke}'/>
     <text x='212' y='132' text-anchor='middle' ${FONT} font-size='15' font-weight='700' fill='${C.amber}' letter-spacing='2'>FLAME WHIP · 180° FRONT ARC</text>
+    <text x='212' y='154' text-anchor='middle' ${FONT} font-size='12' fill='${C.muted}'>1.2s wind-up · 600 damage + burn</text>
     <path d='M152 290 A60 60 0 0 1 272 290 L152 290 Z' fill='${C.red}' opacity='0.22'/>
     <path d='M152 290 A60 60 0 0 1 272 290' fill='none' stroke='${C.red}' stroke-width='5'/>
     <path d='M272 288 A60 60 0 0 1 240 238' fill='none' stroke='${C.red}' stroke-width='4' stroke-dasharray='7 6' opacity='0.8'/>
@@ -209,8 +210,8 @@ const stormcallerMechanics = svgDoc(
     <rect x='700' y='222' width='36' height='36' rx='8' fill='${C.amber}' opacity='0.25'/>
     <text x='718' y='246' text-anchor='middle' ${FONT} font-size='16' font-weight='800' fill='${C.gold}'>!</text>
     <text x='718' y='286' text-anchor='middle' ${FONT} font-size='11' font-weight='700' fill='${C.gold}'>ENRAGE 4:00</text>
-    <text x='588' y='330' text-anchor='middle' ${FONT} font-size='13' fill='${C.text}'>~1.5s dodge window per drop</text>
-    <text x='588' y='352' text-anchor='middle' ${FONT} font-size='13' fill='${C.muted}'>save your dash for the volley</text>
+    <text x='588' y='330' text-anchor='middle' ${FONT} font-size='13' fill='${C.text}'>2s to move after each mark</text>
+    <text x='588' y='352' text-anchor='middle' ${FONT} font-size='13' fill='${C.muted}'>melee: stand at her side or back</text>
   </g>
 `,
   ),
@@ -346,7 +347,7 @@ const weaponFrostpike = weaponCard(
   115,
   160,
   'DPS 90 · 115 VS ICE-WEAK',
-  'Freeze on hit — trivializes fire bosses',
+  'Freeze utility — trivializes several bosses',
   frostpikeIcon,
 );
 
