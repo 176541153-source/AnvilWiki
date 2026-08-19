@@ -5,6 +5,25 @@ All notable changes to AnvilWiki are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.17.0] — 2026-08-20
+
+**demo 媒体增强:每类文章完整示范模板的媒体能力,补齐 AI 内容工作流的媒体密度指引。**
+
+背景:模板的媒体系统(封面/gallery/内联图/视频 + ImageObject/VideoObject JSON-LD)早已齐备,但 demo 文章几乎没用到(7 篇正文内联图 0 处、gallery 1 处且复用封面、视频 1 处、codes 页无封面、ja 侧 0 媒体)——fork 用户与 AI agent 照 demo 学,只能学出纯文字站。本版把"能力 vs 示范"倒挂拉平。
+
+### Added
+- **demo 素材生成脚本 `scripts/gen-demo-media.mjs`**:demo 游戏是虚构的,没有真截图——7 张扁平风示意图(封面/竞技场地图/机制图/职业卡/路线图/武器卡)以 SVG + sharp 光栅化,可复现可改;全部 800×450(16:9)。
+- **媒体密度指引**(按页面类型给封面/内联图/gallery/视频建议密度表):`docs/content-format.md` 新增专节,`.agent/skills/anvil-new-article` 同步补图片四条规则,AI 生成文章默认带上媒体。
+
+### Changed
+- **codes 页补封面**(en/ja):og:image 不再回退全站 hero,分享卡片有辨识度;codes 恰是分享最频繁的页面类型。
+- **stormcaller gallery 换独立机制图**(竞技场俯视图 + Flame Whip 安全区/陨石时间线),不再复用封面充当画廊。
+- **weapon-tier-list 补正文内联卡片图 ×2**(S 档 Voidforge / A 档 Frostpike)——此前正文内联图 0 示范。
+- **beginner-guide 补 gallery**(四职业卡 + 前两小时路线图,与正文六步严格对应)。
+- **ja/emberfang 补视频**(frontmatter 登记 + 正文内联,与 en 版对齐)——i18n 媒体示范对齐。
+- **globals.css 新增 `.prose img:not([class])` 规则**:markdown 正文图预留 16:9 盒子(零 CLS,信箱式不裁剪);`:not([class])` 只命中裸 markdown `<img>`,不影响视频缩略图等组件图。
+- demo 演示视频加注释说明:占位 YouTube ID,fork 后两处(内联 `id` + frontmatter `videos`)替换。
+
 ## [1.16.1] — 2026-08-19
 
 **专家团三轮审计修复批:fork 主路径致命 bug + SEO 合规 + 性能 + 文档全面同步。**

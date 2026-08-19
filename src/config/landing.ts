@@ -11,7 +11,7 @@
  */
 
 /** Keep in sync with package.json "version" (used by the announcement bar). */
-export const PROJECT_VERSION = '1.16.1';
+export const PROJECT_VERSION = '1.17.0';
 
 export type LandingLocale = 'en' | 'zh';
 
@@ -185,7 +185,7 @@ const en: LandingContent = {
   description:
     'An open-source game wiki template with an AI-native content workflow: pick the right game, generate pages by talking to your AI tool, codes pages stay fresh on autopilot. Lighthouse 4×100, free on Cloudflare, 100% ad revenue yours.',
   announcement: {
-    text: `v${PROJECT_VERSION} shipped — expert-panel audit: 30+ fixes hardening the fork setup path, CJK tag URLs, FAQ rich results, and ad-slot layout stability.`,
+    text: `v${PROJECT_VERSION} shipped — demo media enrichment: every article type now demonstrates covers, galleries, inline card images, and video embeds, with media-density guidance for AI content workflows.`,
     href: RELEASES,
   },
   hero: {
@@ -473,7 +473,7 @@ const zh: LandingContent = {
   description:
     '开源游戏 wiki 模板 + AI 原生内容工作流:选对游戏、和 AI 对话就能产页、codes 页自动保鲜。Lighthouse 4×100、Cloudflare 免费部署、广告收入 100% 归你。',
   announcement: {
-    text: `v${PROJECT_VERSION} 发布 —— 专家团审计修复批:30+ 项修复,加固 fork 初始化主路径、CJK 标签链接、FAQ 富结果合规与广告位布局稳定性。`,
+    text: `v${PROJECT_VERSION} 发布 —— demo 媒体增强:每类文章都完整示范封面/画廊/内联卡片图/视频嵌入,并为 AI 内容工作流补齐媒体密度指引。`,
     href: RELEASES,
   },
   hero: {

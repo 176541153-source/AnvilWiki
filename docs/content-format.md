@@ -82,7 +82,18 @@ import Accordion from '~/components/mdx/Accordion.astro';
 - **Callout** — 提示框，`type`: `info`（默认）/ `tip` / `warn` / `danger`，零 JS（v1.5）
 - **Accordion** — 原生 `<details>` 折叠面板，用于分阶段打法/剧透/平台差异，零 JS（v1.5）
 - **AffiliateLink** — 联盟/外链 CTA 卡片，自动带 `rel="sponsored nofollow"`（SEO 合规的第二变现渠道，v1.7）
-- **Video** — 正文内联 YouTube 播放器（懒加载 facade）。放哪渲染哪：`<Video id="..." title="..."/>`；**id 必须同时登记进 frontmatter `videos`**（VideoObject JSON-LD 来源），已内联的 id 不会在文末重复渲染（v1.8）
+- **Video** — 正文内联 YouTube 播放器（懒加载 facade）。放哪渲染哪：`<Video id="..." title="..."/>`；**id 必须同时登记进 frontmatter `videos`**（VideoObject JSON-LD 来源），已内联的 id 不会在文末重复渲染（v1.8）。demo 用的是稳定占位视频 ID，fork 后替换为你自己的实机视频（改内联 `id` + frontmatter `videos` 两处）
+
+### 媒体密度建议（排名因素）
+
+纯文字页在游戏 wiki 赛道没有竞争力。按页面类型给参考密度（demo 文章均按此示范）：
+
+| 页面类型 | 封面 | 正文内联图 | gallery | 视频 |
+| --- | --- | --- | --- | --- |
+| boss 攻略 | ✅ 必配 | 机制说明处按需 | 2-4 张（机制图/路线图） | ≥1（关键躲避点） |
+| 教程/路线 | ✅ 必配 | 每个大节可配 1 张 | 路线/流程图 2 张 | 按需 |
+| tier list/对比 | ✅ 必配 | 重点条目 1 张卡片图 | 可选 | 按需 |
+| codes | ✅ 必配（分享卡片辨识度） | 无需 | 无需 | 无需 |
 
 ### 作者体系（v1.7）
 
@@ -131,8 +142,9 @@ title: 'Emberfang Boss Guide'
 - 代码块（```语法高亮）
 - 引用（`>`）
 - 链接（相对路径用 `/bosses/emberfang`，绝对路径用完整 URL）
-- 图片（`![alt](/images/xxx.jpg)`，正文图片放 `public/images/`）
-  - ⚠️ 封面图（frontmatter `image` 字段）不同：走 Astro Image 优化（自动 WebP/srcset），放在 `src/assets/covers/`，写相对 MDX 文件的路径。详见上面的 frontmatter 示例。
+- 图片（`![alt](/images/articles/xxx.png)`，正文图片放 `public/images/articles/`，建议 16:9（800×450）——globals.css 为正文图预留 16:9 盒子，非 16:9 会信箱式留边，不裁剪、零 CLS）
+  - ⚠️ 封面图（frontmatter `image` 字段）不同：走 Astro Image 优化（自动 WebP/srcset），放在 `src/assets/covers/`，写相对 MDX 文件的路径。详见上面的 frontmatter 示例。gallery 图（`src/assets/gallery/`）同封面走优化管线。
+  - 💡 demo 示范：`en/bosses/stormcaller.mdx`（gallery 机制图）、`en/guides/weapon-tier-list.mdx`（正文内联卡片图）、`en/guides/beginner-guide.mdx`（gallery 路线图）。demo 素材可用 `node scripts/gen-demo-media.mjs` 复现/修改。
 
 ### MDX 扩展（可选）
 

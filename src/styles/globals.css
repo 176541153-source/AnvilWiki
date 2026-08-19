@@ -134,6 +134,21 @@
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
   }
+
+  /* Markdown body images (`![alt](/images/...)`) aren't processed by Astro
+     Image, so they arrive without intrinsic width/height attributes and
+     cause layout shift when they load. Reserving a 16:9 box pre-load keeps
+     CLS at 0 — pair with 16:9 source images (800×450 recommended); other
+     aspect ratios are letterboxed, never cropped. :not([class]) scopes this
+     to plain markdown <img>; component images (video thumbnails etc.) carry
+     utility classes and are excluded. */
+  .prose img:not([class]) {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: contain;
+    border-radius: 0.5rem;
+    background-color: hsl(var(--muted));
+  }
 }
 
 /* Print styles — readers printing long guides get clean content only:
