@@ -50,7 +50,21 @@ function buildLastmodMap(noindexPaths: Set<string>): Map<string, string> {
       const [loc, cat, ...rest] = rel.split(path.sep);
       const slugPath = rest.join('/');
       const articlePath = loc === defaultLocale ? `/${cat}/${slugPath}` : `/${loc}/${cat}/${slugPath}`;
-      if (/^noindex:\s*true\s*$/m.test(fm)) noindexPaths.add(articlePath);
+      if (/^noindex:\s*true\s*$/m.test(fm)) {
+        noindexPaths.add(articlePath);
+        // The non-default-locale routes of a default-locale noindex article
+        // still get built (fallback URLs) and inherit the noindex meta —
+        // exclude every prefixed variant too. Skip locales that have their
+        // own MDX of this article: that entry's own frontmatter governs its
+        // page (it may not be noindex).
+        if (loc === defaultLocale) {
+          for (const l of locales) {
+            if (l === defaultLocale) continue;
+            const translated = path.join(base, l, cat, ...rest) + '.mdx';
+            if (!fs.existsSync(translated)) noindexPaths.add(`/${l}${articlePath}`);
+          }
+        }
+      }
       map.set(articlePath, date.toISOString());
 
       // List pages: newest article in the category wins.

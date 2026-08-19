@@ -5,7 +5,28 @@ All notable changes to AnvilWiki are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.16.1] — 2026-08-19
+
+**专家团三轮审计修复批:fork 主路径致命 bug + SEO 合规 + 性能 + 文档全面同步。**
+
+### Fixed
+- **fork 一键初始化后构建必炸**:setup.yml 的 landing 删除清单与 apply-template 的 `LANDING_PATHS` 双源漂移,漏删 `src/pages/landing/`(docs 路由)与 `public/images/showcase`,合并初始化 PR 后 build 因 unresolved import 失败;已对齐两处清单(fork 真模拟验证构建通过)。同修:setup.yml 输入改 env 传递防注入、`--force-with-lease` 幂等重跑。
+- **CJK 标签页生产 404**:`slugifyTag` 预编码非 ASCII 标签导致 Astro 写出字面量 `%E7…` 目录,站内链接(单编码)全部 404;改为返回原始标签,两种 URL 形态均可达。
+- **`anvil-ops submit` 在多语言仓库永远失败**:门禁 `check-i18n --strict` 与 wiki 回退设计冲突(locale 缺文章是合法状态),改非 strict 与 CI 同口径;手册/技能文件同步去「严格」表述。
+- **codes 页 FAQPage 结构化数据标记不可见内容**(Google 政策风险):同组 FAQ 现以原生 `<details>` 可见渲染(JSON-LD 与可见文案逐字一致,中英日三语)。
+- **英文回退页错误自宣 `hreflang="ja"`**:alternates 改为仅含真实翻译语言;语言切换器 UI 行为不变。
+- **sitemap noindex 过滤补 locale 前缀路径**:en 文章设 `noindex: true` 时其 `/<locale>/` 回退 URL 一并剔除(有真实翻译版本时由该版本自身 frontmatter 决定)。
+- **公告栏版本漂移**:PROJECT_VERSION 落后于已发版本(v1.16.0 发布时漏同步)。
+
+### Changed
+- **anvilwiki-ops 0.1.3(npm)**:MCP serverInfo 版本号改运行时读 package.json(原硬编码 0.1.0 已漂移);npm 包补 LICENSE;doctor 网络异常空 `reason:` 兜底;submit 非 strict(见上)。
+- **广告位预留高度**(Sticky 90px / InContent 250px / Sidebar 600px):开启 AdSense 后填充不再推挤页面(CLS),默认关闭契约不变。
+- **landing 截图 PNG→WebP**(273K→104K)+ hero 改 `eager`+`fetchpriority="high"`;`_headers` 补 `/images/*`、`/pagefind/*` 缓存规则。
+- **GitHub Actions 供应链加固**:3 个 action 全部钉 commit SHA;ci.yml 加 concurrency。
+- **`OG_LOCALE_MAP` 放宽为 `Record<string,string>`**:`new-locale` / `apply-template` 重写 locales 后不再 typecheck 报错;zh landing 输出 `og:locale=zh_CN`。
+
+### Docs
+- README 英文区补齐中文区 4 个章节(AI 技能表/平台对比/FAQ/技术栈+社区)、"Development 6"→7;AGENTS.md 测试清单与 anvil-ops 60 测试数同步、发布状态更新;deployment.md 死锚点修复;PRD §5 目录树/§5.1/§6.1 schema/§13.2 CI/§15.3 全部同步至当前现实。
 
 ## [1.16.0] — 2026-08-18
 

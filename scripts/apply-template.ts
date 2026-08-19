@@ -443,7 +443,7 @@ function rewriteUiTs(input: SkinInput): string {
   return updated;
 }
 
-function rewriteLocaleJson(input: SkinInput, locale: string, existing?: string): string {
+function rewriteLocaleJson(input: SkinInput, _locale: string, existing?: string): string {
   // Start from existing (if any) or a minimal skeleton; reset site/footer/nav/overview.
   let obj: Record<string, unknown> = {};
   if (existing) {
@@ -610,7 +610,7 @@ const LANDING_PATHS = [
   'src/pages/landing', // directory (docs hub + chapter routes)
   'src/pages/zh/landing.astro', // file — coexists with the src/pages/zh/landing/ dir
   'src/pages/zh/landing', // directory (zh docs routes)
-  'public/images/showcase', // directory (3 demo screenshots — landing Showcase only)
+  'public/images/showcase', // directory (demo screenshots + community site screenshots — landing only)
   'public/images/wechat-qr.jpg', // maintainer's personal QR — not needed by forks
 ];
 

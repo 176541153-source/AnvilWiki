@@ -262,135 +262,89 @@ Cloudflare Pages（连 GitHub 自动部署）
 
 ## 第 5 章 目录结构
 
+> 本章树为 v1.16.0 实际结构（早期版本存档见 git history）。日常开发的活地图以 `AGENTS.md` 为准。
+
 ```
 anvilwiki/
-├── astro.config.mjs              # ⭐ Astro 配置（output/i18n/integrations/site URL）
-├── content.config.ts             # ⭐ Content Collections schema 定义（Zod）
+├── astro.config.ts               # ⭐ Astro 配置（output/i18n/sitemap/lastmod+noindex 扫描/site URL）
+├── src/content.config.ts         # ⭐ Content Collections schema（Zod，wiki + handbook 双集合）
 ├── tailwind.config.mjs           # Tailwind 配置（扫描路径 + 主题色映射）
-├── tsconfig.json                 # TypeScript 严格模式
-├── package.json
-├── pnpm-lock.yaml
-├── wrangler.toml                 # Cloudflare Pages 配置（可选，用于 wrangler 本地预览）
+├── tsconfig.json                 # TypeScript 严格模式（tools/ 除外）
+├── package.json                  # private: true —— 模板与 fork 永不误发 npm
+├── pnpm-workspace.yaml           # allowBuilds（pnpm 11 写法）：esbuild + sharp
+├── wrangler.toml                 # ⚠️ Cloudflare Pages env 唯一真相源（存在时 dashboard env 被忽略）
 ├── .env.example                  # 环境变量模板（广告 key 等）
-├── .gitignore
-├── .nvmrc                        # Node 20 LTS
-├── README.md                     # ⭐ 项目门面（中英双语，新手指南）
-├── LICENSE                       # MIT
-├── CONTRIBUTING.md               # 贡献指南
-├── CHANGELOG.md                  # 版本变更
+├── .nvmrc                        # Node 22 LTS（pnpm 11 要求 ≥22.13）
+├── README.md                     # ⭐ 项目门面（中英双语）
+├── LICENSE / CONTRIBUTING.md / CHANGELOG.md
 ├── docs/
 │   ├── PRD.md                    # ⭐ 本文档
-│   ├── deployment.md             # Cloudflare Pages 部署详细指南
-│   ├── apply-template.md          # 配置参考手册（按文件组织）
-│   ├── content-format.md         # MDX 文章格式规范
-│   ├── seo.md                    # SEO 工程化说明
-│   └── migration-from-nextjs.md  # 从传统 Next.js 模板迁移指南
+│   ├── handbook/<locale>/<slug>.md  # ⭐ 站内文档中心源码（learn 8 章 + dev 7 章，en/zh；fork 保留）
+│   ├── deployment.md / apply-template.md / content-format.md
+│   ├── game-selection.md / staying-up-to-date.md / development.md / seo.md
+│   └── superpowers/              # specs + plans（架构决策存档）
 ├── public/
-│   ├── images/
-│   │   └── hero.webp             # Hero 图（WebP，og:image 绝对路径引用）
-│   ├── favicon.ico
-│   ├── favicon-16x16.png
-│   ├── favicon-32x32.png
-│   ├── apple-touch-icon.png
-│   ├── android-chrome-192x192.png
-│   ├── android-chrome-512x512.png
-│   ├── manifest.json             # PWA manifest
-│   ├── ads.txt                   # 广告授权（Google AdSense 等）
+│   ├── images/                   # hero.webp + showcase/（截图，fork 时 CLI/工作流清理）
+│   ├── favicon.ico / favicon-*.png / apple-touch-icon.png / android-chrome-*.png
+│   ├── manifest.json / ads.txt / _headers       # _headers：安全头 + 缓存策略
 │   └── robots.txt                # （构建时由 endpoint 生成，此文件可不存在）
 ├── src/
-│   ├── content/                  # ⭐ 内容层：MDX 文章
-│   │   ├── en/
-│   │   │   ├── bosses/
-│   │   │   │   └── emberfang.mdx     # → /bosses/emberfang
-│   │   │   └── guides/
-│   │   │       └── beginner.mdx  # → /guides/beginner
-│   │   └── ja/                   # 日文版（可选）
-│   │       └── bosses/
-│   │           └── emberfang.mdx     # → /ja/bosses/emberfang
-│   ├── pages/                    # ⭐ 代码层：路由
-│   │   ├── index.astro           # 根路径 → redirect 到默认语言首页
-│   │   ├── [locale]/             # 语言前缀路由（英文无前缀由 prefixDefaultLocale:false 实现）
-│   │   │   ├── index.astro       # 首页（JSON 驱动，v0.2：6 区块 / 4 explore 模块）
-│   │   │   ├── [...slug].astro   # ⭐ 统一路由：slug.length=1→列表页，>1→详情页
-│   │   │   ├── faq.astro         # 独立 FAQ 页（v0.2 从首页移出）
-│   │   │   ├── privacy-policy.astro
-│   │   │   ├── terms-of-service.astro
-│   │   │   ├── copyright.astro
-│   │   │   ├── about.astro
-│   │   │   └── 404.astro
-│   │   ├── robots.txt.ts         # 动态 robots（sitemap 由 @astrojs/sitemap 集成自动生成）
-│   │   └── robots.txt.ts         # 动态 robots
-│   ├── components/               # ⭐ 代码层：纯 Astro 组件
-│   │   ├── layout/
-│   │   │   ├── BaseLayout.astro  # <html>/<head>/global meta/Organization JSON-LD
-│   │   │   └── LocaleLayout.astro # [locale] 公共外壳（Header + Footer + 主内容）
-│   │   ├── header/
-│   │   │   ├── SiteHeader.astro  # 导航栏 + Logo + 主题切换 + 语言切换
-│   │   │   ├── LanguageSwitcher.astro
-│   │   │   └── ThemeToggle.astro # 5 行 JS 的暗色切换
-│   │   ├── footer/
-│   │   │   └── SiteFooter.astro  # 社交链接 + 法律链接
-│   │   ├── sidebar/
-│   │   │   └── WikiSidebar.astro # ⭐ 动态导航（getDynamicNavigation 等价物）
-│   │   ├── home/                 # 首页组件（v0.2：6 区块）
-│   │   │   ├── HomePage.astro        # ⭐ 首页主体（逐 section 渲染 home JSON）
-│   │   │   ├── VideoSection.astro    # YouTube 嵌入（仅 hero.videoId 非空时）
-│   │   │   ├── QuickStart.astro      # ⭐ v0.2 新增：4 个大图标快速入口卡片
-│   │   │   ├── TrendingNow.astro     # 横向滚动热门（v0.2 起首页不再调用，保留备用）
-│   │   │   ├── ExploreModules.astro  # ⭐ 4 模块容器，整卡可点击，按 displayType 分发
-│   │   │   ├── FaqSection.astro      # 原生 <details> 手风琴（v0.2 起由 /faq 独立页调用）
-│   │   │   └── modules/
-│   │   │       ├── CodeCards.astro   # displayType: badge-list
-│   │   │       ├── StepByStep.astro  # displayType: steps
-│   │   │       ├── TierGrid.astro    # displayType: ranked-grid
-│   │   │       └── CardList.astro    # displayType: labeled-cards
-│   │   ├── article/
-│   │   │   ├── ArticlePage.astro  # 详情页主体（H1 + MDX body + 面包屑 + 相关文章）
-│   │   │   └── ListPage.astro     # 列表页主体（分类标题 + 文章卡片列表）
-│   │   ├── seo/
-│   │   │   └── JsonLd.astro       # ⭐ 通用 JSON-LD 注入组件
-│   │   └── ads/
-│   │       ├── AdSenseSlot.astro  # ⭐ AdSense <ins> 广告单元（position prop → slot env）
-│   │       ├── StickyBanner.astro # Sticky 粘顶横幅 + 关闭按钮
-│   │       ├── SidebarAd.astro    # 桌面端 fixed 侧边栏
-│   │       └── InContentAd.astro  # 文章内广告位
-│   ├── config/                   # ⭐ 配置层
-│   │   ├── site.ts               # 站点信息（name/domain/social/gameMeta）
-│   │   └── navigation.ts         # ⭐ NAVIGATION_CONFIG 单一真相源
+│   ├── content/
+│   │   └── wiki/<locale>/<category>/*.mdx  # ⭐ 内容层（须在 wiki/ 子目录下，避免 legacy 自动集合）
+│   ├── pages/                    # ⭐ 代码层：路由（英文无前缀，其他语言 /<locale>/ 前缀）
+│   │   ├── index.astro           # 英文首页（inline 渲染，不 redirect —— redirect 会毁 SEO）
+│   │   ├── [...slug].astro       # ⭐ 英文统一路由：slug.length=1→列表页，>1→详情页
+│   │   ├── [locale]/
+│   │   │   ├── index.astro       # 非默认语言首页
+│   │   │   ├── [...slug].astro   # ⭐ 统一路由（含英文文章的 fallback 路径物化）
+│   │   │   ├── [legal].astro     # 法律页统一路由（一个文件渲染 5 个 legal 页）
+│   │   │   ├── faq.astro / recent.astro
+│   │   │   └── tags/index.astro + tags/[tag].astro
+│   │   ├── tags/index.astro + tags/[tag].astro
+│   │   ├── recent.astro / faq.astro / 404.astro
+│   │   ├── about / privacy-policy / terms-of-service / copyright / contact .astro
+│   │   ├── robots.txt.ts / rss.xml.ts / llms.txt.ts   # 动态 endpoints
+│   │   └── landing.astro + landing/docs/*             # 项目官网路由（fork 清理）
+│   │   └── zh/landing.astro + zh/landing/docs/*       # 中文官网路由（fork 清理）
+│   ├── components/               # ⭐ 代码层：纯 Astro 组件（零框架运行时）
+│   │   ├── layout/               # BaseLayout / LocaleLayout / LegalPage
+│   │   ├── header/               # SiteHeader / SearchButton(Pagefind) / LanguageSwitcher / ThemeToggle
+│   │   ├── footer/ sidebar/      # SiteFooter / WikiSidebar
+│   │   ├── home/                 # 首页 6 区块 + explore 模块（displayType 分发）
+│   │   ├── article/              # ArticlePage / ListPage / CodesTable / TagListPage / Comments 等
+│   │   ├── mdx/                  # ⭐ MDX 组件词汇表：CodeBlock/StatBar/Callout/Accordion/Video/AffiliateLink
+│   │   ├── seo/ ads/ video/      # JsonLd / AdSenseSlot×3 位 / LazyYouTube 门面
+│   │   └── landing/              # 项目官网组件（fork 清理）
+│   ├── config/                   # ⭐ 配置层（fork 改这里）
+│   │   ├── site.ts navigation.ts authors.ts project.ts
+│   │   └── landing.ts            # 项目官网文案 + COMMUNITY_SITES（fork 清理）
 │   ├── i18n/                     # ⭐ 代码层 + 配置层
-│   │   ├── routing.ts            # ⭐ 语言列表唯一源（locales/defaultLocale）
+│   │   ├── routing.ts            # ⭐ 语言列表唯一源（locales/defaultLocale/OG_LOCALE_MAP）
 │   │   ├── ui.ts                 # UI 文案加载器（deepMerge fallback）
-│   │   └── content.ts            # ⭐ 文章加载封装（getEntryWithFallback 等）
-│   ├── locales/                  # ⭐ 内容层：UI 文案
-│   │   ├── en.json               # home.* / nav / footer / 分类 overview*
-│   │   └── ja.json               # （deepMerge en，缺 key 自动回退）
-│   ├── styles/
-│   │   └── globals.css           # ⭐ --brand / --brand-light（4 行改主题色）
-│   └── lib/
-│       ├── content.ts            # Content Collections 查询封装
-│       ├── navigation.ts         # getDynamicNavigation()（扫描 content 生成分组）
-│       ├── seo.ts                # JSON-LD 构造函数（Organization/Article/Breadcrumb/ItemList）
-│       └── url.ts                # URL 构造（locale 前缀、slug 转换、绝对路径）
-├── scripts/
-│   ├── new-post.ts               # 脚手架：生成新文章 MDX 模板
-│   ├── check-sitemap.ts          # 检查 sitemap 所有 URL 返回 200
-
+│   │   └── content.ts            # ⭐ 文章加载封装（getEntryWithFallback：详情回退/列表不回退）
+│   ├── locales/                  # ⭐ 内容层：UI 文案 JSON（en/ja，deepMerge en 缺 key 回退）
+│   ├── styles/globals.css        # ⭐ --brand 4 变量（:root 4 行 + .dark 4 行）
+│   ├── assets/                   # 封面图等（走 astro:assets <Image> 管线，WebP+srcset）
+│   └── lib/                      # content.ts / content-utils.ts / navigation.ts / seo.ts / url.ts / handbook.ts
+├── scripts/                      # 9 个运维脚本（check-* ×5 + refresh-audit + new-locale/new-post + apply-template）
+├── tools/anvil-ops/              # ⭐ 独立 npm 包 anvilwiki-ops（CLI + MCP，自有 workspace）
+├── .agent/skills/                # ⭐ AI 内容技能（anvil-new-article / anvil-update-codes / anvil-refresh）
 └── .github/
     ├── workflows/
-    │   └── ci.yml                # PR 检查（lint + typecheck + build）
-    ├── ISSUE_TEMPLATE/
-    │   ├── bug-report.md
-    │   └── feature-request.md
+    │   ├── ci.yml                # 8 道门禁（lint/typecheck/test/check-config/build/check-content/check-links/check-i18n）
+    │   ├── content-pipeline.yml  # 每周新鲜度巡检 → issue
+    │   └── setup.yml             # fork 一键初始化（workflow_dispatch）
+    ├── ISSUE_TEMPLATE/ bug-report.md + feature-request.md
     └── PULL_REQUEST_TEMPLATE.md
 ```
 
 ### 5.1 目录设计要点
 
-1. **`src/content/` 而非根目录 `content/`**：Astro 5 的 Content Layer API 用 `glob({ base: './src/content' })` 显式指定，内容统一收敛在 `src/` 下，不污染项目根目录。
-2. **`content.config.ts` 在根目录**：Astro 5 的约定（取代老的 `src/content/config.ts`）。
+1. **内容在 `src/content/wiki/<locale>/`**：Astro 5 Content Layer API 用 `glob({ base: './src/content/wiki' })` 显式指定；直接放 `src/content/<locale>/` 会触发 legacy 自动集合（deprecation 警告），所以必须有 `wiki/` 这一层。
+2. **`src/content.config.ts`**：Astro 5 约定位置（根目录无副本）。
 3. **配置文件集中在 `src/config/`**：新手套用模板时只关注这一个目录 + `globals.css` + `locales/`。
-4. **`scripts/` 提供脚手架**：降低新手写 MDX 的门槛。
-5. **`docs/` 完整文档**：每个关注点一个文件，README 只做导航。
+4. **`scripts/` 提供脚手架与门禁**：降低写 MDX 门槛 + CI 可跑的检查脚本。
+5. **`docs/` 完整文档**：每个关注点一个文件，README 只做导航；handbook markdown 是站内文档中心的单一源。
 
 ---
 
@@ -398,36 +352,41 @@ anvilwiki/
 
 ### 6.1 MDX 文章 frontmatter schema
 
-定义在 `content.config.ts`：
+定义在 `src/content.config.ts`（完整字段表与写作规范见 `docs/content-format.md`）：
 
 ```typescript
-// content.config.ts
-import { defineCollection } from 'astro:content';
-import { glob } from 'astro/loaders';
-import { z } from 'astro/zod';
-
+// src/content.config.ts（节选，注释见源文件）
 const wiki = defineCollection({
-  loader: glob({ pattern: '**/*.mdx', base: './src/content' }),
-  schema: z.object({
-    // 必填
-    title: z.string().max(70),              // SEO title，建议 50-60 字符
-    description: z.string().min(50).max(160), // meta description，155 字符最佳
-    category: z.string(),                   // 内容类型 slug，如 'bosses'/'guides'（须在 navigation.ts 定义）
-    date: z.coerce.date(),                  // 发布日期
-    // 可选
-    lastModified: z.coerce.date().optional(), // 最后修改日期（影响 Article JSON-LD dateModified）
-    image: z.string().optional(),           // 封面图（相对 /public 或绝对 URL），缺省用 hero.webp
-    tags: z.array(z.string()).optional(),   // 标签（用于相关文章推荐）
-    noindex: z.boolean().default(false),    // 是否禁止索引
-  }),
+  loader: glob({ pattern: '**/*.mdx', base: './src/content/wiki' }),
+  schema: ({ image }) =>
+    z.object({
+      // 必填
+      title: z.string().max(80),                 // SEO title，建议 50-60 字符
+      description: z.string().min(40).max(165),  // meta description，155 字符最佳
+      category: z.string(),                      // 内容类型 slug，如 'bosses'/'guides'（须在 navigation.ts 定义）
+      date: z.coerce.date(),                     // 发布日期
+      // 可选
+      lastModified: z.coerce.date().optional(),  // 最后修改日期（影响 Article JSON-LD dateModified）
+      image: image().optional(),                 // 封面图（相对 MDX 文件路径，走 astro:assets 管线），缺省用 hero.webp
+      tags: z.array(z.string()).default([]),     // 标签（相关文章推荐 + 标签聚合页）
+      noindex: z.boolean().default(false),       // 是否禁止索引（同时从 sitemap/rss/llms.txt 剔除）
+      draft: z.boolean().default(false),         // dev 可见、生产构建排除
+      gameVersion: z.string().max(20).optional(),// 版本徽章（快节奏游戏的保鲜/E-E-A-T 信号）
+      summary: z.string().max(200).optional(),   // Quick Answer 卡（AI Overviews / 精选摘要候选）
+      author: z.string().optional(),             // 作者名（回退 site.defaultAuthor）
+      boss: z.object({ /* hp/weakness/resistant/location/recommendedLevel */ }).optional(), // Boss 数据卡
+      videos: z.array(z.string()).optional(),    // YouTube ID 列表（点击才加载的懒嵌入 + VideoObject）
+      gallery: z.array(z.object({ image: image(), caption: z.string().max(200).optional(), alt: z.string().max(200).optional() })).default([]), // 画廊 + 灯箱
+      codes: z.array(z.object({ code: z.string().min(1), reward: z.string().optional(), status: z.enum(['active','expired']).default('active'), expiryDate: z.string().max(40).optional(), source: z.string().optional() })).optional(), // 兑换码表
+    }),
 });
 
-export const collections = { wiki };
+export const collections = { wiki, handbook };
 ```
 
 **Content Collections 的优势**：
 - YAML frontmatter + Zod schema，**构建时校验**，字段缺失/类型错误立即 fail build。
-- 类型安全的 entry（`{ id, data, body, render() }`），组件 props 自动推断，无需手动 cast。
+- 类型安全的 entry（`{ id, data, body }`；Astro 5 Content Layer API 中渲染用独立 `render(entry)` 函数，`entry.render()` 方法已不存在——见 AGENTS.md 踩坑清单）。
 - frontmatter 与正文分离，MDX 作者只关心内容，字段规范由 schema 强约束。
 
 ### 6.2 文章示例
@@ -1224,25 +1183,37 @@ pages_build_output_dir = "dist"
 
 ### 13.2 CI 工作流（`.github/workflows/ci.yml`）
 
+触发：push 到 main + PR 到 main；Node 版本读 `.nvmrc`（22）；8 道门禁：
+
 ```yaml
 name: CI
-on: [pull_request]
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout        # 实际钉 commit SHA（供应链加固）
+      - uses: pnpm/action-setup
+      - uses: actions/setup-node
         with:
-          node-version: 20
+          node-version-file: .nvmrc   # 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
-      - run: pnpm typecheck       # astro check
-      - run: pnpm test             # vitest
-      - run: pnpm build            # 含 Content schema 校验
+      - run: pnpm typecheck            # astro check
+      - run: pnpm test                 # vitest（6 个套件）
+      - run: pnpm check-config         # nav/locale 三处一致性 + 域名门禁
+      - run: pnpm build                # 含 Content schema 校验；SITE_URL 由工作流 env 注入（vars.SITE_URL，缺省回退 demo 域名）
+      - run: pnpm check-content        # 内容 lint（无 H1/alt/链接斜杠）
+      - run: pnpm check-links          # dist 内链审计
+      - run: pnpm check-i18n           # 翻译覆盖率报告（非 strict，与 anvil-ops submit 同口径）
 ```
+
+另有两条工作流：`content-pipeline.yml`（每周新鲜度巡检 → issue，仅上游仓库运行）与 `setup.yml`（fork 一键初始化，workflow_dispatch）。
 
 ### 13.3 关键测试用例
 
@@ -1394,9 +1365,9 @@ describe('sitemap', () => {
 ### 15.3 Demo 站策略
 
 - **官方 demo**：`anvilwiki.pages.dev`，用虚构游戏 "Anvil Quest" 做一个完整 demo 站。
-- **源码**：`examples/anvil-quest/` 子目录（或独立分支）。
+- **源码**：demo 内容就在本仓库内（`src/content/wiki/`，英文在根、日文带前缀）——fork 后由 `pnpm apply-template` / setup 工作流整体替换。
 - **目的**：让用户直观看到 AnvilWiki 长什么样、性能如何。
-- **dogfooding**：AnvilWiki 的文档站（`docs.anvilwiki.dev`）也用 AnvilWiki 自身构建，验证模板能力。
+- **文档中心**：站内 `/landing/docs` 双手册（learn 8 章 + dev 7 章，中英），markdown 源在 `docs/handbook/`，fork 保留。
 
 ### 15.4 社区运营
 

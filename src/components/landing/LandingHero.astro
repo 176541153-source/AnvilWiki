@@ -61,14 +61,15 @@ const { t } = Astro.props;
       <div class="mt-7 max-w-lg">
         <div class="flex items-center gap-2 rounded-t-lg border border-b-0 border-border bg-muted px-4 py-2">
           <Icon name="lucide:terminal" class="h-4 w-4 text-muted-foreground" />
-          <span class="text-xs font-medium text-muted-foreground">Terminal</span>
+          <span class="text-xs font-medium text-muted-foreground">{t.hero.terminalLabel}</span>
           <button
             id="copy-install"
             class="ml-auto inline-flex items-center gap-1 text-xs text-muted-foreground transition hover:text-foreground"
-            aria-label="Copy install command"
+            aria-label={t.hero.copyLabel}
+            data-copied-label={t.hero.copiedLabel}
           >
             <Icon name="lucide:copy" class="h-3.5 w-3.5" />
-            <span>Copy</span>
+            <span>{t.hero.copyLabel}</span>
           </button>
         </div>
         <pre class="overflow-x-auto rounded-b-lg border border-border bg-card p-4 text-sm leading-relaxed text-foreground"><code id="install-code">{t.hero.installCommand}</code></pre>
@@ -88,12 +89,15 @@ const { t } = Astro.props;
           </span>
         </div>
         <a href={t.hero.tertiaryCta.href}>
+          {/* Above-fold LCP candidate on lg+ viewports — eager + high
+              priority; WebP keeps it ~23K. */}
           <img
-            src="/images/showcase/demo-home.png"
-            alt="AnvilWiki demo homepage — game wiki built with the template"
+            src="/images/showcase/demo-home.webp"
+            alt={t.hero.screenshotAlt}
             width="1280"
             height="800"
-            loading="lazy"
+            loading="eager"
+            fetchpriority="high"
             decoding="async"
             class="w-full"
           />
@@ -116,7 +120,7 @@ const { t } = Astro.props;
         const label = copyBtn.querySelector('span');
         if (label) {
           const original = label.textContent;
-          label.textContent = 'Copied!';
+          label.textContent = copyBtn.dataset.copiedLabel || 'Copied!';
           setTimeout(() => {
             label.textContent = original;
           }, 2000);

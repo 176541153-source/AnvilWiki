@@ -1,4 +1,5 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { readFileSync } from 'node:fs';
 import { z } from 'zod';
 import { runDoctor, formatDoctor } from '../core/doctor.js';
 import { collectMetrics, formatMetrics } from '../core/metrics.js';
@@ -22,8 +23,14 @@ function errText(e: unknown): string {
   return e instanceof OpsError ? `Error: ${e.message}\nFix: ${e.fix}` : `Error: ${String(e)}`;
 }
 
+// Read version from package.json at startup so it can never drift from the
+// published package (works from both src/ via vitest and dist/ via node).
+const pkgVersion = JSON.parse(
+  readFileSync(new URL('../../package.json', import.meta.url), 'utf8'),
+).version as string;
+
 export function buildServer(opts: BuildServerOpts): McpServer {
-  const server = new McpServer({ name: 'anvilwiki-ops', version: '0.1.0' });
+  const server = new McpServer({ name: 'anvilwiki-ops', version: pkgVersion });
 
   server.registerTool(
     'doctor',
@@ -137,7 +144,7 @@ export function buildServer(opts: BuildServerOpts): McpServer {
     {
       title: 'anvil-ops submit_pr',
       description:
-        'Publish workflow changes: validates (check-content + check-i18n --strict + build), then creates branch ops/submit-*, commits, pushes, and opens a PR via gh. REQUIRES uncommitted changes in the worktree, gh CLI, and an origin remote. Never pushes main. Validation failure = nothing committed.',
+        'Publish workflow changes: validates (check-content + check-i18n + build), then creates branch ops/submit-*, commits, pushes, and opens a PR via gh. REQUIRES uncommitted changes in the worktree, gh CLI, and an origin remote. Never pushes main. Validation failure = nothing committed.',
       inputSchema: {
         title: z.string().optional().describe('PR / commit title'),
         base: z.string().optional().describe('PR base branch (default main)'),

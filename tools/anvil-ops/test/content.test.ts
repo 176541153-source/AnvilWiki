@@ -14,12 +14,12 @@ function fakeRun(results: Record<string, { status: number | null; stdout: string
 }
 
 describe('runValidation', () => {
-  it('runs check-content, check-i18n --strict, build in order', () => {
+  it('runs check-content, check-i18n (non-strict), build in order', () => {
     const run = fakeRun({});
     const results = runValidation({ cwd: '/repo', run });
     expect((run as unknown as { calls: string[][] }).calls.map((c) => c.join(' '))).toEqual([
       'pnpm check-content',
-      'pnpm check-i18n --strict',
+      'pnpm check-i18n',
       'pnpm build',
     ]);
     expect(results.map((r) => r.name)).toEqual(['check-content', 'check-i18n', 'build']);

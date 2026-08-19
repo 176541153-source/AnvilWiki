@@ -182,15 +182,45 @@ Complete beginner? Start from [Chapter 2 of the Learning Manual](https://anvilwi
 
 ### Key Features
 
-- 📚 **Two beginner manuals** (Learning 8 chapters / Development 6, bilingual) with 13 copy-paste AI prompts
-- 🤖 **AI-native workflow**: agent skills ship inside the repo — say "write a boss guide from these notes", get a build-check-passing page
+- 📚 **Two beginner manuals** (Learning 8 chapters / Development 7, bilingual) with 13 copy-paste AI prompts
+- 🤖 **AI-native workflow**: agent skills ship inside the repo — say "write a boss guide from these notes", get a build-check-passing page; after launch, the `anvilwiki-ops` toolkit (npx + MCP) has your AI pull GSC/Cloudflare data, rank SEO actions, and ship content through validated PRs
 - 💰 **100% your ad revenue**: AdSense slots (3 positions, env-gated, off by default), sponsor card, affiliate component
 - 🔍 **SEO engineering**: sitemap (lastmod) / JSON-LD suite / hreflang / Quick Answer blocks / llms.txt — all automatic
 - ⚡ **Fast**: zero-JS-first Astro, Lighthouse 4×100 out of the box
 - 🆓 **Free forever**: Cloudflare Pages, unlimited bandwidth, global CDN, SSL
 - 🌍 **i18n built in**: English at root, prefixed locales, English fallback so URLs never 404
+- 🎮 **Wiki-grade presentation**: boss stat cards, tap-to-copy codes, TOC scroll-spy, gallery lightbox, Giscus comments (off by default)
+
+### Generate content by talking to your AI (no scripts needed)
+
+After forking, open the repo in ZCode / Claude Code / Codex / Cursor and just talk. Agents auto-load the content spec shipped in the repo and self-check with `pnpm check-content && pnpm build` after generating. Three skills are built in:
+
+| Skill | What it does |
+|---|---|
+| `anvil-new-article` | Any source material (notes / video content / raw data) → spec-compliant MDX article |
+| `anvil-update-codes` | New / expired codes → update the codes page across locales |
+| `anvil-refresh` | Freshness audit → prioritized "what to update" list |
+
+The full prompt library (game selection, page generation, translation, SEO audits — 13 templates) lives in the [Learning Manual](https://anvilwiki.pages.dev/landing/docs/learn); copy-paste ready.
 
 Repository reference docs: [game-selection](docs/game-selection.md) · [apply-template](docs/apply-template.md) · [content-format](docs/content-format.md) · [deployment](docs/deployment.md) · [staying-up-to-date](docs/staying-up-to-date.md) · [development](docs/development.md) · [full index](docs/README.md)
+
+### Why not Fandom / a hand-rolled Next.js site?
+
+| | AnvilWiki | Fandom-style platforms | DIY Next.js |
+| --- | --- | --- | --- |
+| Ad revenue | **100% yours** (AdSense slots built in) | Platform takes a cut | Yours, but you wire it up |
+| Monthly cost | **$0** (Cloudflare Pages free unlimited bandwidth) | Free (at the cost of control) | Vercel free tier is limited |
+| Lighthouse | **4×100 out of the box** | Platform decides | Weeks of tuning |
+| AI page generation | **Skills ship with the repo — talk to generate** | None | Build it yourself |
+| Entry barrier | **8-chapter zero-to-hero manual** | Low but constrained | High |
+
+### FAQ
+
+- **What does it cost?** Hosting $0; the only required spend is a domain (a few dollars a year — AdSense approval needs one).
+- **Can I do this without coding?** Yes. The Learning Manual is written for complete beginners with "what you'll see" on every step; all coding goes to your AI assistant.
+- **How fast will revenue come?** The golden window is 2–8 weeks after a game breaks out; zero income in the first 1–2 weeks is normal — Chapter 8 covers managing expectations.
+- **Will upstream updates overwrite my site?** No. The three-layer separation keeps your game config and articles intact when merging upstream (see [docs/staying-up-to-date.md](docs/staying-up-to-date.md)).
 
 ### Community Showcase
 
@@ -207,6 +237,10 @@ Built a site? Open a PR appending an entry to `COMMUNITY_SITES` in `src/config/l
 ### Community & License
 
 MIT License — see [LICENSE](LICENSE).
+
+Community channels: see the footer of the [project landing page](https://anvilwiki.pages.dev/landing).
+
+Tech stack: Astro 5 (static output) + Tailwind CSS 3 + MDX 4 + astro-icon/lucide + Content Layer API (Zod) + Pagefind search + pnpm 11 / Node 22.
 
 ---
 

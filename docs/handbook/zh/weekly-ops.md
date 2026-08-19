@@ -73,7 +73,7 @@ pnpm refresh-audit
 
 ```bash
 # 1. 有多语言站才跑:看翻译缺了多少
-pnpm check-i18n --strict
+pnpm check-i18n
 
 # 2. 把模板作者的更新搬进来(第一次用,三行都要跑)
 git remote add upstream https://github.com/PNGTRID/AnvilWiki.git

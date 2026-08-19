@@ -84,9 +84,12 @@ export function slugifyTag(tag: string): string {
     .replace(/[\s_]+/g, '-')
     .replace(/[^a-z0-9-]/g, '');
   // Non-ASCII tags (CJK etc.) would collapse to '' — which would route all
-  // of them to the same /tags/ page. Fall back to percent-encoding so every
-  // tag keeps a unique, buildable URL segment.
-  return slug || encodeURIComponent(tag.trim());
+  // of them to the same /tags/ page. Fall back to the raw tag: Astro writes
+  // params to disk verbatim, so a percent-encoded value here becomes a
+  // literal '%E7...' directory that only serves at the double-encoded URL,
+  // while every in-page link points at the single-encoded form (404). The
+  // raw tag builds a raw-named directory that both URL forms resolve to.
+  return slug || tag.trim();
 }
 
 /** Extract locale from a URL pathname. Returns default locale if none found. */

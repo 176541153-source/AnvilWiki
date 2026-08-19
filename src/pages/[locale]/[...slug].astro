@@ -96,21 +96,24 @@ if (view === 'not-found') {
   return new Response('Not Found', { status: 404 });
 }
 
-// Build hreflang alternates (same URL shape, varying locale). List pages are
-// built for every locale; article alternates cover only locales whose URL is
-// actually built — localesForEntry (real MDX versions) plus the current locale
-// (fallback pages like this /ja/<en-article> URL exist as real pages). A
-// ja-only article must not emit hreflang="en" pointing at a 404.
+// Build hreflang alternates (same URL shape, varying locale). hreflang must
+// match the page's actual CONTENT language: on fallback pages (English
+// content served at a /ja/ URL) declaring hreflang="ja" for this URL is
+// invalid, so article alternates cover only locales with a real translated
+// MDX version (localesForEntry). A ja-only article must not emit
+// hreflang="en" pointing at a 404 either.
 const entryLocales = view === 'article' ? await localesForEntry(category, articleSlug) : [];
-const altLocales =
-  view === 'list' ? locales : Array.from(new Set([locale, ...entryLocales]));
 const alternates =
   view === 'list'
     ? languageAlternates((loc) => listPath(category, loc), locales)
-    : languageAlternates((loc) => detailPath(category, articleSlug, loc), altLocales);
+    : languageAlternates((loc) => detailPath(category, articleSlug, loc), entryLocales);
+// The language switcher is UI, not a language claim — fallback URLs are real
+// reachable pages, so it offers the union (current locale + translated ones).
+const switcherLocales =
+  view === 'list' ? locales : Array.from(new Set([locale, ...entryLocales]));
 ---
 
 {view === 'list' && <ListPage locale={locale} category={category} alternates={alternates} />}
 {view === 'article' && resolved && (
-  <ArticlePage locale={locale} resolved={resolved} alternates={alternates} availableLocales={altLocales} />
+  <ArticlePage locale={locale} resolved={resolved} alternates={alternates} availableLocales={switcherLocales} />
 )}

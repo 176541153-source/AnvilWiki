@@ -53,8 +53,10 @@ const heading = shared.commentsHeading ?? 'Comments';
     <h2 class="text-xl font-bold">{heading}</h2>
     <div class="giscus mt-4" />
 
-    {/* Giscus widget — client.js forwards data-loading=lazy to the iframe */}
+    {/* Giscus widget — client.js forwards data-loading=lazy to the iframe.
+        is:inline: external script with data-* attrs, must render as-is. */}
     <script
+      is:inline
       src="https://giscus.app/client.js"
       data-repo={repo}
       data-repo-id={repoId}

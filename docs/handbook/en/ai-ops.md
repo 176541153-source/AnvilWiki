@@ -90,7 +90,7 @@ Then tell your AI (copy-paste ready):
 
 ## The safety line: why it can't touch your live site
 
-The tool's write path is exactly one: **validate (check-content + check-i18n strict + full build) → new branch → commit → push → open a PR**. Failed validation stops everything — nothing is committed. It has no ability to push main; the merge button stays yours. Think of it as an intern who puts a drafted contract in the to-sign tray — whether to sign is entirely up to you.
+The tool's write path is exactly one: **validate (check-content + check-i18n + full build) → new branch → commit → push → open a PR**. Failed validation stops everything — nothing is committed. It has no ability to push main; the merge button stays yours. Think of it as an intern who puts a drafted contract in the to-sign tray — whether to sign is entirely up to you.
 
 ## If you get stuck
 

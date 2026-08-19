@@ -81,25 +81,25 @@ describe('slugifyTag (CJK / non-ASCII fallback)', () => {
     expect(slugifyTag('Fire_Warden')).toBe('fire-warden');
   });
 
-  it('percent-encodes CJK tags instead of collapsing to empty', () => {
+  it('returns CJK tags raw instead of collapsing to empty', () => {
     // The ASCII branch strips every CJK char → '' → all such tags would
-    // collide on /tags/. The fallback keeps them unique and buildable.
+    // collide on /tags/. The raw fallback keeps them unique; Astro writes
+    // params to disk verbatim, so the built directory is the raw tag and
+    // browser-encoded links (/tags/%E7%84%B0…) resolve to it.
     const zh = slugifyTag('焰牙');
-    expect(zh).toBe(encodeURIComponent('焰牙'));
+    expect(zh).toBe('焰牙');
     expect(zh).not.toBe('');
-    expect(zh.startsWith('%')).toBe(true);
   });
 
   it('keeps two different CJK tags distinguishable', () => {
     expect(slugifyTag('焰牙')).not.toBe(slugifyTag('风暴召唤者'));
   });
 
-  it('keeps pure-symbol tags non-empty (unreserved marks stay, others encode)', () => {
-    // encodeURIComponent leaves unreserved marks like '!' as-is…
+  it('keeps pure-symbol tags non-empty', () => {
+    // Whatever the exact characters, the slug is stable and distinct from ''
+    // — the property the fallback exists to guarantee.
     expect(slugifyTag('!!!')).toBe('!!!');
-    // …and escapes others ('?' → %3F). Either way the slug is stable and
-    // distinct from '' — the property the fallback exists to guarantee.
-    expect(slugifyTag('  ???  ')).toBe('%3F%3F%3F');
+    expect(slugifyTag('  ???  ')).toBe('???');
   });
 });
 

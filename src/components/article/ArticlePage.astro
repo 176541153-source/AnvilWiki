@@ -67,6 +67,14 @@ const coverUrl = entry.data.image
 
 const related = await getRelatedEntries(entry, locale, 3);
 
+// Visible codes FAQ — same strings feed faqPageJsonLd (marking up invisible
+// content violates Google's structured-data policy).
+const codesFaqItems =
+  entry.data.codes && entry.data.codes.length > 0
+    ? ((shared.codesFaq as Array<{ question: string; answer: string }>) ?? [])
+    : [];
+const codesFaqTitle = shared.codesFaqTitle ?? 'Codes FAQ';
+
 // Videos inlined in the MDX body (via <Video id="..."/>) skip the bottom
 // fallback — the ID appearing in the raw body is the inline marker. Videos
 // only registered in frontmatter render here as before (backward compatible).
@@ -282,6 +290,27 @@ const jsonLd = [
         copiedText={shared.copied}
         labels={(shared.codesTable as Record<string, string>) ?? { active: 'Active Codes', expired: 'Expired Codes', reward: 'Reward', expires: 'Expires' }}
       />
+    )}
+
+    {/* Visible codes FAQ — keeps the FAQPage structured data honest. Native
+        <details>, zero JS. */}
+    {codesFaqItems.length > 0 && (
+      <section class="mt-8 not-prose" aria-label={codesFaqTitle}>
+        <h2 class="text-xl font-bold">{codesFaqTitle}</h2>
+        <div class="mt-4 space-y-2">
+          {codesFaqItems.map((item) => (
+            <details class="group rounded-lg border border-border bg-card">
+              <summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 text-sm font-semibold text-foreground [&::-webkit-details-marker]:hidden">
+                {item.question}
+                <Icon name="lucide:chevron-down" class="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" />
+              </summary>
+              <div class="border-t border-border px-4 py-3 text-sm text-foreground">
+                {item.answer}
+              </div>
+            </details>
+          ))}
+        </div>
+      </section>
     )}
 
     {/* Mobile TOC (collapsible) — desktop TOC is sticky in the sidebar area */}

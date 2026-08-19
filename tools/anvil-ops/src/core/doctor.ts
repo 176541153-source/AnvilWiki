@@ -92,7 +92,7 @@ export async function runDoctor(opts: { cwd: string; deps?: DoctorDeps }): Promi
       checks.push({
         name: 'gsc-access',
         ok: false,
-        detail: String(e),
+        detail: e instanceof Error ? e.message || e.name : String(e) || 'unknown error',
         fix: 'Check the service account key and property sharing; re-run with a fresh key from Google Cloud IAM.',
       });
     }
@@ -115,7 +115,11 @@ export async function runDoctor(opts: { cwd: string; deps?: DoctorDeps }): Promi
       await q({ apiToken: env.cfApiToken, accountId: env.cfAccountId, siteTag: beacon, days: 1 });
       checks.push({ name: 'cf-access', ok: true, detail: 'GraphQL probe succeeded' });
     } catch (e) {
-      const msg = e instanceof OpsError ? `${e.message} ${e.fix}` : String(e);
+      const msg = e instanceof OpsError
+        ? `${e.message} ${e.fix}`
+        : e instanceof Error
+          ? e.message || e.name
+          : String(e) || 'unknown error';
       checks.push({
         name: 'cf-access',
         ok: false,

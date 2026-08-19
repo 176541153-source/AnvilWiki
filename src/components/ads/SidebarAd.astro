@@ -15,7 +15,9 @@ const show = !!(client && slot);
 {
   show && (
     <aside class="hidden w-[160px] shrink-0 lg:block">
-      <div class="sticky top-20 space-y-4">
+      {/* min-h reserves the 160×600 half-page height — the fill otherwise
+          grows the sticky column and shifts the page footer (CLS). */}
+      <div class="sticky top-20 min-h-[600px] space-y-4">
         <AdSenseSlot position="sidebar" />
       </div>
     </aside>

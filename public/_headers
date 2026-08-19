@@ -12,3 +12,13 @@
 # Returning visitors get instant repeat loads (helps LCP on revisit).
 /_astro/*
   Cache-Control: public, max-age=31536000, immutable
+
+# Static images change only on deploy and have no content hash — one day
+# plus stale-while-revalidate keeps repeat views fast without serving
+# outdated screenshots after an update.
+/images/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+
+# Pagefind search index + UI is rebuilt per deploy — same un-hashed story.
+/pagefind/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800

@@ -11,7 +11,7 @@
  */
 
 /** Keep in sync with package.json "version" (used by the announcement bar). */
-export const PROJECT_VERSION = '1.15.0';
+export const PROJECT_VERSION = '1.16.1';
 
 export type LandingLocale = 'en' | 'zh';
 
@@ -34,6 +34,10 @@ export interface LandingContent {
     tertiaryCta: { label: string; href: string };
     installCommand: string;
     screenshotCaption: string;
+    screenshotAlt: string;
+    terminalLabel: string;
+    copyLabel: string;
+    copiedLabel: string;
   };
   socialProof: {
     lighthouse: { label: string; score: number }[];
@@ -53,6 +57,8 @@ export interface LandingContent {
     cta: { label: string; href: string };
     browserUrl: string;
     mobileCaption: string;
+    articleAlt: string;
+    mobileAlt: string;
   };
   builtWith: {
     title: string;
@@ -177,7 +183,7 @@ const en: LandingContent = {
   description:
     'An open-source game wiki template with an AI-native content workflow: pick the right game, generate pages by talking to your AI tool, codes pages stay fresh on autopilot. Lighthouse 4×100, free on Cloudflare, 100% ad revenue yours.',
   announcement: {
-    text: `v${PROJECT_VERSION} shipped — anvilwiki-ops: an ops CLI + MCP on npm. AI pulls GSC/Cloudflare data, ranks SEO actions, and ships content through validated PRs. Dev manual chapter 7 added.`,
+    text: `v${PROJECT_VERSION} shipped — expert-panel audit: 30+ fixes hardening the fork setup path, CJK tag URLs, FAQ rich results, and ad-slot layout stability.`,
     href: RELEASES,
   },
   hero: {
@@ -192,6 +198,10 @@ const en: LandingContent = {
 cd anvilwiki
 pnpm install && pnpm dev`,
     screenshotCaption: 'The live demo — a complete wiki for the fictional game "Anvil Quest"',
+    screenshotAlt: 'AnvilWiki demo homepage — game wiki built with the template',
+    terminalLabel: 'Terminal',
+    copyLabel: 'Copy',
+    copiedLabel: 'Copied!',
   },
   socialProof: {
     lighthouse: [
@@ -292,6 +302,8 @@ pnpm install && pnpm dev`,
     cta: { label: 'View live demo →', href: '/' },
     browserUrl: 'anvilwiki.pages.dev/bosses/emberfang',
     mobileCaption: 'Mobile-first: clean first screen, scrollable tables, tap-to-copy codes.',
+    articleAlt: 'Boss guide article — Quick Answer card and structured Boss Overview data card',
+    mobileAlt: 'Mobile view of the demo homepage',
   },
   builtWith: {
     title: 'Built with AnvilWiki',
@@ -457,7 +469,7 @@ const zh: LandingContent = {
   description:
     '开源游戏 wiki 模板 + AI 原生内容工作流:选对游戏、和 AI 对话就能产页、codes 页自动保鲜。Lighthouse 4×100、Cloudflare 免费部署、广告收入 100% 归你。',
   announcement: {
-    text: `v${PROJECT_VERSION} 发布 —— anvilwiki-ops 运营 CLI + MCP 上架 npm:AI 拉取 GSC/Cloudflare 数据、给出优化清单、内容走校验 PR 上线;开发手册新增第 7 章。`,
+    text: `v${PROJECT_VERSION} 发布 —— 专家团审计修复批:30+ 项修复,加固 fork 初始化主路径、CJK 标签链接、FAQ 富结果合规与广告位布局稳定性。`,
     href: RELEASES,
   },
   hero: {
@@ -472,6 +484,10 @@ const zh: LandingContent = {
 cd anvilwiki
 pnpm install && pnpm dev`,
     screenshotCaption: '在线 Demo —— 虚构游戏「Anvil Quest」的完整 wiki',
+    screenshotAlt: 'AnvilWiki 演示站首页 —— 用模板搭建的游戏 wiki',
+    terminalLabel: '终端',
+    copyLabel: '复制',
+    copiedLabel: '已复制!',
   },
   socialProof: {
     lighthouse: [
@@ -571,6 +587,8 @@ pnpm install && pnpm dev`,
     cta: { label: '查看在线 Demo →', href: '/' },
     browserUrl: 'anvilwiki.pages.dev/bosses/emberfang',
     mobileCaption: '移动优先:首屏干净、表格横滑、兑换码点击即复制。',
+    articleAlt: 'Boss 攻略文章页 —— 快速答案卡片 + 结构化 Boss 数据卡',
+    mobileAlt: '演示站首页的移动端视图',
   },
   builtWith: {
     title: '用 AnvilWiki 建成的站',

@@ -71,16 +71,18 @@ if (view === 'not-found') {
 // Build hreflang alternates for this page.
 // List page: /<category> for default locale, /<locale>/<category> otherwise —
 // list pages are built for every locale, so all locales are valid alternates.
-// Article page: locales whose URL is actually built (localesForEntry, plus the
-// current locale — fallback pages like /ja/<en-article> exist as real URLs)
-// — e.g. a ja-only article must not emit hreflang="en" pointing at a 404.
+// Article page: hreflang must match the page's content language, so only
+// locales with a real translated MDX version (localesForEntry) are declared
+// — e.g. a ja-only article must not emit hreflang="en" pointing at a 404,
+// and an English page never falsely claims another language. (This route is
+// the default locale, so no fallback case exists here.)
 const entryLocales = view === 'article' ? await localesForEntry(category, articleSlug) : [];
 const altLocales =
   view === 'list' ? locales : Array.from(new Set([locale, ...entryLocales]));
 const alternates =
   view === 'list'
     ? languageAlternates((loc) => listPath(category, loc), locales)
-    : languageAlternates((loc) => detailPath(category, articleSlug, loc), altLocales);
+    : languageAlternates((loc) => detailPath(category, articleSlug, loc), entryLocales);
 ---
 
 {view === 'list' && <ListPage locale={locale} category={category} alternates={alternates} />}

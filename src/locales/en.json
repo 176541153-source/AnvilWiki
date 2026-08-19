@@ -104,6 +104,8 @@
     "open": "Open",
     "playVideo": "Play video",
     "closeAd": "Close ad",
+    "adLabel": "Advertisement",
+    "codesFaqTitle": "Codes FAQ",
     "toggleTheme": "Toggle theme",
     "fallbackNotice": "English fallback",
     "copyQuickAnswer": "Copy quick answer",

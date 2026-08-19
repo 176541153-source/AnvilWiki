@@ -36,11 +36,15 @@ function runCheck(name: string, args: string[], opts: { cwd: string; run?: RunFn
 
 // Runs to completion without short-circuiting: audit reports want the full
 // picture, and submit decides on all().ok afterwards.
+// check-i18n runs NON-strict on purpose: the wiki's fallback design means a
+// locale may legitimately have untranslated articles (detail pages fall back
+// to English), so --strict would fail every multi-locale repo — CI runs the
+// same non-strict report.
 export function runValidation(opts: { cwd: string; run?: RunFn }): CheckResult[] {
   const run = opts.run ?? defaultRun;
   return [
     runCheck('check-content', ['check-content'], opts),
-    runCheck('check-i18n', ['check-i18n', '--strict'], opts),
+    runCheck('check-i18n', ['check-i18n'], opts),
     runCheck('build', ['build'], opts),
   ];
 }

@@ -8,7 +8,7 @@ AnvilWiki is an **open-source (MIT) game wiki site template** built with **Astro
 
 Goal: let beginners deploy a game wiki site to Cloudflare Pages for free (unlimited bandwidth) in ~30 minutes, with strong SEO, i18n, and ad-monetization built in.
 
-**Status (as of 2026-08-18)**: v1.16.0 released — community showcase (3 real sites, §15.6). Prior: v1.15.0 — ops toolkit `anvilwiki-ops` 0.1.1 published to npm (see Ops Toolkit section below) + full template + AI content skills (`.agent/skills/`) + in-site docs center (`/landing/docs`: Learning manual 8 chapters + Development manual 7 chapters, zh/en, beginner-rewritten; markdown source `docs/handbook/`, kept for forks) + 9 scripts + 3 CI workflows. Live demo: anvilwiki.pages.dev (Lighthouse 4×100).
+**Status (as of 2026-08-19)**: v1.16.1 released — expert-panel audit batch (fork-setup build break, CJK tag 404s, FAQ rich-results compliance, hreflang, ad-slot CLS, docs sync; anvilwiki-ops 0.1.3 on npm). Prior: v1.16.0 — community showcase (3 real sites, §15.6); v1.15.0 — ops toolkit `anvilwiki-ops` published to npm (see Ops Toolkit section below) + full template + AI content skills (`.agent/skills/`) + in-site docs center (`/landing/docs`: Learning manual 8 chapters + Development manual 7 chapters, zh/en, beginner-rewritten; markdown source `docs/handbook/`, kept for forks) + 9 scripts + 3 CI workflows. Live demo: anvilwiki.pages.dev (Lighthouse 4×100).
 
 ## Read These First
 
@@ -88,7 +88,7 @@ pnpm dev              # dev server, http://localhost:4321
 pnpm build            # includes Content schema validation — fails on bad frontmatter; postbuild indexes Pagefind search
 pnpm typecheck        # astro check (0 errors expected)
 pnpm lint             # ESLint (eslint-plugin-astro)
-pnpm test             # Vitest (url + seo + tags + i18n-smoke + content-utils)
+pnpm test             # Vitest (url + seo + tags + i18n-smoke + content-utils + handbook)
 pnpm check-config     # scripts/check-config.ts — nav/locale 3-place consistency
 pnpm new-locale       # scripts/new-locale.ts — scaffold a new language
 pnpm check-sitemap    # scripts/check-sitemap.ts — verify all sitemap URLs return 200
@@ -102,12 +102,12 @@ pnpm new-post         # interactive MDX article scaffold
 
 ## Ops Toolkit: `tools/anvil-ops/` (anvilwiki-ops)
 
-Standalone npm package (`anvilwiki-ops`, own semver 0.x, `private: true` until first publish): ops CLI (`anvil-ops`) + stdio MCP server (`anvil-ops-mcp` / `anvil-ops mcp`) for fork sites — `doctor` / `metrics` / `audit` / `insights` / `submit` map 1:1 to MCP tools. GSC (service-account JSON) + CF Web Analytics (token; site tag read from `wrangler.toml PUBLIC_CF_BEACON_TOKEN`), env-gated (empty = disabled). Writes go through validation → branch → PR only, never push main. Spec: `docs/superpowers/specs/2026-08-18-anvil-ops-cli-mcp-design.md`.
+Standalone npm package (`anvilwiki-ops`, own semver 0.x, published to npm as `anvilwiki-ops`): ops CLI (`anvil-ops`) + stdio MCP server (`anvil-ops-mcp` / `anvil-ops mcp`) for fork sites — `doctor` / `metrics` / `audit` / `insights` / `submit` map 1:1 to MCP tools. GSC (service-account JSON) + CF Web Analytics (token; site tag read from `wrangler.toml PUBLIC_CF_BEACON_TOKEN`), env-gated (empty = disabled). Writes go through validation (check-content + non-strict check-i18n + build) → branch → PR only, never push main. Spec: `docs/superpowers/specs/2026-08-18-anvil-ops-cli-mcp-design.md`.
 
 ```bash
 cd tools/anvil-ops
 pnpm install   # own pnpm-workspace.yaml (allowBuilds) — do NOT remove: without it the root workspace hijacks installs (node_modules stays empty)
-pnpm test       # 56 tests
+pnpm test       # 60 tests
 pnpm typecheck && pnpm build
 ```
 

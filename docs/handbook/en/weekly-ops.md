@@ -73,7 +73,7 @@ When done, run pnpm check-content && pnpm build; only all-green counts as comple
 
 ```bash
 # 1. Multi-language sites only: see how much translation is missing
-pnpm check-i18n --strict
+pnpm check-i18n
 
 # 2. Bring in the template author's updates (first time: run all three lines)
 git remote add upstream https://github.com/PNGTRID/AnvilWiki.git

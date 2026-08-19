@@ -35,7 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: Reset wrangler.toml [vars]
         env:
@@ -79,7 +79,10 @@ jobs:
 
       - name: Remove project landing page
         run: |
-          rm -rf src/components/landing src/config/landing.ts src/pages/landing.astro src/pages/zh public/images/wechat-qr.jpg
+          # Keep in sync with LANDING_PATHS in scripts/apply-template.ts —
+          # forgetting src/pages/landing (docs routes) leaves files importing
+          # the deleted ~/config/landing and breaks the fork's build.
+          rm -rf src/components/landing src/config/landing.ts src/pages/landing.astro src/pages/landing src/pages/zh public/images/showcase public/images/wechat-qr.jpg
           sed -i.bak 's/landingLinkEnabled = true/landingLinkEnabled = false/' src/config/project.ts && rm -f src/config/project.ts.bak
 
       - name: Clear demo content and demo author
@@ -112,9 +115,13 @@ jobs:
           else
             git commit -m "chore(init): apply template defaults (wrangler vars, remove landing)"
           fi
+          # The shallow checkout has no remote-tracking ref for the branch, so
+          # --force-with-lease alone rejects idempotent re-runs ("stale info").
+          git fetch origin chore/init-from-template || true
           git push --force-with-lease origin chore/init-from-template
           gh pr create --title "Initialize AnvilWiki for your game" \
-            --body "Automated by the Initialize AnvilWiki workflow. wrangler.toml [vars] reset to ${{ inputs.site_url }} (demo Giscus cleared); project landing page removed. Next: run pnpm apply-template locally for game name / theme / locales, then connect Cloudflare Pages (docs/deployment.md)." \
+            --body "Automated by the Initialize AnvilWiki workflow. wrangler.toml [vars] reset to ${SITE_URL_INPUT} (demo Giscus cleared); project landing page removed. Next: run pnpm apply-template locally for game name / theme / locales, then connect Cloudflare Pages (docs/deployment.md)." \
             || echo "PR already exists — leaving the existing one open."
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SITE_URL_INPUT: ${{ inputs.site_url }}
