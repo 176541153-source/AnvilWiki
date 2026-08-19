@@ -1,10 +1,11 @@
 ---
 /**
  * Community — floating WeChat QR widget pinned to the bottom-right of the
- * landing pages. A brand-colored pill is always visible; clicking it opens a
- * popover card with the QR code (Esc / outside click / X closes). The QR
- * image lives at /images/wechat-qr.jpg (project asset, removed from forks
- * together with the rest of the landing page by apply-template).
+ * landing pages. The QR card is OPEN by default so visitors see it without
+ * interacting; the brand-colored pill below it toggles the card (Esc /
+ * outside click / X also closes). The QR image lives at
+ * /images/wechat-qr.jpg (project asset, removed from forks together with
+ * the rest of the landing page by apply-template).
  */
 import { Icon } from 'astro-icon/components';
 import { type LandingContent } from '~/config/landing';
@@ -16,11 +17,10 @@ const { t } = Astro.props;
 ---
 
 <div class="community-float" data-community-float>
-  {/* Popover card — hidden until the pill is clicked */}
+  {/* QR card — open by default; the pill toggles it */}
   <div
     id="community-qr-panel"
     data-qr-panel
-    hidden
     role="dialog"
     aria-modal="false"
     aria-label={t.community.title}
@@ -55,11 +55,11 @@ const { t } = Astro.props;
     </p>
   </div>
 
-  {/* Always-visible pill */}
+  {/* Always-visible pill (toggles the card; card starts open) */}
   <button
     type="button"
     data-qr-toggle
-    aria-expanded="false"
+    aria-expanded="true"
     aria-controls="community-qr-panel"
     class="btn-fab relative"
   >
