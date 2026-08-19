@@ -102,6 +102,16 @@
     background-color: hsl(var(--brand-h) var(--brand-s) 35%);
   }
 
+  /* Floating pill variant of btn-primary (landing community QR widget) —
+     same AA-safe darkened brand background, rounded + shadowed. */
+  .btn-fab {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2;
+    background-color: hsl(var(--brand-h) var(--brand-s) 40%);
+  }
+  .btn-fab:hover {
+    background-color: hsl(var(--brand-h) var(--brand-s) 35%);
+  }
+
   .btn-outline {
     @apply inline-flex items-center justify-center rounded-md border border-border bg-background px-4 py-2 text-sm font-medium transition hover:bg-muted;
   }

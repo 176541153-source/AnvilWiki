@@ -113,12 +113,14 @@ export interface LandingContent {
     secondaryCta: { label: string; href: string };
   };
   community: {
-    badge: string;
     title: string;
     subtitle: string;
     qrAlt: string;
     qrCaption: string;
     qrNote: string;
+    buttonLabel: string;
+    buttonAria: string;
+    closeAria: string;
   };
   footer: { tagline: string; license: string; madeWith: string; author: string };
 }
@@ -447,13 +449,15 @@ pnpm install && pnpm dev`,
     secondaryCta: { label: 'Read the Docs', href: 'https://github.com/PNGTRID/AnvilWiki#readme' },
   },
   community: {
-    badge: 'Community',
     title: 'Join the discussion',
     subtitle:
       'Questions about deploying your own wiki, feature ideas, or just want to chat about game content sites? Scan the QR code to add the maintainer on WeChat and join the group.',
     qrAlt: 'WeChat QR code — scan to add the maintainer and join the discussion group',
     qrCaption: 'Scan with WeChat',
     qrNote: 'WeChat group · 中文/English both welcome',
+    buttonLabel: 'Join the group',
+    buttonAria: 'Open the WeChat group QR code',
+    closeAria: 'Close QR code',
   },
   footer: {
     tagline: 'Open-source game wiki site template. Free, fast, beginner-friendly.',
@@ -728,13 +732,15 @@ pnpm install && pnpm dev`,
     secondaryCta: { label: '阅读文档', href: 'https://github.com/PNGTRID/AnvilWiki#readme' },
   },
   community: {
-    badge: '社区交流',
     title: '扫码进群,一起讨论',
     subtitle:
       '部署自己的 wiki 站有问题?想聊功能建议或游戏内容站怎么做?微信扫码添加主理人好友,拉你进交流群。',
     qrAlt: '微信二维码——扫码添加主理人好友,进群交流讨论',
     qrCaption: '微信扫码',
     qrNote: '交流群 · 中文/English 均可',
+    buttonLabel: '加群交流',
+    buttonAria: '打开微信交流群二维码',
+    closeAria: '关闭二维码',
   },
   footer: {
     tagline: '开源游戏 wiki 站点模板。免费、快速、新手友好。',
