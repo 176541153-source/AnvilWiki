@@ -117,4 +117,4 @@ git merge upstream/main
 
 ## 学完之后
 
-三岔路口:**继续周节奏运营**;**进[开发手册](/zh/landing/docs/architecture)深度定制你的站**(加栏目、加语言、换皮肤、开评论统计);或者**把你的站提 PR 加进 AnvilWiki 官网展示墙**(改 `src/config/landing.ts` 里的 showcase 数据)——你的真实案例,就是这套模板最好的广告。
+放大,从第 9 章开始:**[把第一个站打磨成模板](/zh/landing/docs/templatize-your-site)**,30 分钟复制出下一个游戏站。想先深度定制这个站,进[开发手册](/zh/landing/docs/architecture)(加栏目、加语言、换皮肤、开评论统计);做出成绩后,把你的站提 PR 加进 AnvilWiki 官网展示墙(改 `src/config/landing.ts` 里的 showcase 数据)——你的真实案例,就是这套模板最好的广告。

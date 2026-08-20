@@ -37,7 +37,7 @@ Good news: in this chapter you don't write a single word yourself. You **play th
 **You'll see**: the AI assistant's window shows the folder path, ending in `AnvilWiki`.
 **Confirm it worked**: ask it "which folder are you in right now?" — its answer ends in AnvilWiki.
 
-Once opened, it automatically knows three things (no teaching needed): the site's format rules (AGENTS.md), three ready-made skills, and the info-card format (the schema).
+Once opened, it automatically knows three things (no teaching needed): the site's format rules (AGENTS.md), four ready-made skills, and the info-card format (the schema).
 
 ## Step 2: Play the game for an hour first, and take notes
 

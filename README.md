@@ -43,7 +43,7 @@
 
 | 你想… | 去这里 |
 |---|---|
-| **零基础从零做一个赚钱的游戏站** | 📚 [学习手册(8 章)](https://anvilwiki.pages.dev/zh/landing/docs/learn)——每步写明「做什么/怎么做/你会看到什么」,含 13 个可复制提示词 |
+| **零基础从零做一个赚钱的游戏站** | 📚 [学习手册(10 章)](https://anvilwiki.pages.dev/zh/landing/docs/learn)——每步写明「做什么/怎么做/你会看到什么」,含 16 个可复制提示词 |
 | 看「从零到赚钱」的全部工作量 | 🗺️ [文档中心首页](https://anvilwiki.pages.dev/zh/landing/docs)——10 件事全景清单,逐项点入 |
 | 深度定制 / 给模板写代码 | 🔧 [开发手册(7 章)](https://anvilwiki.pages.dev/zh/landing/docs/dev) |
 | 看看做出来长什么样 | 🎮 [在线 Demo](https://anvilwiki.pages.dev/)——虚构游戏「Anvil Quest」的完整 wiki |
@@ -60,8 +60,9 @@ AnvilWiki 是一个**游戏 SEO 内容站模板**——用来快速搭建围绕�
 
 ### 核心特性
 
-- 📚 **零基础双手册(站内文档中心)**:学习手册 8 章 + 开发手册 7 章,中英双语,从选游戏到赚到钱每一步都是 SOP + 可复制的 AI 提示词;每章带手册目录树和本页目录
+- 📚 **零基础双手册(站内文档中心)**:学习手册 10 章 + 开发手册 7 章,中英双语,从选游戏到赚到钱、再到模板化复制和批量铺内页,每一步都是 SOP + 可复制的 AI 提示词;每章带手册目录树和本页目录
 - 🤖 **AI 全链路**:内容技能随仓库分发(`.agent/skills/`,Agent Skills 开放标准)——对 ZCode / Claude Code / Codex 说「根据这些笔记写篇攻略」,产出直接通过构建质检;上线后还有运营工具包 `anvilwiki-ops`(npx 免安装 + MCP):AI 替你拉 GSC/Cloudflare 数据、给优化清单、改完内容走 PR 上线
+- 🧰 **模板健康检查 + 批量产页**:`pnpm template-audit` 一键检查「这个站还能不能干净地复制成下一个游戏的站」(代码层纯净度/换皮残留/健康度评分);`pnpm bulk-new-posts` 从关键词清单批量生成内页草稿——跑通一个站后,30 分钟复制下一个,几十个内页批量铺
 - 💰 **广告收入 100% 归你**:内置 AdSense 广告位(3 个位置,env 驱动,默认关闭)+ 赞助卡 + 联盟链接组件——无平台抽成
 - 🔍 **SEO 工程化**:sitemap(含 lastmod)/ JSON-LD 全套 / hreflang / Quick Answer 摘要块 / llms.txt(AI 搜索),全部自动生成
 - ⚡ **极快**:Astro 零 JS 优先,Lighthouse 4×100 开箱即得(开了广告也不掉分)
@@ -91,15 +92,16 @@ pnpm apply-template
 
 ### 用 AI 直接生成内容(无需脚本)
 
-fork 后用 ZCode / Claude Code / Codex / Cursor 打开仓库,直接对话即可产页。Agent 会自动加载仓库里的内容规范,生成后自动跑 `pnpm check-content && pnpm build` 自检。内置 3 个技能:
+fork 后用 ZCode / Claude Code / Codex / Cursor 打开仓库,直接对话即可产页。Agent 会自动加载仓库里的内容规范,生成后自动跑 `pnpm check-content && pnpm build` 自检。内置 4 个技能:
 
 | 技能 | 用途 |
 |---|---|
 | `anvil-new-article` | 任意素材(口述/视频内容/原始数据)→ 合规 MDX 文章 |
+| `anvil-batch-articles` | 关键词清单 → 批量生成一批内页(意图归类 → `bulk-new-posts` 脚手架 → 统一提示词填充) |
 | `anvil-update-codes` | 新兑换码/过期码 → 更新 codes 页并同步多语言 |
 | `anvil-refresh` | 新鲜度巡检 → 输出「该更新什么」优先级清单 |
 
-完整的提示词库(选品分析、产页、翻译、SEO 体检等 13 个模板)在[学习手册](https://anvilwiki.pages.dev/zh/landing/docs/learn)里,整段复制就能用。
+完整的提示词库(选品分析、产页、批量产页、翻译、SEO 体检等 16 个模板)在[学习手册](https://anvilwiki.pages.dev/zh/landing/docs/learn)里,整段复制就能用。
 
 ### 文档导航
 
@@ -125,7 +127,7 @@ fork 后用 ZCode / Claude Code / Codex / Cursor 打开仓库,直接对话即可
 | 每月成本 | **¥0**(Cloudflare Pages 免费无限带宽) | 免费(代价是失去控制权) | Vercel 免费额度有限 |
 | Lighthouse | **4×100 开箱即得** | 平台决定 | 自己调优数周 |
 | AI 产页 | **技能随仓库分发,对话即产页** | 无 | 自己搭 |
-| 上手门槛 | **零基础手册 8 章** | 低但受制于人 | 高 |
+| 上手门槛 | **零基础手册 10 章** | 低但受制于人 | 高 |
 
 ### 常见问题
 
@@ -160,7 +162,7 @@ fork 后用 ZCode / Claude Code / Codex / Cursor 打开仓库,直接对话即可
 
 ## 📖 English Documentation
 
-**Start here: the [Learning Manual](https://anvilwiki.pages.dev/landing/docs/learn)** — 8 chapters, written for complete beginners, every step a SOP with copy-paste AI prompts. The [Development Manual](https://anvilwiki.pages.dev/landing/docs/dev) (7 chapters) covers deep customization and AI-driven ops. Both bilingual, with a [10-job whole-picture checklist](https://anvilwiki.pages.dev/landing/docs) at the docs hub.
+**Start here: the [Learning Manual](https://anvilwiki.pages.dev/landing/docs/learn)** — 10 chapters, written for complete beginners, every step a SOP with copy-paste AI prompts. The [Development Manual](https://anvilwiki.pages.dev/landing/docs/dev) (7 chapters) covers deep customization and AI-driven ops. Both bilingual, with a [10-job whole-picture checklist](https://anvilwiki.pages.dev/landing/docs) at the docs hub.
 
 ### What is this?
 
@@ -188,8 +190,9 @@ Complete beginner? Start from [Chapter 2 of the Learning Manual](https://anvilwi
 
 ### Key Features
 
-- 📚 **Two beginner manuals** (Learning 8 chapters / Development 7, bilingual) with 13 copy-paste AI prompts
+- 📚 **Two beginner manuals** (Learning 10 chapters / Development 7, bilingual) with 16 copy-paste AI prompts
 - 🤖 **AI-native workflow**: agent skills ship inside the repo — say "write a boss guide from these notes", get a build-check-passing page; after launch, the `anvilwiki-ops` toolkit (npx + MCP) has your AI pull GSC/Cloudflare data, rank SEO actions, and ship content through validated PRs
+- 🧰 **Template health check + batch page production**: `pnpm template-audit` scores how cleanly this repo can be copied into your next game's site (code-layer purity / rebrand leftovers); `pnpm bulk-new-posts` scaffolds dozens of draft inner pages from a keyword list — once your first site works, the next one takes ~30 minutes
 - 💰 **100% your ad revenue**: AdSense slots (3 positions, env-gated, off by default), sponsor card, affiliate component
 - 🔍 **SEO engineering**: sitemap (lastmod) / JSON-LD suite / hreflang / Quick Answer blocks / llms.txt — all automatic
 - ⚡ **Fast**: zero-JS-first Astro, Lighthouse 4×100 out of the box
@@ -199,15 +202,16 @@ Complete beginner? Start from [Chapter 2 of the Learning Manual](https://anvilwi
 
 ### Generate content by talking to your AI (no scripts needed)
 
-After forking, open the repo in ZCode / Claude Code / Codex / Cursor and just talk. Agents auto-load the content spec shipped in the repo and self-check with `pnpm check-content && pnpm build` after generating. Three skills are built in:
+After forking, open the repo in ZCode / Claude Code / Codex / Cursor and just talk. Agents auto-load the content spec shipped in the repo and self-check with `pnpm check-content && pnpm build` after generating. Four skills are built in:
 
 | Skill | What it does |
 |---|---|
 | `anvil-new-article` | Any source material (notes / video content / raw data) → spec-compliant MDX article |
+| `anvil-batch-articles` | A keyword list → a batch of inner pages (intent classification → `bulk-new-posts` scaffolding → one unified prompt fills them) |
 | `anvil-update-codes` | New / expired codes → update the codes page across locales |
 | `anvil-refresh` | Freshness audit → prioritized "what to update" list |
 
-The full prompt library (game selection, page generation, translation, SEO audits — 13 templates) lives in the [Learning Manual](https://anvilwiki.pages.dev/landing/docs/learn); copy-paste ready.
+The full prompt library (game selection, page generation, batch production, translation, SEO audits — 16 templates) lives in the [Learning Manual](https://anvilwiki.pages.dev/landing/docs/learn); copy-paste ready.
 
 Repository reference docs: [game-selection](docs/game-selection.md) · [apply-template](docs/apply-template.md) · [content-format](docs/content-format.md) · [deployment](docs/deployment.md) · [staying-up-to-date](docs/staying-up-to-date.md) · [development](docs/development.md) · [full index](docs/README.md)
 

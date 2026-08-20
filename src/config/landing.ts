@@ -11,7 +11,7 @@
  */
 
 /** Keep in sync with package.json "version" (used by the announcement bar). */
-export const PROJECT_VERSION = '1.17.1';
+export const PROJECT_VERSION = '1.18.0';
 
 export type LandingLocale = 'en' | 'zh';
 
@@ -399,12 +399,12 @@ pnpm install && pnpm dev`,
   handbook: {
     hubTitle: 'AnvilWiki Docs',
     hubSubtitle:
-      'Two separate hands-on manuals, written for complete beginners: the Learning Manual (8 chapters) walks you from game selection to a live, indexed, monetized wiki; the Development Manual (7 chapters) covers customization and engineering. Every step is a SOP with copy-paste AI prompts.',
+      'Two separate hands-on manuals, written for complete beginners: the Learning Manual (10 chapters) walks you from game selection to a live, indexed, monetized wiki — then shows you how to templatize it and batch-produce inner pages to scale; the Development Manual (7 chapters) covers customization and engineering. Every step is a SOP with copy-paste AI prompts.',
     manuals: {
       learn: {
         label: 'Learning Manual',
         description:
-          '8 chapters, zero experience required: pick the right game, install the tools, launch your site, write 10 pages with AI on day one, get on Google, turn on ads, run a 30-minute weekly ops loop.',
+          '10 chapters, zero experience required: pick the right game, install the tools, launch your site, write 10 pages with AI on day one, get on Google, turn on ads, run a 30-minute weekly ops loop — then turn your first site into a template and batch-create dozens of traffic-entrance pages.',
       },
       dev: {
         label: 'Development Manual',
@@ -682,12 +682,12 @@ pnpm install && pnpm dev`,
   handbook: {
     hubTitle: 'AnvilWiki 文档中心',
     hubSubtitle:
-      '两本相互独立的实操手册,按完全零基础标准编写:学习手册 8 章带你从选游戏走到上线、收录、变现;开发手册 7 章覆盖定制与工程。每一步都是 SOP + 可复制的 AI 提示词。',
+      '两本相互独立的实操手册,按完全零基础标准编写:学习手册 10 章带你从选游戏走到上线、收录、变现,再教你把站打磨成模板、批量铺内页放大;开发手册 7 章覆盖定制与工程。每一步都是 SOP + 可复制的 AI 提示词。',
     manuals: {
       learn: {
         label: '学习手册',
         description:
-          '8 章,零经验起步:选对游戏、装好工具、建起自己的站、首日用 AI 产出 10 页、被 Google 收录、接上广告、每周 30 分钟运营节奏。',
+          '10 章,零经验起步:选对游戏、装好工具、建起自己的站、首日用 AI 产出 10 页、被 Google 收录、接上广告、每周 30 分钟运营节奏,最后把第一个站打磨成模板、批量做出几十个流量入口。',
       },
       dev: {
         label: '开发手册',

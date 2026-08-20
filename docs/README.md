@@ -2,13 +2,13 @@
 
 > 全部文档按**角色**和**使用时机**组织。从下面找到你的路径,按顺序读即可。
 
-**先看这个:[站内文档中心](https://anvilwiki.pages.dev/zh/landing/docs)** —— 两本**相互独立**的引导式手册:[学习手册 8 章](https://anvilwiki.pages.dev/zh/landing/docs/learn)(零基础向,从选游戏到赚到钱,每步 SOP + 13 个可复制提示词)+ [开发手册 7 章](https://anvilwiki.pages.dev/zh/landing/docs/dev)(定制/集成/同步/AI 运营,按需查询),中英双语;本页的仓库文档是配套的查阅式参考。手册 markdown 源码在 [`handbook/`](handbook/) 目录(fork 后保留)。
+**先看这个:[站内文档中心](https://anvilwiki.pages.dev/zh/landing/docs)** —— 两本**相互独立**的引导式手册:[学习手册 10 章](https://anvilwiki.pages.dev/zh/landing/docs/learn)(零基础向,从选游戏到赚到钱、再到模板化复制和批量铺内页,每步 SOP + 16 个可复制提示词)+ [开发手册 7 章](https://anvilwiki.pages.dev/zh/landing/docs/dev)(定制/集成/同步/AI 运营,按需查询),中英双语;本页的仓库文档是配套的查阅式参考。手册 markdown 源码在 [`handbook/`](handbook/) 目录(fork 后保留)。
 
 ## 快速索引
 
 | 文档 | 一句话 | 读者 |
 |---|---|---|
-| [handbook/](handbook/) | 📚 站内手册源码:学习手册 8 章(SOP+提示词)+ 开发手册 7 章,中英双语 | 🎯 新手从[学习手册](https://anvilwiki.pages.dev/zh/landing/docs/learn)开始 |
+| [handbook/](handbook/) | 📚 站内手册源码:学习手册 10 章(SOP+提示词)+ 开发手册 7 章,中英双语 | 🎯 新手从[学习手册](https://anvilwiki.pages.dev/zh/landing/docs/learn)开始 |
 | [game-selection.md](game-selection.md) | 做哪个游戏?上线第一天写什么? | 🎯 想建站赚钱的人(从这里开始) |
 | [README](../README.md) | 项目是什么 + 5 分钟跑起来 | 所有人 |
 | [apply-template.md](apply-template.md) | 把 demo 站换成你的游戏(配置层手册) | fork 用户 |
@@ -50,7 +50,7 @@
 
 ```
 1. AGENTS.md              ← 仓库根目录,自动加载:硬规则 + 对话式产页章节
-2. .agent/skills/         ← 自动发现的 3 个技能(anvil-new-article / update-codes / refresh)
+2. .agent/skills/         ← 自动发现的 4 个技能(anvil-new-article / batch-articles / update-codes / refresh)
 3. docs/content-format.md ← 需要字段细节时查
 ```
 

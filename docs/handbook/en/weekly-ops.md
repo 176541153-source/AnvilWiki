@@ -117,4 +117,4 @@ Output a problem table: file / problem / suggested fix; only change things after
 
 ## Where to go from here
 
-A three-way fork: **keep running the weekly rhythm**; **go deep with the [developer manual](/landing/docs/architecture) to customize your site** (add categories, add languages, reskin, turn on comments and analytics); or **submit a PR adding your site to the AnvilWiki official showcase wall** (edit the showcase data in `src/config/landing.ts`) — your real case is the best advertisement this template can get.
+Scaling starts with Chapter 9: **[turn your first site into a template](/landing/docs/templatize-your-site)** and copy the next game's site in 30 minutes. To customize this site first, go deep with the [developer manual](/landing/docs/architecture) (add categories, add languages, reskin, turn on comments and analytics); once you have results, submit a PR adding your site to the AnvilWiki official showcase wall (edit the showcase data in `src/config/landing.ts`) — your real case is the best advertisement this template can get.

@@ -5,6 +5,20 @@ All notable changes to AnvilWiki are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.18.0] — 2026-08-20
+
+**关卡7 模板化 + 关卡8 批量内页:跑通一个站之后的两条放大路径。**
+
+### Added
+- **`pnpm template-audit` 模板健康检查**(`scripts/template-audit.ts`):代码层纯净度(剥离注释后扫 demo 字符串,注释里的用法示例不算违约)/配置层换皮(域名/站点名+游戏名/分类三处一致)/内容层可替换性(每类文章数、draft 遗留)/换皮残留(demo 封面与机制图、**demo 文章**(按内容含 demo 游戏名检测,文件名相同的 fork 自有页面不误报)、wrangler.toml demo 值)四组检查,✅⚠️❌ 三级输出 + 健康度评分(如「3/11」);仅 ❌ 违反分层契约才非零退出,demo 仓库上 ⚠️ 遗留是预期。demo 资产清单与 `apply-template.ts` / `setup.yml` 保持同步(keep-in-sync 注释)。
+- **`pnpm bulk-new-posts` 批量内页脚手架**(`scripts/bulk-new-posts.ts`):读 `new-posts.csv`/`.tsv` 关键词清单(列 `locale,category,slug,title,description`,支持 RFC-4180 引号转义、`#` 注释行、表头前注释、Excel BOM/TSV 自适应),全量校验(locale∈routing / category∈navigation / slug 自动规范化与冲突去重 / description 40-165)后**全部合法才写入**;生成的全部是 `draft: true` 草稿(不进 build),目标文件已存在则跳过绝不覆盖;`--dry-run` 预览计划;边界清晰报错——description 占位符在长标题下自动降级为固定文案(schema 40-165 恒通过)、未闭合引号、目录入参、`-n` 别名。
+- **`.agent/skills/anvil-batch-articles` 批量内容技能**:关键词清单 → 意图归类(照抄 anvil-new-article 分类表)→ 生成 `new-posts.csv` → 每类意图用同一份统一提示词模板批量填充 → `check-content` + `build` 全批验收;内置 5 条铁律(批量≠灌水、禁编造数据、内链只指真实页面、同批禁模板句复用、draft 逐篇转正)。
+- **学习手册第 9 章「把第一个站打磨成模板」+ 第 10 章「批量做内页」**(zh/en,`templatize-your-site.md` / `batch-pages.md`,learn 手册 8→10 章):第 9 章讲 template-audit 用法、换皮清单沉淀提示词、复制第二个站的 30 分钟四步;第 10 章讲内页流量逻辑、关键词四来源、统一内页生成提示词、批量三步法与灌水红线。新增 2 个可复制提示词(总 16 个)。
+
+### Changed
+- 全仓计数同步:学习手册 8→10 章、可复制提示词 13→16 个(v1.17.1 加媒体提示词后实际已 14 处但宣传数未同步,本次一并校正)、脚本 9→11、技能 3→4——README 中英、docs/README、PRD §5/§11/§15、`landing.ts` 手册简介、AGENTS.md Status/Commands/技能清单、手册内交叉引用(第 4 章技能数、第 8 章结尾接第 9 章)。
+- `docs/apply-template.md` 末尾新增「模板化进阶:audit + 沉淀」一节;PRD §14 roadmap 补 v1.18 行。
+
 ## [1.17.1] — 2026-08-20
 
 **专家团复审补丁:demo 图内事实校正 + fork 素材清理 + 指引闭环。**

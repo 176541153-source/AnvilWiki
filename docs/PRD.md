@@ -279,7 +279,7 @@ anvilwiki/
 ├── LICENSE / CONTRIBUTING.md / CHANGELOG.md
 ├── docs/
 │   ├── PRD.md                    # ⭐ 本文档
-│   ├── handbook/<locale>/<slug>.md  # ⭐ 站内文档中心源码（learn 8 章 + dev 7 章，en/zh；fork 保留）
+│   ├── handbook/<locale>/<slug>.md  # ⭐ 站内文档中心源码（learn 10 章 + dev 7 章，en/zh；fork 保留）
 │   ├── deployment.md / apply-template.md / content-format.md
 │   ├── game-selection.md / staying-up-to-date.md / development.md / seo.md
 │   └── superpowers/              # specs + plans（架构决策存档）
@@ -326,9 +326,9 @@ anvilwiki/
 │   ├── styles/globals.css        # ⭐ --brand 4 变量（:root 4 行 + .dark 4 行）
 │   ├── assets/                   # 封面图等（走 astro:assets <Image> 管线，WebP+srcset）
 │   └── lib/                      # content.ts / content-utils.ts / navigation.ts / seo.ts / url.ts / handbook.ts
-├── scripts/                      # 9 个运维脚本（check-* ×5 + refresh-audit + new-locale/new-post + apply-template）
+├── scripts/                      # 11 个运维脚本（check-* ×5 + refresh-audit + new-locale/new-post + apply-template + template-audit + bulk-new-posts）
 ├── tools/anvil-ops/              # ⭐ 独立 npm 包 anvilwiki-ops（CLI + MCP，自有 workspace）
-├── .agent/skills/                # ⭐ AI 内容技能（anvil-new-article / anvil-update-codes / anvil-refresh）
+├── .agent/skills/                # ⭐ AI 内容技能（anvil-new-article / anvil-batch-articles / anvil-update-codes / anvil-refresh）
 └── .github/
     ├── workflows/
     │   ├── ci.yml                # 8 道门禁（lint/typecheck/test/check-config/build/check-content/check-links/check-i18n）
@@ -1043,7 +1043,7 @@ const show = !!(client && slot);
 
 **套用模板** = 把通用 AnvilWiki 模板变成特定游戏的站点。只改配置层和内容层，代码层不动。
 
-完整的配置参考见 [`docs/apply-template.md`](./apply-template.md)——按文件组织，你要改什么就查对应章节。也可用 `pnpm apply-template` CLI 自动完成基础配置。
+完整的配置参考见 [`docs/apply-template.md`](./apply-template.md)——按文件组织，你要改什么就查对应章节。也可用 `pnpm apply-template` CLI 自动完成基础配置。第一个站跑通后、复制下一个站前，用 `pnpm template-audit` 检查模板健康度（见学习手册第 9 章）。
 
 ### 11.2 改动对象与 AnvilWiki 路径对照
 
@@ -1315,6 +1315,7 @@ describe('sitemap', () => {
 | v1.15 | 站长运营 CLI + MCP（`anvilwiki-ops`：第一性原理路线②④产能闭环） | 高 | ✅ 已实现（`tools/anvil-ops/` 独立 npm 包双 bin：`anvil-ops` CLI + stdio MCP server；doctor/metrics/audit/insights/submit 五命令 = 五 MCP 工具；GSC 服务账号 + CF Web Analytics GraphQL 双数据源，env 门控空=禁用；insights 5 规则引擎（阈值常量集中）；submit=校验→分支→push→gh 开 PR，永不 push main；56 测试+真 git bare 集成测试；开发手册新增第 7 章「AI 自动化运营」中英；**anvilwiki-ops 0.1.1 已上架 npm，`npx anvilwiki-ops` 实名验证通过**；v1.15.0 已发版） |
 | v1.16 | 社区案例库（Showcase：真实用户站点展示） | 低 | ✅ 已实现（首批 3 站点 aniimo.wiki / nomanssky.wiki / steal-anegg.wiki；数据源唯一 `landing.ts` 的 `COMMUNITY_SITES`，展示 3 处：/landing 与 /zh/landing 的 CommunitySites 区块 + README 中英表格；数据与组件均在 CLI `LANDING_PATHS` 内，fork 自动清理；详见 §15.6；v1.16.0 已发版） |
 | v1.17 | demo 媒体示范 + 媒体密度指引（拉平「能力 vs 示范」倒挂） | 中 | ✅ 已实现（每类文章完整示范媒体能力：codes 双语封面、boss 机制画廊（`src/assets/gallery/`）、tier-list 正文内联卡片图（`public/images/articles/`）、i18n 视频对齐；`scripts/gen-demo-media.mjs` 生成 7 张示意图可复现；`.prose img:not([class])` 16:9 零 CLS 盒子；媒体密度表进 content-format.md / anvil-new-article skill / AGENTS.md / 学习手册 first-10-pages 章中英；fork 清理：apply-template `clearDemoAssets` + setup.yml 同步按名删 demo 素材（fork 模拟构建绿）；v1.17.0 已发版，v1.17.1 复审补丁（图内事实校正：3 标记/20s puddle/2s 窗口/wind-up 数值对齐正文）） |
+| v1.18 | 模板化 + 批量内页（生财航海关卡 7/8：放大能力） | 高 | ✅ 已实现（`pnpm template-audit` 模板健康检查：代码层纯净度（注释剥离后扫 demo 字符串）/配置层换皮/内容层可替换性/换皮残留 4 组 ✅⚠️❌ 评分，❌ 才非零退出；`pnpm bulk-new-posts` 批量脚手架：CSV/TSV 关键词清单（RFC4180 引号解析）→ 全量校验（locale/category/slug 冲突/description 40-165）→ 全部合法才写入 `draft: true` 草稿，已存在文件跳过绝不覆盖，`--dry-run` 预览；`.agent/skills/anvil-batch-articles` 批量内容技能（意图归类→清单→统一提示词→全批验收，含灌水/编造/内链/句式重复 5 条铁律）；学习手册新增第 9 章「把第一个站打磨成模板」+ 第 10 章「批量做内页」中英（learn 8→10 章，提示词 13→16 个——13 为 v1.17.1 加媒体提示词后已漂移未同步的旧值）；README/docs/landing/AGENTS 计数同步；发版前专家审查补 8 项修复：占位 description 长标题超 165 会炸 build→自动降级、demo 文章内容级检测、site.name 换皮检查、`-n` 别名/未闭合引号/目录入参边界、第 9 章三层表格对齐规格、zh 错字；v1.18.0 已发版） |
 
 **v1.3 范围说明**：
 - `timeline`：✅ 实现 —— 版本日志/活动时序，零副作用，商业价值正（老玩家点进 patch notes 文章页）。
@@ -1368,7 +1369,7 @@ describe('sitemap', () => {
 - **官方 demo**：`anvilwiki.pages.dev`，用虚构游戏 "Anvil Quest" 做一个完整 demo 站。
 - **源码**：demo 内容就在本仓库内（`src/content/wiki/`，英文在根、日文带前缀）——fork 后由 `pnpm apply-template` / setup 工作流整体替换。
 - **目的**：让用户直观看到 AnvilWiki 长什么样、性能如何。
-- **文档中心**：站内 `/landing/docs` 双手册（learn 8 章 + dev 7 章，中英），markdown 源在 `docs/handbook/`，fork 保留。
+- **文档中心**：站内 `/landing/docs` 双手册（learn 10 章 + dev 7 章，中英），markdown 源在 `docs/handbook/`，fork 保留。
 
 ### 15.4 社区运营
 
