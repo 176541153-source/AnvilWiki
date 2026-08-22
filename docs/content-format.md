@@ -95,6 +95,8 @@ import Accordion from '~/components/mdx/Accordion.astro';
 | tier list/对比 | ✅ 必配 | 重点条目 1 张卡片图 | 可选 | 按需 |
 | codes | ✅ 必配（分享卡片辨识度） | 无需 | 无需 | 无需 |
 
+> **封面图质量 = 图片搜索入口**（2026-03 起 Google 选图首选 og:image）：封面不再是装饰，每篇文章的封面直接决定该页在 Google 图片搜索里的展示。挑图三原则：清晰可辨（缩略图下仍认得出游戏）、带游戏视觉标识（角色/logo/UI，不用纯文字图）、与文章主题对应（boss 文章不配风景图）。
+
 ### 作者体系（v1.7）
 
 frontmatter `author` 除署名展示外，还可在 `src/config/authors.ts` 注册该作者的

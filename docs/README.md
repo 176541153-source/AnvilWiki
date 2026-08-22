@@ -2,24 +2,25 @@
 
 > 全部文档按**角色**和**使用时机**组织。从下面找到你的路径,按顺序读即可。
 
-**先看这个:[站内文档中心](https://anvilwiki.pages.dev/zh/landing/docs)** —— 两本**相互独立**的引导式手册:[学习手册 10 章](https://anvilwiki.pages.dev/zh/landing/docs/learn)(零基础向,从选游戏到赚到钱、再到模板化复制和批量铺内页,每步 SOP + 16 个可复制提示词)+ [开发手册 7 章](https://anvilwiki.pages.dev/zh/landing/docs/dev)(定制/集成/同步/AI 运营,按需查询),中英双语;本页的仓库文档是配套的查阅式参考。手册 markdown 源码在 [`handbook/`](handbook/) 目录(fork 后保留)。
+**先看这个:[站内文档中心](https://anvilwiki.pages.dev/zh/landing/docs)** —— 两本**相互独立**的引导式手册:[学习手册 11 章](https://anvilwiki.pages.dev/zh/landing/docs/learn)(零基础向,从选游戏到赚到钱、再到模板化复制、批量铺内页和 SEO 进阶,每步 SOP + 18 个可复制提示词)+ [开发手册 7 章](https://anvilwiki.pages.dev/zh/landing/docs/dev)(定制/集成/同步/AI 运营,按需查询),中英双语;本页的仓库文档是配套的查阅式参考。手册 markdown 源码在 [`handbook/`](handbook/) 目录(fork 后保留)。
 
 ## 快速索引
 
 | 文档 | 一句话 | 读者 |
 |---|---|---|
-| [handbook/](handbook/) | 📚 站内手册源码:学习手册 10 章(SOP+提示词)+ 开发手册 7 章,中英双语 | 🎯 新手从[学习手册](https://anvilwiki.pages.dev/zh/landing/docs/learn)开始 |
+| [handbook/](handbook/) | 📚 站内手册源码:学习手册 11 章(SOP+提示词)+ 开发手册 7 章,中英双语 | 🎯 新手从[学习手册](https://anvilwiki.pages.dev/zh/landing/docs/learn)开始 |
 | [game-selection.md](game-selection.md) | 做哪个游戏?上线第一天写什么? | 🎯 想建站赚钱的人(从这里开始) |
 | [README](../README.md) | 项目是什么 + 5 分钟跑起来 | 所有人 |
 | [apply-template.md](apply-template.md) | 把 demo 站换成你的游戏(配置层手册) | fork 用户 |
 | [deployment.md](deployment.md) | 部署到 Cloudflare Pages(含 wrangler.toml 大坑) | fork 用户 |
 | [content-format.md](content-format.md) | 怎么写文章(frontmatter 字段表 + 组件用法) | 内容作者 |
-| [seo.md](seo.md) | SEO 工程化:为什么每个页面长这样 | 内容作者 / 好奇的人 |
+| [seo.md](seo.md) | SEO 工程化:为什么每个页面长这样 + 2026 Google 官方更新记录 | 内容作者 / 好奇的人 |
 | [comments.md](comments.md) | 接入 Giscus 评论 | 需要评论的站长 |
 | [staying-up-to-date.md](staying-up-to-date.md) | fork 之后怎么同步上游更新 | fork 用户(长期) |
 | [migration-from-nextjs.md](migration-from-nextjs.md) | 从 Next.js 模板迁移 | 迁移用户 |
 | [development.md](development.md) | 给模板本身写代码:架构、模式、验证、发版 | 贡献者 / 模板开发者 |
 | [PRD.md](PRD.md) | 完整产品设计文档(架构、数据模型、路线图) | 深入理解每个设计决策 |
+| [roadmap.md](roadmap.md) | 演化主线 + 接下来的方向(含不做清单) | 想判断模板方向的人 |
 | [ROADMAP-v1.5-v1.6.md](ROADMAP-v1.5-v1.6.md) | v1.5-v1.8 的规划存档(专家团审计产出) | 想了解演进逻辑的人 |
 
 ## 阅读路径

@@ -5,6 +5,19 @@ All notable changes to AnvilWiki are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.19.0] — 2026-08-22
+
+**SEO 进阶:从被收录到排上去,再到被 AI 引用——对齐 2026 搜索新格局。**
+
+### Added
+- **学习手册第 11 章「SEO 进阶」**(`docs/handbook/{zh,en}/seo-traffic.md`,learn 10→11 章,提示词 16→18 个):一页一词选词地图(意图匹配/长尾甜点/可超越性三判据 + 关键词选题提示词)、单页做满自检清单(title/H2 问句/summary/表格/内链/封面图/lastModified 八槽位表格 + 全站 SEO 自检提示词)、站点信任三慢变量(新鲜度/作者署名/内链网络)、2026 新规则失效清单(FAQ 富结果移除、llms.txt 对 Google 无效但对 ChatGPT 有用、AI Overviews 引用偏好、封面图成图片搜索入口)、2026-08 反 spam 三红线;第 10 章结尾衔接同步(中英)。
+- **`docs/seo.md` 新增「Google 官方规范更新记录(2026)」**:9 条时间线(Spam update / preferred sources 自定义按钮 / GSC 社交视频分析 / review snippet 违规规则 / canonicalization 澄清 / llms.txt 官方澄清 / FAQ 富结果移除 / og:image 成选图首选 / Discover core update),每条附「对本模板的影响」;文末 FAQPage 备注从「限制到政医站」修正为「已完全移除」。
+- **`docs/roadmap.md` 公开路线图**:八段演化主线(v0.1 地基 → v1.19 SEO 进阶,每段方向+代表能力)、近期候选池(AI 引用追踪/封面图产能/preferred sources 适配/选品决策支持)、v2.0 方向(PR 门控 CI 内容管道/多站管理/变现深化)、不做清单;`docs/README.md` 快速索引与 seo.md 描述同步收录。
+
+### Changed
+- `docs/content-format.md` 媒体密度表新增封面图质量三原则(2026-03 起 Google 选图首选 og:image,封面从装饰升级为图片搜索流量入口)。
+- 全仓计数同步:学习手册 10→11 章、可复制提示词 16→18——README 中英(4+2 处)、docs/README(2 处)、PRD §5/§11/§15、`landing.ts` 手册简介(中英 4 处)+ 发布横幅(中英)+ `PROJECT_VERSION`;发版横幅文案与版本号同步(吸取 v1.18.0 漏改横幅的教训)。
+
 ## [1.18.0] — 2026-08-20
 
 **关卡7 模板化 + 关卡8 批量内页:跑通一个站之后的两条放大路径。**

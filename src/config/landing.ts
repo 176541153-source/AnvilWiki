@@ -11,7 +11,7 @@
  */
 
 /** Keep in sync with package.json "version" (used by the announcement bar). */
-export const PROJECT_VERSION = '1.18.0';
+export const PROJECT_VERSION = '1.19.0';
 
 export type LandingLocale = 'en' | 'zh';
 
@@ -185,7 +185,7 @@ const en: LandingContent = {
   description:
     'An open-source game wiki template with an AI-native content workflow: pick the right game, generate pages by talking to your AI tool, codes pages stay fresh on autopilot. Lighthouse 4×100, free on Cloudflare, 100% ad revenue yours.',
   announcement: {
-    text: `v${PROJECT_VERSION} shipped — template health check (pnpm template-audit), batch page production from a keyword list (bulk-new-posts + batch skill), and two new handbook chapters (9 & 10).`,
+    text: `v${PROJECT_VERSION} shipped — Learning Manual chapter 11 (SEO beyond indexing: rankings + AI citations), 2026 Google guideline updates synced into docs/seo.md, and a public roadmap (docs/roadmap.md).`,
     href: RELEASES,
   },
   hero: {
@@ -399,12 +399,12 @@ pnpm install && pnpm dev`,
   handbook: {
     hubTitle: 'AnvilWiki Docs',
     hubSubtitle:
-      'Two separate hands-on manuals, written for complete beginners: the Learning Manual (10 chapters) walks you from game selection to a live, indexed, monetized wiki — then shows you how to templatize it and batch-produce inner pages to scale; the Development Manual (7 chapters) covers customization and engineering. Every step is a SOP with copy-paste AI prompts.',
+      'Two separate hands-on manuals, written for complete beginners: the Learning Manual (11 chapters) walks you from game selection to a live, indexed, monetized wiki — then shows you how to templatize it, batch-produce inner pages to scale, and win rankings and AI citations with SEO; the Development Manual (7 chapters) covers customization and engineering. Every step is a SOP with copy-paste AI prompts.',
     manuals: {
       learn: {
         label: 'Learning Manual',
         description:
-          '10 chapters, zero experience required: pick the right game, install the tools, launch your site, write 10 pages with AI on day one, get on Google, turn on ads, run a 30-minute weekly ops loop — then turn your first site into a template and batch-create dozens of traffic-entrance pages.',
+          '11 chapters, zero experience required: pick the right game, install the tools, launch your site, write 10 pages with AI on day one, get on Google, turn on ads, run a 30-minute weekly ops loop — then turn your first site into a template, batch-create dozens of traffic-entrance pages, and climb from indexed to ranking and AI-cited.',
       },
       dev: {
         label: 'Development Manual',
@@ -473,7 +473,7 @@ const zh: LandingContent = {
   description:
     '开源游戏 wiki 模板 + AI 原生内容工作流:选对游戏、和 AI 对话就能产页、codes 页自动保鲜。Lighthouse 4×100、Cloudflare 免费部署、广告收入 100% 归你。',
   announcement: {
-    text: `v${PROJECT_VERSION} 发布 —— 模板健康检查(pnpm template-audit)+ 关键词清单批量产页(bulk-new-posts + 批量技能),学习手册新增第 9/10 章。`,
+    text: `v${PROJECT_VERSION} 发布 —— 学习手册第 11 章(SEO 进阶:排名 + AI 引用)、2026 Google 规范更新同步进 docs/seo.md、新增公开路线图 docs/roadmap.md。`,
     href: RELEASES,
   },
   hero: {
@@ -682,12 +682,12 @@ pnpm install && pnpm dev`,
   handbook: {
     hubTitle: 'AnvilWiki 文档中心',
     hubSubtitle:
-      '两本相互独立的实操手册,按完全零基础标准编写:学习手册 10 章带你从选游戏走到上线、收录、变现,再教你把站打磨成模板、批量铺内页放大;开发手册 7 章覆盖定制与工程。每一步都是 SOP + 可复制的 AI 提示词。',
+      '两本相互独立的实操手册,按完全零基础标准编写:学习手册 11 章带你从选游戏走到上线、收录、变现,再教你把站打磨成模板、批量铺内页放大、把排名和 AI 引用做上去;开发手册 7 章覆盖定制与工程。每一步都是 SOP + 可复制的 AI 提示词。',
     manuals: {
       learn: {
         label: '学习手册',
         description:
-          '10 章,零经验起步:选对游戏、装好工具、建起自己的站、首日用 AI 产出 10 页、被 Google 收录、接上广告、每周 30 分钟运营节奏,最后把第一个站打磨成模板、批量做出几十个流量入口。',
+          '11 章,零经验起步:选对游戏、装好工具、建起自己的站、首日用 AI 产出 10 页、被 Google 收录、接上广告、每周 30 分钟运营节奏,把第一个站打磨成模板、批量做出几十个流量入口,最后从被收录走到有排名、被 AI 引用。',
       },
       dev: {
         label: '开发手册',

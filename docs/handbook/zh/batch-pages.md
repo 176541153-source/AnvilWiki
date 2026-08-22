@@ -90,4 +90,4 @@ pnpm bulk-new-posts             # 真实写入。全部是 draft:true 草稿,不
 
 ## 学完之后
 
-学习手册到这里完整闭环:选品 → 建站 → 产页 → 被收录 → 变现 → 保鲜 → 模板化 → 批量放大。接下来三条路:回第 8 章把周节奏跑稳;进[开发手册](/zh/landing/docs/architecture)深度定制;或把你的站提 PR 加进 AnvilWiki 官网展示墙(改 `src/config/landing.ts` 的 showcase 数据)——你的真实案例,就是这套模板最好的广告。
+批量铺完内页,学习手册还差最后一块拼图:收录只是入场券,排名和 AI 引用才是流量——[去第 11 章 · SEO 进阶](/zh/landing/docs/seo-traffic),把每个内页对准的搜索词真正做满。之后:回第 8 章把周节奏跑稳;进[开发手册](/zh/landing/docs/architecture)深度定制;或把你的站提 PR 加进 AnvilWiki 官网展示墙(改 `src/config/landing.ts` 的 showcase 数据)——你的真实案例,就是这套模板最好的广告。

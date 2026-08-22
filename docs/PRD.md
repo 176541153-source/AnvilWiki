@@ -279,7 +279,7 @@ anvilwiki/
 ├── LICENSE / CONTRIBUTING.md / CHANGELOG.md
 ├── docs/
 │   ├── PRD.md                    # ⭐ 本文档
-│   ├── handbook/<locale>/<slug>.md  # ⭐ 站内文档中心源码（learn 10 章 + dev 7 章，en/zh；fork 保留）
+│   ├── handbook/<locale>/<slug>.md  # ⭐ 站内文档中心源码（learn 11 章 + dev 7 章，en/zh；fork 保留）
 │   ├── deployment.md / apply-template.md / content-format.md
 │   ├── game-selection.md / staying-up-to-date.md / development.md / seo.md
 │   └── superpowers/              # specs + plans（架构决策存档）
@@ -1316,6 +1316,7 @@ describe('sitemap', () => {
 | v1.16 | 社区案例库（Showcase：真实用户站点展示） | 低 | ✅ 已实现（首批 3 站点 aniimo.wiki / nomanssky.wiki / steal-anegg.wiki；数据源唯一 `landing.ts` 的 `COMMUNITY_SITES`，展示 3 处：/landing 与 /zh/landing 的 CommunitySites 区块 + README 中英表格；数据与组件均在 CLI `LANDING_PATHS` 内，fork 自动清理；详见 §15.6；v1.16.0 已发版） |
 | v1.17 | demo 媒体示范 + 媒体密度指引（拉平「能力 vs 示范」倒挂） | 中 | ✅ 已实现（每类文章完整示范媒体能力：codes 双语封面、boss 机制画廊（`src/assets/gallery/`）、tier-list 正文内联卡片图（`public/images/articles/`）、i18n 视频对齐；`scripts/gen-demo-media.mjs` 生成 7 张示意图可复现；`.prose img:not([class])` 16:9 零 CLS 盒子；媒体密度表进 content-format.md / anvil-new-article skill / AGENTS.md / 学习手册 first-10-pages 章中英；fork 清理：apply-template `clearDemoAssets` + setup.yml 同步按名删 demo 素材（fork 模拟构建绿）；v1.17.0 已发版，v1.17.1 复审补丁（图内事实校正：3 标记/20s puddle/2s 窗口/wind-up 数值对齐正文）） |
 | v1.18 | 模板化 + 批量内页（生财航海关卡 7/8：放大能力） | 高 | ✅ 已实现（`pnpm template-audit` 模板健康检查：代码层纯净度（注释剥离后扫 demo 字符串）/配置层换皮/内容层可替换性/换皮残留 4 组 ✅⚠️❌ 评分，❌ 才非零退出；`pnpm bulk-new-posts` 批量脚手架：CSV/TSV 关键词清单（RFC4180 引号解析）→ 全量校验（locale/category/slug 冲突/description 40-165）→ 全部合法才写入 `draft: true` 草稿，已存在文件跳过绝不覆盖，`--dry-run` 预览；`.agent/skills/anvil-batch-articles` 批量内容技能（意图归类→清单→统一提示词→全批验收，含灌水/编造/内链/句式重复 5 条铁律）；学习手册新增第 9 章「把第一个站打磨成模板」+ 第 10 章「批量做内页」中英（learn 8→10 章，提示词 13→16 个——13 为 v1.17.1 加媒体提示词后已漂移未同步的旧值）；README/docs/landing/AGENTS 计数同步；发版前专家审查补 8 项修复：占位 description 长标题超 165 会炸 build→自动降级、demo 文章内容级检测、site.name 换皮检查、`-n` 别名/未闭合引号/目录入参边界、第 9 章三层表格对齐规格、zh 错字；v1.18.0 已发版） |
+| v1.19 | SEO 进阶 + 2026 搜索格局对齐 | 中 | ✅ 已实现（学习手册第 11 章 `seo-traffic`「SEO 进阶：从被收录到排上去，再到被 AI 引用」中英——一页一词选词地图、单页做满自检清单、站点信任三慢变量、2026 新规则失效清单（FAQ 富结果移除/llms.txt 对 Google 无效/AI Overviews 引用偏好/封面图成图片搜索入口），配 2 个可复制提示词（关键词选题分析 + 全站 SEO 自检），learn 10→11 章、提示词 16→18 个；`docs/seo.md` 新增「Google 官方规范更新记录（2026）」9 条时间线（含 2026-08-18~21 spam update 与 08-20 preferred sources）；`docs/content-format.md` 媒体密度表补封面图质量三原则（og:image 自 2026-03 起为 Google 选图首选）；新增 `docs/roadmap.md` 公开路线图（八段演化主线 + 近期候选 + v2.0 方向 + 不做清单）；README/docs/landing/AGENTS 计数同步；v1.19.0 已发版） |
 
 **v1.3 范围说明**：
 - `timeline`：✅ 实现 —— 版本日志/活动时序，零副作用，商业价值正（老玩家点进 patch notes 文章页）。
@@ -1369,7 +1370,7 @@ describe('sitemap', () => {
 - **官方 demo**：`anvilwiki.pages.dev`，用虚构游戏 "Anvil Quest" 做一个完整 demo 站。
 - **源码**：demo 内容就在本仓库内（`src/content/wiki/`，英文在根、日文带前缀）——fork 后由 `pnpm apply-template` / setup 工作流整体替换。
 - **目的**：让用户直观看到 AnvilWiki 长什么样、性能如何。
-- **文档中心**：站内 `/landing/docs` 双手册（learn 10 章 + dev 7 章，中英），markdown 源在 `docs/handbook/`，fork 保留。
+- **文档中心**：站内 `/landing/docs` 双手册（learn 11 章 + dev 7 章，中英），markdown 源在 `docs/handbook/`，fork 保留。
 
 ### 15.4 社区运营
 
