@@ -24,6 +24,7 @@ const GATES = '.github/actions/gates/action.yml';
 const CI = '.github/workflows/ci.yml';
 const AUTO = '.github/workflows/auto-content.yml';
 const AUDIT = '.github/workflows/content-pipeline.yml';
+const RELEASE_OPS = '.github/workflows/release-ops.yml';
 
 const EIGHT_GATES = [
   'pnpm lint',
@@ -103,7 +104,7 @@ describe('action pinning consistency', () => {
     // A one-character transcription typo in a pinned SHA fails at run time
     // with a confusing "unable to find version" — so pin the invariant here.
     const byAction = new Map<string, Set<string>>();
-    for (const rel of [CI, AUTO, AUDIT]) {
+    for (const rel of [CI, AUTO, AUDIT, RELEASE_OPS]) {
       const raw = readFileSync(join(root, rel), 'utf8');
       for (const m of raw.matchAll(/uses: ((?:actions|pnpm)\/[a-z-]+)@([0-9a-f]{40})/g)) {
         const pins = byAction.get(m[1]) ?? new Set<string>();
