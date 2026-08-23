@@ -98,6 +98,26 @@ describe('auto-content pipeline safety contract', () => {
   });
 });
 
+describe('action pinning consistency', () => {
+  test('checkout/setup-node/pnpm SHAs are identical across all workflows', () => {
+    // A one-character transcription typo in a pinned SHA fails at run time
+    // with a confusing "unable to find version" — so pin the invariant here.
+    const byAction = new Map<string, Set<string>>();
+    for (const rel of [CI, AUTO, AUDIT]) {
+      const raw = readFileSync(join(root, rel), 'utf8');
+      for (const m of raw.matchAll(/uses: ((?:actions|pnpm)\/[a-z-]+)@([0-9a-f]{40})/g)) {
+        const pins = byAction.get(m[1]) ?? new Set<string>();
+        pins.add(m[2]);
+        byAction.set(m[1], pins);
+      }
+    }
+    expect(byAction.size).toBeGreaterThan(0);
+    for (const [name, pins] of byAction) {
+      expect([...pins], `${name} should be pinned to exactly one SHA everywhere`).toHaveLength(1);
+    }
+  });
+});
+
 describe('freshness audit stays read-only', () => {
   test('upstream-only guard and issues-only permissions unchanged', () => {
     const wf = readWorkflow(AUDIT) as {
