@@ -238,7 +238,7 @@ const en: LandingContent = {
   description:
     'An open-source game wiki template with an AI-native content workflow: pick the right game, generate pages by talking to your AI tool, codes pages stay fresh on autopilot. Lighthouse 4×100, free on Cloudflare, 100% ad revenue yours.',
   announcement: {
-    text: `v${PROJECT_VERSION} is live — the content operating system: PR-gated content pipeline (keyword list → gates → draft PR), anvilwiki-ops 1.0 (multi-site + AI referral tracking), pnpm gen-covers og:image generation, and an affiliate suggestion slot. Zero breaking changes for forks.`,
+    text: `v${PROJECT_VERSION} is live — the content operating system: PR-gated content pipeline (keyword list → eight quality gates → draft PR), anvilwiki-ops 1.0 (multi-site + AI referral tracking), pnpm gen-covers og:image generation, and an affiliate suggestion slot. Zero breaking changes for forks.`,
     href: RELEASES,
   },
   hero: {

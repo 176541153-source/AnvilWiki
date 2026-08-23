@@ -23,7 +23,9 @@
 | [development.md](development.md) | 给模板本身写代码:架构、模式、验证、发版 | 贡献者 / 模板开发者 |
 | [PRD.md](PRD.md) | 完整产品设计文档(架构、数据模型、路线图) | 深入理解每个设计决策 |
 | [roadmap.md](roadmap.md) | 演化主线 + 接下来的方向(含不做清单) | 想判断模板方向的人 |
-| [ROADMAP-v1.5-v1.6.md](ROADMAP-v1.5-v1.6.md) | v1.5-v1.8 的规划存档(专家团审计产出) | 想了解演进逻辑的人 |
+| [ROADMAP-v1.5-v1.6.md](ROADMAP-v1.5-v1.6.md) | v1.5-v1.6 的规划存档(专家团审计产出,已交付并入演化主线) | 想了解演进逻辑的人 |
+| [superpowers/specs/](superpowers/specs/) | 重大特性设计决策记录(ADR 级:v2.0 内容 OS、anvil-ops CLI+MCP) | 想追溯设计决策的人 |
+| [superpowers/plans/](superpowers/plans/) | anvil-ops P1-P3 实施计划(执行细节存档) | 想复刻同类工具的人 |
 
 ## 阅读路径
 

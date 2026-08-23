@@ -49,7 +49,7 @@ noindex: false
 | `draft`        | boolean  | 可选 | 默认 `false`                         | 草稿：`pnpm dev` 可预览，生产构建完全排除（页面/列表/RSS/sitemap） |
 | `gameVersion`  | string   | 可选 | ≤ 20 字符                            | 适用的游戏版本号（如 `v2.5`），文章头渲染成徽章——快速迭代游戏的时效性/E-E-A-T 信号 |
 | `noindex`      | boolean  | 可选 | 默认 `false`                         | 设为 `true` 禁止搜索引擎索引此页         |
-| `summary`      | string   | 可选 | ≤ 200 字符                           | Quick Answer 卡片 + AI Overviews 摘要候选 |
+| `summary`      | string   | 可选 | ≤ 400 字符（40–60 词直答）           | Quick Answer 卡片 + AI Overviews 摘要候选 |
 | `author`       | string   | 可选 | 缺省用 `site.defaultAuthor`           | 作者署名（E-E-A-T）                       |
 | `boss`         | object   | 可选 | hp/weakness/resistant/location/recommendedLevel | 结构化 Boss 数据卡（正文前渲染）   |
 | `videos`       | string[] | 可选 | YouTube 视频 ID（11 位，非完整 URL）  | 文章底部"相关视频"懒加载嵌入（每条生成 VideoObject JSON-LD） |

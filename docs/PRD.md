@@ -344,9 +344,10 @@ anvilwiki/
 ├── .agent/skills/                # ⭐ AI 内容技能（anvil-new-article / anvil-batch-articles / anvil-update-codes / anvil-refresh）
 └── .github/
     ├── workflows/
-    │   ├── ci.yml                # 8 道门禁（lint/typecheck/test/check-config/build/check-content/check-links/check-i18n，门禁定义在共享 composite action .github/actions/gates）
+    │   ├── ci.yml                # 8 道门禁（lint/typecheck/test/check-config/build/check-content/check-links/check-i18n，门禁定义在共享 composite action .github/actions/gates）+ ops-toolkit job（tools/anvil-ops 的 typecheck/test/build）
     │   ├── auto-content.yml      # ⭐ v2.0 内容管道：确定性生成 → 八道门禁 → draft PR（workflow_dispatch）
     │   ├── content-pipeline.yml  # 每周新鲜度巡检 → issue
+    │   ├── release-ops.yml       # anvilwiki-ops npm 发布（OIDC Trusted Publishing，零令牌）
     │   └── setup.yml             # fork 一键初始化（workflow_dispatch）
     ├── ISSUE_TEMPLATE/ bug-report.md + feature-request.md
     └── PULL_REQUEST_TEMPLATE.md
@@ -1226,7 +1227,7 @@ jobs:
           site-url: ...                # /check-content/check-links/check-i18n 一步到位；
 ```                                    # auto-content.yml 复用同一份定义，防止两处漂移
 
-另有三条工作流：`auto-content.yml`（⭐ v2.0 内容管道：workflow_dispatch 触发确定性生成器 → 八道门禁全绿才开 draft PR，LLM 永不进 CI，详见 docs/content-pipeline.md 与 ADR-004）、`content-pipeline.yml`（每周新鲜度巡检 → issue，仅上游仓库运行）与 `setup.yml`（fork 一键初始化，workflow_dispatch）。
+另有四条工作流：`auto-content.yml`（⭐ v2.0 内容管道：workflow_dispatch 触发确定性生成器 → 八道门禁全绿才开 draft PR，LLM 永不进 CI，详见 docs/content-pipeline.md 与 ADR-004）、`content-pipeline.yml`（每周新鲜度巡检 → issue，仅上游仓库运行）、`release-ops.yml`（anvilwiki-ops 的 npm 发布通道：OIDC Trusted Publishing 零令牌，tag 与 package.json 版本一致性有守卫）与 `setup.yml`（fork 一键初始化，workflow_dispatch；初始化 PR 开出前 workflow 自己会跑一次 build 验证）。
 
 ### 13.3 关键测试用例
 

@@ -640,7 +640,7 @@ rendered from the frontmatter title), and start each section with a direct
  * Directory counts in removeLandingPage() are top-level entries (approximate).
  */
 const LANDING_PATHS = [
-  'src/components/landing', // directory (13 components incl. docs hub/chapter/nav)
+  'src/components/landing', // directory (16 components incl. docs hub/chapter/nav/comparison)
   'src/config/landing.ts',
   'src/pages/landing.astro', // file — coexists with the src/pages/landing/ dir
   'src/pages/landing', // directory (docs hub + chapter routes)

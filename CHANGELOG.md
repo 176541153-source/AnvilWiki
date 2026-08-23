@@ -5,6 +5,34 @@ All notable changes to AnvilWiki are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+**v2.0.0 发布当日的全面审计修复(5 视角:代码层/CI+脚本/ops CLI/文档一致性/内容+依赖)。机械门禁当时全绿——本批修的全是门禁看不见的层。**
+
+### Fixed
+
+- **`category` 变硬门禁**:`src/content.config.ts` 从 `z.string()` 改为 `z.enum(CONTENT_TYPES)`——打错分类名此前会产出 HTTP 200 的软 404 页并被 sitemap/RSS/llms.txt 照常发布,现在构建直接失败。
+- **第八道门禁真正能红**:`check-i18n` 新增 `--strict-ui` 模式(缺 UI key = 模板缺陷,exit 1;文章翻译深度仍为报告项——内容选择不是模板错误),共享门禁 action 改跑 strict-ui,「八道门禁」的承诺从 7+1 报告变成 8 道真门禁。
+- **`setup.yml` fork 初始化 PR 开出前先验证构建**:此前是破坏性变更(rm landing/删 demo MDX)零验证——GITHUB_TOKEN PR 不触发 CI、workflow 自己也不跑 build,清单漂移要等 fork 首次 Cloudflare Pages 构建才炸;现在开 PR 前跑 `pnpm install && pnpm build`,且 wrangler.toml 重写步骤断言正则命中(subn 计数,静默 no-op 直接失败)。
+- **`auto-content.yml` 两个静默缺陷**:粘贴的 `csv_text` 会被提交进 PR 合入 main → create-pull-request 加 `add-paths: src/content/**`(PR 只含内容变更);`bulk-new-posts` 零产出时 exit 0 导致「全绿但无 PR」→ 新增 `--require-output` 旗标,管道使用之。
+- **tools/anvil-ops 测试进主 CI**:ci.yml 新增 `ops-toolkit` job(typecheck/test/build)——此前动 ops 代码的 PR 落 main 零测试信号,发布时才炸(7993ae6 事故的根因)。
+- **release-ops 发布守卫**:tag `ops-vX.Y.Z` 与 `tools/anvil-ops/package.json` 版本一致性校验(不符即 fail);publish job 补 `timeout-minutes`;npm 全局升级钉在 major 11(`npm@11`,不再浮动 `^11`)。
+- **sitemap hreflang 与页面 head 的矛盾**:去掉 sitemap `i18n` 全量选项(它给每个 URL 虚构所有语言的 alternate,与回退页「只有 en」的页面级声明冲突,Google 会丢弃冲突簇);改为 `serialize` 钩子按真实 MDX 存在性生成 alternates(文章按覆盖语言、列表页按全部语言路由)。
+- **anvilwiki-ops MCP 站点解析吞错**:`resolveEffectiveRoot` 只把「无站点配置」的 OpsError 落到 defaultSite,TOML 解析错误直接抛出——此前 cwd 的 wrangler.toml 损坏会把 submit_pr 静默指到另一个站的仓库。
+- **anvilwiki-ops GSC 错误处理死代码激活**:gaxios 对非 2xx 直接 throw,精心写的 403「共享 SA」修复指引从未被执行——现在统一包装 HTTP 错误(403/401/429 各带修复指引)。
+- **anvilwiki-ops doctor 从子目录运行误报**:`.env` 改从发现的站点根(`site.root`)读取,与 metrics/insights 行为一致。
+- **anvilwiki-ops MCP stdio 冻结**:audit/submit_pr 等重生成操作改经 worker 线程执行(spawnSync 曾把 Node 事件循环冻住几分钟,keepalive 超时的客户端会误杀进行中的调用);源码/注入测试运行自动回退进程内。
+- **anvilwiki-ops 健壮性批**:GSC 失败不再连累 CF 半份报告(独立降级,全失败才报错)+ GSC 1000 行/CF 100 行截断显式提示;GSC 窗口差一修复(`--days 28` 真的是 28 天);`sites.toml` 写入原子化(临时文件+rename);`sites add` 站点名合法字符校验;AIO 归档同日导入不再静默覆盖;`git add -A` 后检测已暂存的 `.env` 并拒绝提交;`submit` 失败提示不再引用不存在的 push-only 命令;`sites`/`mcp` 子命令收到全局 `--site/--all` 时明确报错而非静默忽略。
+- **脚本批**:`bulk-new-posts`/`new-post` 的 navigation/routing 解析失败改为响亮报错(删硬编码回退清单);slugify Unicode 化(CJK slug 可用,`新手攻略` 不再变空串);YAML 模板反斜杠转义(标题含 `\` 不再炸/腐化 frontmatter);`new-post` 描述超 165 也警告;`new-locale` 四处正则重写全部断言命中(不再「打印成功但文件没动」);`gen-covers` 字体下载加 120s 超时;`content-pipeline.yml` 的 `!failure()` 改 `success()`(取消状态不再落入建 issue 分支)。
+- **代码层批**:英文回退页的「相关文章/上一篇下一篇」改从 servedLocale 取集合(此前静默消失);相关文章按日期排序(原为路径字母序);tag 路由统一走 `parseEntryId`(两处内联解析行为不一致);画廊灯箱空 `src=""` 的伪请求移除;handbook TechArticle 缺 `updated` 时省略日期(不再用构建时间伪造新鲜度);ListPage 无 overview 时的 meta description 走 i18n(`shared.defaultListDescription` 新键 en/ja);HomePage 硬编码英文兜底删除;`summary` schema 上限 200→400 字符(40-60 词的英文实际 250-350 字符,旧上限与字数规则自相矛盾);死导出清理(`getAllEntriesByCategory`/`allLocales`/`NAV_BY_KEY`/`localeFromPath`)。
+- **workflows.test.ts 契约硬化**:SHA 钉断言覆盖全部 5 个 workflow(含 setup.yml)+ 一切非本地 `uses:` 必须 40 位 SHA(含 create-pull-request);门禁断言改为解析 YAML 后精确比对 8 条命令(顺序敏感、各自独立 step,注释里的字样不再能骗过测试);新增 setup.yml「build 先于 PR」与 ci.yml ops-toolkit job 断言。
+- **文档一致性批**:`anvil-new-article` skill 仍教 800×450 旧封面标准(会持续毒化 AI 生成内容)→ 1200×675 + gen-covers;AGENTS.md 测试注释 6→9 套件、Commands 补 `gen-covers`、ops 测试计数更新(111→125);PRD 工作流计数 4→5(补 release-ops.yml);v2.0.0 发布日期三处统一为 2026-08-23;CHANGELOG 2.0.0 条目重复短语修正;EN 发布横幅补「eight quality gates」与中文对齐;孤儿平台验证 TXT 删除。
+- **demo 内容批**:codes 页(en/ja)刷新(过期 1 码+新增 ANVIL-DAWN,lastModified 2026-08-23,补 `gameVersion: v2.5`,违反自家 7 天新鲜度规则 8 天的问题闭环);3 篇英文 summary 增重至 40-60 词(规则本意,AI Overviews 候选字段不再欠重);emberfang(en/ja)补 gallery 机制图 2 张(gen-demo-media 新增 SVG 绘制)、stormcaller(en)补视频嵌入——boss 指南媒体配对规则(videos+gallery)全部达标;ja tags 对齐 en(freebies/ash-warden);`ja/guides/` 目录补齐(routing.ts 约定)。
+
+### anvilwiki-ops(待发版,含 1.0.1 候选内容)
+
+- 测试 111→125(新增 cli-flags 纯函数测试 9 例、resolveEffectiveRoot 错误判别 3 例、包完整性 smoke 3 例替换占位断言;smoke 从 `1+1` 变成 bin/files/version 真校验)。
+
 ## [2.0.0] — 2026-08-23
 
 **内容经营操作系统:PR 门控内容管道 + 多站管理 + 封面产能 + 变现建议位。模板仓库零 breaking——fork 用户常规 merge 即可,无迁移步骤;唯一契约变化在 `anvilwiki-ops` 0.x→1.0.0(MCP 工具加可选 `site` 参数,不传行为与 0.x 一致)。**
@@ -20,7 +48,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`AffiliateSuggestion` 文末建议位**(`src/components/ads/AffiliateSuggestion.astro` + `src/config/affiliates.ts` + `src/lib/affiliates.ts`):config 层驱动(affiliate 是逐站内容数据非部署密钥),默认空数组 = 不渲染(保 Lighthouse 4×100 开箱契约与 fork 纯净);渲染至多 2 张 AffiliateLink 卡片,`categories` 可选按栏目限定;`shared.sponsoredLabel` i18n(en/ja),AffiliateLink 新增可选 `sponsoredLabel` prop 向后兼容。
 - **新文档**:`docs/content-pipeline.md`(管道安全契约六条 + fork 启用步骤 + 与每周审计分工)、`docs/multi-site.md`(注册表心智模型 + AI 引用三通道 + 新站流程),均入 `docs/README.md` 快速索引与决策地图;开发手册第 7 章「AI 自动化运营」双语补「一套工具管 N 个站」「关键词清单直接变草稿 PR」两节(章数不变 learn 11 / dev 7,提示词 18 不变)。
 - **决策记录与 ADR**:`docs/superpowers/specs/2026-08-22-v2.0-content-os-design.md`(六项定档);PRD 新增 ADR-004(内容管道=确定性+PR 门控,LLM 永不进 CI)、ADR-005(多站=工具层,模板一仓一站)。
-- **测试**:root 测试套件 6→9(新增 workflows/covers/affiliates 三套件);anvilwiki-ops 60→111——tests/workflows.test.ts(管道安全契约:dispatch-only/权限精确/门禁先于 PR/draft/零 secrets/审计只读)、tests/covers.test.ts(品牌色解析/CJK 判定/字号启发/manifest hash)、tests/affiliates.test.ts(建议位筛选);anvilwiki-ops 60→111。
+- **测试**:root 测试套件 6→9(新增 workflows/covers/affiliates 三套件)——tests/workflows.test.ts(管道安全契约:dispatch-only/权限精确/门禁先于 PR/draft/零 secrets/审计只读)、tests/covers.test.ts(品牌色解析/CJK 判定/字号启发/manifest hash)、tests/affiliates.test.ts(建议位筛选);anvilwiki-ops 60→111。
 
 ### Changed
 
