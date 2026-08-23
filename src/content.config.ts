@@ -1,6 +1,7 @@
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
+import { CONTENT_TYPES } from './config/navigation';
 
 /**
  * Wiki content collection.
@@ -24,7 +25,12 @@ const wiki = defineCollection({
     z.object({
       title: z.string().max(80),
       description: z.string().min(40).max(165),
-      category: z.string(),
+      /**
+       * Hard gate: the category MUST be a NAVIGATION_CONFIG key. A typo'd
+       * category would otherwise build a soft-404 page that sitemap/RSS/
+       * llms.txt still publish — the enum fails the build instead.
+       */
+      category: z.enum(CONTENT_TYPES as [string, ...string[]]),
       date: z.coerce.date(),
       lastModified: z.coerce.date().optional(),
       image: image().optional(),
@@ -41,8 +47,14 @@ const wiki = defineCollection({
        * fast-patching games. Optional.
        */
       gameVersion: z.string().max(20).optional(),
-      /** Quick-answer summary shown before the article body (AI Overviews / featured snippet). */
-      summary: z.string().max(200).optional(),
+      /**
+       * Quick-answer summary shown before the article body (AI Overviews /
+       * featured snippet). Authoring rule: 40–60 words. English at that
+       * length runs ~250–350 chars, so the cap is 400 — the old 200-char cap
+       * contradicted the word rule (40 English words ≈ 230+ chars) and
+       * silently forced every compliant summary underweight.
+       */
+      summary: z.string().max(400).optional(),
       /** Article author name (E-E-A-T signal). Falls back to site.defaultAuthor. */
       author: z.string().optional(),
       /**

@@ -50,7 +50,7 @@ jobs:
         run: pnpm refresh-audit | tee /tmp/audit.md
 
       - name: File tracking issue
-        if: ${{ !failure() }}
+        if: ${{ success() }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |

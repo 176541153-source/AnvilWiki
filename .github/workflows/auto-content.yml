@@ -74,7 +74,10 @@ jobs:
 
       - name: Generate (import-csv → draft scaffolds)
         if: ${{ inputs.task == 'import-csv' }}
-        run: pnpm bulk-new-posts
+        # --require-output: a run that scaffolds 0 articles (empty CSV, or
+        # every row already exists) fails loudly instead of passing all gates
+        # green and then creating no PR at all.
+        run: pnpm bulk-new-posts --require-output
 
       # All eight gates must pass here — a red gate fails the run and NO PR
       # is created. Same composite action CI uses, so the definition cannot
@@ -90,6 +93,13 @@ jobs:
           branch: chore/auto-content
           delete-branch: true
           draft: true
+          # Only content changes belong in the PR. Without this, a pasted
+          # csv_text would write new-posts.csv to the repo root and CPR would
+          # commit it to main on merge — later dispatches would silently
+          # re-read that stale list. (Deliberately committing a new-posts.csv
+          # yourself still works; CPR just never stages it for you.)
+          add-paths: |
+            src/content/**
           title: 'auto: draft articles from keyword list (import-csv)'
           commit-message: 'chore(content): scaffold draft articles via auto-content pipeline'
           body: |

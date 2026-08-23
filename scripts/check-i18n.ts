@@ -14,8 +14,15 @@
  * Pure fs scan (no astro:content import) so it runs anywhere, fast.
  *
  * Usage:
- *   pnpm check-i18n               # report only, always exits 0
- *   pnpm check-i18n --strict      # exit 1 if anything is missing (CI gate)
+ *   pnpm check-i18n                # report only, always exits 0
+ *   pnpm check-i18n --strict       # exit 1 if anything is missing (articles OR UI keys)
+ *   pnpm check-i18n --strict-ui    # exit 1 only if UI KEYS are missing (the CI gate)
+ *
+ * Why the CI gate is --strict-ui and not --strict: missing UI keys are a
+ * template defect (a key was added to en.json but never translated — the
+ * locale renders English silently), while missing ARTICLES are a content
+ * choice (translation depth is up to the site owner; the detail-page
+ * fallback is by design). Gates must fail on the former, never the latter.
  */
 
 import * as fs from 'node:fs';
@@ -23,6 +30,7 @@ import * as path from 'node:path';
 
 const ROOT = process.cwd();
 const STRICT = process.argv.includes('--strict');
+const STRICT_UI = process.argv.includes('--strict-ui');
 const CONTENT_BASE = path.resolve(ROOT, 'src/content/wiki');
 const LOCALES_DIR = path.resolve(ROOT, 'src/locales');
 
@@ -78,6 +86,7 @@ function flattdefaultKeys(obj: unknown, prefix = ''): string[] {
 }
 
 let missingAnything = false;
+let missingUiKeys = false;
 
 console.log(`\n🌐 i18n coverage report — default locale: ${defaultLocale}\n`);
 
@@ -119,6 +128,9 @@ for (const locale of locales.filter((l) => l !== defaultLocale)) {
   const locJsonPath = path.join(LOCALES_DIR, `${locale}.json`);
   if (!fs.existsSync(locJsonPath)) {
     console.log(`   ⚠️ No src/locales/${locale}.json — UI runs on English fallback.`);
+    // A locale without its JSON is 100% English UI — a template defect under
+    // --strict-ui (new-locale.ts scaffolds the file; its absence is a bug).
+    missingUiKeys = true;
     continue;
   }
   const locKeys = new Set(
@@ -133,12 +145,17 @@ for (const locale of locales.filter((l) => l !== defaultLocale)) {
   // Print at most 15 missing keys — the list can be long for a fresh locale.
   for (const k of missingKeys.slice(0, 15)) console.log(`   ⬜ missing:  ${k}`);
   if (missingKeys.length > 15) console.log(`   … and ${missingKeys.length - 15} more`);
+  if (missingKeys.length > 0) missingUiKeys = true;
   console.log('');
 }
 
-console.log(
-  missingAnything
-    ? `ℹ️ Missing items fall back to English at runtime (articles 404-never, UI deepMerge).`
-    : `✅ All locales fully covered.`,
-);
-if (STRICT && missingAnything) process.exit(1);
+if (missingUiKeys) {
+  console.log(`❌ Missing UI keys — the locale JSON is behind en.json (template defect).`);
+} else {
+  console.log(
+    missingAnything
+      ? `ℹ️ Missing items fall back to English at runtime (articles 404-never, UI deepMerge).`
+      : `✅ All locales fully covered.`,
+  );
+}
+if ((STRICT && missingAnything) || (STRICT_UI && missingUiKeys)) process.exit(1);
