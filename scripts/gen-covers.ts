@@ -152,7 +152,8 @@ async function ensureNotoOtf(script: Script, weight: 'Regular' | 'Bold'): Promis
   }
   const url = `${NOTO_BASE}/${v.region}/${file}`;
   console.log(`  downloading ${file} (~16MB, cached for future runs) …`);
-  const res = await fetch(url);
+  // AbortSignal — without it a stalled connection hangs the script forever.
+  const res = await fetch(url, { signal: AbortSignal.timeout(120_000) });
   if (!res.ok) {
     throw new Error(
       `${url} → HTTP ${res.status}. Offline? Pre-download ${file} into a dir and pass --fonts-dir <dir>.`,

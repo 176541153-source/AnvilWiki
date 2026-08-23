@@ -19,36 +19,35 @@ const CONTENT_BASE = path.resolve(process.cwd(), 'src/content/wiki');
 
 // Read navigation categories from config so the prompt stays in sync.
 // We avoid importing the .ts directly (would need tsx loader chaining) and
-// instead read the file as text — simple and robust.
+// instead read the file as text — simple and robust. Parse failures must be
+// loud: a silent fallback list would prompt against the wrong vocabulary.
 function readCategories(): string[] {
-  try {
-    const navPath = path.resolve(process.cwd(), 'src/config/navigation.ts');
-    const src = fs.readFileSync(navPath, 'utf8');
-    const matches = Array.from(src.matchAll(/key:\s*['"]([^'"]+)['"]/g));
-    const keys = matches.map((m) => m[1]);
-    return keys.length > 0 ? keys : ['bosses', 'guides', 'items', 'codes'];
-  } catch {
-    return ['bosses', 'guides', 'items', 'codes'];
+  const src = fs.readFileSync(path.resolve(process.cwd(), 'src/config/navigation.ts'), 'utf8');
+  const keys = Array.from(src.matchAll(/key:\s*['"]([^'"]+)['"]/g)).map((m) => m[1]);
+  if (keys.length === 0) {
+    console.error('❌ Could not parse category keys from src/config/navigation.ts.');
+    process.exit(1);
   }
+  return keys;
 }
 
 function readLocales(): string[] {
-  try {
-    const routingPath = path.resolve(process.cwd(), 'src/i18n/routing.ts');
-    const src = fs.readFileSync(routingPath, 'utf8');
-    const match = src.match(/locales\s*=\s*\[([^\]]+)\]/);
-    if (!match) return ['en'];
-    return Array.from(match[1].matchAll(/['"]([^'"]+)['"]/g)).map((m) => m[1]);
-  } catch {
-    return ['en'];
+  const src = fs.readFileSync(path.resolve(process.cwd(), 'src/i18n/routing.ts'), 'utf8');
+  const match = src.match(/locales\s*=\s*\[([^\]]+)\]/);
+  if (!match) {
+    console.error('❌ Could not parse locales from src/i18n/routing.ts.');
+    process.exit(1);
   }
+  return Array.from(match[1].matchAll(/['"]([^'"]+)['"]/g)).map((m) => m[1]);
 }
 
+/** Unicode-aware slug: keeps letters/numbers of ANY script (CJK included) so
+ * `新手攻略` stays a usable slug — Astro percent-encodes it in URLs. */
 function slugify(s: string): string {
   return s
     .toLowerCase()
     .trim()
-    .replace(/[^\w\s-]/g, '')
+    .replace(/[^\p{L}\p{N}\s-]/gu, '')
     .replace(/[\s_-]+/g, '-')
     .replace(/^-+|-+$/g, '');
 }
@@ -79,7 +78,9 @@ async function main() {
   }
   if (!categories.includes(category)) {
     const proceed = (
-      await rl.question(`⚠️ "${category}" is not in navigation.ts. Create anyway? [y/N]: `)
+      await rl.question(
+        `⚠️ "${category}" is not in navigation.ts. Create anyway? The build will FAIL (schema enum) until you add it to NAVIGATION_CONFIG. [y/N]: `,
+      )
     )
       .trim()
       .toLowerCase();
@@ -100,9 +101,9 @@ async function main() {
   }
 
   const description = (await rl.question('Description (40-165 chars, for SEO): ')).trim();
-  if (description.length < 40) {
+  if (description.length < 40 || description.length > 165) {
     console.warn(
-      `⚠️ Description is ${description.length} chars — schema requires 40-165. You can edit it later.`,
+      `⚠️ Description is ${description.length} chars — schema requires 40-165. The build will fail until you fix it.`,
     );
   }
 
@@ -127,9 +128,12 @@ async function main() {
   }
 
   const today = todayIso();
+  // Escape backslashes FIRST, then quotes: an unescaped `\t`/`\G` inside a
+  // YAML double-quoted scalar silently corrupts or breaks the frontmatter.
+  const yamlQuote = (v: string) => v.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
   const template = `---
-title: "${titleInput.replace(/"/g, '\\"')}"
-description: "${description.replace(/"/g, '\\"')}"
+title: "${yamlQuote(titleInput)}"
+description: "${yamlQuote(description)}"
 category: "${category}"
 date: ${today}
 lastModified: ${today}

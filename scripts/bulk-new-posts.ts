@@ -27,6 +27,7 @@
  *   pnpm bulk-new-posts                  # reads new-posts.csv / new-posts.tsv at repo root
  *   pnpm bulk-new-posts my-keywords.csv  # explicit file
  *   pnpm bulk-new-posts --dry-run        # print the plan, write nothing
+ *   pnpm bulk-new-posts --require-output # exit 1 if 0 articles scaffolded (CI pipeline)
  *
  * Style matches scripts/new-post.ts (node builtins, emoji output).
  */
@@ -38,6 +39,10 @@ const ROOT = process.cwd();
 const CONTENT_BASE = path.resolve(ROOT, 'src/content/wiki');
 const ARGS = process.argv.slice(2);
 const DRY_RUN = ARGS.includes('--dry-run') || ARGS.includes('-n');
+// Used by auto-content.yml: scaffolding 0 articles (empty list, or every
+// row already exists) exits 1 — a pipeline run must not pass all gates
+// green and then quietly create no PR at all.
+const REQUIRE_OUTPUT = ARGS.includes('--require-output');
 
 const REQUIRED_COLUMNS = ['locale', 'category', 'slug', 'title'] as const;
 
@@ -51,32 +56,35 @@ interface Row {
 }
 
 // Same config-reading helpers as new-post.ts (regex-read, no imports).
+// A silent fallback list would validate rows against the WRONG vocabulary if
+// the source format drifts — parse failures must be loud, not papered over.
 function readCategories(): string[] {
-  try {
-    const src = fs.readFileSync(path.resolve(ROOT, 'src/config/navigation.ts'), 'utf8');
-    const keys = Array.from(src.matchAll(/key:\s*['"]([^'"]+)['"]/g)).map((m) => m[1]);
-    return keys.length > 0 ? keys : ['bosses', 'guides', 'items', 'codes'];
-  } catch {
-    return ['bosses', 'guides', 'items', 'codes'];
+  const src = fs.readFileSync(path.resolve(ROOT, 'src/config/navigation.ts'), 'utf8');
+  const keys = Array.from(src.matchAll(/key:\s*['"]([^'"]+)['"]/g)).map((m) => m[1]);
+  if (keys.length === 0) {
+    console.error('❌ Could not parse category keys from src/config/navigation.ts (expected `key: \'…\'` entries).');
+    process.exit(1);
   }
+  return keys;
 }
 
 function readLocales(): string[] {
-  try {
-    const src = fs.readFileSync(path.resolve(ROOT, 'src/i18n/routing.ts'), 'utf8');
-    const match = src.match(/locales\s*=\s*\[([^\]]+)\]/);
-    if (!match) return ['en'];
-    return Array.from(match[1].matchAll(/['"]([^'"]+)['"]/g)).map((m) => m[1]);
-  } catch {
-    return ['en'];
+  const src = fs.readFileSync(path.resolve(ROOT, 'src/i18n/routing.ts'), 'utf8');
+  const match = src.match(/locales\s*=\s*\[([^\]]+)\]/);
+  if (!match) {
+    console.error('❌ Could not parse locales from src/i18n/routing.ts (expected `locales = [\'…\']`).');
+    process.exit(1);
   }
+  return Array.from(match[1].matchAll(/['"]([^'"]+)['"]/g)).map((m) => m[1]);
 }
 
+/** Unicode-aware slug: keeps letters/numbers of ANY script (CJK included) so
+ * `新手攻略` stays a usable slug — Astro percent-encodes it in URLs. */
 function slugify(s: string): string {
   return s
     .toLowerCase()
     .trim()
-    .replace(/[^\w\s-]/g, '')
+    .replace(/[^\p{L}\p{N}\s-]/gu, '')
     .replace(/[\s_-]+/g, '-')
     .replace(/^-+|-+$/g, '');
 }
@@ -178,7 +186,9 @@ Generated files start as draft:true — they show in pnpm dev but never reach
 the production build until you flip draft off.`);
   // No default file + no explicit path = "nothing to do", not an error.
   // A named-but-missing file IS an error (handled in findInputFile).
-  process.exit(NO_INPUT_IS_ERROR ? 1 : 0);
+  // --require-output flips even this into an error (pipeline usage: a run
+  // with no input must fail, not pass green with nothing to PR).
+  process.exit(NO_INPUT_IS_ERROR || REQUIRE_OUTPUT ? 1 : 0);
 }
 
 const locales = readLocales();
@@ -312,9 +322,12 @@ for (const row of rows) {
 }
 
 const today = todayIso();
+// Escape backslashes FIRST, then quotes: an unescaped `\t`/`\G` inside a
+// YAML double-quoted scalar silently corrupts or breaks the frontmatter.
+const yamlQuote = (v: string) => v.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
 const template = (row: Row) => `---
-title: "${row.title.replace(/"/g, '\\"')}"
-description: "${row.description.replace(/"/g, '\\"')}"
+title: "${yamlQuote(row.title)}"
+description: "${yamlQuote(row.description)}"
 category: "${row.category}"
 date: ${today}
 lastModified: ${today}
@@ -370,3 +383,10 @@ console.log(
     `\n   2. Verify: pnpm check-content && pnpm build` +
     `\n   3. Flip draft:false per article when it is ready to ship.`,
 );
+
+if (REQUIRE_OUTPUT && created.length === 0) {
+  console.error(
+    `\n❌ --require-output: 0 articles scaffolded (empty list, or every row already exists). Nothing to open a PR for.`,
+  );
+  process.exit(1);
+}

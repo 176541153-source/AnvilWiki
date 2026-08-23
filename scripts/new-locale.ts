@@ -45,6 +45,27 @@ const KNOWN_LABELS: Record<string, string> = {
   pl: 'Polski',
 };
 
+/**
+ * replace() + proof it matched. A silent no-op rewrite would print "✅ added"
+ * while leaving the file untouched — a half-applied state the user only
+ * discovers at the next (skipped) typecheck.
+ */
+function mustReplace(
+  content: string,
+  re: RegExp,
+  replacement: string | ((substring: string, ...groups: string[]) => string),
+  what: string,
+): string {
+  if (!re.test(content)) {
+    console.error(`❌ Could not apply the ${what} rewrite — the source pattern did not match. Edit the file manually.`);
+    process.exit(1);
+  }
+  // String.replace overloads reject the union type; both branches return string.
+  return typeof replacement === 'string'
+    ? content.replace(re, replacement)
+    : content.replace(re, replacement);
+}
+
 async function main() {
   const rl = readline.createInterface({ input, output });
   const arg = process.argv[2]?.trim();
@@ -67,30 +88,38 @@ async function main() {
     console.error(`❌ "${locale}" is already in ${routingPath}. Nothing to do.`);
     process.exit(1);
   }
-  routing = routing.replace(
+  routing = mustReplace(
+    routing,
     /export const locales = \[([^\]]+)\] as const;/,
-    (_m, inner: string) => `export const locales = [${inner.trim()}, '${locale}'] as const;`,
-  );
+    (_m: string, inner: string) => `export const locales = [${inner.trim()}, '${locale}'] as const;`,
+    'routing.ts locales array',
+  ) as string;
   const label = KNOWN_LABELS[locale] ?? locale.toUpperCase();
-  routing = routing.replace(
+  routing = mustReplace(
+    routing,
     /export const LOCALE_LABELS: Record<Locale, string> = \{([\s\S]*?)\n\};/,
-    (_m, inner: string) =>
+    (_m: string, inner: string) =>
       `export const LOCALE_LABELS: Record<Locale, string> = {${inner.replace(/\s*$/, '')}\n  ${locale}: '${label}',\n};`,
-  );
+    'routing.ts LOCALE_LABELS map',
+  ) as string;
   write(routingPath, routing);
   console.log(`✅ ${routingPath} — added '${locale}' (${label})`);
 
   // --- 2. ui.ts: import + messages entry ------------------------------------
   const uiPath = 'src/i18n/ui.ts';
   let ui = read(uiPath);
-  ui = ui.replace(
+  ui = mustReplace(
+    ui,
     /(import \w+ from '~\/locales\/\w+\.json';\n)(?!(?:import \w+ from '~\/locales\/\w+\.json';\n)+)/,
     `$1import ${locale} from '~/locales/${locale}.json';\n`,
+    'ui.ts locale import',
   );
-  ui = ui.replace(
+  ui = mustReplace(
+    ui,
     /const messages: Record<Locale, Record<string, unknown>> = \{([\s\S]*?)\n\};/,
-    (_m, inner: string) =>
+    (_m: string, inner: string) =>
       `const messages: Record<Locale, Record<string, unknown>> = {${inner.replace(/\s*$/, '')}\n  ${locale}: ${locale} as Record<string, unknown>,\n};`,
+    'ui.ts messages map',
   );
   write(uiPath, ui);
   console.log(`✅ ${uiPath} — import + messages entry added`);
