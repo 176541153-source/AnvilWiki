@@ -7,13 +7,14 @@ lastModified: 2026-08-10
 image: '../../../../assets/covers/stormcaller-cover.png'
 gameVersion: 'v2.5'
 tags: ['boss', 'fire', 'mid-game', 'dps-check']
-summary: 'Strict 4-minute DPS check. Bring ice weapons (Ice Lance, Frost Nova). Dodge meteors every 30s, avoid her 180° Flame Whip. Mage with Ice spec is the most reliable kill at ~3:00.'
+summary: 'Stormcaller is a hard 4-minute DPS check requiring roughly 75 DPS against 18,000 HP. Bring ice weapons (Ice Lance, Frost Nova) — she resists fire. Push meteor marks to the arena edges, never stand in her 180° Flame Whip cone, and race the 4:00 Inferno enrage; Mage (Ice spec) clears most reliably at ~3:00.'
 boss:
   hp: '18,000'
   weakness: 'Ice'
   resistant: 'Fire'
   location: 'Emberfall Crater, Shattered Isles Act 2'
   recommendedLevel: '22+'
+videos: ['dQw4w9WgXcQ']
 author: 'Forge Master Kael'
 gallery:
   - image: '../../../../assets/gallery/stormcaller-arena.png'
@@ -23,6 +24,8 @@ gallery:
     caption: 'Flame Whip 180° safe zone and the 30-second meteor timeline'
     alt: 'Diagram of Stormcaller mechanics showing the Flame Whip safe zone behind the boss and the meteor drop timeline'
 ---
+
+import Video from '~/components/mdx/Video.astro';
 
 Stormcaller is the first real DPS check in Anvil Quest. She has a strict 4-minute enrage timer, and if you don't burn through her 18,000 HP fast enough, the arena fills with unavoidable fire and the run ends.
 
@@ -57,6 +60,13 @@ Stormcaller is the only boss in the game with a hard enrage timer — every othe
 Every 30 seconds, Stormcaller marks three spots on the ground. After 2 seconds, meteors land on those spots, leaving fire puddles that persist for 20 seconds.
 
 **Counter**: The arena is large enough for 6 puddles before space gets tight. Position so meteors land near the edges, not the center, to preserve your safe zone.
+
+Want the rhythm before you pull? This demo embed runs through two full minutes of the fight — meteor marks pushed to the edges and every Flame Whip wind-up answered from her flank:
+
+{/* Demo embed — the template ships a stable placeholder YouTube ID.
+    Fork sites: swap the id here AND in the frontmatter `videos:` array
+    for your own gameplay video. */}
+<Video id="dQw4w9WgXcQ" title="Meteor positioning and Flame Whip dodges (demo embed)" />
 
 ### Flame Whip (frontal cone)
 

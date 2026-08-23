@@ -12,6 +12,7 @@
  * Outputs:
  *   src/assets/covers/codes-cover.png        (codes page cover, og:image)
  *   src/assets/gallery/stormcaller-*.png     (boss guide gallery)
+ *   src/assets/gallery/emberfang-*.png       (boss guide gallery)
  *   src/assets/gallery/beginner-*.png        (beginner guide gallery)
  *   public/images/articles/weapon-*.png      (tier-list inline body images)
  *
@@ -361,11 +362,116 @@ const weaponFrostpike = weaponCard(
 );
 
 /* ------------------------------------------------------------------ */
+/* 8. emberfang-arena — Ashen Keep overhead map                        */
+/* ------------------------------------------------------------------ */
+const emberfangArena = svgDoc(
+  frame(
+    'ASHEN KEEP',
+    'EMBERFANG ARENA — OVERHEAD VIEW',
+    `
+  <g stroke='#1a1410' stroke-width='1'>
+    ${Array.from({ length: 15 }, (_, i) => `<line x1='${i * 57 + 28}' y1='0' x2='${i * 57 + 28}' y2='${H}'/>`).join('')}
+    ${Array.from({ length: 9 }, (_, i) => `<line x1='0' y1='${i * 56 + 22}' x2='${W}' y2='${i * 56 + 22}'/>`).join('')}
+  </g>
+  <rect x='256' y='104' width='338' height='270' rx='24' fill='#221711' stroke='#43291a' stroke-width='3'/>
+  <rect x='256' y='104' width='338' height='270' rx='24' fill='none' stroke='${C.orange}' stroke-width='9'/>
+  <g opacity='0.85'>
+    <circle cx='336' cy='250' r='28' fill='none' stroke='${C.red}' stroke-width='4'/>
+    <circle cx='336' cy='250' r='16' fill='${C.red}' opacity='0.28'/>
+    <circle cx='516' cy='278' r='24' fill='none' stroke='${C.red}' stroke-width='4'/>
+    <circle cx='516' cy='278' r='13' fill='${C.red}' opacity='0.28'/>
+    <circle cx='416' cy='330' r='22' fill='none' stroke='${C.red}' stroke-width='4'/>
+    <circle cx='416' cy='330' r='12' fill='${C.red}' opacity='0.28'/>
+  </g>
+  <g>
+    <circle cx='424' cy='192' r='32' fill='${C.amber}' opacity='0.18'/>
+    <path d='M424 170 L436 196 L428 193 L424 210 L420 193 L412 196 Z' fill='${C.gold}' stroke='#b45309' stroke-width='2'/>
+    <text x='424' y='236' text-anchor='middle' ${FONT} font-size='13' font-weight='700' fill='${C.text}' letter-spacing='2'>EMBERFANG</text>
+  </g>
+  <path d='M420 384 Q556 352 548 254 Q542 198 478 180' fill='none' stroke='${C.green}' stroke-width='5' stroke-dasharray='10 8' stroke-linecap='round'/>
+  <path d='M478 180 l-4 16 M478 180 l16 6' stroke='${C.green}' stroke-width='5' stroke-linecap='round' fill='none'/>
+  <text x='420' y='406' text-anchor='middle' ${FONT} font-size='12' font-weight='700' fill='${C.green}'>ENTRANCE</text>
+  <g>
+    <rect x='36' y='120' width='208' height='120' rx='12' fill='${C.panel}' stroke='${C.panelStroke}'/>
+    <text x='56' y='148' ${FONT} font-size='12' font-weight='700' fill='${C.muted}' letter-spacing='2'>LEGEND</text>
+    <line x1='56' y1='170' x2='92' y2='170' stroke='${C.green}' stroke-width='4' stroke-dasharray='8 6'/>
+    <text x='102' y='174' ${FONT} font-size='12' fill='${C.text}'>safe route — strafe right</text>
+    <circle cx='66' cy='196' r='9' fill='none' stroke='${C.red}' stroke-width='3'/>
+    <text x='102' y='200' ${FONT} font-size='12' fill='${C.text}'>fire rings — jump, not dash</text>
+    <path d='M74 216 L80 228 L76.5 226 L74 236 L71.5 226 L68 228 Z' fill='${C.gold}'/>
+    <text x='102' y='228' ${FONT} font-size='12' fill='${C.text}'>Emberfang · 4,200 HP</text>
+  </g>
+  <text x='660' y='432' text-anchor='middle' ${FONT} font-size='12' fill='${C.muted}'>rings expand every 1.2s — sets of three</text>
+`,
+  ),
+);
+
+/* ------------------------------------------------------------------ */
+/* 9. emberfang-mechanics — bolt fan arc + phase timeline              */
+/* ------------------------------------------------------------------ */
+const emberfangMechanics = svgDoc(
+  frame(
+    'EMBERFANG',
+    'MECHANICS AT A GLANCE',
+    `
+  <g>
+    <rect x='36' y='100' width='352' height='300' rx='14' fill='${C.panel}' stroke='${C.panelStroke}'/>
+    <text x='212' y='132' text-anchor='middle' ${FONT} font-size='15' font-weight='700' fill='${C.amber}' letter-spacing='2'>FIRE BOLT VOLLEY · 3-BOLT FAN</text>
+    <text x='212' y='154' text-anchor='middle' ${FONT} font-size='12' fill='${C.muted}'>180 damage per bolt · 5 bolts in enrage</text>
+    <path d='M152 268 L312 196 L312 340 Z' fill='${C.red}' opacity='0.2'/>
+    <g stroke='${C.red}' stroke-width='4' stroke-linecap='round' fill='none'>
+      <path d='M152 268 L306 202'/>
+      <path d='M152 268 L310 268'/>
+      <path d='M152 268 L306 334'/>
+    </g>
+    <circle cx='152' cy='268' r='26' fill='${C.orange}' stroke='#7c2d12' stroke-width='3'/>
+    <text x='152' y='273' text-anchor='middle' ${FONT} font-size='11' font-weight='800' fill='#fff7ed'>BOSS</text>
+    <g fill='${C.red}'>
+      <circle cx='312' cy='200' r='6'/>
+      <circle cx='316' cy='268' r='6'/>
+      <circle cx='312' cy='336' r='6'/>
+    </g>
+    <text x='226' y='186' text-anchor='middle' ${FONT} font-size='13' font-weight='700' fill='${C.red}'>DANGER CONE</text>
+    <g>
+      <circle cx='176' cy='348' r='7' fill='${C.ice}'/>
+      <path d='M196 348 L330 348' stroke='${C.green}' stroke-width='5' stroke-linecap='round'/>
+      <path d='M330 348 l-14 -8 M330 348 l-14 8' stroke='${C.green}' stroke-width='5' stroke-linecap='round' fill='none'/>
+      <text x='212' y='374' text-anchor='middle' ${FONT} font-size='13' font-weight='700' fill='${C.green}'>STRAFE RIGHT</text>
+    </g>
+  </g>
+  <g>
+    <rect x='412' y='100' width='352' height='300' rx='14' fill='${C.panel}' stroke='${C.panelStroke}'/>
+    <text x='588' y='132' text-anchor='middle' ${FONT} font-size='15' font-weight='700' fill='${C.amber}' letter-spacing='2'>PHASES · BY BOSS HP</text>
+    ${[['100%', 452], ['66%', 544], ['33%', 634], ['0%', 724]]
+      .map(
+        ([t, x]) => `<line x1='${x}' y1='204' x2='${x}' y2='246' stroke='${C.muted}' stroke-width='2'/>
+      <text x='${x}' y='196' text-anchor='middle' ${FONT} font-size='11' fill='${C.muted}'>${t}</text>`,
+      )
+      .join('')}
+    <rect x='452' y='214' width='92' height='22' rx='4' fill='${C.amber}' opacity='0.85'/>
+    <rect x='546' y='214' width='88' height='22' rx='4' fill='${C.orange}' opacity='0.85'/>
+    <rect x='636' y='214' width='88' height='22' rx='4' fill='${C.red}' opacity='0.85'/>
+    <text x='498' y='262' text-anchor='middle' ${FONT} font-size='11' font-weight='800' fill='${C.gold}'>PHASE 1</text>
+    <text x='498' y='280' text-anchor='middle' ${FONT} font-size='11' fill='${C.text}'>fire bolt volley</text>
+    <text x='590' y='262' text-anchor='middle' ${FONT} font-size='11' font-weight='800' fill='${C.orange}'>PHASE 2</text>
+    <text x='590' y='280' text-anchor='middle' ${FONT} font-size='11' fill='${C.text}'>burning rings — jump</text>
+    <text x='680' y='262' text-anchor='middle' ${FONT} font-size='11' font-weight='800' fill='${C.red}'>PHASE 3</text>
+    <text x='680' y='280' text-anchor='middle' ${FONT} font-size='11' fill='${C.text}'>inferno enrage</text>
+    <text x='588' y='330' text-anchor='middle' ${FONT} font-size='13' fill='${C.text}'>rings expand every 1.2s · 0.4s jump window</text>
+    <text x='588' y='352' text-anchor='middle' ${FONT} font-size='13' fill='${C.muted}'>enrage: +30% speed · 5-bolt volleys</text>
+  </g>
+`,
+  ),
+);
+
+/* ------------------------------------------------------------------ */
 
 const outputs = [
   ['src/assets/covers/codes-cover.png', codesCover],
   ['src/assets/gallery/stormcaller-arena.png', stormcallerArena],
   ['src/assets/gallery/stormcaller-mechanics.png', stormcallerMechanics],
+  ['src/assets/gallery/emberfang-arena.png', emberfangArena],
+  ['src/assets/gallery/emberfang-mechanics.png', emberfangMechanics],
   ['src/assets/gallery/beginner-class-picks.png', beginnerClasses],
   ['src/assets/gallery/beginner-route.png', beginnerRoute],
   ['public/images/articles/weapon-voidforge.png', weaponVoidforge],
