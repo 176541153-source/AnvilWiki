@@ -31,7 +31,13 @@ const overview = (
 const navItem = NAVIGATION_CONFIG.find((n) => n.key === category);
 
 const title = overview?.overviewTitle ?? nav[category] ?? category;
-const description = overview?.overviewDescription ?? `${title} guides and articles.`;
+// Localized default (locale JSON shared.defaultListDescription) — a hardcoded
+// English sentence here would leak into every locale the moment a fork adds
+// a 5th category without an overview entry.
+const description =
+  overview?.overviewDescription ??
+  String(shared.defaultListDescription ?? '').replace('{title}', title) ??
+  `${title}`;
 
 const entries = await getEntriesByCategory(category, locale);
 

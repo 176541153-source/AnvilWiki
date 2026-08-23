@@ -60,8 +60,13 @@ const jsonLd = [
     '@type': 'TechArticle',
     headline: entry.data.title,
     description: entry.data.description,
-    datePublished: (entry.data.updated ?? new Date()).toISOString(),
-    dateModified: (entry.data.updated ?? new Date()).toISOString(),
+    // 与 en 版一致：缺 `updated` 的章节省略日期，不用构建时间伪造新鲜度。
+    ...(entry.data.updated
+      ? {
+          datePublished: entry.data.updated.toISOString(),
+          dateModified: entry.data.updated.toISOString(),
+        }
+      : {}),
     author: { '@type': 'Organization', name: 'AnvilWiki' },
     isAccessibleForFree: true,
     mainEntityOfPage: { '@type': 'WebPage', '@id': `${siteUrl}${chapterPath}` },

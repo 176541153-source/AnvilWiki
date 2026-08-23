@@ -5,7 +5,7 @@
  * English (default locale) has no prefix; other locales are prefixed.
  */
 
-import { defaultLocale, isLocale, type Locale } from '~/i18n/routing';
+import { defaultLocale, type Locale } from '~/i18n/routing';
 import { siteUrl } from '~/config/site';
 
 /** Build a path with the locale prefix applied (or none for default locale). */
@@ -90,13 +90,4 @@ export function slugifyTag(tag: string): string {
   // while every in-page link points at the single-encoded form (404). The
   // raw tag builds a raw-named directory that both URL forms resolve to.
   return slug || tag.trim();
-}
-
-/** Extract locale from a URL pathname. Returns default locale if none found. */
-export function localeFromPath(pathname: string): Locale {
-  const segments = pathname.split('/').filter(Boolean);
-  if (segments.length > 0 && isLocale(segments[0])) {
-    return segments[0];
-  }
-  return defaultLocale;
 }

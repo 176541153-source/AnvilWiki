@@ -44,9 +44,12 @@ const recent = await getRecentEntries(locale, 6);
 
 const meta = home.meta ?? { title: site.name, description: site.description };
 const hero = home.hero ?? {};
-const updates = home.updates ?? { title: 'Recent Updates' };
+// Shape-only defaults: getUi() deep-merges over en.json, so titles/labels are
+// guaranteed present — no hardcoded English fallbacks (UI text lives in the
+// locale JSON per the template's own rule).
+const updates = home.updates ?? {};
 const start = home.start ?? { cards: [] };
-const popular = home.popular ?? { title: 'Trending Now', quickLinks: [] };
+const popular = home.popular ?? { quickLinks: [] };
 const explore = home.explore ?? { modules: [] };
 const closingCta = home.closingCta ?? {};
 

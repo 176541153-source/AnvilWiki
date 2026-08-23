@@ -7,7 +7,7 @@
 
 import { siteUrl } from '~/config/site';
 import { site } from '~/config/site';
-import { locales, defaultLocale, type Locale } from '~/i18n/routing';
+import { defaultLocale, type Locale } from '~/i18n/routing';
 import { detailPath, listPath } from './url';
 
 /** Organization JSON-LD — injected globally in BaseLayout. */
@@ -281,6 +281,3 @@ export function videoGameJsonLd() {
     ...(site.game.releaseDate ? { datePublished: site.game.releaseDate } : {}),
   };
 }
-
-/** Available locales for hreflang generation (imported by pages). */
-export const allLocales: readonly Locale[] = locales;

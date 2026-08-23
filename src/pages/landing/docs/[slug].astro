@@ -68,8 +68,14 @@ const jsonLd = [
     '@type': 'TechArticle',
     headline: entry.data.title,
     description: entry.data.description,
-    datePublished: (entry.data.updated ?? new Date()).toISOString(),
-    dateModified: (entry.data.updated ?? new Date()).toISOString(),
+    // Fabricating dates from build time feeds Google a bogus freshness signal
+    // that changes on every build — chapters without `updated` omit the dates.
+    ...(entry.data.updated
+      ? {
+          datePublished: entry.data.updated.toISOString(),
+          dateModified: entry.data.updated.toISOString(),
+        }
+      : {}),
     author: { '@type': 'Organization', name: 'AnvilWiki' },
     isAccessibleForFree: true,
     mainEntityOfPage: { '@type': 'WebPage', '@id': `${siteUrl}${chapterPath}` },

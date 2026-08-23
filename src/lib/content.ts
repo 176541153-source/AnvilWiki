@@ -10,7 +10,6 @@
 export {
   getEntryWithFallback,
   getEntriesByCategory,
-  getAllEntriesByCategory,
   localesForEntry,
   getRecentEntries,
   getRelatedEntries,

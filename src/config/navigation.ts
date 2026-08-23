@@ -37,8 +37,3 @@ export const NAVIGATION_CONFIG: NavigationItem[] = [
 
 /** Derived list of content type slugs (e.g. ['bosses', 'guides', 'items', 'codes']). */
 export const CONTENT_TYPES: string[] = NAVIGATION_CONFIG.map((n) => n.key);
-
-/** Lookup map for quick access by key. */
-export const NAV_BY_KEY: Record<string, NavigationItem> = Object.fromEntries(
-  NAVIGATION_CONFIG.map((n) => [n.key, n]),
-);

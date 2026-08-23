@@ -4,7 +4,6 @@ import {
   listPath,
   detailPath,
   homeUrl,
-  localeFromPath,
   slugifyTag,
   absoluteUrl,
   languageAlternates,
@@ -58,19 +57,6 @@ describe('url helpers', () => {
       expect(detailPath('guides', 'early-game/beginner', 'ja')).toBe(
         '/ja/guides/early-game/beginner',
       );
-    });
-  });
-
-  describe('localeFromPath', () => {
-    it('extracts the locale from a prefixed path', () => {
-      expect(localeFromPath('/ja/bosses/emberfang')).toBe('ja');
-      expect(localeFromPath('/ja')).toBe('ja');
-    });
-
-    it('returns the default locale when no prefix is present', () => {
-      expect(localeFromPath('/bosses/emberfang')).toBe('en');
-      expect(localeFromPath('/')).toBe('en');
-      expect(localeFromPath('')).toBe('en');
     });
   });
 });

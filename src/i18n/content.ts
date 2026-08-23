@@ -90,16 +90,6 @@ export async function getEntriesByCategory(category: string, locale: Locale): Pr
 }
 
 /**
- * List all articles in a category across ALL locales (for sitemap generation).
- */
-export async function getAllEntriesByCategory(category: string): Promise<WikiEntry[]> {
-  const all = await getCollection('wiki');
-  return all
-    .filter((e) => isPublished(e) && parseEntryId(e.id)?.category === category)
-    .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
-}
-
-/**
  * All locales that have at least one article for a given (category, slug).
  * Used to generate hreflang alternates. Only lists locales whose page is
  * actually built (the default-locale page exists only if an English MDX
@@ -130,6 +120,8 @@ export async function getRecentEntries(locale: Locale, limit = 6): Promise<WikiE
 
 /**
  * Related articles (by shared tags). Excludes the current article.
+ * Newest-first, consistent with every other list in this module — collection
+ * order is path-alphabetical and would make "Related" arbitrary.
  */
 export async function getRelatedEntries(
   current: WikiEntry,
@@ -149,6 +141,7 @@ export async function getRelatedEntries(
       if (p?.locale !== locale) return false;
       return e.data.tags.some((t: string) => current.data.tags.includes(t));
     })
+    .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
     .slice(0, limit);
 }
 

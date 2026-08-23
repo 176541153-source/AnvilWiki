@@ -72,7 +72,9 @@ if (items.length === 0) return null;
   aria-label={heading}
 >
   <div class="flex max-h-[90vh] max-w-[90vw] flex-col items-center gap-3 bg-transparent">
-    <img data-gallery-full src="" alt="" class="max-h-[80vh] max-w-[90vw] rounded-md object-contain" />
+    <!-- No src until opened: an empty src resolves to the page URL and fires a
+         spurious image request on every gallery page load. -->
+    <img data-gallery-full alt="" class="max-h-[80vh] max-w-[90vw] rounded-md object-contain" />
     <p data-gallery-caption class="min-h-5 text-sm text-foreground"></p>
     <div class="flex gap-2">
       <button type="button" data-gallery-prev class="btn-outline px-3 py-1.5 text-xs" aria-label={t("prev", "Previous image")}>

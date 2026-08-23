@@ -206,7 +206,7 @@ const year = new Date().getFullYear();
           <li>
             <strong>Reddit:</strong>{' '}
             <a href={site.social.reddit} target="_blank" rel="noopener noreferrer">
-              r/{site.game.name}
+              r/{site.game.name.replace(/\s+/g, '')}
             </a>
           </li>
         )}

@@ -7,6 +7,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 
 import { locales, defaultLocale } from './src/i18n/routing';
+import { CONTENT_TYPES } from './src/config/navigation';
 
 /**
  * Build a map of page path → lastmod ISO date, read from MDX frontmatter
@@ -18,9 +19,16 @@ import { locales, defaultLocale } from './src/i18n/routing';
  * must not appear in the sitemap (rss.xml/llms.txt already filter them; this
  * closes the loop for the third generator).
  *
+ * Also builds `coverage`: "category/slug" → locales that REALLY have an MDX
+ * for it. The sitemap alternates must mirror the page-level hreflang truth:
+ * a /ja/… URL that serves the English fallback declares only `en` in its
+ * <head>, so the sitemap must not claim a ja version exists either — Google
+ * discards conflicting hreflang clusters, which would silently undo the
+ * per-page logic on exactly the duplicated-content URLs that need it most.
+ *
  * Plain fs scan at config time — `astro:content` is not importable here.
  */
-function buildLastmodMap(noindexPaths: Set<string>): Map<string, string> {
+function buildLastmodMap(noindexPaths: Set<string>, coverage: Map<string, Set<string>>): Map<string, string> {
   const map = new Map<string, string>();
   const base = path.resolve('./src/content/wiki');
   if (!fs.existsSync(base)) return map;
@@ -67,6 +75,12 @@ function buildLastmodMap(noindexPaths: Set<string>): Map<string, string> {
       }
       map.set(articlePath, date.toISOString());
 
+      // Locale coverage for sitemap hreflang alternates (see docblock).
+      const covKey = `${cat}/${slugPath}`;
+      const cov = coverage.get(covKey) ?? new Set<string>();
+      cov.add(loc);
+      coverage.set(covKey, cov);
+
       // List pages: newest article in the category wins.
       const listPath = loc === defaultLocale ? `/${cat}` : `/${loc}/${cat}`;
       const existing = map.get(listPath);
@@ -109,8 +123,48 @@ function buildLastmodMap(noindexPaths: Set<string>): Map<string, string> {
   return map;
 }
 
+const siteOrigin = process.env.SITE_URL || 'https://anvilwiki.pages.dev';
+
 const noindexPaths = new Set<string>();
-const lastmodMap = buildLastmodMap(noindexPaths);
+const localeCoverage = new Map<string, Set<string>>();
+const lastmodMap = buildLastmodMap(noindexPaths, localeCoverage);
+
+/**
+ * Article/list hreflang alternates that match the page-level <head> truth.
+ * Returns sitemap `links` items ({ lang, url }); undefined = no alternates.
+ * The locale segment is anchored by its trailing slash — a bare optional
+ * ([a-z]{2,3})? would greedily eat the first 3 letters of a category
+ * ("bosses" → locale "bos" + category "ses") and silently drop alternates.
+ */
+function alternatesFor(pagePath: string): Array<{ lang: string; url: string }> | undefined {
+  // Article: /<cat>/<slug…> or /<locale>/<cat>/<slug…>
+  const art = pagePath.match(/^\/(?:([a-z]{2,3})\/)?([a-z-]+)\/(.+)$/);
+  if (art && (locales as readonly string[]).includes(art[1] ?? defaultLocale)) {
+    const cov = localeCoverage.get(`${art[2]}/${art[3]}`);
+    if (cov) {
+      return Array.from(cov).map((l) => ({
+        lang: l,
+        url: new URL(
+          l === defaultLocale ? `/${art[2]}/${art[3]}` : `/${l}/${art[2]}/${art[3]}`,
+          siteOrigin,
+        ).href,
+      }));
+    }
+  }
+  // Category list: localized list routes always exist (empty state by design).
+  const list = pagePath.match(/^\/(?:([a-z]{2,3})\/)?([a-z-]+)$/);
+  if (
+    list &&
+    (locales as readonly string[]).includes(list[1] ?? defaultLocale) &&
+    CONTENT_TYPES.includes(list[2])
+  ) {
+    return locales.map((l) => ({
+      lang: l,
+      url: new URL(l === defaultLocale ? `/${list[2]}` : `/${l}/${list[2]}`, siteOrigin).href,
+    }));
+  }
+  return undefined;
+}
 
 // https://astro.build/config
 export default defineConfig({
@@ -138,14 +192,15 @@ export default defineConfig({
   integrations: [
     mdx(),
     sitemap({
-      i18n: {
-        defaultLocale,
-        locales: Object.fromEntries(locales.map((l) => [l, l])),
-      },
+      // No `i18n` option on purpose: it fabricates hreflang alternates for
+      // EVERY locale on EVERY URL, which contradicts the page-level <head>
+      // on English-fallback URLs (/ja/… serving English declares only `en`).
+      // Alternates are built per-URL in `serialize` from real MDX coverage.
       // noindex articles stay out of the sitemap (self-contradictory signal
       // otherwise — the page asks not to be indexed while the sitemap submits it).
       filter: (url) => !noindexPaths.has(decodeURIComponent(new URL(url).pathname)),
-      // Inject <lastmod> from article frontmatter (see buildLastmodMap).
+      // Inject <lastmod> from article frontmatter (see buildLastmodMap) and
+      // hreflang alternates that mirror the page-level truth (see alternatesFor).
       serialize(item) {
         try {
           // Decode: non-ASCII slugs (CJK filenames) come percent-encoded in
@@ -154,6 +209,10 @@ export default defineConfig({
           const pagePath = decodeURIComponent(new URL(item.url).pathname);
           const lm = lastmodMap.get(pagePath);
           if (lm) item.lastmod = lm;
+          // sitemap `links` = hreflang alternates (the lib's own i18n option
+          // would fabricate them for every locale on every URL).
+          const links = alternatesFor(pagePath);
+          if (links) item.links = links;
         } catch {
           /* non-URL entries keep default behavior */
         }
