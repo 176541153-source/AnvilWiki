@@ -61,9 +61,9 @@ AnvilWiki 是一个**游戏 SEO 内容站模板**——用来快速搭建围绕�
 ### 核心特性
 
 - 📚 **零基础双手册(站内文档中心)**:学习手册 11 章 + 开发手册 7 章,中英双语,从选游戏到赚到钱、模板化复制、批量铺内页,再到 SEO 进阶(排名 + AI 引用),每一步都是 SOP + 可复制的 AI 提示词;每章带手册目录树和本页目录
-- 🤖 **AI 全链路**:内容技能随仓库分发(`.agent/skills/`,Agent Skills 开放标准)——对 ZCode / Claude Code / Codex 说「根据这些笔记写篇攻略」,产出直接通过构建质检;上线后还有运营工具包 `anvilwiki-ops`(npx 免安装 + MCP):AI 替你拉 GSC/Cloudflare 数据、给优化清单、改完内容走 PR 上线
-- 🧰 **模板健康检查 + 批量产页**:`pnpm template-audit` 一键检查「这个站还能不能干净地复制成下一个游戏的站」(代码层纯净度/换皮残留/健康度评分);`pnpm bulk-new-posts` 从关键词清单批量生成内页草稿——跑通一个站后,30 分钟复制下一个,几十个内页批量铺
-- 💰 **广告收入 100% 归你**:内置 AdSense 广告位(3 个位置,env 驱动,默认关闭)+ 赞助卡 + 联盟链接组件——无平台抽成
+- 🤖 **AI 全链路(v2.0 内容经营操作系统)**:内容技能随仓库分发(`.agent/skills/`,Agent Skills 开放标准)——对 ZCode / Claude Code / Codex 说「根据这些笔记写篇攻略」,产出直接通过构建质检;**PR 门控内容管道**(GitHub Actions):关键词清单 → 确定性生成 → 八道质量门禁全绿 → 自动开草稿 PR,AI 永不直推;运营工具包 `anvilwiki-ops` 1.0(npx 免安装 + MCP):AI 替你拉 GSC/Cloudflare 数据、给优化清单、改完内容走 PR 上线,还能**一套工具管 N 个站**(多站注册表)并追踪 **AI 引用**(ChatGPT/Perplexity 来路 + AI Overviews 收录)
+- 🧰 **模板健康检查 + 批量产页 + 封面产能**:`pnpm template-audit` 一键检查「这个站还能不能干净地复制成下一个游戏的站」;`pnpm bulk-new-posts` 从关键词清单批量生成内页草稿;`pnpm gen-covers` 自动生成 og:image 封面(1200×675,中/日文标题自动配 Noto 字体,品牌色取自主题)——跑通一个站后,30 分钟复制下一个,几十个内页连封面批量铺
+- 💰 **变现三件套**:AdSense 广告位(3 个位置,env 驱动,默认关闭)+ 联盟链接组件 + **Affiliate 建议位**(v2.0:配置驱动的文末推荐卡,默认空不渲染)——无平台抽成
 - 🔍 **SEO 工程化**:sitemap(含 lastmod)/ JSON-LD 全套 / hreflang / Quick Answer 摘要块 / llms.txt(AI 搜索),全部自动生成
 - ⚡ **极快**:Astro 零 JS 优先,Lighthouse 4×100 开箱即得(开了广告也不掉分)
 - 🆓 **零成本**:Cloudflare Pages 免费无限带宽 + 全球 CDN + SSL,永远没有服务器账单
@@ -191,9 +191,9 @@ Complete beginner? Start from [Chapter 2 of the Learning Manual](https://anvilwi
 ### Key Features
 
 - 📚 **Two beginner manuals** (Learning 11 chapters / Development 7, bilingual) with 18 copy-paste AI prompts
-- 🤖 **AI-native workflow**: agent skills ship inside the repo — say "write a boss guide from these notes", get a build-check-passing page; after launch, the `anvilwiki-ops` toolkit (npx + MCP) has your AI pull GSC/Cloudflare data, rank SEO actions, and ship content through validated PRs
-- 🧰 **Template health check + batch page production**: `pnpm template-audit` scores how cleanly this repo can be copied into your next game's site (code-layer purity / rebrand leftovers); `pnpm bulk-new-posts` scaffolds dozens of draft inner pages from a keyword list — once your first site works, the next one takes ~30 minutes
-- 💰 **100% your ad revenue**: AdSense slots (3 positions, env-gated, off by default), sponsor card, affiliate component
+- 🤖 **AI-native workflow (v2.0 content OS)**: agent skills ship inside the repo — say "write a boss guide from these notes", get a build-check-passing page; a **PR-gated content pipeline** (GitHub Actions) turns a keyword list into draft PRs — deterministic generator → all 8 quality gates → draft PR, AI never pushes to main; the `anvilwiki-ops` 1.0 toolkit (npx + MCP) has your AI pull GSC/Cloudflare data, rank SEO actions, ship content through validated PRs, **run N sites from one registry**, and track **AI referrals** (ChatGPT/Perplexity traffic + AI Overviews pages)
+- 🧰 **Template health check + batch pages + cover generation**: `pnpm template-audit` scores how cleanly this repo can be copied into your next game's site; `pnpm bulk-new-posts` scaffolds dozens of draft inner pages from a keyword list; `pnpm gen-covers` auto-generates og:image covers (1200×675, CJK titles auto-subset Noto fonts, brand color from your theme) — once your first site works, the next one takes ~30 minutes, covers included
+- 💰 **Monetization trio**: AdSense slots (3 positions, env-gated, off by default), affiliate link component, and the **Affiliate suggestion slot** (v2.0: config-driven end-of-article cards, empty by default)
 - 🔍 **SEO engineering**: sitemap (lastmod) / JSON-LD suite / hreflang / Quick Answer blocks / llms.txt — all automatic
 - ⚡ **Fast**: zero-JS-first Astro, Lighthouse 4×100 out of the box
 - 🆓 **Free forever**: Cloudflare Pages, unlimited bandwidth, global CDN, SSL
@@ -223,7 +223,7 @@ Repository reference docs: [game-selection](docs/game-selection.md) · [apply-te
 | Monthly cost | **$0** (Cloudflare Pages free unlimited bandwidth) | Free (at the cost of control) | Vercel free tier is limited |
 | Lighthouse | **4×100 out of the box** | Platform decides | Weeks of tuning |
 | AI page generation | **Skills ship with the repo — talk to generate** | None | Build it yourself |
-| Entry barrier | **8-chapter zero-to-hero manual** | Low but constrained | High |
+| Entry barrier | **11-chapter zero-to-hero manual** | Low but constrained | High |
 
 ### FAQ
 

@@ -31,9 +31,11 @@ interface Props {
   cta?: string;
   /** Mark the card as sponsored/paid partnership (honesty label). */
   sponsored?: boolean;
+  /** Localized "Sponsored" badge text — defaults to English. */
+  sponsoredLabel?: string;
 }
 
-const { url, title, description, cta = 'Learn more', sponsored = true } = Astro.props;
+const { url, title, description, cta = 'Learn more', sponsored = true, sponsoredLabel = 'Sponsored' } = Astro.props;
 ---
 
 <aside class="not-prose my-5 flex items-center gap-4 rounded-lg border border-nav/40 bg-nav/5 p-4">
@@ -43,7 +45,7 @@ const { url, title, description, cta = 'Learn more', sponsored = true } = Astro.
       {title}
       {sponsored && (
         <span class="ml-2 rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
-          Sponsored
+          {sponsoredLabel}
         </span>
       )}
     </p>

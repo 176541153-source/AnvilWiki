@@ -133,7 +133,13 @@ const privacyLabel = footerStrings.privacyPolicy ?? 'Privacy Policy';
 
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
-    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    {noindex ? (
+      <meta name="robots" content="noindex, nofollow" />
+    ) : (
+      /* Google Discover large-image previews require explicit permission —
+         without this, covers never surface as large preview images (v2.0). */
+      <meta name="robots" content="max-image-preview:large" />
+    )}
     <link rel="canonical" href={new URL(Astro.url.pathname, siteUrl).href} />
 
     {/* hreflang alternates */}

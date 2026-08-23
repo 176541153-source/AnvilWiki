@@ -5,7 +5,7 @@ manual: dev
 order: 7
 icon: lucide:bot
 tldr: "anvilwiki-ops is the template's companion ops toolkit (an npm package, no install needed with npx). doctor gives a guided health check; after you put a GSC service account and CF token in .env, metrics pulls real traffic and insights returns evidence-backed actions; with MCP registered, Claude/ZCode can pull data, edit content, and open PRs for you — every write goes through a PR with a human in the loop."
-updated: 2026-08-18
+updated: 2026-08-22
 ---
 
 ## Where you are now and what this chapter solves
@@ -88,6 +88,25 @@ Then tell your AI (copy-paste ready):
 
 **Confirm you did it right**: the tool list shows anvil-ops' five tools (doctor / metrics / audit / insights / submit_pr).
 
+## v2.0: run N sites from one toolkit
+
+From your second wiki on, register each site once and the toolkit iterates them for you:
+
+```bash
+npx anvilwiki-ops sites add anvil-wiki /path/to/anvil-wiki
+npx anvilwiki-ops sites add forge-wiki /path/to/forge-wiki --url https://forge.example
+npx anvilwiki-ops --all audit          # every site, one report (a broken site doesn't stop the rest)
+npx anvilwiki-ops --site forge-wiki metrics
+```
+
+Credentials never go in the registry — each site's `.env` stays in its own repo; the registry only stores names and paths. `--all` works on the read commands (doctor / metrics / audit / insights); `submit` stays single-site on purpose: bulk-publishing is too dangerous to batch.
+
+The `metrics` report now also ends with an **AI referrals** section — visits coming from chatgpt.com, perplexity.ai, gemini.google.com, claude.ai and friends (via your Cloudflare token). GSC has no API for its generative-AI report, so `insights` also probes AI Overviews pages (experimental) and `metrics --import-aio <csv>` ingests the GSC UI's CSV export. Treat the numbers as a trend, not a census — AI browsers often strip referrers.
+
+## v2.0: batch drafts straight to a PR (content pipeline)
+
+For "scaffold 20 pages from a keyword list", you don't even need a terminal: **Actions → Auto content PR → Run workflow**, paste the CSV, and the pipeline runs the deterministic generator (`bulk-new-posts`), then all eight quality gates, and only opens a **draft PR** if everything is green. Fill the drafts with real game facts in a local AI session, then merge. One prerequisite checkbox (Settings → Actions → "Allow GitHub Actions to create and approve pull requests") and the full contract are in [docs/content-pipeline.md](https://github.com/PNGTRID/AnvilWiki/blob/main/docs/content-pipeline.md). No AI key ever enters CI — the workflow only runs deterministic scripts.
+
 ## The safety line: why it can't touch your live site
 
 The tool's write path is exactly one: **validate (check-content + check-i18n + full build) → new branch → commit → push → open a PR**. Failed validation stops everything — nothing is committed. It has no ability to push main; the merge button stays yours. Think of it as an intern who puts a drafted contract in the to-sign tray — whether to sign is entirely up to you.
@@ -99,7 +118,8 @@ The tool's write path is exactly one: **validate (check-content + check-i18n + f
 - `gh CLI not found`: install the GitHub CLI (needed by submit): https://cli.github.com/
 - `No site config found` / site-config FAIL: your repo deleted `wrangler.toml` (the learning manual's recommended setup — settings live in the Cloudflare dashboard). Fix: add `SITE_URL=https://your-domain` to the `.env` at the repo root (plus `PUBLIC_CF_BEACON_TOKEN` if you want CF data). Do **not** recreate wrangler.toml for this — the moment that file returns, every variable you configured in the dashboard stops working.
 - `No uncommitted changes to submit`: the worktree is clean — the AI hasn't written anything yet; have it produce content first.
-- `npx anvilwiki-ops` can't find the package: you need 0.1.0 or later (ships with template v1.15).
+- `npx anvilwiki-ops` can't find the package: you need 0.1.0 or later (ships with template v1.15; v2.0 ships 1.0.0 with multi-site + AI referrals).
+- Pipeline opens no PR: Settings → Actions → General → enable "Allow GitHub Actions to create and approve pull requests".
 
 ## ✅ Acceptance criteria (all must hold)
 

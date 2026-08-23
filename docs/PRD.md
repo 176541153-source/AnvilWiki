@@ -182,6 +182,19 @@ Cloudflare 同时提供 Pages（静态托管）和 Workers（边缘计算）两�
 
 **决策**：默认 Pages（新手友好、静态站原生适配），文档补充 Workers 部署方式（进阶用户、需要 SSR/API 时）。
 
+#### ADR-004：内容管道 = 确定性生成 + PR 门控，LLM 永不进 CI（v2.0）
+
+v2.0 的架构第一性问题是「谁产生 commit」。决策：CI 里只跑**确定性生成器**（如 bulk-new-posts 脚手架），AI 写作留在本地会话（.agent/skills + anvil-ops submit）；远程管道（auto-content.yml）把八道质量门禁**前置**为开 draft PR 的前提——门禁红了就没有 PR。workflow_dispatch 仅 collaborator 可触发（天然鉴权），`secrets` 零引用、幂等（固定分支名）、永不直推 main。背景：2026 年起 GITHUB_TOKEN 创建的 PR 不自动跑 CI（待批准状态），门禁前置反而比「先开 PR 再等 CI」更严格。
+
+**决策**：管道 = 确定性脚本 + 门禁前置 + draft PR + 人工 merge；tests/workflows.test.ts 把安全契约钉进 CI。
+
+#### ADR-005：多站管理是工具层能力，模板保持一仓一站（v2.0）
+
+多站（N 个游戏 wiki）的统一运营不改动模板仓库形态——每个站仍是独立的 git 仓库 + 独立的 Cloudflare Pages 项目（三层分离、merge 上游的能力都不受影响）。统一发生在 `anvilwiki-ops`（1.0.0）：`~/.config/anvil-ops/sites.toml` 注册表只存别名/路径/siteUrl 覆盖，**凭据永不入注册表**（各站 `.env` 各自保管）；默认行为（cwd 自动发现）与 0.x 完全一致，注册表只是跨站批操作（`--all`）的索引层。`submit` 刻意不支持 `--all`（批量发布不一键化）。
+
+**决策**：模板 = 一仓一站不动；多站 = anvil-ops 注册表 + `--site`/`--all`；breaking 变化（MCP 工具加 `site` 参数）由 ops 包 1.0.0 承载。
+
+
 ---
 
 ## 第 4 章 整体架构
@@ -326,12 +339,13 @@ anvilwiki/
 │   ├── styles/globals.css        # ⭐ --brand 4 变量（:root 4 行 + .dark 4 行）
 │   ├── assets/                   # 封面图等（走 astro:assets <Image> 管线，WebP+srcset）
 │   └── lib/                      # content.ts / content-utils.ts / navigation.ts / seo.ts / url.ts / handbook.ts
-├── scripts/                      # 11 个运维脚本（check-* ×5 + refresh-audit + new-locale/new-post + apply-template + template-audit + bulk-new-posts）
+├── scripts/                      # 12 个运维脚本（check-* ×5 + refresh-audit + new-locale/new-post + apply-template + template-audit + bulk-new-posts + gen-covers）
 ├── tools/anvil-ops/              # ⭐ 独立 npm 包 anvilwiki-ops（CLI + MCP，自有 workspace）
 ├── .agent/skills/                # ⭐ AI 内容技能（anvil-new-article / anvil-batch-articles / anvil-update-codes / anvil-refresh）
 └── .github/
     ├── workflows/
-    │   ├── ci.yml                # 8 道门禁（lint/typecheck/test/check-config/build/check-content/check-links/check-i18n）
+    │   ├── ci.yml                # 8 道门禁（lint/typecheck/test/check-config/build/check-content/check-links/check-i18n，门禁定义在共享 composite action .github/actions/gates）
+    │   ├── auto-content.yml      # ⭐ v2.0 内容管道：确定性生成 → 八道门禁 → draft PR（workflow_dispatch）
     │   ├── content-pipeline.yml  # 每周新鲜度巡检 → issue
     │   └── setup.yml             # fork 一键初始化（workflow_dispatch）
     ├── ISSUE_TEMPLATE/ bug-report.md + feature-request.md
@@ -944,6 +958,10 @@ export function getUi(locale: Locale) {
 
 > 在 AdSense 后台为每个位置创建一个广告单元，拿到 slot ID 填到对应环境变量。AdSense 会根据访客设备自动选择最合适的尺寸。
 
+### 10.2.1 Affiliate 建议位（v2.0，广告位之外的第二变现形态）
+
+`<AffiliateSuggestion>`（`ArticlePage` 文末，SponsorCard 之后）渲染至多 2 张 `AffiliateLink` 卡片。与 AdSense 的关键差异：**config 门控而非 env 门控**——affiliate 是逐站内容数据（Steam 链接/外设推荐），不是部署密钥；数据在 `src/config/affiliates.ts`（CONFIG 层），默认空数组 = 不渲染（保开箱契约与 fork 纯净）。`categories` 可选字段支持按栏目限定；Sponsored 徽标走 `shared.sponsoredLabel`（en/ja）。
+
 ### 10.3 AdSenseSlot 组件
 
 底层组件 `AdSenseSlot.astro` 渲染一个 `<ins class="adsbygoogle">` 标签并 push 到 `adsbygoogle` 队列：
@@ -1203,17 +1221,12 @@ jobs:
           node-version-file: .nvmrc   # 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm lint
-      - run: pnpm typecheck            # astro check
-      - run: pnpm test                 # vitest（6 个套件）
-      - run: pnpm check-config         # nav/locale 三处一致性 + 域名门禁
-      - run: pnpm build                # 含 Content schema 校验；SITE_URL 由工作流 env 注入（vars.SITE_URL，缺省回退 demo 域名）
-      - run: pnpm check-content        # 内容 lint（无 H1/alt/链接斜杠）
-      - run: pnpm check-links          # dist 内链审计
-      - run: pnpm check-i18n           # 翻译覆盖率报告（非 strict，与 anvil-ops submit 同口径）
-```
+      - uses: ./.github/actions/gates  # ⭐ v2.0：八道门禁抽成共享 composite action，
+        with:                          # lint/typecheck/test(9 个测试套件)/check-config/build
+          site-url: ...                # /check-content/check-links/check-i18n 一步到位；
+```                                    # auto-content.yml 复用同一份定义，防止两处漂移
 
-另有两条工作流：`content-pipeline.yml`（每周新鲜度巡检 → issue，仅上游仓库运行）与 `setup.yml`（fork 一键初始化，workflow_dispatch）。
+另有三条工作流：`auto-content.yml`（⭐ v2.0 内容管道：workflow_dispatch 触发确定性生成器 → 八道门禁全绿才开 draft PR，LLM 永不进 CI，详见 docs/content-pipeline.md 与 ADR-004）、`content-pipeline.yml`（每周新鲜度巡检 → issue，仅上游仓库运行）与 `setup.yml`（fork 一键初始化，workflow_dispatch）。
 
 ### 13.3 关键测试用例
 
@@ -1303,7 +1316,7 @@ describe('sitemap', () => {
 | v1.3 | 更多 displayType（video-grid/timeline/comparison-table） | 中 | ✅ 已实现 timeline + video-grid（缩略图跳转,首页不 embed YouTube,保 Lighthouse 4×100）;comparison-table 待验证（见下） |
 | v1.4 | 评论系统（Giscus，默认关闭，env 驱动） | 低 | ✅ 已实现（`Comments.astro` env 门控 + 官方 `<script data-loading="lazy">` + 双 MutationObserver 暗色同步；详见 `docs/comments.md`） |
 | v1.5 | 图片优化（Astro Image，自动 WebP/AVIF + 响应式 srcset） | 中 | ✅ 已实现（content schema `image()` loader + `ArticleCover.astro` + `image.responsiveStyles`，封面图自动 WebP/srcset，`content.config.ts` 迁至 `src/`） |
-| v2.0 | 套用模板 CLI（`pnpm apply-template` 引导式配置） | 高 | ✅ 已实现（`scripts/apply-template.ts` 步骤 1 自动化：hex→HSL 主题色、site/navigation/routing/ui/locales/manifest 重写，`--dry-run` / `--no-clear-content` flag） |
+| ~~v2.0~~（v1.x 期里程碑，原标 v2.0，实际随 v1 线交付） | 套用模板 CLI（`pnpm apply-template` 引导式配置） | 高 | ✅ 已实现（`scripts/apply-template.ts` 步骤 1 自动化：hex→HSL 主题色、site/navigation/routing/ui/locales/manifest 重写，`--dry-run` / `--no-clear-content` flag。注：此行版本号是规划期占位，与下方 **v2.0.0** 正式版无关） |
 | v1.5 | 内链 + 时效性 + 表达力（详见 `docs/ROADMAP-v1.5-v1.6.md`） | 高 | ✅ 已实现（标签落地页 `/tags` + 可点击 tag / gameVersion 徽章 / `/recent` / Callout / Accordion / draft（dev 可见 build 排除）/ VideoObject JSON-LD / 404 增强（搜索+分类入口）/ SponsorCard env 门控 + FUNDING.yml / README wrangler 警告） |
 | v1.6 | 创作者维护工具 + 部署自动化（check-i18n / setup workflow / 内容层 CLI / 死链对账等） | 中 | ✅ 已实现（`pnpm check-i18n` 翻译覆盖率 + `pnpm check-links` dist 内链审计（均入 CI）/ Initialize workflow 一键初始化 / CF Web Analytics 门控 / staying-up-to-date 文档 / apply-template 内容骨架 / README 对比表+showcase 征集） |
 | v1.7 | 内容表达力二期 + E-E-A-T（画廊/作者体系/联盟链接/内容 lint） | 中 | ✅ 已实现（`gallery` frontmatter + 原生 dialog lightbox + ImageObject JSON-LD / `authors.ts` 注册表 + Person JSON-LD / `<AffiliateLink>` sponsored nofollow 组件 / `pnpm check-content` 内容 lint；og:image 自动生成与 PWA 留待 v1.8 按用户反馈排期） |
@@ -1317,6 +1330,8 @@ describe('sitemap', () => {
 | v1.17 | demo 媒体示范 + 媒体密度指引（拉平「能力 vs 示范」倒挂） | 中 | ✅ 已实现（每类文章完整示范媒体能力：codes 双语封面、boss 机制画廊（`src/assets/gallery/`）、tier-list 正文内联卡片图（`public/images/articles/`）、i18n 视频对齐；`scripts/gen-demo-media.mjs` 生成 7 张示意图可复现；`.prose img:not([class])` 16:9 零 CLS 盒子；媒体密度表进 content-format.md / anvil-new-article skill / AGENTS.md / 学习手册 first-10-pages 章中英；fork 清理：apply-template `clearDemoAssets` + setup.yml 同步按名删 demo 素材（fork 模拟构建绿）；v1.17.0 已发版，v1.17.1 复审补丁（图内事实校正：3 标记/20s puddle/2s 窗口/wind-up 数值对齐正文）） |
 | v1.18 | 模板化 + 批量内页（生财航海关卡 7/8：放大能力） | 高 | ✅ 已实现（`pnpm template-audit` 模板健康检查：代码层纯净度（注释剥离后扫 demo 字符串）/配置层换皮/内容层可替换性/换皮残留 4 组 ✅⚠️❌ 评分，❌ 才非零退出；`pnpm bulk-new-posts` 批量脚手架：CSV/TSV 关键词清单（RFC4180 引号解析）→ 全量校验（locale/category/slug 冲突/description 40-165）→ 全部合法才写入 `draft: true` 草稿，已存在文件跳过绝不覆盖，`--dry-run` 预览；`.agent/skills/anvil-batch-articles` 批量内容技能（意图归类→清单→统一提示词→全批验收，含灌水/编造/内链/句式重复 5 条铁律）；学习手册新增第 9 章「把第一个站打磨成模板」+ 第 10 章「批量做内页」中英（learn 8→10 章，提示词 13→16 个——13 为 v1.17.1 加媒体提示词后已漂移未同步的旧值）；README/docs/landing/AGENTS 计数同步；发版前专家审查补 8 项修复：占位 description 长标题超 165 会炸 build→自动降级、demo 文章内容级检测、site.name 换皮检查、`-n` 别名/未闭合引号/目录入参边界、第 9 章三层表格对齐规格、zh 错字；v1.18.0 已发版） |
 | v1.19 | SEO 进阶 + 2026 搜索格局对齐 | 中 | ✅ 已实现（学习手册第 11 章 `seo-traffic`「SEO 进阶：从被收录到排上去，再到被 AI 引用」中英——一页一词选词地图、单页做满自检清单、站点信任三慢变量、2026 新规则失效清单（FAQ 富结果移除/llms.txt 对 Google 无效/AI Overviews 引用偏好/封面图成图片搜索入口），配 2 个可复制提示词（关键词选题分析 + 全站 SEO 自检），learn 10→11 章、提示词 16→18 个；`docs/seo.md` 新增「Google 官方规范更新记录（2026）」9 条时间线（含 2026-08-18~21 spam update 与 08-20 preferred sources）；`docs/content-format.md` 媒体密度表补封面图质量三原则（og:image 自 2026-03 起为 Google 选图首选）；新增 `docs/roadmap.md` 公开路线图（八段演化主线 + 近期候选 + v2.0 方向 + 不做清单）；README/docs/landing/AGENTS 计数同步；v1.19.0 已发版） |
+| **v2.0.0** | **内容经营操作系统**（PR 门控内容管道 + 多站管理 + og:image 产能 + 变现建议位） | 高 | ✅ 已实现（① `auto-content.yml` 内容管道：workflow_dispatch + 确定性生成器（import-csv → bulk-new-posts）→ **八道门禁前置**（全绿才开 draft PR）→ create-pull-request v8 固定分支幂等，LLM 永不进 CI、secrets 零引用；八道门禁抽成共享 composite action `.github/actions/gates`（ci.yml 同源复用），ADR-004；tests/workflows.test.ts 钉安全契约。② `anvilwiki-ops` 0.1.3→**1.0.0**：多站注册表 `~/.config/anvil-ops/sites.toml`（凭据永不入表）+ `--site`/`--all` + `sites list/add/remove`；AI 引用追踪三通道（CF Web Analytics AI referrals 主通道 + GSC `AI_OVERVIEWS` 探测（实验）+ `metrics --import-aio` CSV 导入）；MCP 五工具加可选 `site` 参数（1.0 唯一 breaking），测试 60→111；ADR-005。③ `pnpm gen-covers` 封面生成：satori+resvg-js+subset-font，**1200×675**（Google Discover ≥1200px 宽门槛）+ 全站 `max-image-preview:large`（BaseLayout）；品牌色运行时读 globals.css 单一真相；CJK 标题按字符子集 Noto Sans CJK（缓存 node_modules/.cache，不进 git）+ 内置 OFL Lato；manifest hash 缓存；封面标准 800×450→1200×675 全文档同步、demo 封面重生成。④ `<AffiliateSuggestion>` 文末建议位：config 层 `src/config/affiliates.ts`（默认空=不渲染）复用 AffiliateLink 卡片、`shared.sponsoredLabel` i18n（en/ja）。文档：docs/content-pipeline.md + docs/multi-site.md 新增并进索引、手册 ai-ops 章双语文本（章数不变 learn 11/dev 7）、ADR-004/005、staying-up-to-date.md MAJOR 措辞修订（里程碑 major、模板侧零迁移）、README/CHANGELOG/AGENTS/landing 同步；模板仓库零 breaking，v2.0.0 发版） |
+
 
 **v1.3 范围说明**：
 - `timeline`：✅ 实现 —— 版本日志/活动时序，零副作用，商业价值正（老玩家点进 patch notes 文章页）。
@@ -1562,6 +1577,7 @@ PUBLIC_GA_ID=
 | 2026-08-12 | v0.2 | MVP 全部实现（MVP-0 至 MVP-5 + P0-P3）；更新待验证清单状态 |
 | 2026-08-12 | v0.3 | SEO 章节更新：Schema 状态（§8.6）、FAQ rich results 废弃说明、INP 阈值修正为 ≤ 200ms |
 | 2026-08-12 | v1.0 | demo 站 `anvilwiki.pages.dev` 上线；Lighthouse 全 100；v1.2 Pagefind 搜索 + v1.5 Astro Image + v2.0 套用模板 CLI 全部实现；完整日语翻译；SEO 修复（hreflang / og:image / prefetch / breadcrumb / security headers） |
+| 2026-08-22 | v2.0.0 | 内容经营操作系统：PR 门控内容管道（auto-content.yml + 共享门禁 composite action）+ anvilwiki-ops 1.0.0 多站与 AI 引用追踪 + gen-covers 封面生成（og:image 标准 1200×675 + max-image-preview:large）+ AffiliateSuggestion 建议位；模板零 breaking（升级=常规 merge）。v1.1–v1.19 逐版本明细见 CHANGELOG.md 与 §14.2 迭代表 |
 
 ---
 

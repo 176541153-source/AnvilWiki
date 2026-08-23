@@ -5,6 +5,33 @@ All notable changes to AnvilWiki are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] — 2026-08-23
+
+**内容经营操作系统:PR 门控内容管道 + 多站管理 + 封面产能 + 变现建议位。模板仓库零 breaking——fork 用户常规 merge 即可,无迁移步骤;唯一契约变化在 `anvilwiki-ops` 0.x→1.0.0(MCP 工具加可选 `site` 参数,不传行为与 0.x 一致)。**
+
+### Added
+
+- **PR 门控内容管道 `.github/workflows/auto-content.yml`**:workflow_dispatch(仅 collaborator,天然鉴权)→ 确定性生成器(`import-csv` 任务 → `pnpm bulk-new-posts` 脚手架)→ **八道质量门禁前置**(全绿才开 draft PR——2026 年起 GITHUB_TOKEN 创建的 PR 不自动跑 CI,验证前置比「先开 PR 再等 CI」更严格)→ create-pull-request@v8(固定分支 `chore/auto-content` 幂等、无 diff 静默跳过);**LLM 永不进 CI**(`secrets` 零引用,tests/workflows.test.ts 钉死契约);权限仅 `contents: write` + `pull-requests: write`;配套文档 `docs/content-pipeline.md`(fork 启用两步设置)。
+- **八道门禁抽成共享 composite action `.github/actions/gates`**:ci.yml 与 auto-content.yml 同源复用同一份门禁定义,杜绝两处漂移;ci.yml 行为不变。
+- **`anvilwiki-ops` 1.0.0(多站管理)**:站点注册表 `~/.config/anvil-ops/sites.toml`(`[[sites]]` name/path/siteUrl 覆盖,**凭据永不入注册表**——各站 `.env` 各自保管)+ `--site <name>` / `--all`(doctor/metrics/audit/insights 批处理,单站失败不中断)+ `sites list/add/remove` 子命令;无旗标时行为与 0.1.3 完全一致;`submit` 刻意拒绝 `--all`(批量发布不一键化)。
+- **AI 引用追踪(anvilwiki-ops 1.0)**:① CF Web Analytics AI referrals(`metrics` 末尾自动追加——chatgpt.com / chat.openai.com / perplexity.ai / gemini.google.com / claude.ai / copilot.microsoft.com 的 referrer host 聚合,GSC gen-AI 报告无 API 故此为主通道);② GSC `searchAppearance=AI_OVERVIEWS` 探测(`insights` 列被 AI Overviews 展示的页面,标注 experimental);③ `metrics --import-aio <csv> [--save]` 导入 GSC UI 导出的 Search Generative AI 报告 CSV(容忍 BOM/引号/缺列,`--save` 归档 `ops/ai-visibility/<date>-aio.csv`)。
+- **`pnpm gen-covers` og:image 封面生成**(`scripts/gen-covers.ts` + `src/lib/covers.ts`):satori + @resvg/resvg-js + subset-font;**封面尺寸标准 800×450 → 1200×675**(Google Discover 大图预览要求 ≥1200px 宽);品牌色运行时解析 globals.css `--brand`(单一真相);中/日文标题按字符运行时子集 Noto Sans CJK JP/SC(OTF 首次下载缓存 `node_modules/.cache/gen-covers/fonts/`,不进 git;`--fonts-dir` 离线逃生),拉丁字体内置 OFL Lato(`scripts/fonts/`);manifest hash 缓存(`--force` 重生成;`--out <dir>` 预览模式渲染全部且不动 frontmatter);默认模式只为无封面文章生成并自动写入 frontmatter `image`。
+- **全站 `max-image-preview:large`**(`BaseLayout.astro` 非 noindex 分支):Google Discover 大图预览的硬前提,此前全站缺失。
+- **`AffiliateSuggestion` 文末建议位**(`src/components/ads/AffiliateSuggestion.astro` + `src/config/affiliates.ts` + `src/lib/affiliates.ts`):config 层驱动(affiliate 是逐站内容数据非部署密钥),默认空数组 = 不渲染(保 Lighthouse 4×100 开箱契约与 fork 纯净);渲染至多 2 张 AffiliateLink 卡片,`categories` 可选按栏目限定;`shared.sponsoredLabel` i18n(en/ja),AffiliateLink 新增可选 `sponsoredLabel` prop 向后兼容。
+- **新文档**:`docs/content-pipeline.md`(管道安全契约六条 + fork 启用步骤 + 与每周审计分工)、`docs/multi-site.md`(注册表心智模型 + AI 引用三通道 + 新站流程),均入 `docs/README.md` 快速索引与决策地图;开发手册第 7 章「AI 自动化运营」双语补「一套工具管 N 个站」「关键词清单直接变草稿 PR」两节(章数不变 learn 11 / dev 7,提示词 18 不变)。
+- **决策记录与 ADR**:`docs/superpowers/specs/2026-08-22-v2.0-content-os-design.md`(六项定档);PRD 新增 ADR-004(内容管道=确定性+PR 门控,LLM 永不进 CI)、ADR-005(多站=工具层,模板一仓一站)。
+- **测试**:root 测试套件 6→9(新增 workflows/covers/affiliates 三套件);anvilwiki-ops 60→111——tests/workflows.test.ts(管道安全契约:dispatch-only/权限精确/门禁先于 PR/draft/零 secrets/审计只读)、tests/covers.test.ts(品牌色解析/CJK 判定/字号启发/manifest hash)、tests/affiliates.test.ts(建议位筛选);anvilwiki-ops 60→111。
+
+### Changed
+
+- **PRD §14.2 消歧撞号**:历史行「v2.0 | 套用模板 CLI」标注为「v1.x 期里程碑,原标 v2.0」,与正式 v2.0.0 区分;「更新记录」表补 v2.0.0 行并指向 CHANGELOG;§5/§13 能力与工作流计数同步(脚本 11→12、工作流 3→4)。
+- **demo 封面 5 张重生成/升采样至 1200×675**(`scripts/gen-demo-media.mjs` 封面走 viewBox 缩放渲染,注释同步;其余 4 张 sharp lanczos 升采样);`docs/content-format.md` 封面字段表与质量指引同步新标准 + gen-covers 提及;AGENTS.md 媒体密度行同步。
+- **`docs/roadmap.md`**:演化主线表加 v2.0 段;「中期(v2.0 方向)」标记交付(邮件订阅明确留 v2.1);近期候选池滚动(新增 Astro 5→7 升级、管道生成器扩展)。
+- **`docs/staying-up-to-date.md`**:MAJOR 措辞从「=breaking change」修订为「=重大里程碑;含 breaking 必附迁移说明」;新增「升级到 v2.0」一节(常规 merge + `pnpm install` + 两个可选动作)。
+- **README 中英**:AI 全链路/工具链/变现三条特性升级为 v2.0 表述;顺手修英文对比表遗留的「8-chapter manual」漂移(v1.18 漏改,中文侧已是 11 章)。
+- **CHANGELOG compare 链接补齐**:[Unreleased] 指针更新为 v2.0.0...HEAD,补 1.15.0–1.19.0 六个缺失链接行。
+- 全仓计数与版本同步:package.json / landing.ts `PROJECT_VERSION` / 中英发布横幅 / AGENTS.md Status 与 Commands(`gen-covers`)与 Ops Toolkit(1.0.0 能力清单)。
+
 ## [1.19.0] — 2026-08-22
 
 **SEO 进阶:从被收录到排上去,再到被 AI 引用——对齐 2026 搜索新格局。**
@@ -507,7 +534,15 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
-[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v1.14.1...HEAD
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.19.0...v2.0.0
+[1.19.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.18.0...v1.19.0
+[1.18.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.17.1...v1.18.0
+[1.17.1]: https://github.com/PNGTRID/AnvilWiki/compare/v1.17.0...v1.17.1
+[1.17.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.16.1...v1.17.0
+[1.16.1]: https://github.com/PNGTRID/AnvilWiki/compare/v1.16.0...v1.16.1
+[1.16.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.15.0...v1.16.0
+[1.15.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.14.1...v1.15.0
 [1.14.1]: https://github.com/PNGTRID/AnvilWiki/compare/v1.14.0...v1.14.1
 [1.14.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.13.1...v1.14.0
 [1.13.1]: https://github.com/PNGTRID/AnvilWiki/compare/v1.13.0...v1.13.1

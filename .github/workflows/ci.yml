@@ -30,7 +30,7 @@ jobs:
           run_install: false
 
       - name: Setup Node
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7f6820020 # v4
         with:
           node-version-file: '.nvmrc'
           cache: pnpm
@@ -38,33 +38,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Lint
-        run: pnpm lint
-
-      - name: Typecheck
-        run: pnpm typecheck
-
-      - name: Test
-        run: pnpm test
-
-      - name: Config consistency (nav/locale 3-place check)
-        run: pnpm check-config
-
-      - name: Build
-        run: pnpm build
-        env:
-          # FORKS: set a repository variable SITE_URL (Settings → Secrets and
-          # variables → Actions → Variables) to your domain — otherwise CI
-          # falls back to the demo domain and the built canonical/sitemap
-          # point at the wrong site (production builds use wrangler.toml,
-          # which this does not affect).
-          SITE_URL: ${{ vars.SITE_URL || 'https://anvilwiki.pages.dev' }}
-
-      - name: Content lint (H1/alt/slashes)
-        run: pnpm check-content
-
-      - name: Internal link audit (dist/)
-        run: pnpm check-links
-
-      - name: i18n coverage (report only)
-        run: pnpm check-i18n
+      # The eight gates (lint → typecheck → test → check-config → build →
+      # check-content → check-links → check-i18n) live in one composite
+      # action so the auto-content pipeline verifies drafts with the exact
+      # same definition before opening a PR.
+      - name: Quality gates
+        uses: ./.github/actions/gates
+        with:
+          site-url: ${{ vars.SITE_URL || 'https://anvilwiki.pages.dev' }}

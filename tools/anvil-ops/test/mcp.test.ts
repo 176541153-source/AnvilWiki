@@ -1,11 +1,11 @@
-import { mkdtempSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
 import { buildServer } from '../src/mcp/server.js';
-import type { queryCloudflare } from '../src/core/providers/cloudflare.js';
+import type { queryCloudflare, fetchAiReferrals } from '../src/core/providers/cloudflare.js';
 
 function tmpSite(): string {
   const dir = mkdtempSync(join(tmpdir(), 'ops-mcp-'));
@@ -19,8 +19,14 @@ const fakeCf = (async () => ({
   pages: [{ page: 'https://wiki.example.com/', visits: 7 }],
 })) as unknown as typeof queryCloudflare;
 
+const fakeAi = (async () => ({
+  available: true,
+  rows: [],
+  totals: { requests: 0, pageviews: 0 },
+})) as unknown as typeof fetchAiReferrals;
+
 async function connect(cwd: string) {
-  const server = buildServer({ cwd, cfQuery: fakeCf });
+  const server = buildServer({ cwd, cfQuery: fakeCf, aiReferralsQuery: fakeAi });
   const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
   await server.connect(serverTransport);
   const client = new Client({ name: 'test', version: '0.0.0' });
@@ -92,5 +98,62 @@ describe('anvil-ops MCP server', () => {
     expect(res.isError).toBe(true);
     const text = (res.content as { type: string; text: string }[])[0].text;
     expect(text).toMatch(/No uncommitted changes|not a git|failed/i);
+  });
+});
+
+describe('MCP site resolution (multi-site registry)', () => {
+  function registryFixture(): { registryPath: string; siteDir: string; emptyDir: string } {
+    const base = mkdtempSync(join(tmpdir(), 'ops-mcp-reg-'));
+    const siteDir = join(base, 'main');
+    const emptyDir = join(base, 'no-site');
+    mkdirSync(siteDir, { recursive: true });
+    mkdirSync(emptyDir, { recursive: true });
+    writeFileSync(join(siteDir, 'wrangler.toml'), '[vars]\nSITE_URL = "https://registry-site.com"\n');
+    const registryPath = join(base, 'sites.toml');
+    writeFileSync(
+      registryPath,
+      `defaultSite = "main-wiki"\n\n[[sites]]\nname = "main-wiki"\npath = "${siteDir}"\n`,
+    );
+    return { registryPath, siteDir, emptyDir };
+  }
+
+  it('site param resolves the command to the registered site path', async () => {
+    const { registryPath, siteDir, emptyDir } = registryFixture();
+    const server = buildServer({ cwd: emptyDir, sitesRegistryPath: registryPath });
+    const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
+    await server.connect(serverTransport);
+    const client = new Client({ name: 'test', version: '0.0.0' });
+    await client.connect(clientTransport);
+    const res = await client.callTool({ name: 'doctor', arguments: { site: 'main-wiki' } });
+    const text = (res.content as { type: string; text: string }[])[0].text;
+    expect(text).toContain('https://registry-site.com');
+    expect(text).toContain(siteDir);
+    expect(res.isError).toBeFalsy();
+  });
+
+  it('defaultSite kicks in when cwd has no site config and site is omitted', async () => {
+    const { registryPath, emptyDir } = registryFixture();
+    const server = buildServer({ cwd: emptyDir, sitesRegistryPath: registryPath });
+    const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
+    await server.connect(serverTransport);
+    const client = new Client({ name: 'test', version: '0.0.0' });
+    await client.connect(clientTransport);
+    const res = await client.callTool({ name: 'doctor', arguments: {} });
+    const text = (res.content as { type: string; text: string }[])[0].text;
+    expect(text).toContain('https://registry-site.com');
+  });
+
+  it('unknown site name = isError listing available sites', async () => {
+    const { registryPath } = registryFixture();
+    const server = buildServer({ cwd: tmpSite(), sitesRegistryPath: registryPath });
+    const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
+    await server.connect(serverTransport);
+    const client = new Client({ name: 'test', version: '0.0.0' });
+    await client.connect(clientTransport);
+    const res = await client.callTool({ name: 'audit', arguments: { site: 'nope' } });
+    expect(res.isError).toBe(true);
+    const text = (res.content as { type: string; text: string }[])[0].text;
+    expect(text).toMatch(/main-wiki/);
+    expect(text).toMatch(/sites add/);
   });
 });

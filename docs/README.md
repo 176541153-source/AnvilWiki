@@ -16,6 +16,8 @@
 | [content-format.md](content-format.md) | 怎么写文章(frontmatter 字段表 + 组件用法) | 内容作者 |
 | [seo.md](seo.md) | SEO 工程化:为什么每个页面长这样 + 2026 Google 官方更新记录 | 内容作者 / 好奇的人 |
 | [comments.md](comments.md) | 接入 Giscus 评论 | 需要评论的站长 |
+| [content-pipeline.md](content-pipeline.md) | PR 门控内容管道:关键词清单 → 草稿 PR(AI 写 → 人审 → merge,v2.0) | 想批量铺内容的站长 |
+| [multi-site.md](multi-site.md) | 多站运营:anvilwiki-ops 1.0 一套工具管 N 个站 + AI 引用追踪(v2.0) | 从第二个站开始的站长 |
 | [staying-up-to-date.md](staying-up-to-date.md) | fork 之后怎么同步上游更新 | fork 用户(长期) |
 | [migration-from-nextjs.md](migration-from-nextjs.md) | 从 Next.js 模板迁移 | 迁移用户 |
 | [development.md](development.md) | 给模板本身写代码:架构、模式、验证、发版 | 贡献者 / 模板开发者 |
@@ -73,6 +75,8 @@
 ├─ 刚 fork,要换成我的游戏 ───────────→ apply-template.md
 ├─ 要部署 / 部署后 env 不生效 ───────→ deployment.md(wrangler.toml 警告)
 ├─ 要写/更新文章 ────────────────────→ content-format.md 或直接对 AI 说
+├─ 想批量铺内容/开草稿 PR ───────────→ content-pipeline.md
+├─ 有第二个站了,想统一运营 ─────────→ multi-site.md
 ├─ 上游更新了,要不要合并 ───────────→ staying-up-to-date.md
 ├─ 想改模板代码 / 提 PR ────────────→ development.md
 └─ 想知道"为什么这么设计" ───────────→ PRD.md

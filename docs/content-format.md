@@ -44,7 +44,7 @@ noindex: false
 | `category`     | string   | ✅   | 必须在 `navigation.ts` 的 key 列表里 | 决定 URL 路径和列表页归属                |
 | `date`         | date     | ✅   | ISO 格式（YYYY-MM-DD）               | 发布日期 + Article JSON-LD datePublished |
 | `lastModified` | date     | 可选 | ISO 格式                             | 最后修改日期（JSON-LD dateModified + sitemap lastmod；boss/tier-list 超 90 天自动显示"可能过期"提示） |
-| `image`        | string   | 可选 | 相对 MDX 文件的路径（走 Astro Image） | 封面图（og:image，缺省用 hero）          |
+| `image`        | string   | 可选 | 相对 MDX 文件的路径（走 Astro Image） | 封面图（og:image，缺省用 hero；**1200×675**，v2.0 起标准——Google Discover 大图预览要求 ≥1200px 宽） |
 | `tags`         | string[] | 可选 | 默认 `[]`                            | "相关文章"推荐 + 标签聚合页（`/tags/<tag>`，v1.5 起文章页 tag 可点击） |
 | `draft`        | boolean  | 可选 | 默认 `false`                         | 草稿：`pnpm dev` 可预览，生产构建完全排除（页面/列表/RSS/sitemap） |
 | `gameVersion`  | string   | 可选 | ≤ 20 字符                            | 适用的游戏版本号（如 `v2.5`），文章头渲染成徽章——快速迭代游戏的时效性/E-E-A-T 信号 |
@@ -96,6 +96,8 @@ import Accordion from '~/components/mdx/Accordion.astro';
 | codes | ✅ 必配（分享卡片辨识度） | 无需 | 无需 | 无需 |
 
 > **封面图质量 = 图片搜索入口**（2026-03 起 Google 选图首选 og:image）：封面不再是装饰，每篇文章的封面直接决定该页在 Google 图片搜索里的展示。挑图三原则：清晰可辨（缩略图下仍认得出游戏）、带游戏视觉标识（角色/logo/UI，不用纯文字图）、与文章主题对应（boss 文章不配风景图）。
+>
+> **尺寸标准（v2.0）：1200×675**（16:9 且满足 Google Discover 大图预览的 ≥1200px 宽要求；全站已声明 `max-image-preview:large`）。没有制图条件时跑 `pnpm gen-covers`——用站点名+品牌色+标题自动生成排版封面（中/日文标题自动子集 Noto 字体），并自动写入 frontmatter `image` 字段。
 
 ### 作者体系（v1.7）
 

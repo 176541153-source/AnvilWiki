@@ -4,8 +4,8 @@ import { OpsError } from './errors.js';
 import { loadSiteConfig } from './site.js';
 import { createGscClient } from './providers/gsc.js';
 import type { GscClient, GscQueryResult } from './providers/gsc.js';
-import { queryCloudflare } from './providers/cloudflare.js';
-import type { CfQueryResult } from './providers/cloudflare.js';
+import { queryCloudflare, fetchAiReferrals, AI_REFERRER_HOSTS } from './providers/cloudflare.js';
+import type { CfQueryResult, AiReferralsResult } from './providers/cloudflare.js';
 
 export type MetricsSource = 'gsc' | 'cf' | 'all';
 
@@ -14,6 +14,7 @@ export interface MetricsReport {
   siteUrl?: string;
   gsc?: GscQueryResult;
   cf?: CfQueryResult;
+  aiReferrals?: AiReferralsResult;
   degraded: ('gsc' | 'cf')[];
   notes: string[];
 }
@@ -28,6 +29,7 @@ export async function collectMetrics(opts: {
   source?: MetricsSource;
   gscClientFactory?: (o: { credential: GscCredential; siteUrl: string }) => GscClient;
   cfQuery?: typeof queryCloudflare;
+  aiReferralsQuery?: typeof fetchAiReferrals;
 }): Promise<MetricsReport> {
   const site = loadSiteConfig(opts.cwd);
   const env = loadOpsEnv(site.root);
@@ -61,6 +63,19 @@ export async function collectMetrics(opts: {
       siteTag: site.cfBeaconToken!,
       days: opts.days,
     });
+    // AI referrals ride the same CF credentials but must never fail the whole
+    // metrics pull — degrade to a note instead.
+    const ai = opts.aiReferralsQuery ?? fetchAiReferrals;
+    try {
+      report.aiReferrals = await ai({
+        apiToken: env.cfApiToken,
+        accountId: env.cfAccountId,
+        siteTag: site.cfBeaconToken,
+        days: opts.days,
+      });
+    } catch (e) {
+      report.notes.push(`AI referrals unavailable: ${e instanceof Error ? e.message : String(e)}`);
+    }
   } else if (wanted !== 'gsc') {
     degraded.push('cf');
   }
@@ -106,6 +121,23 @@ export function formatMetrics(report: MetricsReport, format: 'table' | 'json' | 
     lines.push([pad('page', 60), 'visits'].join(' '));
     for (const p of report.cf.pages.slice(0, 20)) {
       lines.push([pad(p.page.slice(0, 59), 60), p.visits].join(' '));
+    }
+    lines.push('');
+  }
+  if (report.aiReferrals?.available) {
+    lines.push(format === 'md' ? '## AI referrals' : `AI referrals (last ${report.days} days)`);
+    if (report.aiReferrals.rows.length === 0) {
+      lines.push(`No AI referrer traffic in this window (watching: ${AI_REFERRER_HOSTS.join(', ')}).`);
+    } else {
+      lines.push('');
+      lines.push([pad('host', 28), pad('requests', 10), 'pageviews'].join(' '));
+      for (const r of report.aiReferrals.rows) {
+        lines.push([pad(r.host, 28), pad(String(r.requests), 10), String(r.pageviews)].join(' '));
+      }
+      lines.push('');
+      lines.push(
+        `total requests=${report.aiReferrals.totals.requests} pageviews=${report.aiReferrals.totals.pageviews}`,
+      );
     }
     lines.push('');
   }

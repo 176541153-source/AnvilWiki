@@ -1,5 +1,12 @@
-import type { GscQueryResult } from './providers/gsc.js';
-import type { CfQueryResult } from './providers/cloudflare.js';
+import { collectMetrics } from './metrics.js';
+import { loadOpsEnv } from './env.js';
+import type { GscCredential } from './env.js';
+import { loadSiteConfig } from './site.js';
+import { createGscClient } from './providers/gsc.js';
+import type { GscClient, GscQueryResult, AioProbeResult } from './providers/gsc.js';
+import type { CfQueryResult, queryCloudflare } from './providers/cloudflare.js';
+import { OpsError } from './errors.js';
+import { defaultRun, type RunFn } from './content.js';
 
 // v1 thresholds (spec §6) — tune here, rules read only these.
 export const THRESHOLDS = {
@@ -147,7 +154,7 @@ export function parseStaleCodes(stdout: string): string[] {
   return out;
 }
 
-export function formatInsights(list: Insight[], degraded: ('gsc' | 'cf')[]): string {
+export function formatInsights(list: Insight[], degraded: ('gsc' | 'cf')[], aio?: AioProbeResult): string {
   const lines = ['# Insights'];
   if (list.length === 0) {
     lines.push('', 'No actionable insights found for the current window.');
@@ -155,8 +162,89 @@ export function formatInsights(list: Insight[], degraded: ('gsc' | 'cf')[]): str
   for (const i of list) {
     lines.push('', `## [${i.severity}] ${i.rule}`, `- Finding: ${i.finding}`, `- Evidence: ${i.evidence}`, `- Action: ${i.action}`, `- Docs: ${i.docs}`);
   }
+  if (aio && (aio.rows.length > 0 || aio.error)) {
+    lines.push('', '## AI Overviews top pages (experimental)', aio.note);
+    if (aio.error) {
+      lines.push(`- Probe failed: ${aio.error}`);
+    } else {
+      for (const r of aio.rows.slice(0, 10)) {
+        lines.push(`- ${r.page} — impressions=${r.impressions} clicks=${r.clicks} pos=${r.position.toFixed(1)}`);
+      }
+      lines.push(
+        `- Totals: impressions=${aio.totals.impressions} clicks=${aio.totals.clicks} over ${aio.rows.length} page(s)`,
+      );
+    }
+  }
   if (degraded.length) {
     lines.push('', `Degraded (not configured, rules limited): ${degraded.join(', ')}. Run \`anvil-ops doctor\` to enable.`);
   }
   return lines.join('\n') + '\n';
+}
+
+export interface InsightsReport {
+  list: Insight[];
+  degraded: ('gsc' | 'cf')[];
+  aio?: AioProbeResult;
+}
+
+/** Shared runner behind both `anvil-ops insights` (CLI) and the insights MCP tool. */
+export async function collectInsights(opts: {
+  cwd: string;
+  days: number;
+  run?: RunFn;
+  gscClientFactory?: (o: { credential: GscCredential; siteUrl: string }) => GscClient;
+  cfQuery?: typeof queryCloudflare;
+  aiReferralsQuery?: Parameters<typeof collectMetrics>[0]['aiReferralsQuery'];
+}): Promise<InsightsReport> {
+  const site = loadSiteConfig(opts.cwd);
+  const run = opts.run ?? defaultRun;
+
+  // metrics are optional here: with no source at all we still surface rule 5
+  let gsc: GscQueryResult | undefined;
+  let cf: CfQueryResult | undefined;
+  let degraded: ('gsc' | 'cf')[] = [];
+  try {
+    const metrics = await collectMetrics({
+      cwd: site.root,
+      days: opts.days,
+      gscClientFactory: opts.gscClientFactory,
+      cfQuery: opts.cfQuery,
+      aiReferralsQuery: opts.aiReferralsQuery,
+    });
+    gsc = metrics.gsc;
+    cf = metrics.cf;
+    degraded = metrics.degraded;
+  } catch (e) {
+    if (e instanceof OpsError && /No analytics source/.test(e.message)) {
+      degraded = ['gsc', 'cf'];
+    } else {
+      throw e;
+    }
+  }
+
+  // AI Overviews probe (experimental): only with GSC credentials, never fatal.
+  let aio: AioProbeResult | undefined;
+  const env = loadOpsEnv(site.root);
+  if (env.gscServiceAccount && site.siteUrl) {
+    const factory = opts.gscClientFactory ?? createGscClient;
+    const client = factory({ credential: env.gscServiceAccount, siteUrl: site.siteUrl });
+    if (client.probeAiOverviews) {
+      try {
+        aio = await client.probeAiOverviews({ days: opts.days });
+      } catch (e) {
+        aio = {
+          rows: [],
+          totals: { clicks: 0, impressions: 0 },
+          experimental: true,
+          note: 'experimental: Google does not commit to exposing AI_OVERVIEWS via the searchAppearance filter — numbers are directional, not contractual.',
+          error: e instanceof Error ? e.message || e.name : String(e),
+        };
+      }
+    }
+  }
+
+  const staleRun = run('pnpm', ['refresh-audit'], { cwd: site.root });
+  const stale = staleRun.status === 0 ? parseStaleCodes(staleRun.stdout) : [];
+
+  return { list: buildInsights({ gsc, cf, staleCodesPages: stale }), degraded, aio };
 }

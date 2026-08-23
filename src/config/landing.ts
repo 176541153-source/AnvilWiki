@@ -11,7 +11,7 @@
  */
 
 /** Keep in sync with package.json "version" (used by the announcement bar). */
-export const PROJECT_VERSION = '1.19.0';
+export const PROJECT_VERSION = '2.0.0';
 
 export type LandingLocale = 'en' | 'zh';
 
@@ -185,7 +185,7 @@ const en: LandingContent = {
   description:
     'An open-source game wiki template with an AI-native content workflow: pick the right game, generate pages by talking to your AI tool, codes pages stay fresh on autopilot. Lighthouse 4×100, free on Cloudflare, 100% ad revenue yours.',
   announcement: {
-    text: `v${PROJECT_VERSION} shipped — Learning Manual chapter 11 (SEO beyond indexing: rankings + AI citations), 2026 Google guideline updates synced into docs/seo.md, and a public roadmap (docs/roadmap.md).`,
+    text: `v${PROJECT_VERSION} is live — the content operating system: PR-gated content pipeline (keyword list → gates → draft PR), anvilwiki-ops 1.0 (multi-site + AI referral tracking), pnpm gen-covers og:image generation, and an affiliate suggestion slot. Zero breaking changes for forks.`,
     href: RELEASES,
   },
   hero: {
@@ -473,7 +473,7 @@ const zh: LandingContent = {
   description:
     '开源游戏 wiki 模板 + AI 原生内容工作流:选对游戏、和 AI 对话就能产页、codes 页自动保鲜。Lighthouse 4×100、Cloudflare 免费部署、广告收入 100% 归你。',
   announcement: {
-    text: `v${PROJECT_VERSION} 发布 —— 学习手册第 11 章(SEO 进阶:排名 + AI 引用)、2026 Google 规范更新同步进 docs/seo.md、新增公开路线图 docs/roadmap.md。`,
+    text: `v${PROJECT_VERSION} 发布 —— 内容经营操作系统:PR 门控内容管道(关键词清单 → 八道门禁 → 草稿 PR)、anvilwiki-ops 1.0(多站管理 + AI 引用追踪)、pnpm gen-covers 封面自动生成、Affiliate 建议位。fork 零迁移成本。`,
     href: RELEASES,
   },
   hero: {

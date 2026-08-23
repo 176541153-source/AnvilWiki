@@ -5,7 +5,7 @@ manual: dev
 order: 7
 icon: lucide:bot
 tldr: "anvilwiki-ops 是模板配套的运营工具包(npm 包,npx 免安装)。doctor 一次体检看清配置缺什么;GSC 服务账号和 CF token 写进 .env 后,metrics 拉真实流量,insights 给出带证据的行动清单;接入 MCP 后 Claude/ZCode 直接替你查数据、改内容、开 PR——所有写操作只走 PR,人工把关每一步。"
-updated: 2026-08-18
+updated: 2026-08-22
 ---
 
 ## 你现在在哪,这章解决什么
@@ -88,6 +88,25 @@ npx anvilwiki-ops insights                        # 行动清单
 
 **确认做对了**:AI 的工具列表里出现 anvil-ops 的五个工具(doctor / metrics / audit / insights / submit_pr)。
 
+## v2.0:一套工具管 N 个站
+
+从第二个 wiki 开始,每个站注册一次,之后一条命令巡检全部:
+
+```bash
+npx anvilwiki-ops sites add anvil-wiki /path/to/anvil-wiki
+npx anvilwiki-ops sites add forge-wiki /path/to/forge-wiki --url https://forge.example
+npx anvilwiki-ops --all audit          # 全站巡检,一份报告(单站失败不中断)
+npx anvilwiki-ops --site forge-wiki metrics
+```
+
+凭据永远不进注册表——各站 `.env` 留在各自仓库里,注册表只存名字和路径。`--all` 只作用于读命令(doctor / metrics / audit / insights);`submit` 刻意只支持单站:批量发布太危险,不该一键化。
+
+`metrics` 报告末尾现在多了一节 **AI referrals**——来自 chatgpt.com、perplexity.ai、gemini.google.com、claude.ai 等的访问(走你的 Cloudflare 令牌)。GSC 的生成式 AI 报告没有 API,所以 `insights` 还会探测 AI Overviews 收录页(实验性),`metrics --import-aio <csv>` 可导入 GSC 界面导出的 CSV。这些数字看**趋势**就好——AI 浏览器经常剥掉 referrer,绝对值偏低。
+
+## v2.0:关键词清单直接变草稿 PR(内容管道)
+
+「从一份关键词清单铺 20 个页面」连终端都不用开:**Actions → Auto content PR → Run workflow**,粘进 CSV,管道会跑确定性生成器(`bulk-new-posts`)→ 全部八道质量门禁 → **只有全绿才开 draft PR**。之后在本地 AI 会话里把草稿填上真实游戏数据,再 merge。前置只需勾一个设置(Settings → Actions → "Allow GitHub Actions to create and approve pull requests"),完整契约见 [docs/content-pipeline.md](https://github.com/PNGTRID/AnvilWiki/blob/main/docs/content-pipeline.md)。CI 里没有任何 AI key——workflow 只跑确定性脚本。
+
 ## 安全线:为什么它改不了你的线上站
 
 工具的写操作只有一条路:**校验(check-content + check-i18n + 完整构建)→ 开新分支 → 提交 → 推送 → 开 PR**。校验不过就地终止,什么都不会提交;它没有直接 push main 的能力,合并按钮永远在你手里。把它想成「实习生把写好的合同放进待签篮,签不签你说了算」。
@@ -99,7 +118,8 @@ npx anvilwiki-ops insights                        # 行动清单
 - `gh CLI not found`:装 GitHub CLI(submit 需要):https://cli.github.com/
 - `No site config found` / site-config FAIL:你的仓库删过 `wrangler.toml`(学习手册第 5 章的推荐做法,设置在 Cloudflare 网页)——在仓库根目录的 `.env` 里加一行 `SITE_URL=https://你的域名` 即可(需要 CF 数据就再加 `PUBLIC_CF_BEACON_TOKEN`)。**别**为了这个重建 wrangler.toml:文件一回来,你在网页上配的全部变量都会失效。
 - `No uncommitted changes to submit`:工作区是干净的,AI 还没写任何东西,先让它产出内容。
-- `npx anvilwiki-ops` 找不到包:需要 0.1.0 及以上版本(随模板 v1.15 发布)。
+- `npx anvilwiki-ops` 找不到包:需要 0.1.0 及以上版本(随模板 v1.15 发布;v2.0 搭载 1.0.0,含多站 + AI 引用)。
+- 管道没开出 PR:Settings → Actions → General → 勾选 "Allow GitHub Actions to create and approve pull requests"。
 
 ## ✅ 验收(全部成立才算完成)
 

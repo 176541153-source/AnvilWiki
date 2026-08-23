@@ -16,6 +16,24 @@ export interface GscQueryResult {
   totals: { clicks: number; impressions: number; ctr: number; position: number };
 }
 
+export interface AioPageRow {
+  page: string;
+  clicks: number;
+  impressions: number;
+  ctr: number;
+  position: number;
+}
+
+export interface AioProbeResult {
+  rows: AioPageRow[];
+  totals: { clicks: number; impressions: number };
+  /** Google has NOT committed to exposing AI_OVERVIEWS via searchAppearance — treat as directional. */
+  experimental: true;
+  note: string;
+  /** Set when the probe itself failed (experimental — surfaced as a note, never fatal). */
+  error?: string;
+}
+
 interface GscApiRow {
   keys?: string[];
   clicks?: number;
@@ -46,7 +64,7 @@ export function gscQueryUrl(siteUrl: string): string {
   return `https://searchconsole.googleapis.com/webmasters/v3/sites/${encodeURIComponent(property)}/searchAnalytics/query`;
 }
 
-export function parseGscResponse(json: unknown): GscQueryResult {
+function assertNotGscError(json: unknown): void {
   const maybeError = json as { error?: { code?: number; message?: string } };
   if (maybeError?.error) {
     const code = maybeError.error.code ?? 0;
@@ -56,6 +74,10 @@ export function parseGscResponse(json: unknown): GscQueryResult {
         : 'Check the service account key with `anvil-ops doctor`.';
     throw new OpsError(`Google Search Console API error ${code}: ${maybeError.error.message ?? 'unknown'}`, fix);
   }
+}
+
+export function parseGscResponse(json: unknown): GscQueryResult {
+  assertNotGscError(json);
   const rows = ((json as { rows?: GscApiRow[] }).rows ?? []).map((r) => ({
     page: r.keys?.[0] ?? '',
     query: r.keys?.[1] ?? '',
@@ -78,7 +100,38 @@ export function parseGscResponse(json: unknown): GscQueryResult {
 export interface GscClient {
   query(params: { days: number }): Promise<GscQueryResult>;
   listAccessibleSites(): Promise<string[]>;
+  /** Optional so existing injected fakes in tests keep compiling; the real client always provides it. */
+  probeAiOverviews?(params: { days: number }): Promise<AioProbeResult>;
 }
+
+export function buildAioRequestBody(days: number): Record<string, unknown> {
+  return {
+    ...windowDays(days),
+    dimensions: ['page'],
+    dimensionFilterGroups: [
+      {
+        groupType: 'and',
+        filters: [{ dimension: 'searchAppearance', operator: 'equals', expression: 'AI_OVERVIEWS' }],
+      },
+    ],
+    rowLimit: 25,
+  };
+}
+
+export function parseAioResponse(json: unknown): { rows: AioPageRow[] } {
+  assertNotGscError(json);
+  const rows = ((json as { rows?: GscApiRow[] }).rows ?? []).map((r) => ({
+    page: r.keys?.[0] ?? '',
+    clicks: r.clicks ?? 0,
+    impressions: r.impressions ?? 0,
+    ctr: r.ctr ?? 0,
+    position: r.position ?? 0,
+  }));
+  return { rows };
+}
+
+export const AIO_EXPERIMENTAL_NOTE =
+  'experimental: Google does not commit to exposing AI_OVERVIEWS via the searchAppearance filter — numbers are directional, not contractual.';
 
 export function createGscClient(opts: { credential: GscCredential; siteUrl: string }): GscClient {
   const auth = new JWT({
@@ -101,6 +154,23 @@ export function createGscClient(opts: { credential: GscCredential; siteUrl: stri
       });
       const data = res.data as { siteEntry?: { siteUrl?: string }[] };
       return (data.siteEntry ?? []).map((s) => s.siteUrl ?? '').filter(Boolean);
+    },
+    async probeAiOverviews({ days }): Promise<AioProbeResult> {
+      const res = await auth.request({
+        url: gscQueryUrl(opts.siteUrl),
+        method: 'POST',
+        data: buildAioRequestBody(days),
+      });
+      const { rows } = parseAioResponse(res.data);
+      return {
+        rows,
+        totals: {
+          clicks: rows.reduce((s, r) => s + r.clicks, 0),
+          impressions: rows.reduce((s, r) => s + r.impressions, 0),
+        },
+        experimental: true,
+        note: AIO_EXPERIMENTAL_NOTE,
+      };
     },
   };
 }

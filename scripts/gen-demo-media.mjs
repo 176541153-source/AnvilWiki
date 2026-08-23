@@ -15,8 +15,10 @@
  *   src/assets/gallery/beginner-*.png        (beginner guide gallery)
  *   public/images/articles/weapon-*.png      (tier-list inline body images)
  *
- * All images are 800×450 (16:9) — matches existing covers and the
- * `.prose img:not([class])` CLS guard in globals.css.
+ * The cover renders at 1200×675 (og:image standard since v2.0 — Google
+ * Discover large-image previews need ≥1200px width); gallery and inline
+ * body images stay 800×450 (16:9, matches the `.prose img:not([class])`
+ * CLS guard in globals.css).
  */
 import sharp from 'sharp';
 import { mkdirSync } from 'node:fs';
@@ -53,7 +55,14 @@ const frame = (title, sub, inner) => `
   <text x='36' y='52' ${FONT} font-size='26' font-weight='700' fill='${C.text}'>${title}</text>
   <text x='36' y='76' ${FONT} font-size='14' fill='${C.muted}' letter-spacing='2'>${sub}</text>`;
 
-const svgDoc = (inner) => `<svg xmlns='http://www.w3.org/2000/svg' width='${W}' height='${H}'>
+// Cover output size — og:image standard (v2.0): Google Discover large-image
+// previews require ≥1200px width; 1200×675 keeps the 16:9 aspect.
+const COVER_W = 1200;
+const COVER_H = 675;
+
+// Internal layout stays on the 800×450 grid; covers render it scaled up via
+// viewBox (vector, so no quality loss) while other media rasterize 1:1.
+const svgDoc = (inner, { width = W, height = H } = {}) => `<svg xmlns='http://www.w3.org/2000/svg' width='${width}' height='${height}' viewBox='0 0 ${W} ${H}'>
   <defs>
     <radialGradient id='bgGrad' cx='50%' cy='42%' r='85%'>
       <stop offset='0%' stop-color='#1d2330'/>
@@ -109,7 +118,7 @@ const codesCover = svgDoc(`
       <stop offset='100%' stop-color='#f59e0b'/>
     </linearGradient>
   </defs>
-`);
+`, { width: COVER_W, height: COVER_H });
 
 /* ------------------------------------------------------------------ */
 /* 2. stormcaller-arena — overhead arena map                           */

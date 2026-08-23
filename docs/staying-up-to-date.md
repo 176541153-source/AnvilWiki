@@ -35,14 +35,28 @@ pnpm check-links    # 内链对账(build 后)
 
 ## 版本策略(SemVer)
 
-- **MAJOR**(如 v2.0):有 breaking change —— 升级需要按 CHANGELOG 的迁移说明操作。
+- **MAJOR**(如 v2.0):重大里程碑。若含 breaking change,CHANGELOG 会附迁移说明,按说明操作;**v2.0.0 对模板仓库零 breaking**——常规 merge 即可,无迁移步骤(唯一契约变化在 `anvilwiki-ops` npm 包 0.x→1.0.0:MCP 工具加了可选 `site` 参数,不传则行为与 0.x 一致)。
 - **MINOR**(如 v1.5 → v1.6):新功能,默认关闭或向后兼容(env 门控),merge 后开箱行为不变。
 - **PATCH**:bug 修复,直接 merge 即可。
 
 **兼容性承诺**:
 - frontmatter 字段只增不改名,旧文章永远能构建;
-- 所有可选功能(广告/评论/赞助/分析)都是 env 门控 + 默认关闭,新版本不会让它们自动开启;
+- 所有可选功能(广告/评论/赞助/分析/affiliate 建议位)都是 env/config 门控 + 默认关闭,新版本不会让它们自动开启;
 - `src/locales/<locale>.json` 缺 key 时运行时回退英文,merge 上游新增的 UI key 不会报错(可用 `pnpm check-i18n` 查看缺哪些)。
+
+## 升级到 v2.0(2026-08)
+
+v2.0 是「里程碑 major」:四件新能力(PR 门控内容管道 / anvilwiki-ops 1.0 多站 / `pnpm gen-covers` 封面生成 / AffiliateSuggestion 建议位)全部是**加法**,三层分离不动:
+
+```bash
+git fetch upstream && git merge upstream/main   # 与往常完全一样
+pnpm install                                     # 新增 devDeps:satori/@resvg/resvg-js/subset-font/yaml
+pnpm check-config && pnpm build && pnpm check-links
+```
+
+两个可选动作:
+- 想用内容管道:Settings → Actions → 勾 "Allow GitHub Actions to create and approve pull requests",见 [content-pipeline.md](./content-pipeline.md);
+- 封面标准从 800×450 升到 **1200×675**(Google Discover 大图预览要求 ≥1200px 宽 + 全站已声明 `max-image-preview:large`)——存量封面不用改,新建封面可用 `pnpm gen-covers` 自动生成。
 
 ## 每次同步后的检查清单
 

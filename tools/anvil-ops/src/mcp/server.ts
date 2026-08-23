@@ -3,19 +3,22 @@ import { readFileSync } from 'node:fs';
 import { z } from 'zod';
 import { runDoctor, formatDoctor } from '../core/doctor.js';
 import { collectMetrics, formatMetrics } from '../core/metrics.js';
+import { collectInsights, formatInsights } from '../core/insights.js';
 import { runAudit, formatAudit } from '../core/audit.js';
-import { buildInsights, formatInsights, parseStaleCodes } from '../core/insights.js';
 import { submit } from '../core/gitops.js';
 import { defaultRun, type RunFn } from '../core/content.js';
 import { OpsError } from '../core/errors.js';
-import { loadSiteConfig } from '../core/site.js';
+import { resolveEffectiveRoot } from '../core/sites.js';
 import type { GscClient } from '../core/providers/gsc.js';
-import type { queryCloudflare } from '../core/providers/cloudflare.js';
+import type { queryCloudflare, fetchAiReferrals } from '../core/providers/cloudflare.js';
 
 export interface BuildServerOpts {
   cwd: string;
+  /** Path override for the multi-site registry (tests point this at a tmp file). */
+  sitesRegistryPath?: string;
   gscClientFactory?: (o: { credential: { clientEmail: string; privateKey: string }; siteUrl: string }) => GscClient;
   cfQuery?: typeof queryCloudflare;
+  aiReferralsQuery?: typeof fetchAiReferrals;
   run?: RunFn;
 }
 
@@ -32,17 +35,29 @@ const pkgVersion = JSON.parse(
 export function buildServer(opts: BuildServerOpts): McpServer {
   const server = new McpServer({ name: 'anvilwiki-ops', version: pkgVersion });
 
+  // Site resolution (1.0.0): explicit `site` name wins; otherwise the server
+  // start dir; only when that has no site config does registry defaultSite kick in.
+  const effectiveCwd = (site: string | undefined): string =>
+    resolveEffectiveRoot({ site, cwd: opts.cwd, registryPath: opts.sitesRegistryPath });
+
+  const siteParam = z
+    .string()
+    .optional()
+    .describe('site name from the multi-site registry (`anvil-ops sites list`); omit to use the server start directory');
+
   server.registerTool(
     'doctor',
     {
       title: 'anvil-ops doctor',
       description:
         'Health check for AnvilWiki site ops: wrangler.toml site config, gh CLI, GSC service account, CF Web Analytics token. Run this FIRST in any ops session before other anvil-ops tools.',
-      inputSchema: {},
+      inputSchema: {
+        site: siteParam,
+      },
     },
-    async () => {
+    async ({ site }) => {
       try {
-        const report = await runDoctor({ cwd: opts.cwd });
+        const report = await runDoctor({ cwd: effectiveCwd(site) });
         return { content: [{ type: 'text', text: formatDoctor(report) }] };
       } catch (e) {
         return { isError: true, content: [{ type: 'text', text: errText(e) }] };
@@ -55,20 +70,22 @@ export function buildServer(opts: BuildServerOpts): McpServer {
     {
       title: 'anvil-ops metrics',
       description:
-        'Pull site traffic metrics: Google Search Console (clicks/impressions/CTR/position by page and query) + Cloudflare Web Analytics (visits by page). Requires .env credentials; run doctor first if unset.',
+        'Pull site traffic metrics: Google Search Console (clicks/impressions/CTR/position by page and query) + Cloudflare Web Analytics (visits by page) + AI referrals by host (chatgpt.com, perplexity.ai, ...). Requires .env credentials; run doctor first if unset.',
       inputSchema: {
         days: z.number().int().min(1).max(365).default(28).describe('lookback window in days'),
         source: z.enum(['gsc', 'cf', 'all']).default('all').describe('limit to one source'),
+        site: siteParam,
       },
     },
-    async ({ days, source }) => {
+    async ({ days, source, site }) => {
       try {
         const report = await collectMetrics({
-          cwd: opts.cwd,
+          cwd: effectiveCwd(site),
           days: days ?? 28,
           source: source ?? 'all',
           gscClientFactory: opts.gscClientFactory,
           cfQuery: opts.cfQuery,
+          aiReferralsQuery: opts.aiReferralsQuery,
         });
         return { content: [{ type: 'text', text: formatMetrics(report, 'md') }] };
       } catch (e) {
@@ -83,11 +100,13 @@ export function buildServer(opts: BuildServerOpts): McpServer {
       title: 'anvil-ops audit',
       description:
         'Run the template maintenance checks (refresh-audit, check-i18n, check-content, check-links) and return one markdown report. check-links audits dist/ — run a build first for full link coverage.',
-      inputSchema: {},
+      inputSchema: {
+        site: siteParam,
+      },
     },
-    async () => {
+    async ({ site }) => {
       try {
-        const report = runAudit({ cwd: opts.cwd, run: opts.run });
+        const report = runAudit({ cwd: effectiveCwd(site), run: opts.run });
         return { content: [{ type: 'text', text: formatAudit(report) }] };
       } catch (e) {
         return { isError: true, content: [{ type: 'text', text: errText(e) }] };
@@ -100,39 +119,23 @@ export function buildServer(opts: BuildServerOpts): McpServer {
     {
       title: 'anvil-ops insights',
       description:
-        'Data-driven SEO action list from GSC + Cloudflare metrics plus stale-codes detection: low-CTR rewrites, rank 5-15 deepening, zero-impression checks, traffic-mix analysis, stale codes pages. Metrics degrade gracefully if credentials are unset (run doctor first).',
+        'Data-driven SEO action list from GSC + Cloudflare metrics plus stale-codes detection and an experimental AI Overviews page probe: low-CTR rewrites, rank 5-15 deepening, zero-impression checks, traffic-mix analysis, stale codes pages. Metrics degrade gracefully if credentials are unset (run doctor first).',
       inputSchema: {
         days: z.number().int().min(1).max(365).default(28).describe('metrics lookback window in days'),
+        site: siteParam,
       },
     },
-    async ({ days }) => {
+    async ({ days, site }) => {
       try {
-        let gsc: Awaited<ReturnType<typeof collectMetrics>>['gsc'];
-        let cf: Awaited<ReturnType<typeof collectMetrics>>['cf'];
-        let degraded: ('gsc' | 'cf')[] = [];
-        try {
-          const metrics = await collectMetrics({
-            cwd: opts.cwd,
-            days: days ?? 28,
-            gscClientFactory: opts.gscClientFactory,
-            cfQuery: opts.cfQuery,
-          });
-          gsc = metrics.gsc;
-          cf = metrics.cf;
-          degraded = metrics.degraded;
-        } catch (e) {
-          if (e instanceof OpsError && /No analytics source/.test(e.message)) {
-            degraded = ['gsc', 'cf'];
-          } else {
-            throw e;
-          }
-        }
-        const site = loadSiteConfig(opts.cwd);
-        const run = opts.run ?? defaultRun;
-        const staleRun = run('pnpm', ['refresh-audit'], { cwd: site.root });
-        const stale = staleRun.status === 0 ? parseStaleCodes(staleRun.stdout) : [];
-        const list = buildInsights({ gsc, cf, staleCodesPages: stale });
-        return { content: [{ type: 'text', text: formatInsights(list, degraded) }] };
+        const report = await collectInsights({
+          cwd: effectiveCwd(site),
+          days: days ?? 28,
+          run: opts.run,
+          gscClientFactory: opts.gscClientFactory,
+          cfQuery: opts.cfQuery,
+          aiReferralsQuery: opts.aiReferralsQuery,
+        });
+        return { content: [{ type: 'text', text: formatInsights(report.list, report.degraded, report.aio) }] };
       } catch (e) {
         return { isError: true, content: [{ type: 'text', text: errText(e) }] };
       }
@@ -148,11 +151,12 @@ export function buildServer(opts: BuildServerOpts): McpServer {
       inputSchema: {
         title: z.string().optional().describe('PR / commit title'),
         base: z.string().optional().describe('PR base branch (default main)'),
+        site: siteParam,
       },
     },
-    async ({ title, base }) => {
+    async ({ title, base, site }) => {
       try {
-        const result = await submit({ cwd: opts.cwd, title, base, run: opts.run });
+        const result = await submit({ cwd: effectiveCwd(site), title, base, run: opts.run });
         return {
           content: [{ type: 'text', text: `# PR opened\n\n- Branch: ${result.branch}\n- Pull request: ${result.prUrl}\n\nMerge after review; Cloudflare Pages deploys automatically.` }],
         };

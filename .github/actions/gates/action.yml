@@ -1,0 +1,52 @@
+name: 'AnvilWiki quality gates'
+description: >-
+  The eight validation gates shared by CI and the content pipeline. A draft PR
+  from the pipeline is only created after these pass, so both paths verify
+  content with the exact same definition — no drift between the two workflows.
+inputs:
+  site-url:
+    description: 'SITE_URL for the build step (CI passes vars.SITE_URL; falls back to the demo domain).'
+    required: false
+    default: 'https://anvilwiki.pages.dev'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Lint
+      run: pnpm lint
+      shell: bash
+
+    - name: Typecheck
+      run: pnpm typecheck
+      shell: bash
+
+    - name: Test
+      run: pnpm test
+      shell: bash
+
+    - name: Config consistency (nav/locale 3-place check)
+      run: pnpm check-config
+      shell: bash
+
+    - name: Build
+      run: pnpm build
+      shell: bash
+      env:
+        # FORKS: set a repository variable SITE_URL (Settings → Secrets and
+        # variables → Actions → Variables) to your domain — otherwise CI
+        # falls back to the demo domain and the built canonical/sitemap
+        # point at the wrong site (production builds use wrangler.toml,
+        # which this does not affect).
+        SITE_URL: ${{ inputs.site-url }}
+
+    - name: Content lint (H1/alt/slashes)
+      run: pnpm check-content
+      shell: bash
+
+    - name: Internal link audit (dist/)
+      run: pnpm check-links
+      shell: bash
+
+    - name: i18n coverage (report only)
+      run: pnpm check-i18n
+      shell: bash
