@@ -218,6 +218,18 @@ export const COMMUNITY_SITES: {
       'A wiki for the Roblox hit Steal an Egg — pets, eggs, codes, and strategies.',
     descriptionZh: 'Roblox 热门游戏 Steal an Egg 的 wiki——宠物、蛋、兑换码与玩法攻略。',
   },
+  {
+    name: 'Jujutsu Shenanigans Player Guide',
+    url: 'https://jjs-player-guide.pages.dev/',
+    game: 'Jujutsu Shenanigans (Roblox)',
+    image: '/images/showcase/sites/jjs-player-guide.png',
+    imageAltEn: 'Screenshot of the Jujutsu Shenanigans Player Guide homepage',
+    imageAltZh: 'Jujutsu Shenanigans Player Guide 首页截图',
+    descriptionEn:
+      'A trilingual Roblox player wiki for Jujutsu Shenanigans — character routes, Black Flash, maps, codes, and patch notes.',
+    descriptionZh:
+      'Jujutsu Shenanigans 的中英日三语 Roblox 玩家 wiki——角色路线、Black Flash、地图、兑换码与版本更新。',
+  },
 ];
 
 const en: LandingContent = {
