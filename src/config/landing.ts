@@ -221,7 +221,7 @@ export const COMMUNITY_SITES: {
   {
     name: 'Jujutsu Shenanigans Player Guide',
     url: 'https://jjs-player-guide.pages.dev/',
-    game: 'Jujutsu Shenanigans (Roblox)',
+    game: 'Jujutsu Shenanigans',
     image: '/images/showcase/sites/jjs-player-guide.png',
     imageAltEn: 'Screenshot of the Jujutsu Shenanigans Player Guide homepage',
     imageAltZh: 'Jujutsu Shenanigans Player Guide 首页截图',
