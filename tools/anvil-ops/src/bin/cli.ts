@@ -12,6 +12,7 @@ import { importAioCommand } from '../cli/commands/import-aio.js';
 import { runAcrossSites } from '../cli/run-all.js';
 import { listSites, resolveSitePath, sitesRegistryPath } from '../core/sites.js';
 import { OpsError } from '../core/errors.js';
+import { mergeSiteFlags, assertNotBothSiteAndAll, type SiteFlags } from '../cli/flags.js';
 
 const pkg = JSON.parse(readFileSync(fileURLToPath(new URL('../../package.json', import.meta.url)), 'utf8')) as {
   version: string;
@@ -27,29 +28,32 @@ program
   .option('--site <name>', 'run against a registered site (anvil-ops sites list) instead of the cwd')
   .option('--all', 'run across every registered site (doctor/metrics/audit/insights only)');
 
-interface SiteFlags {
-  site?: string;
-  all?: boolean;
-}
-
 const SITE_OPTION = ['--site <name>', 'run against a registered site (anvil-ops sites list) instead of the cwd'] as const;
 const ALL_OPTION = ['--all', 'run across every registered site'] as const;
 
-function mergedFlags(cmdOpts: SiteFlags): Required<Pick<SiteFlags, 'all'>> & SiteFlags {
+function mergedFlags(cmdOpts: SiteFlags): SiteFlags & { all: boolean } {
+  return mergeSiteFlags(program.opts<SiteFlags>(), cmdOpts);
+}
+
+/** `sites` and `mcp` ignore the global --site/--all by design — say so instead
+ *  of silently running against the wrong mental target. */
+function rejectSiteFlagsFor(cmdName: string): void {
   const g = program.opts<SiteFlags>();
-  return { site: cmdOpts.site ?? g.site, all: cmdOpts.all ?? g.all ?? false };
+  if (g.site || g.all) {
+    throw new OpsError(
+      `--site/--all do not apply to \`${cmdName}\`.`,
+      cmdName === 'mcp'
+        ? 'The MCP server resolves the site per request (every tool takes its own `site` argument) — start it in the repo you want as default, or set defaultSite in the registry.'
+        : 'The sites subcommands manage the registry itself; target a site via doctor/metrics/audit/insights/submit.',
+    );
+  }
 }
 
 type Target = { mode: 'single'; cwd: string } | { mode: 'all' };
 
 function resolveTarget(cmdOpts: SiteFlags): Target {
   const { site, all } = mergedFlags(cmdOpts);
-  if (site && all) {
-    throw new OpsError(
-      '--site and --all are mutually exclusive.',
-      'Use either --site <name> for one registered site, or --all for every registered site.',
-    );
-  }
+  assertNotBothSiteAndAll({ site, all });
   if (all) {
     const sites = listSites();
     if (sites.length === 0) {
@@ -201,6 +205,7 @@ sites
   .command('list')
   .description('List registered sites (name / path / siteUrl / missing)')
   .action(() => {
+    rejectSiteFlagsFor('sites list');
     process.exitCode = sitesListCommand();
   });
 
@@ -209,6 +214,7 @@ sites
   .description('Register a site (path is resolved to absolute and must exist)')
   .option('--url <siteUrl>', 'optional siteUrl override (skips wrangler.toml/.env SITE_URL)')
   .action((name: string, path: string, opts: { url?: string }) => {
+    rejectSiteFlagsFor('sites add');
     process.exitCode = sitesAddCommand({ name, path, url: opts.url });
   });
 
@@ -216,6 +222,7 @@ sites
   .command('remove <name>')
   .description('Remove a site from the registry')
   .action((name: string) => {
+    rejectSiteFlagsFor('sites remove');
     process.exitCode = sitesRemoveCommand(name);
   });
 
@@ -223,6 +230,7 @@ program
   .command('mcp')
   .description('Start the anvil-ops MCP server on stdio (for Claude / ZCode / other MCP clients)')
   .action(async () => {
+    rejectSiteFlagsFor('mcp');
     const { StdioServerTransport } = await import('@modelcontextprotocol/sdk/server/stdio.js');
     const { buildServer } = await import('../mcp/server.js');
     const server = buildServer({ cwd: process.cwd() });

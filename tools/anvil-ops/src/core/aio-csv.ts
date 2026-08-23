@@ -1,3 +1,4 @@
+import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { OpsError } from './errors.js';
 
@@ -91,7 +92,15 @@ export function parseAioCsv(text: string): AioCsvRow[] {
 export function aioArchivePath(siteRoot: string, now: Date = new Date()): string {
   const p = (n: number) => String(n).padStart(2, '0');
   const stamp = `${now.getFullYear()}-${p(now.getMonth() + 1)}-${p(now.getDate())}`;
-  return join(siteRoot, 'ops', 'ai-visibility', `${stamp}-aio.csv`);
+  const base = join(siteRoot, 'ops', 'ai-visibility', `${stamp}-aio.csv`);
+  if (!existsSync(base)) return base;
+  // Two imports on the same day must not silently clobber each other —
+  // keep the first archive and suffix the rest (-2, -3, …).
+  for (let i = 2; i < 100; i++) {
+    const candidate = base.replace(/\.csv$/, `-${i}.csv`);
+    if (!existsSync(candidate)) return candidate;
+  }
+  return base.replace(/\.csv$/, `-${now.getTime()}.csv`);
 }
 
 function pad(cell: string, width: number): string {

@@ -40,8 +40,13 @@ export async function runDoctor(opts: { cwd: string; deps?: DoctorDeps }): Promi
   // 1. site config
   let siteUrl: string | undefined;
   let beacon: string | undefined;
+  // .env lives at the DISCOVERED repo root (site.root), not the cwd — running
+  // doctor from a subdirectory must not falsely report "not configured"
+  // (metrics/insights already resolve against site.root).
+  let siteRoot: string | undefined;
   try {
     const site = loadSiteConfig(opts.cwd);
+    siteRoot = site.root;
     siteUrl = site.siteUrl;
     beacon = site.cfBeaconToken;
     if (!site.siteUrl) {
@@ -71,7 +76,7 @@ export async function runDoctor(opts: { cwd: string; deps?: DoctorDeps }): Promi
   checks.push({ name: 'gh', ...gh() });
 
   // 3. env / gsc
-  const env = loadOpsEnv(opts.cwd);
+  const env = loadOpsEnv(siteRoot ?? opts.cwd);
   if (env.gscServiceAccount && siteUrl) {
     checks.push({ name: 'gsc-config', ok: true, detail: `service account ${env.gscServiceAccount.clientEmail}` });
     const client = deps.gscClient ?? createGscClient({ credential: env.gscServiceAccount, siteUrl });

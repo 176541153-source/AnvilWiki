@@ -47,37 +47,68 @@ export async function collectMetrics(opts: {
 
   const report: MetricsReport = { days: opts.days, siteUrl: site.siteUrl, degraded, notes: [...env.problems] };
 
+  // Sources degrade independently: a failing GSC must not hide a healthy CF
+  // half of the same report (only when ALL configured sources fail do we
+  // throw — never show an empty report as if it were complete).
+  const failures: string[] = [];
+
   if (gscReady) {
     const factory = opts.gscClientFactory ?? createGscClient;
     const client = factory({ credential: env.gscServiceAccount!, siteUrl: site.siteUrl! });
-    report.gsc = await client.query({ days: opts.days });
+    try {
+      report.gsc = await client.query({ days: opts.days });
+      if (report.gsc.rows.length >= 1000) {
+        report.notes.push('GSC rows capped at the 1000-row API limit — long-tail queries beyond the cap are excluded.');
+      }
+    } catch (e) {
+      failures.push(`gsc: ${e instanceof Error ? e.message : String(e)}`);
+      degraded.push('gsc');
+    }
   } else if (wanted !== 'cf') {
     degraded.push('gsc');
   }
 
   if (cfReady) {
     const q = opts.cfQuery ?? queryCloudflare;
-    report.cf = await q({
-      apiToken: env.cfApiToken!,
-      accountId: env.cfAccountId!,
-      siteTag: site.cfBeaconToken!,
-      days: opts.days,
-    });
-    // AI referrals ride the same CF credentials but must never fail the whole
-    // metrics pull — degrade to a note instead.
-    const ai = opts.aiReferralsQuery ?? fetchAiReferrals;
     try {
-      report.aiReferrals = await ai({
-        apiToken: env.cfApiToken,
-        accountId: env.cfAccountId,
-        siteTag: site.cfBeaconToken,
+      report.cf = await q({
+        apiToken: env.cfApiToken!,
+        accountId: env.cfAccountId!,
+        siteTag: site.cfBeaconToken!,
         days: opts.days,
       });
+      if (report.cf.pages.length >= 100) {
+        report.notes.push('CF top pages capped at the 100-row query limit — pages beyond the cap are excluded.');
+      }
+      // AI referrals ride the same CF credentials but must never fail the whole
+      // metrics pull — degrade to a note instead.
+      const ai = opts.aiReferralsQuery ?? fetchAiReferrals;
+      try {
+        report.aiReferrals = await ai({
+          apiToken: env.cfApiToken,
+          accountId: env.cfAccountId,
+          siteTag: site.cfBeaconToken,
+          days: opts.days,
+        });
+      } catch (e) {
+        report.notes.push(`AI referrals unavailable: ${e instanceof Error ? e.message : String(e)}`);
+      }
     } catch (e) {
-      report.notes.push(`AI referrals unavailable: ${e instanceof Error ? e.message : String(e)}`);
+      failures.push(`cf: ${e instanceof Error ? e.message : String(e)}`);
+      degraded.push('cf');
     }
   } else if (wanted !== 'gsc') {
     degraded.push('cf');
+  }
+
+  if (!report.gsc && !report.cf && failures.length > 0) {
+    throw new OpsError(
+      `All configured analytics sources failed:\n  ${failures.join('\n  ')}`,
+      'Run `anvil-ops doctor` to check credentials, then retry. A partial report is never shown as complete.',
+    );
+  }
+  if (failures.length > 0) {
+    report.notes.push(`Failed sources excluded from this report: ${failures.join('; ')}`);
   }
 
   return report;

@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { dirname, isAbsolute, join } from 'node:path';
 import { parse as parseToml, stringify as stringifyToml } from 'smol-toml';
@@ -124,7 +124,11 @@ export function saveSitesRegistry(registry: SitesRegistry, path?: string): void 
   if (sites.length) doc.sites = sites;
   const p = path ?? sitesRegistryPath();
   mkdirSync(dirname(p), { recursive: true });
-  writeFileSync(p, (sites.length ? REGISTRY_HEADER + '\n\n' : '') + stringifyToml(doc) + '\n');
+  // Temp-file + rename: a crash mid-write (or a concurrent `sites add`) must
+  // never leave a truncated TOML that takes the whole registry down.
+  const tmp = `${p}.${process.pid}.tmp`;
+  writeFileSync(tmp, (sites.length ? REGISTRY_HEADER + '\n\n' : '') + stringifyToml(doc) + '\n');
+  renameSync(tmp, p);
 }
 
 export function resolveSitePath(name: string, path?: string): string {
@@ -155,9 +159,16 @@ export function resolveEffectiveRoot(opts: { site?: string; cwd: string; registr
   try {
     loadSiteConfig(opts.cwd);
     return opts.cwd;
-  } catch {
-    const registry = loadSitesRegistry(opts.registryPath);
-    if (registry.defaultSite) return resolveSitePath(registry.defaultSite, opts.registryPath);
-    return opts.cwd; // let the command surface its own "no site config" OpsError
+  } catch (e) {
+    // Only "no site config found" may fall through to defaultSite. A CORRUPT
+    // wrangler.toml (TOML parse error) must surface — silently redirecting a
+    // write command like submit_pr to another registered site's repo is the
+    // worst possible interpretation of "cwd has no config".
+    if (e instanceof OpsError) {
+      const registry = loadSitesRegistry(opts.registryPath);
+      if (registry.defaultSite) return resolveSitePath(registry.defaultSite, opts.registryPath);
+      return opts.cwd; // let the command surface its own "no site config" OpsError
+    }
+    throw e;
   }
 }

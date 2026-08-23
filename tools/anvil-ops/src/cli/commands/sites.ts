@@ -8,6 +8,7 @@ import {
   type RegistrySite,
 } from '../../core/sites.js';
 import { OpsError } from '../../core/errors.js';
+import { validateSiteName } from '../flags.js';
 
 function pad(cell: string, width: number): string {
   return cell + ' '.repeat(Math.max(0, width - cell.length));
@@ -48,10 +49,7 @@ export function sitesListCommand(): number {
 }
 
 export function sitesAddCommand(opts: { name: string; path: string; url?: string }): number {
-  const name = opts.name.trim();
-  if (!name) {
-    throw new OpsError('Site name must not be empty.', 'Use a short slug, e.g. `anvil-ops sites add main-wiki /path/to/repo`.');
-  }
+  const name = validateSiteName(opts.name);
   const path = resolve(opts.path);
   if (!existsSync(path)) {
     throw new OpsError(

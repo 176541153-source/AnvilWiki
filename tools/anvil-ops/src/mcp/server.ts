@@ -9,6 +9,7 @@ import { submit } from '../core/gitops.js';
 import { defaultRun, type RunFn } from '../core/content.js';
 import { OpsError } from '../core/errors.js';
 import { resolveEffectiveRoot } from '../core/sites.js';
+import { canOffload, offload } from './offload.js';
 import type { GscClient } from '../core/providers/gsc.js';
 import type { queryCloudflare, fetchAiReferrals } from '../core/providers/cloudflare.js';
 
@@ -106,7 +107,17 @@ export function buildServer(opts: BuildServerOpts): McpServer {
     },
     async ({ site }) => {
       try {
-        const report = runAudit({ cwd: effectiveCwd(site), run: opts.run });
+        const cwd = effectiveCwd(site);
+        // audit spawns 4 pnpm children (build included) — offload to a worker
+        // thread so the stdio event loop stays responsive (keepalive pings).
+        // Falls back in-process for injected test runs / unbuilt source.
+        if (!opts.run && canOffload()) {
+          const r = await offload({ kind: 'audit', cwd });
+          return r.ok
+            ? { content: [{ type: 'text', text: r.text }] }
+            : { isError: true, content: [{ type: 'text', text: r.errorText }] };
+        }
+        const report = runAudit({ cwd, run: opts.run });
         return { content: [{ type: 'text', text: formatAudit(report) }] };
       } catch (e) {
         return { isError: true, content: [{ type: 'text', text: errText(e) }] };
@@ -156,7 +167,17 @@ export function buildServer(opts: BuildServerOpts): McpServer {
     },
     async ({ title, base, site }) => {
       try {
-        const result = await submit({ cwd: effectiveCwd(site), title, base, run: opts.run });
+        const cwd = effectiveCwd(site);
+        // submit runs the full validation chain (build included) — offload to
+        // a worker thread so the stdio event loop stays responsive. Falls
+        // back in-process for injected test runs / unbuilt source.
+        if (!opts.run && canOffload()) {
+          const r = await offload({ kind: 'submit', cwd, title, base });
+          return r.ok
+            ? { content: [{ type: 'text', text: r.text }] }
+            : { isError: true, content: [{ type: 'text', text: r.errorText }] };
+        }
+        const result = await submit({ cwd, title, base, run: opts.run });
         return {
           content: [{ type: 'text', text: `# PR opened\n\n- Branch: ${result.branch}\n- Pull request: ${result.prUrl}\n\nMerge after review; Cloudflare Pages deploys automatically.` }],
         };

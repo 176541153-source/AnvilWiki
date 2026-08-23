@@ -46,6 +46,19 @@ export async function submit(opts: { cwd: string; title?: string; base?: string;
     throw new OpsError(`git checkout -b ${branch} failed.`, `${checkout.stdout}\n${checkout.stderr}\nFix: resolve the git state (e.g. existing branch name clash) and re-run.`);
   }
   git(['add', '-A']);
+  // Safety net for non-template repos whose .gitignore may not cover .env:
+  // staged secret files abort the submit before anything is committed/pushed.
+  const staged = git(['diff', '--cached', '--name-only']);
+  const stagedSecrets = staged.stdout
+    .split('\n')
+    .map((l) => l.trim())
+    .filter((l) => /(^|\/)\.env($|\.)/.test(l));
+  if (stagedSecrets.length > 0) {
+    throw new OpsError(
+      `Refusing to commit env files: ${stagedSecrets.join(', ')}.`,
+      'Add them to .gitignore and unstage (git restore --staged <file>), then re-run submit. Nothing was committed or pushed.',
+    );
+  }
   const commit = git(['commit', '-m', title]);
   if (commit.status !== 0) {
     throw new OpsError('git commit failed.', `${commit.stdout}\n${commit.stderr}\nFix: check git user config (user.name/user.email) and re-run.`);
@@ -62,8 +75,8 @@ export async function submit(opts: { cwd: string; title?: string; base?: string;
   const pr = run('gh', ['pr', 'create', '--title', title, '--base', opts.base ?? 'main', '--body', body], { cwd: opts.cwd });
   if (pr.status !== 0) {
     throw new OpsError(
-      'gh pr create failed (branch is pushed; you can open the PR manually).',
-      `${pr.stdout}\n${pr.stderr}\nFix: ensure gh is authenticated (gh auth status), then either re-run push-only or open the PR from the repo UI.`,
+      `gh pr create failed — branch ${branch} is pushed with the commit kept on it; you are still on that branch.`,
+      `${pr.stdout}\n${pr.stderr}\nFix: ensure gh is authenticated (gh auth status), then run \`gh pr create --title ${JSON.stringify(title)}\` from the repo, or \`git checkout main\` to go back (the ${branch} branch stays for a retry).`,
     );
   }
   return { branch, prUrl: pr.stdout.trim() };
