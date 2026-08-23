@@ -47,6 +47,7 @@
 | 看「从零到赚钱」的全部工作量 | 🗺️ [文档中心首页](https://anvilwiki.pages.dev/zh/landing/docs)——10 件事全景清单,逐项点入 |
 | 深度定制 / 给模板写代码 | 🔧 [开发手册(7 章)](https://anvilwiki.pages.dev/zh/landing/docs/dev) |
 | 看看做出来长什么样 | 🎮 [在线 Demo](https://anvilwiki.pages.dev/)——虚构游戏「Anvil Quest」的完整 wiki |
+| 对比 Fandom / Wiki.js / 其他方案 | ⚖️ [完整对比页](https://anvilwiki.pages.dev/zh/landing/comparison)——三种物种、自托管引擎数据表、什么时候不该选 AnvilWiki |
 
 ## 📖 中文文档
 
@@ -128,6 +129,8 @@ fork 后用 ZCode / Claude Code / Codex / Cursor 打开仓库,直接对话即可
 | Lighthouse | **4×100 开箱即得** | 平台决定 | 自己调优数周 |
 | AI 产页 | **技能随仓库分发,对话即产页** | 无 | 自己搭 |
 | 上手门槛 | **零基础手册 11 章** | 低但受制于人 | 高 |
+
+更完整的选型对比——含 Wiki.js、BookStack、MediaWiki、DokuWiki、Docmost 五个自托管引擎的数据表,以及「什么时候不该选 AnvilWiki」:见[完整对比页](https://anvilwiki.pages.dev/zh/landing/comparison)。
 
 ### 常见问题
 
@@ -224,6 +227,8 @@ Repository reference docs: [game-selection](docs/game-selection.md) · [apply-te
 | Lighthouse | **4×100 out of the box** | Platform decides | Weeks of tuning |
 | AI page generation | **Skills ship with the repo — talk to generate** | None | Build it yourself |
 | Entry barrier | **11-chapter zero-to-hero manual** | Low but constrained | High |
+
+For the full decision guide — a data table of self-hosted wiki engines (Wiki.js, BookStack, MediaWiki, DokuWiki, Docmost) plus an honest "when NOT to pick AnvilWiki" section — see the [complete comparison](https://anvilwiki.pages.dev/landing/comparison).
 
 ### FAQ
 

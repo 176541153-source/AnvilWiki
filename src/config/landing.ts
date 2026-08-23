@@ -49,6 +49,47 @@ export interface LandingContent {
     subtitle: string;
     columns: string[];
     rows: { label: string; values: string[] }[];
+    /** Link under the homepage table opening the full comparison page. */
+    full: { label: string; href: string };
+  };
+  /** Standalone comparison page (/landing/comparison) — full, honest,
+   *  data-backed comparison vs Fandom and self-hosted wiki engines. */
+  comparisonPage: {
+    title: string;
+    subtitle: string;
+    intro: string;
+    tldrTitle: string;
+    tldrItems: { name: string; text: string }[];
+    table: {
+      title: string;
+      subtitle: string;
+      columns: string[];
+      rows: { label: string; values: string[] }[];
+    };
+    engines: {
+      title: string;
+      subtitle: string;
+      columns: string[];
+      entries: {
+        name: string;
+        url: string;
+        positioning: string;
+        license: string;
+        stars: string;
+        release: string;
+        bestFor: string;
+      }[];
+      note: string;
+    };
+    notFor: { title: string; subtitle: string; items: { need: string; pick: string }[] };
+    cta: {
+      title: string;
+      subtitle: string;
+      primaryLabel: string;
+      primaryHref: string;
+      secondaryLabel: string;
+      secondaryHref: string;
+    };
   };
   showcase: {
     title: string;
@@ -290,6 +331,157 @@ pnpm install && pnpm dev`,
         values: ['Yes (MIT)', 'No', 'Yes', 'Yes'],
       },
     ],
+    full: {
+      label: 'Full comparison — vs Fandom, Wiki.js, BookStack & more →',
+      href: '/landing/comparison',
+    },
+  },
+  comparisonPage: {
+    title: 'AnvilWiki vs Fandom vs Wiki.js — How to Choose',
+    subtitle:
+      'An honest, data-backed comparison of hosted wiki platforms (Fandom), self-hosted wiki engines (Wiki.js, BookStack, MediaWiki, DokuWiki, Docmost), and AnvilWiki — a static publishing template with an AI content workflow.',
+    intro:
+      'These tools get recommended in the same breath, but they are three different species. Pick with three questions: who writes the content, who keeps the revenue, and how much server you want to run.',
+    tldrTitle: 'The three species',
+    tldrItems: [
+      {
+        name: 'Fandom',
+        text: 'Hosted community platform — free hosting and community editors, but the platform controls the ads, the domain, and takes a cut of the revenue.',
+      },
+      {
+        name: 'Wiki.js · BookStack · MediaWiki · DokuWiki · Docmost',
+        text: 'Self-hosted collaboration engines — web editors, accounts, permissions. You run (and pay for) a server and a database.',
+      },
+      {
+        name: 'AnvilWiki',
+        text: 'Static publishing template — you and your AI agent write MDX in git, deploy free on Cloudflare Pages, keep 100% of ad revenue.',
+      },
+    ],
+    table: {
+      title: 'The core comparison',
+      subtitle: 'AnvilWiki vs a hosted platform vs self-hosted engines.',
+      columns: ['AnvilWiki', 'Fandom', 'Self-hosted engines'],
+      rows: [
+        {
+          label: 'Species',
+          values: ['Static site template', 'Hosted wiki platform', 'Self-hosted wiki software'],
+        },
+        {
+          label: 'Who writes content',
+          values: ['You + AI agent (git / PR)', 'Community volunteers (web editor)', 'Team members (web editor)'],
+        },
+        {
+          label: 'Server cost',
+          values: ['Free — Cloudflare Pages', 'Free (platform-hosted)', 'Your own VPS + database'],
+        },
+        {
+          label: 'Ad revenue',
+          values: ['100% yours (AdSense slots built in)', 'Platform takes a cut', 'DIY — rarely built in'],
+        },
+        {
+          label: 'SEO control',
+          values: ['Full suite built in', 'Platform-controlled', 'Depends on setup'],
+        },
+        {
+          label: 'Performance',
+          values: ['Lighthouse 4×100 out of the box', 'Medium', 'Depends on caching'],
+        },
+        {
+          label: 'Multi-user editing',
+          values: ['Not needed — solo + AI', 'Strong', 'Strong — accounts + permissions'],
+        },
+        {
+          label: 'AI content workflow',
+          values: ['Built in — agent skills ship in the repo', 'None', 'None'],
+        },
+        {
+          label: 'License',
+          values: ['MIT', 'Commercial platform', 'GPL / AGPL / MIT (varies)'],
+        },
+        {
+          label: 'Data ownership',
+          values: ['Your git repo — portable', 'Platform-locked, limited export', 'Your server'],
+        },
+      ],
+    },
+    engines: {
+      title: 'The self-hosted engines, at a glance',
+      subtitle: 'Neutral facts, alphabetical order. GitHub data as of 2026-08.',
+      columns: ['Project', 'Positioning', 'License', 'Stars', 'Latest release', 'Best for'],
+      entries: [
+        {
+          name: 'BookStack',
+          url: 'https://github.com/BookStackApp/BookStack',
+          positioning: 'Structured team knowledge base (shelves → books → chapters → pages)',
+          license: 'MIT',
+          stars: '~19.0k',
+          release: 'v26.05 (2026-07)',
+          bestFor: 'Team docs, non-technical editors',
+        },
+        {
+          name: 'Docmost',
+          url: 'https://github.com/docmost/docmost',
+          positioning: 'Modern real-time collaboration — a Notion/Confluence alternative',
+          license: 'AGPL-3.0',
+          stars: '~21.4k',
+          release: 'v0.95 (2026-07)',
+          bestFor: 'Real-time collaborative knowledge bases',
+        },
+        {
+          name: 'DokuWiki',
+          url: 'https://github.com/dokuwiki/dokuwiki',
+          positioning: 'PHP wiki with no database — content lives in plain files',
+          license: 'GPL-2.0',
+          stars: '~4.7k',
+          release: '2026-07-14',
+          bestFor: 'Low-resource self-hosting',
+        },
+        {
+          name: 'MediaWiki',
+          url: 'https://github.com/wikimedia/mediawiki',
+          positioning: 'The engine behind Wikipedia',
+          license: 'GPL',
+          stars: '~5.2k (mirror)',
+          release: 'Continuous',
+          bestFor: 'Large community encyclopedias',
+        },
+        {
+          name: 'Wiki.js',
+          url: 'https://github.com/requarks/wiki',
+          positioning: 'Node.js wiki with Git sync and a modern UI',
+          license: 'AGPL-3.0',
+          stars: '~28.8k',
+          release: 'v2.5 (2026-05)',
+          bestFor: 'Modern self-hosted wikis',
+        },
+      ],
+      note: 'AnvilWiki itself is young — v2.0 shipped in 2026-08 and its GitHub stars are still a two-digit number, not a decade of ecosystem like the projects above. What you get instead is an architecture written for the AI-search era: static, structured, agent-driven. Judge it by the demo, not the star count.',
+    },
+    notFor: {
+      title: 'When NOT to pick AnvilWiki',
+      subtitle: 'Honest guidance — the right tool beats another star.',
+      items: [
+        {
+          need: 'A team needs a web editor with accounts and permissions',
+          pick: 'Wiki.js or BookStack',
+        },
+        { need: 'You want a large public community encyclopedia', pick: 'MediaWiki or Fandom' },
+        { need: 'You need real-time collaborative docs for a company', pick: 'Docmost' },
+        {
+          need: 'Your goal is a solo, SEO-driven, ad-monetized game content site',
+          pick: 'AnvilWiki',
+        },
+      ],
+    },
+    cta: {
+      title: 'Still deciding? Try the demo.',
+      subtitle:
+        'A complete game wiki built with AnvilWiki — Lighthouse 4×100, deployable in 30 minutes.',
+      primaryLabel: 'View the demo',
+      primaryHref: '/',
+      secondaryLabel: 'Get started',
+      secondaryHref: '/landing#docs',
+    },
   },
   showcase: {
     title: 'See it in action',
@@ -578,6 +770,129 @@ pnpm install && pnpm dev`,
         values: ['是(MIT)', '否', '是', '是'],
       },
     ],
+    full: {
+      label: '完整对比——vs Fandom、Wiki.js、BookStack 等 →',
+      href: '/zh/landing/comparison',
+    },
+  },
+  comparisonPage: {
+    title: 'AnvilWiki 对比 Fandom、Wiki.js——怎么选',
+    subtitle:
+      '托管平台(Fandom)、自托管协作引擎(Wiki.js / BookStack / MediaWiki / DokuWiki / Docmost)与 AnvilWiki(静态发布模板 + AI 内容工作流)的诚实对比,附 GitHub 数据。',
+    intro:
+      '这些工具经常被放在一起推荐,但其实是三个不同的物种。选型只需要三个问题:内容谁来写、收入归谁、服务器想运维多少。',
+    tldrTitle: '三个物种',
+    tldrItems: [
+      {
+        name: 'Fandom',
+        text: '托管社区平台——免费托管、社区共建,但广告、域名、收入分成都由平台说了算。',
+      },
+      {
+        name: 'Wiki.js · BookStack · MediaWiki · DokuWiki · Docmost',
+        text: '自托管协作引擎——网页编辑器、账号、权限一应俱全,代价是你要自己养服务器和数据库。',
+      },
+      {
+        name: 'AnvilWiki',
+        text: '静态发布模板——你和 AI agent 在 git 里写 MDX,Cloudflare Pages 免费部署,广告收入 100% 归你。',
+      },
+    ],
+    table: {
+      title: '核心对比',
+      subtitle: 'AnvilWiki vs 托管平台 vs 自托管引擎。',
+      columns: ['AnvilWiki', 'Fandom', '自托管引擎'],
+      rows: [
+        { label: '物种', values: ['静态站点模板', '托管 wiki 平台', '自托管 wiki 软件'] },
+        {
+          label: '内容谁来写',
+          values: ['你 + AI agent(git / PR)', '社区志愿者(网页编辑)', '团队成员(网页编辑)'],
+        },
+        {
+          label: '服务器成本',
+          values: ['免费——Cloudflare Pages', '免费(平台托管)', '自付 VPS + 数据库'],
+        },
+        {
+          label: '广告收入',
+          values: ['100% 归你(内置 AdSense 位)', '平台抽成', '自己接(多数无内置)'],
+        },
+        { label: 'SEO 控制权', values: ['全套内置', '平台说了算', '取决于配置'] },
+        { label: '性能', values: ['开箱 Lighthouse 4×100', '中等', '取决于缓存'] },
+        { label: '多人协作', values: ['不需要——单人 + AI', '强', '强——账号 + 权限'] },
+        { label: 'AI 内容工作流', values: ['内置——技能随仓库分发', '无', '无'] },
+        { label: '协议', values: ['MIT', '商业平台', 'GPL / AGPL / MIT(各异)'] },
+        { label: '数据所有权', values: ['你的 git 仓库,随时迁走', '平台锁定,导出受限', '你的服务器'] },
+      ],
+    },
+    engines: {
+      title: '自托管引擎速览',
+      subtitle: '中立事实,按字母序排列。GitHub 数据,截至 2026-08。',
+      columns: ['项目', '定位', '协议', 'Stars', '最近发版', '适合谁'],
+      entries: [
+        {
+          name: 'BookStack',
+          url: 'https://github.com/BookStackApp/BookStack',
+          positioning: '结构化团队知识库(书架 → 书 → 章节 → 页面)',
+          license: 'MIT',
+          stars: '~19.0k',
+          release: 'v26.05(2026-07)',
+          bestFor: '团队文档、非技术编辑者',
+        },
+        {
+          name: 'Docmost',
+          url: 'https://github.com/docmost/docmost',
+          positioning: '现代实时协作,Notion/Confluence 的替代',
+          license: 'AGPL-3.0',
+          stars: '~21.4k',
+          release: 'v0.95(2026-07)',
+          bestFor: '实时协作团队知识库',
+        },
+        {
+          name: 'DokuWiki',
+          url: 'https://github.com/dokuwiki/dokuwiki',
+          positioning: '免数据库的 PHP wiki,内容即纯文本文件',
+          license: 'GPL-2.0',
+          stars: '~4.7k',
+          release: '2026-07-14',
+          bestFor: '低资源自托管',
+        },
+        {
+          name: 'MediaWiki',
+          url: 'https://github.com/wikimedia/mediawiki',
+          positioning: '维基百科背后的引擎',
+          license: 'GPL',
+          stars: '~5.2k(镜像)',
+          release: '持续发版',
+          bestFor: '大型社区百科',
+        },
+        {
+          name: 'Wiki.js',
+          url: 'https://github.com/requarks/wiki',
+          positioning: 'Node.js wiki,Git 同步 + 现代界面',
+          license: 'AGPL-3.0',
+          stars: '~28.8k',
+          release: 'v2.5(2026-05)',
+          bestFor: '现代自托管 wiki',
+        },
+      ],
+      note: 'AnvilWiki 本身还很年轻——v2.0 于 2026-08 发布,GitHub stars 仍是两位数,没有上面这些项目十年积累的生态;你换来的是为 AI 搜索时代写的架构:静态、结构化、agent 驱动。请用 demo 判断它,而不是用 star 数。',
+    },
+    notFor: {
+      title: '什么时候不该选 AnvilWiki',
+      subtitle: '诚实的建议——选对工具比多一颗星重要。',
+      items: [
+        { need: '团队需要网页编辑器 + 账号 + 权限', pick: 'Wiki.js 或 BookStack' },
+        { need: '要做大型公开社区百科', pick: 'MediaWiki 或 Fandom' },
+        { need: '公司需要实时协作文档', pick: 'Docmost' },
+        { need: '目标是单人 SEO 流量 + 广告变现的游戏内容站', pick: 'AnvilWiki' },
+      ],
+    },
+    cta: {
+      title: '还在犹豫?先看 Demo。',
+      subtitle: '用 AnvilWiki 搭的完整游戏 wiki——Lighthouse 4×100,30 分钟可上线。',
+      primaryLabel: '查看 Demo',
+      primaryHref: '/',
+      secondaryLabel: '快速开始',
+      secondaryHref: '/zh/landing#docs',
+    },
   },
   showcase: {
     title: '看看实际效果',

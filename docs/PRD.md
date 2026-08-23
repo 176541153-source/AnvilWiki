@@ -317,8 +317,8 @@ anvilwiki/
 │   │   ├── recent.astro / faq.astro / 404.astro
 │   │   ├── about / privacy-policy / terms-of-service / copyright / contact .astro
 │   │   ├── robots.txt.ts / rss.xml.ts / llms.txt.ts   # 动态 endpoints
-│   │   └── landing.astro + landing/docs/*             # 项目官网路由（fork 清理）
-│   │   └── zh/landing.astro + zh/landing/docs/*       # 中文官网路由（fork 清理）
+│   │   └── landing.astro + landing/comparison.astro + landing/docs/*   # 项目官网路由（fork 清理）
+│   │   └── zh/landing.astro + zh/landing/comparison.astro + zh/landing/docs/*  # 中文官网路由（fork 清理）
 │   ├── components/               # ⭐ 代码层：纯 Astro 组件（零框架运行时）
 │   │   ├── layout/               # BaseLayout / LocaleLayout / LegalPage
 │   │   ├── header/               # SiteHeader / SearchButton(Pagefind) / LanguageSwitcher / ThemeToggle
