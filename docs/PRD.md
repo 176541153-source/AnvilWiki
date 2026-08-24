@@ -1579,6 +1579,7 @@ PUBLIC_GA_ID=
 | 2026-08-12 | v0.3 | SEO 章节更新：Schema 状态（§8.6）、FAQ rich results 废弃说明、INP 阈值修正为 ≤ 200ms |
 | 2026-08-12 | v1.0 | demo 站 `anvilwiki.pages.dev` 上线；Lighthouse 全 100；v1.2 Pagefind 搜索 + v1.5 Astro Image + v2.0 套用模板 CLI 全部实现；完整日语翻译；SEO 修复（hreflang / og:image / prefetch / breadcrumb / security headers） |
 | 2026-08-22 | v2.0.0 | 内容经营操作系统：PR 门控内容管道（auto-content.yml + 共享门禁 composite action）+ anvilwiki-ops 1.0.0 多站与 AI 引用追踪 + gen-covers 封面生成（og:image 标准 1200×675 + max-image-preview:large）+ AffiliateSuggestion 建议位；模板零 breaking（升级=常规 merge）。v1.1–v1.19 逐版本明细见 CHANGELOG.md 与 §14.2 迭代表 |
+| 2026-08-24 | v2.0.1 | v2.0.0 发版当日五视角审计的同日加固版：category 改 schema enum 硬门禁（软 404 根除）、check-i18n `--strict-ui` 让第八道门禁真正能红、setup.yml 开 PR 前构建验证、auto-content 只提交内容变更 + 零产出响亮失败、ops 测试进主 CI、sitemap hreflang 按真实 MDX 覆盖生成、anvilwiki-ops 1.0.1（MCP 站点解析防吞错、GSC 错误带修复指引、worker 线程卸载、测试 111→125）、demo 内容规则补课；详见 CHANGELOG [2.0.1] |
 
 ---
 

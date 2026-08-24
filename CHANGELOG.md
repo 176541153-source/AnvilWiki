@@ -5,7 +5,7 @@ All notable changes to AnvilWiki are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [2.0.1] — 2026-08-24
 
 **v2.0.0 发布当日的全面审计修复(5 视角:代码层/CI+脚本/ops CLI/文档一致性/内容+依赖)。机械门禁当时全绿——本批修的全是门禁看不见的层。**
 
@@ -29,7 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **文档一致性批**:`anvil-new-article` skill 仍教 800×450 旧封面标准(会持续毒化 AI 生成内容)→ 1200×675 + gen-covers;AGENTS.md 测试注释 6→9 套件、Commands 补 `gen-covers`、ops 测试计数更新(111→125);PRD 工作流计数 4→5(补 release-ops.yml);v2.0.0 发布日期三处统一为 2026-08-23;CHANGELOG 2.0.0 条目重复短语修正;EN 发布横幅补「eight quality gates」与中文对齐;孤儿平台验证 TXT 删除。
 - **demo 内容批**:codes 页(en/ja)刷新(过期 1 码+新增 ANVIL-DAWN,lastModified 2026-08-23,补 `gameVersion: v2.5`,违反自家 7 天新鲜度规则 8 天的问题闭环);3 篇英文 summary 增重至 40-60 词(规则本意,AI Overviews 候选字段不再欠重);emberfang(en/ja)补 gallery 机制图 2 张(gen-demo-media 新增 SVG 绘制)、stormcaller(en)补视频嵌入——boss 指南媒体配对规则(videos+gallery)全部达标;ja tags 对齐 en(freebies/ash-warden);`ja/guides/` 目录补齐(routing.ts 约定)。
 
-### anvilwiki-ops(待发版,含 1.0.1 候选内容)
+### anvilwiki-ops(随本批发布 1.0.1)
 
 - 测试 111→125(新增 cli-flags 纯函数测试 9 例、resolveEffectiveRoot 错误判别 3 例、包完整性 smoke 3 例替换占位断言;smoke 从 `1+1` 变成 bin/files/version 真校验)。
 
@@ -562,7 +562,8 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
-[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.0.0...HEAD
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.0.1...HEAD
+[2.0.1]: https://github.com/PNGTRID/AnvilWiki/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.19.0...v2.0.0
 [1.19.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.18.0...v1.19.0
 [1.18.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.17.1...v1.18.0

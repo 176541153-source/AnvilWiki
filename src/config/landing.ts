@@ -11,7 +11,7 @@
  */
 
 /** Keep in sync with package.json "version" (used by the announcement bar). */
-export const PROJECT_VERSION = '2.0.0';
+export const PROJECT_VERSION = '2.0.1';
 
 export type LandingLocale = 'en' | 'zh';
 
@@ -238,7 +238,7 @@ const en: LandingContent = {
   description:
     'An open-source game wiki template with an AI-native content workflow: pick the right game, generate pages by talking to your AI tool, codes pages stay fresh on autopilot. Lighthouse 4×100, free on Cloudflare, 100% ad revenue yours.',
   announcement: {
-    text: `v${PROJECT_VERSION} is live — the content operating system: PR-gated content pipeline (keyword list → eight quality gates → draft PR), anvilwiki-ops 1.0 (multi-site + AI referral tracking), pnpm gen-covers og:image generation, and an affiliate suggestion slot. Zero breaking changes for forks.`,
+    text: `v${PROJECT_VERSION} — hardening release: categories are schema-enforced (typo'd category = failed build, no more soft-404s), all eight quality gates can actually fail, anvilwiki-ops 1.0.1 (worker-thread MCP + actionable error fixes), sitemap hreflang now matches page-level truth. Forks: regular merge, zero migration.`,
     href: RELEASES,
   },
   hero: {
@@ -677,7 +677,7 @@ const zh: LandingContent = {
   description:
     '开源游戏 wiki 模板 + AI 原生内容工作流:选对游戏、和 AI 对话就能产页、codes 页自动保鲜。Lighthouse 4×100、Cloudflare 免费部署、广告收入 100% 归你。',
   announcement: {
-    text: `v${PROJECT_VERSION} 发布 —— 内容经营操作系统:PR 门控内容管道(关键词清单 → 八道门禁 → 草稿 PR)、anvilwiki-ops 1.0(多站管理 + AI 引用追踪)、pnpm gen-covers 封面自动生成、Affiliate 建议位。fork 零迁移成本。`,
+    text: `v${PROJECT_VERSION} 发布 —— 加固版:分类改 schema 硬门禁(打错分类名构建即失败,软 404 根除)、八道门禁全部真正能红、anvilwiki-ops 1.0.1(MCP 走 worker 线程不冻结 + 错误信息带修复指引)、sitemap hreflang 与页面声明完全一致。fork 常规 merge 零迁移。`,
     href: RELEASES,
   },
   hero: {
