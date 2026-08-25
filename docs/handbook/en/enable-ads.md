@@ -5,12 +5,21 @@ manual: learn
 order: 7
 icon: lucide:dollar-sign
 tldr: "Earning takes two steps. First self-check the application conditions (your own domain, 15 to 20 articles, privacy pages already built into the template); after passing AdSense review, fill 1 publisher ID and 3 ad-slot IDs into the 4 Cloudflare variables, save, deploy — the ads go live. Zero revenue in the first 1 to 2 weeks is normal. Rejected? Add content and reapply."
-updated: 2026-08-17
+updated: 2026-08-26
 ---
 
 ## Where you are, and what this chapter solves
 
 The site is live and Google is indexing it. But visitors arrive and you have nothing to sell — this chapter turns the **ad slots** on. Visitors see ads, and Google pays you a share.
+
+## First, timing: don't switch ads on at launch
+
+The switches in this chapter can be flipped anytime, but **when** you flip them matters:
+
+- Let the site run **1 to 2 days** after launch first — so Google's first crawl and the first visitors see a clean, fast page.
+- **The peers rule**: while none of the sites on Google's page one run ads, hold off too. Before your rankings settle, don't trade user experience for ad money — one webmaster watched the #1 spot slide continuously after adding a banner, and only recovered after removing it.
+
+Ads are how you monetize, not how you grow — don't reverse the order. The full pre-flight checklist, plus Adsterra payout routes beyond AdSense (USDT / Payoneer), live in the repo doc [docs/ads.md](https://github.com/PNGTRID/AnvilWiki/blob/main/docs/ads.md).
 
 ## What you'll have when this chapter is done
 
