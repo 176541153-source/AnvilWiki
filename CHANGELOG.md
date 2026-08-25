@@ -5,9 +5,9 @@ All notable changes to AnvilWiki are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [2.1.0] — 2026-08-26
 
-**文档批:社区实战经验落库(挖词渠道/外链策略/内容准备模板/数据复盘/广告时机与收款)。零代码变更,模板架构与依赖不动。**
+**SEO 实战文档批:社区实战经验落库(挖词渠道/外链策略/内容准备模板/数据复盘/广告时机与收款)。零代码变更,模板架构与依赖不动——fork 常规 merge 即得。**
 
 ### Added
 
@@ -579,7 +579,8 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
-[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.0.1...HEAD
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.1.0...HEAD
+[2.1.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.0.1...v2.1.0
 [2.0.1]: https://github.com/PNGTRID/AnvilWiki/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.19.0...v2.0.0
 [1.19.0]: https://github.com/PNGTRID/AnvilWiki/compare/v1.18.0...v1.19.0

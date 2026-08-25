@@ -11,7 +11,7 @@
  */
 
 /** Keep in sync with package.json "version" (used by the announcement bar). */
-export const PROJECT_VERSION = '2.0.1';
+export const PROJECT_VERSION = '2.1.0';
 
 export type LandingLocale = 'en' | 'zh';
 
@@ -238,7 +238,7 @@ const en: LandingContent = {
   description:
     'An open-source game wiki template with an AI-native content workflow: pick the right game, generate pages by talking to your AI tool, codes pages stay fresh on autopilot. Lighthouse 4×100, free on Cloudflare, 100% ad revenue yours.',
   announcement: {
-    text: `v${PROJECT_VERSION} — hardening release: categories are schema-enforced (typo'd category = failed build, no more soft-404s), all eight quality gates can actually fail, anvilwiki-ops 1.0.1 (worker-thread MCP + actionable error fixes), sitemap hreflang now matches page-level truth. Forks: regular merge, zero migration.`,
+    text: `v${PROJECT_VERSION} — SEO field-guide batch (docs only, zero code changes): keyword sourcing playbook (9 channels + intent-fit test + decision log), link-building strategy chapter, requirements/ prep templates (fact sources + benchmark teardown), post-launch metrics + free Clarity heatmaps, ads timing + Adsterra payout routes (USDT / Payoneer). Forks merge clean.`,
     href: RELEASES,
   },
   hero: {
@@ -677,7 +677,7 @@ const zh: LandingContent = {
   description:
     '开源游戏 wiki 模板 + AI 原生内容工作流:选对游戏、和 AI 对话就能产页、codes 页自动保鲜。Lighthouse 4×100、Cloudflare 免费部署、广告收入 100% 归你。',
   announcement: {
-    text: `v${PROJECT_VERSION} 发布 —— 加固版:分类改 schema 硬门禁(打错分类名构建即失败,软 404 根除)、八道门禁全部真正能红、anvilwiki-ops 1.0.1(MCP 走 worker 线程不冻结 + 错误信息带修复指引)、sitemap hreflang 与页面声明完全一致。fork 常规 merge 零迁移。`,
+    text: `v${PROJECT_VERSION} 发布 —— SEO 实战文档批(零代码变更):挖词与选词指南(9 渠道+意图满足度+决策管理表)、外链策略章、requirements/ 建站前准备模板(事实来源+对标拆解)、上线数据复盘指标+Clarity 热力图、广告时机+Adsterra 收款双路线(USDT/Payoneer)。fork 直接 merge。`,
     href: RELEASES,
   },
   hero: {

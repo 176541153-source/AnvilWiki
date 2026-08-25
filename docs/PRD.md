@@ -1580,6 +1580,7 @@ PUBLIC_GA_ID=
 | 2026-08-12 | v1.0 | demo 站 `anvilwiki.pages.dev` 上线；Lighthouse 全 100；v1.2 Pagefind 搜索 + v1.5 Astro Image + v2.0 套用模板 CLI 全部实现；完整日语翻译；SEO 修复（hreflang / og:image / prefetch / breadcrumb / security headers） |
 | 2026-08-22 | v2.0.0 | 内容经营操作系统：PR 门控内容管道（auto-content.yml + 共享门禁 composite action）+ anvilwiki-ops 1.0.0 多站与 AI 引用追踪 + gen-covers 封面生成（og:image 标准 1200×675 + max-image-preview:large）+ AffiliateSuggestion 建议位；模板零 breaking（升级=常规 merge）。v1.1–v1.19 逐版本明细见 CHANGELOG.md 与 §14.2 迭代表 |
 | 2026-08-24 | v2.0.1 | v2.0.0 发版当日五视角审计的同日加固版：category 改 schema enum 硬门禁（软 404 根除）、check-i18n `--strict-ui` 让第八道门禁真正能红、setup.yml 开 PR 前构建验证、auto-content 只提交内容变更 + 零产出响亮失败、ops 测试进主 CI、sitemap hreflang 按真实 MDX 覆盖生成、anvilwiki-ops 1.0.1（MCP 站点解析防吞错、GSC 错误带修复指引、worker 线程卸载、测试 111→125）、demo 内容规则补课；详见 CHANGELOG [2.0.1] |
+| 2026-08-26 | v2.1.0 | SEO 实战文档批（零代码变更，fork 常规 merge 即得）：新增 `docs/sourcing.md` 挖词与选词指南（9 渠道 + 第 7 条判断「意图满足度」+ 选词决策管理表，补选品漏斗的「渠道」层）、`docs/ads.md` 广告时机与 Adsterra 收款两条路线（USDT/OKX 与 Payoneer wire transfer）、`requirements/` 建站前内容准备两模板（事实来源表 + 对标参考表，闭环「AI 不编造游戏数据」）；`docs/seo.md` 增外链策略章、`docs/deployment.md` 增上线数据复盘指标（CTR≥2%/日点击 1000/人均 1.5 页/每周 10+ 只加不改）+ Clarity 热力图接入、`docs/game-selection.md` 明确首版 10-15 篇核心页分批上线（批量生成 40-60 篇可以、部署分批）；学习手册第 7 章中英同步补「先说时机：别一上线就开广告」；详见 CHANGELOG [2.1.0] |
 
 ---
 

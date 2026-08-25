@@ -113,6 +113,9 @@ fork 后用 ZCode / Claude Code / Codex / Cursor 打开仓库,直接对话即可
 | 文档 | 内容 |
 |---|---|
 | [docs/game-selection.md](docs/game-selection.md) | 选品漏斗 + 首日 10 页方法论 |
+| [docs/sourcing.md](docs/sourcing.md) | 挖词渠道(9 个)+ 意图满足度判断 + 选词决策管理表 |
+| [requirements/](requirements/) | 建站前内容准备模板(事实来源表 + 对标参考表) |
+| [docs/ads.md](docs/ads.md) | 广告时机 + Adsterra 收款两条路线 |
 | [docs/apply-template.md](docs/apply-template.md) | 配置参考手册(按文件组织) |
 | [docs/content-format.md](docs/content-format.md) | MDX 文章格式规范(字段表) |
 | [docs/deployment.md](docs/deployment.md) | Cloudflare Pages 部署(含 wrangler.toml 大坑) |
