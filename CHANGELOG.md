@@ -5,6 +5,23 @@ All notable changes to AnvilWiki are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+**文档批:社区实战经验落库(挖词渠道/外链策略/内容准备模板/数据复盘/广告时机与收款)。零代码变更,模板架构与依赖不动。**
+
+### Added
+
+- **`docs/sourcing.md` 挖词与选词完整指南**:9 个挖词渠道按优先级(SteamDB 趋势图实操/社媒低粉异常值/聚合站 sitemap 扫描/趋势时下流行/开发者追更/经典爆款二创/预告游戏埋伏/Similarweb·SEMrush 循环打法/AI 类游戏新赛道)+ 第 7 条选词判断「意图满足度」(搜索意图未被 SERP 满足 = 强可做信号)+ 选词决策管理表(做/不做/考虑,【考虑】隔天复判);`game-selection.md` 四层漏斗互链接入。
+- **`docs/seo.md` 新增「外链策略」章节**:外链 ≈13% 权重但弱竞争新词期页面质量/体验/停留时长优先(个位数外链胜几千外链实战案例)、两阶段策略排序(排名没起来先内容)、DR 换链 + 人肉确认后批量发实操、垃圾外链警告。
+- **`requirements/` 内容准备模板**:`00事实来源.md`(AI 按页面矩阵联网调研生成事实来源表,来源含竞品分析 + YouTube 字幕,E-E-A-T 凭证)+ `00对标参考.md`(1-3 个对标站四维拆解:首页结构/内页结构/广告位布局),建站前素材工作区,与「AI 不编造游戏数据」规则闭环。
+- **`docs/deployment.md` 新增两节**:「上线后的数据复盘(3-7 天)」指标表(CTR ≥2% 合格/每日点击 1000 目标/人均浏览 ≥1.5 页 = 内链线/每周新增 10+ 内页只加不改)+ Microsoft Clarity 免费热力图与录屏接入(10 分钟,含 CSP 放行域名提示)。
+- **`docs/ads.md` 广告时机与收款**:上线后 1-2 天再开广告 + 同类站原则(banner 致主关键词下滑又恢复的实战案例 + 开前自查清单);Adsterra 收款两条路线——USDT(OKX,TRC-20 网络核对警告)与 Payoneer(欧元账户 wire transfer,客服调 $100 门槛英文话术、签协议提现),默认全关的广告位 env 设计与时机策略互证。
+
+### Changed
+
+- **首版页数建议**:`game-selection.md` 明确首版只上线 10-15 篇核心页(codes/tier list/guide 高价值词),批量生成 40-60 篇草稿可以但**部署分批**(每周 10+ 翻正一篇上一篇,配合 draft 门控与内容管道)——第一版页面太多质量被稀释,反拖整站排名。
+- **`docs/README.md`**:快速索引 + 路径 A + 一页决策地图收编 sourcing.md / ads.md / requirements/。
+
 ## [2.0.1] — 2026-08-24
 
 **v2.0.0 发布当日的全面审计修复(5 视角:代码层/CI+脚本/ops CLI/文档一致性/内容+依赖)。机械门禁当时全绿——本批修的全是门禁看不见的层。**

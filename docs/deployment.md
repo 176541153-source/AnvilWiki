@@ -263,6 +263,42 @@ curl -I https://<你的域名>/privacy-policy/
 
 ---
 
+## 上线后的数据复盘（3-7 天）
+
+上线不是终点。**上线后观察 3-7 天，做第一次数据复盘**，对着下面的数值表逐项检查。数据来源：GSC「效果」报告（CTR、点击）；Cloudflare Web Analytics（变量 `PUBLIC_CF_BEACON_TOKEN`，无 cookie）或 GA4（浏览深度）。
+
+| 指标 | 及格线 / 目标 | 去哪看 | 不及格怎么办 |
+| --- | --- | --- | --- |
+| CTR（点击率） | ≥ 2% 算合格 | GSC 效果报告 | 低于 2%：检查 TDH（title、description、H1 三个标签）和标题吸引力——标题含不含"游戏名 + 关键词"、有没有让人想点进去的钩子 |
+| 每日点击 | 1000 次/天是目标 | GSC 效果报告 | 新站从个位数涨起是正常的；复盘看的不是绝对值，是趋势——持续在涨就对，连续一周不动才需要动作（补页面/换词） |
+| 人均浏览页数 | ≥ 1.5 页 | CF Web Analytics / GA4 | < 1.5 页 = 内链不够：每篇文章补 1-2 条指向相关文章的内链（codes 页 ↔ 攻略页互指） |
+| 每周新增内页 | 10+ 篇 | 自己数 | **只加不改旧页**——新增页面是给 Google 的增量信号，复盘期别顺手大改已收录的页面 |
+
+> 用了 [anvilwiki-ops](./multi-site.md) 的话，一条命令拉数：`anvil-ops metrics`（聚合 GSC + Cloudflare Web Analytics）。
+
+---
+
+## 用 Microsoft Clarity 看用户在你站点上干什么（免费）
+
+数字告诉你"有多少人来了"，**Clarity 告诉你"他们在页面上干了什么"**——免费的点击热力图 + 用户操作录屏。新手最有用的两个问题它都能答：用户**卡在哪**、**广告位有没有被点**。
+
+### 接入（10 分钟）
+
+1. 打开 [clarity.microsoft.com](https://clarity.microsoft.com) → 用微软账号登录（完全免费）
+2. 点 **Add project**（添加网站）→ 填你的域名 → 项目名随意
+3. 安装方式选 **Manual install（手动安装）**，拿到一段 `<script>` 跟踪代码（内含你的项目 ID）
+4. 打开你仓库里的 `src/components/layout/BaseLayout.astro`，把跟踪代码粘贴到 `</head>` 结束标签之前（文件里搜 `</head>`，就在 `Optional analytics` 注释区块下方）→ commit + push 触发重新部署
+5. 回 Clarity 后台等几分钟，项目状态变为 Receiving data（正在接收数据）就接好了
+
+> 两个说明：① Clarity 脚本是异步加载的轻量脚本，对 Lighthouse 分数影响可忽略；模板默认不预装它（模板的开箱契约是零第三方脚本），装不装由你决定。② 如果你照[下方常见问题](#q-我想加-content-security-policycsp)配过 CSP，`script-src` 需放行 `www.clarity.ms`，`connect-src` 放行 `c.clarity.ms`。
+
+### 新手怎么看（每天 5 分钟）
+
+- **热力图（Heatmaps）**：给任意页面开一张热力图，红色 = 点击最密集。看两件事：① 用户是不是点在你的核心内容上（兑换码表格、复制按钮）；② **广告位有没有被点**——广告位常年冷清就是位置/样式有问题，该挪位置就挪。
+- **录屏（Recordings）**：挑 5-10 段真实用户的操作录屏，看用户**卡在哪**——在哪一屏滚走了、是不是没找到想找的内容。反复出现的卡点，就是你下一个要优化的页面。
+
+---
+
 ## 常见问题
 
 ### Q: 构建失败，报 `Cannot find module 'astro:content'`

@@ -10,9 +10,12 @@
 |---|---|---|
 | [handbook/](handbook/) | 📚 站内手册源码:学习手册 11 章(SOP+提示词)+ 开发手册 7 章,中英双语 | 🎯 新手从[学习手册](https://anvilwiki.pages.dev/zh/landing/docs/learn)开始 |
 | [game-selection.md](game-selection.md) | 做哪个游戏?上线第一天写什么? | 🎯 想建站赚钱的人(从这里开始) |
+| [sourcing.md](sourcing.md) | 去哪挖词:9 个渠道 + 第 7 条判断(意图满足度)+ 选词决策管理表 | 🎯 候选池不够大、想系统挖词的人 |
+| [requirements/](../requirements/) | 建站前内容准备两张表:事实来源表 + 对标参考表(模板) | 🎯 选好游戏、准备让 AI 产页的人 |
 | [README](../README.md) | 项目是什么 + 5 分钟跑起来 | 所有人 |
 | [apply-template.md](apply-template.md) | 把 demo 站换成你的游戏(配置层手册) | fork 用户 |
-| [deployment.md](deployment.md) | 部署到 Cloudflare Pages(含 wrangler.toml 大坑) | fork 用户 |
+| [deployment.md](deployment.md) | 部署到 Cloudflare Pages(含 wrangler.toml 大坑 + 数据复盘 + Clarity) | fork 用户 |
+| [ads.md](ads.md) | 广告什么时候接(时机)+ Adsterra 收款两条路线 | 开始赚钱的站长 |
 | [content-format.md](content-format.md) | 怎么写文章(frontmatter 字段表 + 组件用法) | 内容作者 |
 | [seo.md](seo.md) | SEO 工程化:为什么每个页面长这样 + 2026 Google 官方更新记录 | 内容作者 / 好奇的人 |
 | [comments.md](comments.md) | 接入 Giscus 评论 | 需要评论的站长 |
@@ -35,11 +38,14 @@
 0. 站内学习手册           ← 引导式主线:选品→建站→AI 产页→部署→变现运营
                             (https://anvilwiki.pages.dev/zh/landing/docs,含提示词)
 1. game-selection.md      ← 先回答"做哪个游戏",这比建站重要
+   └ sourcing.md          ← 候选池不够大时:9 个挖词渠道 + 选词决策管理表
 2. README                 ← fork + 本地跑起来(5 分钟)
 3. apply-template.md      ← 换成你的游戏(或跑 pnpm apply-template)
-4. game-selection.md 首日 10 页 ← 用 AI 直接产页(README「用 AI 直接生成内容」章节)
-5. deployment.md          ← 部署上线(⚠️ 必读 wrangler.toml 警告)
-6. staying-up-to-date.md  ← 上线后回来看:如何跟上游、如何保持新鲜
+4. requirements/ 两张表    ← 产页前备素材:事实来源表 + 对标参考表
+   + game-selection.md 首日 10 页 ← 用 AI 直接产页(README「用 AI 直接生成内容」章节)
+5. deployment.md          ← 部署上线(⚠️ 必读 wrangler.toml 警告);上线 3-7 天做数据复盘
+6. ads.md                 ← 排名稳定了再开广告;Adsterra 收款两条路线
+7. staying-up-to-date.md  ← 上线后回来看:如何跟上游、如何保持新鲜
 ```
 
 ### ✍️ 路径 B:我是内容作者(站已建好,我来写文章)
@@ -74,8 +80,12 @@
 我该读哪份文档?
 │
 ├─ 还没建站,纠结做哪个游戏 ──────────→ game-selection.md
+├─ 想系统挖词/候选池不够大 ──────────→ sourcing.md
+├─ 选好了游戏,产页前要备素材 ────────→ requirements/(事实来源 + 对标参考)
 ├─ 刚 fork,要换成我的游戏 ───────────→ apply-template.md
 ├─ 要部署 / 部署后 env 不生效 ───────→ deployment.md(wrangler.toml 警告)
+├─ 上线了,数据复盘/看热力图 ─────────→ deployment.md(数据复盘 + Clarity 两节)
+├─ 什么时候开广告 / Adsterra 怎么收款 → ads.md
 ├─ 要写/更新文章 ────────────────────→ content-format.md 或直接对 AI 说
 ├─ 想批量铺内容/开草稿 PR ───────────→ content-pipeline.md
 ├─ 有第二个站了,想统一运营 ─────────→ multi-site.md
