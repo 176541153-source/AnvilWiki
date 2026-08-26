@@ -5,7 +5,7 @@ manual: learn
 order: 11
 icon: lucide:trending-up
 tldr: "Indexed ≠ found: chapter 6 got you into Google, this chapter moves you up the results page. Three moves: ① pick keywords — one page, one query, from real GSC data, never guesswork; ② make it count — keyword in title, question H2, Quick Answer summary, tables, quality cover (Google Images reads it first); ③ build trust — freshness, bylines, internal links. 2026 rules: FAQ rich results are gone, llms.txt does nothing for Google, AI Overviews loves direct answers."
-updated: 2026-08-22
+updated: 2026-08-26
 ---
 
 ## Where you are, what this chapter solves
@@ -81,6 +81,17 @@ Rankings look past single pages to the whole site. Three slow variables — no s
 - **A real internal-link network**: tag hubs, related articles, and category pages interlink, showing Google a structured reference library rather than isolated pages.
 
 In the other direction, **Google just finished an anti-spam update rollout in August 2026** — three red lines to stay off: bulk filler pages (chapter 10's doorway-pages section), fabricated data (fake codes / made-up stats), and undisclosed sponsored recommendations (affiliates must go through the `AffiliateLink` component, which adds the compliant disclosure automatically). The template ships guardrails for all three — don't route around them.
+
+## Backlinks: when to build them, and how many
+
+Backlinks (other sites linking to yours) account for roughly 13% of Google's ranking factors — meaningful, but the place beginners most often misallocate effort:
+
+- **In the new-site phase (weak-competition fresh terms) they are not the bottleneck**: everyone is a new site with no backlinks; what's being compared is page quality, product experience, and dwell time. In the field, sites with single-digit backlinks have outranked sites with thousands — content and experience first, total score decides.
+- **The strategy is two phases**: before rankings arrive, don't grind for backlinks; once your core terms reach page one or two and growth flattens, come back and build — that's when each link is help arriving in the snow.
+- **When you do build**: swap links with same-niche sites whose DR (domain rating) is a bit above yours; find no-login, post-and-link sites, verify one by hand that a link actually sticks, then have your AI script the batch; keep a steady small drip — hundreds dumped at once look bought.
+- **The red line**: quality beats quantity, and **never buy junk backlinks** (link farms / bulk spam) — at best useless, at worst a manual penalty.
+
+The full chapter is "Link-building strategy" in the repo doc [`docs/seo.md`](https://github.com/PNGTRID/AnvilWiki/blob/main/docs/seo.md).
 
 ## The 2026 rule changes: dead-tricks list
 

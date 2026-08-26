@@ -4,8 +4,8 @@ description: "Register Google Search Console (GSC), submit the sitemap, and requ
 manual: learn
 order: 6
 icon: lucide:search
-tldr: "Indexing is where traffic begins: only after Google shelves your pages in its library can you rank, and only rankings bring traffic. Do three things today: register Search Console (GSC — one environment variable proves ownership), submit the auto-generated sitemap, and click Request indexing for your 5 to 10 most important URLs. Bing and the AI engines take care of themselves — no work needed."
-updated: 2026-08-17
+tldr: "Indexing is where traffic begins: only after Google shelves your pages in its library can you rank, and only rankings bring traffic. Do three things today: register Search Console (GSC — one environment variable proves ownership), submit the auto-generated sitemap, and click Request indexing for your 5 to 10 most important URLs. Bing and the AI engines take care of themselves — no work needed. On day 3 to 7 after launch, come back to Chapter 8 for your first data review."
+updated: 2026-08-26
 ---
 
 ## Where you are, and what this chapter solves
@@ -54,6 +54,8 @@ pnpm check-links
 ```
 
 All three run clean — every URL returns 200 (opens fine) and no internal link is dead — and the site is healthy.
+
+**On day 3 to 7 after launch, do your first data review** — is CTR at 2%, are visits averaging 1.5 pages, are you adding 10+ pages a week? The four pass lines, plus how to install the Clarity heatmap, live in Chapter 8 — that's where weekly data-reading lives from now on.
 
 ## If you get stuck
 

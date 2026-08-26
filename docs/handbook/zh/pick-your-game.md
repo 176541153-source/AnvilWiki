@@ -5,7 +5,7 @@ manual: learn
 order: 1
 icon: lucide:crosshair
 tldr: "这一章只做一件事:帮你决定做哪个游戏。先列出 10 到 20 个候选,给每个打分(60 分以上才算及格),再去 Google Trends 确认真有人在搜,最后花两分钟看看 Google 结果页挤不挤。四道关卡全过就立刻动手,整个选游戏的过程不要超过两天。"
-updated: 2026-08-17
+updated: 2026-08-26
 ---
 
 ## 你现在在哪,这章解决什么
@@ -43,6 +43,8 @@ updated: 2026-08-17
 | [Roblox 的 Discover 页](https://www.roblox.com/discover)(切到 Rising / Up-and-Coming 排序) | 搜「兑换码」的玩家最密集的地方 |
 | YouTube 游戏频道的近期爆款 | 7 天内播放超过 5 万的,说明真有人看 |
 
+候选池不够大?仓库文档 [`docs/sourcing.md`](https://github.com/PNGTRID/AnvilWiki/blob/main/docs/sourcing.md) 有 **9 个渠道的完整操作指南**(SteamDB 趋势图怎么看、社媒低粉博主的数据异常怎么找、游戏聚合站 sitemap 怎么扫……),外加一张**选词决策管理表**:游戏名 | 做/不做/考虑 | 上线日期 | 网站链接——拿不准的先记【考虑】,隔天看趋势再看一眼再定。每天刷 20 分钟渠道,稳定产出 3 到 5 个新候选,选品就有了流水线。
+
 ## 第二关:给每个候选打分(每个 5 分钟)
 
 四个打分项,满分 100,**60 分以上进入下一关**:
@@ -71,6 +73,8 @@ Google 搜 `游戏名 wiki` 和 `游戏名 codes`,看第一页:
 | 结果不到 10 条,或者大多是 PDF、论坛帖子、YouTube 视频 | 有空位,**立刻建** |
 | 有 [Fandom](https://www.fandom.com)(一个老牌 wiki 网站),但内容薄、更新慢 | 可以做,用更完整的内容抢它的位置 |
 | [Fandom](https://www.fandom.com) 或 [Game8](https://game8.co)(专业游戏站)内容又厚又天天更新 | **放弃,换下一个** |
+
+还有一个容易漏看的信号:**第一页位置满了 ≠ 没机会**。逐条看这些结果是不是真的回答了玩家来搜的目的——如果整页都在答另一件事(搜索意图错位,比如玩家想怀旧、首页却全是玩法攻略),你答对题就能把"更懂关键词"的站挤下去。检查方法和实战案例见 [`docs/sourcing.md`](https://github.com/PNGTRID/AnvilWiki/blob/main/docs/sourcing.md) 的「意图满足度」一节。
 
 ## 让 AI 帮你跑这四关(推荐)
 

@@ -4,8 +4,8 @@ description: "Monday: freshness check, codes update, topic picks from data. Mont
 manual: learn
 order: 8
 icon: lucide:refresh-cw
-tldr: "Every Monday, 30 minutes, three things: run pnpm refresh-audit and let the site report its own stale pages (feed the report to the AI to turn it into todos), update the codes (one prompt or slash command), and read GSC data to pick next week's topics. Monthly, sync the upstream updates (three commands; let the AI handle conflicts). Once site number one works, site number two costs almost nothing extra."
-updated: 2026-08-17
+tldr: "Every Monday, 30 minutes, three things: run pnpm refresh-audit and let the site report its own stale pages (feed the report to the AI to turn it into todos), update the codes (one prompt or slash command), and read GSC data against four pass lines — CTR ≥2%, ≥1.5 pages per visit, 10+ new pages per week. Monthly, sync upstream updates (let the AI handle conflicts). Once site one works, site two costs almost nothing extra."
+updated: 2026-08-26
 ---
 
 ## Where you are, and what this chapter solves
@@ -65,9 +65,29 @@ When done, run pnpm check-content && pnpm build; only all-green counts as comple
 
 **Confirm it worked**: the codes page shows the new codes, and expired ones moved into the "Expired" table (kept, not deleted — people still search "do old codes still work", and keeping them catches that long-tail traffic).
 
-### Action 3: Wrap up (5 minutes)
+### Action 3: Read the data, pick next week's topics (5 minutes)
 
 `git push` (Cloudflare reshelves automatically) → open GSC's "Performance" page and see which terms brought clicks these past days → pick 1 to 2 rising terms and write matching new pages next week with the Chapter 4 routine.
+
+Don't eyeball the data — judge it against four pass lines (sources: GSC "Performance"; pages-per-visit from Cloudflare Web Analytics or GA4):
+
+| Metric | Pass line / target | If it fails |
+|---|---|---|
+| CTR (click-through rate) | ≥ 2% | Check the TDH trio — title, description, H1 — and the title's pull: does it carry "game name + keyword", does it make you want to click |
+| Daily clicks | 1000/day is the goal | New sites climb from single digits; watch the trend — only act (more pages / different terms) after a flat week |
+| Pages per visit | ≥ 1.5 | Below 1.5 = not enough internal links: add 1 to 2 links to related articles per page |
+| New pages per week | 10+ | **Only add, don't rewrite old pages** — new pages are the incremental signal you hand Google |
+
+### Optional gear: Clarity, a free heatmap (install once, 5 minutes a week)
+
+Numbers tell you **how many people came**; Clarity tells you **what they did on the page** — free click heatmaps plus session recordings. Two things to watch weekly: where users **get stuck**, and **whether the ad slots actually get clicked**.
+
+1. Open [clarity.microsoft.com](https://clarity.microsoft.com) → sign in with a Microsoft account (free) → **Add project** with your domain
+2. Choose **Manual install** and grab the `<script>` tracking snippet
+3. Open `src/components/layout/BaseLayout.astro` and paste it just before the closing `</head>` tag → push and redeploy
+4. Back in the dashboard, wait a few minutes until the status reads Receiving data
+
+Full steps (including which domains to allow if you've set a CSP) are in the repo doc [`docs/deployment.md`](https://github.com/PNGTRID/AnvilWiki/blob/main/docs/deployment.md), section "Use Microsoft Clarity to see what users do on your site". The script loads async and doesn't dent your Lighthouse score.
 
 ## Once a month (10 minutes each)
 

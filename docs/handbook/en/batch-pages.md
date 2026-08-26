@@ -5,7 +5,7 @@ manual: learn
 order: 10
 icon: lucide:files
 tldr: "The bulk of search traffic lives in inner pages, not the homepage: dozens of pages, each targeting one query. Three steps: ① build the list from real GSC queries and rival wikis; ② write ONE unified page-generation prompt — fixed skeleton, never improvised per page; ③ pnpm bulk-new-posts scaffolds the drafts, AI fills them, check-content + build gates the batch. Iron rule: batch ≠ spam; mark thin material 'to be added', never invent data."
-updated: 2026-08-20
+updated: 2026-08-26
 ---
 
 ## Where you are, and what this chapter solves
@@ -66,6 +66,8 @@ When done run pnpm check-content && pnpm build; all green or it isn't done. List
 - After `pnpm check-content && pnpm build` is green, list the pages still marked draft.
 - For pages whose material is solid, flip `draft: true` off (in small batches), remove the "to be added" marks, rebuild, ship.
 - Spot-check 3 pages: does each independently answer a real question? Is phrasing repeated anywhere? Are all internal links reachable?
+
+**Flipping has a rhythm too**: generating 40 to 60 drafts in one go is fine, but **don't release them all at once** — flip only 10 to 15 core pages for v1 (codes / tier list / guides, the high-value terms), then 10+ per week after that. Field-tested: too many pages in the first version dilutes quality and drags the whole site's rankings (same conclusion as the end of Chapter 4).
 
 ## The biggest trap: batch is not spam
 

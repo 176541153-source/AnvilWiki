@@ -4,8 +4,8 @@ description: "Feed game notes to your AI; four prompts produce guide, codes, tie
 manual: learn
 order: 4
 icon: lucide:bot
-tldr: "You play the game for an hour and take notes, then feed the notes to your AI and say 'write a guide from these points' — it auto-loads the site's format rules and writes pages that pass the pnpm build check. Three disciplines: give full source material, verify each page on its own, mark missing data 'to be added' rather than invented. Day one output: 10 pages."
-updated: 2026-08-17
+tldr: "You play the game for an hour and take notes, then feed the notes to your AI and say 'write a guide from these points' — it auto-loads the site's format rules and writes pages that pass the pnpm build check. Three disciplines: give full source material, verify each page on its own, mark missing data 'to be added' rather than invented. Day one output: 10 pages — launch the first version at 10 to 15 core pages, then add the rest in weekly batches."
+updated: 2026-08-26
 ---
 
 ## Where you are, and what this chapter solves
@@ -48,6 +48,8 @@ How good the AI's writing turns out **is 80% decided by your materials**. Notes 
 - Where did I see the code? What is the code, what does it reward, when does it expire?
 
 **No materials?** Play for an hour yourself, noting on your phone as you go; 20 fragments in an hour is enough for three articles.
+
+To make materials systematic, the repo's [`requirements/`](https://github.com/PNGTRID/AnvilWiki/tree/main/requirements) ships two fill-in templates: a **fact-sources table** (for every page: which key facts came from where, source links, last-updated dates — the credibility receipt behind E-E-A-T, and the AI's data rations so nothing gets invented) and a **benchmark table** (tear down 1 to 3 well-trafficked peer sites: homepage structure, article structure, ad-slot layout — the "copy the best homework" reference for your AI). Both are fill-in-the-blank, and each carries a ready-to-paste research prompt.
 
 ## Step 3: Use prompts to produce three kinds of pages
 
@@ -123,6 +125,14 @@ When done, run pnpm check-content && pnpm build; only all-green counts as comple
 3. **Answer the AI's questions**: when the AI lists a "to be added" list, supply the data and let it fill the page in; when it asks either-or questions, answer clearly.
 
 If the AI listed a "to be added" list and you don't have the data yet: keep that page `draft: true` and move on to the next one.
+
+## How many pages is enough: 10 to 15 for v1, released in batches
+
+Field-tested conclusion: **too many pages in the first version dilutes quality and drags the whole site's rankings down.** Set the rhythm like this:
+
+- **Launch v1 with 10 to 15 core pages** — codes, tier list, and guides first (exactly the volume this chapter produces);
+- Add more **in weekly batches of 10+** — flip `draft: true` pages to published one verified page at a time; never dump everything at once;
+- When you later scale to dozens of pages via Chapter 10's pipeline, the same rhythm still rules: batch **generation** is fine, batch **release** is not.
 
 ## 7 things you must never do
 
