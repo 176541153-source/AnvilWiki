@@ -25,6 +25,34 @@
 
 ---
 
+## 初始化清理规范（fork 后哪些"没用的内容"会被删掉）
+
+模板作为 demo 站分发，自带一批**demo 专属内容**——fork 做你自己的游戏站时它们全是累赘。两条初始化通道共享同一份删除清单：
+
+| 通道 | 怎么触发 | 特点 |
+|---|---|---|
+| `pnpm apply-template`（本地 CLI） | 终端交互式，自己点确认 | 会改游戏名/主题/语言/栏目；删除前逐项确认 |
+| Actions → **Initialize AnvilWiki** workflow | fork 仓库里点 Run workflow | 只做安全项（wrangler 重置 + 删 landing + 清 demo），**开 PR 前先跑 `pnpm build` 验证**再交给你审 |
+
+**删除清单（两个通道一致，改动必须同步 `scripts/apply-template.ts` 与 `.github/workflows/setup.yml`）：**
+
+| 类别 | 具体内容 | 说明 |
+|---|---|---|
+| demo 文章 | `src/content/wiki/*/*/*.mdx` 全部（目录结构保留） | CLI 清空后**每个所选栏目自动补 1 篇英文脚手架**，保证 build 不空转 |
+| demo 配图 | `src/assets/gallery/`、`public/images/articles/` 整目录；5 张封面按**文件名**删（`src/assets/covers/` 下 `*-cover.png`） | 按名删除而非通配——你已换成自己封面时绝不会被误删 |
+| 项目官网 | `src/components/landing/`、`src/config/landing.ts`、`src/pages/landing*`（含站内文档中心 /landing/docs）、`src/pages/zh/landing*`（中文官网）、`public/images/showcase/`、`public/images/wechat-qr.jpg` | fork 站不需要 AnvilWiki 项目自述页；`docs/handbook/` **markdown 源保留**当参考文档，只删路由 |
+| 官网回链 | `src/config/project.ts` 的 `landingLinkEnabled` 翻为 `false` | 页面 header 的"返回官网"按钮随删随关 |
+| demo 凭据 | `wrangler.toml` `[vars]` 重置：`SITE_URL` 换成你的域名，Giscus/Sponsor/CF Analytics 全部清空，AdSense 等可选槽留注释位 | 不重置的话，你站的评论区会指回官方仓库的 Discussions |
+| demo 作者 | `src/config/authors.ts` 里 `// DEMO` 标记的作者条目 | 否则 Person JSON-LD 会引用虚构作者 |
+
+**保留不删（有意设计）**：favicon/hero 图等二进制资产（CLI 生成不了，脚手架下一步指引你手动换）；`docs/handbook/` 手册源码；空的语言 JSON 文件（无害孤儿，路由不再引用）。
+
+**逃生口**：`pnpm apply-template --dry-run`（只打印不写入）、`--no-clear-content`（保留 demo 文章）、`--keep-landing`（保留项目官网）。
+
+**事后体检**：`pnpm template-audit`——四层扫描（代码层无 demo 字符串 / 配置层是否还挂 demo 域名 / 内容层残留 / 换皮遗留文件），fork 站上线前跑一次确认没有"Anvil Quest"残留。
+
+---
+
 ## 1. site 配置
 
 **文件**：`src/config/site.ts`

@@ -497,7 +497,16 @@ PUBLIC_GISCUS_CATEGORY_ID = ""
 PUBLIC_GISCUS_MAPPING = "pathname"
 # Sponsor card — blank = disabled. Fill PUBLIC_SPONSOR_URL to enable.
 PUBLIC_SPONSOR_URL = ""
-PUBLIC_SPONSOR_IMAGE_URL = ""`;
+PUBLIC_SPONSOR_IMAGE_URL = ""
+# Cloudflare Web Analytics — blank = disabled.
+PUBLIC_CF_BEACON_TOKEN = ""
+# Optional slots (empty = disabled) — fill HERE, not the dashboard:
+#PUBLIC_ADSENSE_CLIENT = ""
+#PUBLIC_ADSENSE_SLOT_STICKY = ""
+#PUBLIC_ADSENSE_SLOT_SIDEBAR = ""
+#PUBLIC_ADSENSE_SLOT_INCONTENT = ""
+#PUBLIC_GA_ID = ""
+#PUBLIC_GSC_VERIFICATION = ""`;
   const varsRe = /\[vars\][\s\S]*?(?=\n*\[|\n*$)/;
   if (!varsRe.test(src)) {
     console.warn(`⚠️ Could not find [vars] section in ${filePath} — edit it manually.`);
