@@ -91,7 +91,7 @@ Backlinks (other sites linking to yours) account for roughly 13% of Google's ran
 - **When you do build**: swap links with same-niche sites whose DR (domain rating) is a bit above yours; find no-login, post-and-link sites, verify one by hand that a link actually sticks, then have your AI script the batch; keep a steady small drip — hundreds dumped at once look bought.
 - **The red line**: quality beats quantity, and **never buy junk backlinks** (link farms / bulk spam) — at best useless, at worst a manual penalty.
 
-The full chapter is "Link-building strategy" in the repo doc [`docs/seo.md`](https://github.com/PNGTRID/AnvilWiki/blob/main/docs/seo.md).
+The full chapter is "Link-building strategy" in the repo doc [`docs/seo.md`](https://github.com/PNGTRID/AnvilWiki/blob/main/docs/seo.md) — including a priority-ranked list of nine channels (Reddit / Steam / Discord / link exchanges / resource pages / broken-link swaps and more), step-by-step instructions for each, outreach email templates, and a free-tool toolbox.
 
 ## The 2026 rule changes: dead-tricks list
 

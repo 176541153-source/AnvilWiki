@@ -17,7 +17,7 @@
 | [deployment.md](deployment.md) | 部署到 Cloudflare Pages(含 wrangler.toml 大坑 + 数据复盘 + Clarity) | fork 用户 |
 | [ads.md](ads.md) | 广告时机 + AdSense 收款 + Adsterra 接入与收款 + 平台全景三档 + 游戏垂直网络 | 开始赚钱的站长 |
 | [content-format.md](content-format.md) | 怎么写文章(frontmatter 字段表 + 组件用法) | 内容作者 |
-| [seo.md](seo.md) | SEO 工程化:为什么每个页面长这样 + 2026 Google 官方更新记录 | 内容作者 / 好奇的人 |
+| [seo.md](seo.md) | SEO 工程化 + 外链实操(九渠道逐步教程) + 2026 Google 官方更新记录 | 内容作者 / 好奇的人 |
 | [comments.md](comments.md) | 接入 Giscus 评论 | 需要评论的站长 |
 | [content-pipeline.md](content-pipeline.md) | PR 门控内容管道:关键词清单 → 草稿 PR(AI 写 → 人审 → merge,v2.0) | 想批量铺内容的站长 |
 | [multi-site.md](multi-site.md) | 多站运营:anvilwiki-ops 1.0 一套工具管 N 个站 + AI 引用追踪(v2.0) | 从第二个站开始的站长 |

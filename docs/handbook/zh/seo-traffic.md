@@ -91,7 +91,7 @@ updated: 2026-08-26
 - **补的时候做什么**:找 DR(网站权重分)比你高一点的同类站换友链;找免登录、注册即可发帖留链接的站点,先人肉确认真能发,再让 AI 写脚本批量发;保持持续的小节奏,别一次性灌几百条(暴涨像买的)。
 - **红线**:外链质量 > 数量,**永远别买垃圾外链**(链接农场/群发)——轻则无效,重则手动处罚。
 
-完整章节在仓库文档 [`docs/seo.md`](https://github.com/PNGTRID/AnvilWiki/blob/main/docs/seo.md) 的「外链策略」一节。
+完整章节在仓库文档 [`docs/seo.md`](https://github.com/PNGTRID/AnvilWiki/blob/main/docs/seo.md) 的「外链策略」一节——含九条渠道的优先级清单(Reddit/Steam/Discord/换链/资源页/断链替代等)、逐条操作步骤、outreach 邮件模板和免费工具箱。
 
 ## 2026 年的新规则:老招数失效清单
 
