@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **学习手册第 7 章新增「统计三件套」完整接入教程**(zh/en):选型对比表(Cloudflare Web Analytics 无 cookie 必装 / GA4 同意横幅门控可选 / Clarity 热力图链第 8 章)+ CF Web Analytics 2 分钟步骤(Analytics & Logs → token → `PUBLIC_CF_BEACON_TOKEN`)+ GA4 10 分钟步骤(建媒体资源 → 数据流拿 `G-` 衡量 ID → `PUBLIC_GA_ID` → 点同意 → 实时报告验证),含「装完没数据」两大坑(GA 是 CookieConsent 点同意后才加载、报表 24-48h 延迟);开发手册「功能开关」章变量总表后补教程交叉引用。此前 GA/GSC 只有变量开关说明、无操作级教程(GSC 整章在第 6 章本就有,GA 是补齐)。
 - **站内学习手册 7 章双语同步**(zh/en 各 7 文件,`updated` 2026-08-26):第 1 章发现层接 `docs/sourcing.md`(9 渠道操作指南+选词决策管理表)、第四关补「意图满足度」信号(第一页位置满 ≠ 没机会);第 4 章素材步接 `requirements/` 两张准备表(事实来源+对标参考)、新增「多少篇算够:首版 10-15 篇分批放」结论;第 6 章补上线 3-7 天首次数据复盘指引;第 8 章动作三升级为**四条及格线指标表**(CTR≥2%/每日点击 1000 目标/人均浏览≥1.5 页/每周新增 10+ 只加不改)+ 新增 Clarity 免费热力图小节(装一次每周看 5 分钟);第 10 章第 3 步补「翻正节奏」(生成可 40-60 篇、上线首版 10-15、每周 10+);第 11 章新增「外链:什么时候做、做多少」节(弱竞争期质量>外链、两阶段、DR 换链、别买垃圾外链);第 7 章「先说时机」随 v2.1.0 已就位。
 - **`docs/apply-template.md` 新增「初始化清理规范」章节**:fork 后两条初始化通道(`pnpm apply-template` / Actions Initialize workflow)的完整删除清单表(demo 文章+配图按名删、项目官网含站内文档中心、wrangler demo 凭据、demo 作者)、保留不删清单(二进制资产/handbook markdown 源)、逃生口旗标(`--dry-run`/`--no-clear-content`/`--keep-landing`)与 `pnpm template-audit` 事后体检——此前该规范只存在于代码注释里,fork 用户读配置手册看不到。
 

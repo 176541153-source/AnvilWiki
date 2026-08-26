@@ -66,8 +66,40 @@ updated: 2026-08-26
 
 ## 可选:评论和统计(同样的开关玩法)
 
-- **评论**(Giscus,靠 GitHub 仓库的讨论区承载):变量是 `PUBLIC_GISCUS_REPO` 等 4 个,想开的时候看开发手册「功能开关」章,有完整步骤。
-- **访问统计**:Google Analytics 4(变量 `PUBLIC_GA_ID`)或 Cloudflare 自带统计(变量 `PUBLIC_CF_BEACON_TOKEN`),二选一或都开。
+**评论**(Giscus,靠 GitHub 仓库的讨论区承载):变量是 `PUBLIC_GISCUS_REPO` 等 4 个,想开的时候看开发手册「功能开关」章,有完整步骤。
+
+**访问统计**:三件工具,先选型再装。
+
+### 统计三件套怎么选
+
+| 工具 | 要 cookie 吗 | 最擅长看 | 建议 |
+|---|---|---|---|
+| Cloudflare Web Analytics | 不要 | 访问量、来源国家、热门页面 | **必装**:一段 token 的事,零负担 |
+| Google Analytics 4 | 要(经同意横幅门控) | 用户行为:停留、回访、转化路径 | 想认真分析用户时再上 |
+| Microsoft Clarity | 不要 | 点击热力图、操作录屏 | 第 8 章有 10 分钟教程,配合每周复盘 |
+
+三件互不冲突。新手期的建议组合:**Cloudflare Web Analytics + Clarity** 就够用;GA4 等你的问题从"多少人来了"升级到"他们是怎么走的"再开。
+
+### 装 Cloudflare Web Analytics(2 分钟,必装)
+
+1. Cloudflare Dashboard → 左侧 **Analytics & Logs** → **Web Analytics** → **Add a site**,填你的域名
+2. 它给你一段 JS 代码,里面 `token="一串字母数字"`——把这串 token 填进环境变量 **`PUBLIC_CF_BEACON_TOKEN`**(填的位置和本章第二步的 4 个广告变量一样)
+3. 保存并重新部署,几分钟后面板开始出数
+
+**你会看到**:Web Analytics 面板出现 Views / 访问国家 / 热门路径。
+**为什么必装**:无 cookie、不需要同意横幅、不拖慢页面(Lighthouse 不掉分)——"多少人、从哪来、看哪页"这类基础问题,它一个人全答了。
+
+### 装 Google Analytics 4(10 分钟,可选)
+
+1. 打开 [analytics.google.com](https://analytics.google.com) → 登录 Google 账号 → **开始衡量**,建账号和媒体资源(名称随意,时区选你所在时区)
+2. 媒体资源里 → **数据流** → **添加数据流** → 选 **网站** → 网址填 `https://你的域名` → 创建
+3. 记下**衡量 ID**(样子像 `G-AB12CD34EF`)→ 填进环境变量 **`PUBLIC_GA_ID`**(位置同上)
+4. 保存并重新部署 → 打开你的网站,**点一次同意横幅的「同意」**
+5. 回 GA4 → **报告** → **实时**,应看到 1 个活跃用户(就是你自己)
+
+**⚠️ 装完没数据的两个最常见原因**:
+- **GA 在模板里是同意横幅门控的**:访客不点「同意」,GA 脚本就不加载——这是模板保 Lighthouse 和隐私合规的设计,不是 bug。验证方法就是自己点一次同意再看实时报告。
+- **报表有延迟**:实时报告即时,常规报告最多延迟 24 到 48 小时,别急着判"坏了"。
 
 ## 对收入的合理预期
 

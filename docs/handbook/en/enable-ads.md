@@ -66,8 +66,40 @@ Ads are how you monetize, not how you grow — don't reverse the order. The full
 
 ## Optional: comments and analytics (the same switch-panel game)
 
-- **Comments** (Giscus, hosted on your GitHub repo's discussions): the variables are `PUBLIC_GISCUS_REPO` and 3 more; when you want them, the developer manual's feature-toggles chapter has the full steps.
-- **Traffic analytics**: Google Analytics 4 (variable `PUBLIC_GA_ID`) or Cloudflare's built-in analytics (variable `PUBLIC_CF_BEACON_TOKEN`) — pick one or run both.
+**Comments** (Giscus, hosted on your GitHub repo's discussions): the variables are `PUBLIC_GISCUS_REPO` and 3 more; when you want them, the developer manual's feature-toggles chapter has the full steps.
+
+**Traffic analytics**: three tools — pick first, then install.
+
+### Choosing among the three analytics tools
+
+| Tool | Uses cookies? | Best at showing | Recommendation |
+|---|---|---|---|
+| Cloudflare Web Analytics | No | Traffic volume, source countries, top pages | **Install always**: one token, zero burden |
+| Google Analytics 4 | Yes (consent-banner gated) | User behavior: engagement, returning visitors, funnels | Add when you seriously analyze users |
+| Microsoft Clarity | No | Click heatmaps, session recordings | Chapter 8 has a 10-minute tutorial; pairs with the weekly review |
+
+The three don't conflict. For the beginner phase, the recommended combo is **Cloudflare Web Analytics + Clarity**; add GA4 once your questions graduate from "how many came" to "how do they move through the site".
+
+### Install Cloudflare Web Analytics (2 minutes, always)
+
+1. Cloudflare Dashboard → left sidebar **Analytics & Logs** → **Web Analytics** → **Add a site**, enter your domain
+2. It hands you a JS snippet containing `token="a-string-of-letters-and-digits"` — put that token into the environment variable **`PUBLIC_CF_BEACON_TOKEN`** (same place as the 4 ad variables in this chapter's Step 2)
+3. Save and redeploy; the panel starts filling in within minutes
+
+**You'll see**: Views / source countries / top paths in the Web Analytics panel.
+**Why always**: no cookies, no consent banner, no page slowdown (Lighthouse unchanged) — it alone answers "how many, from where, viewing which pages".
+
+### Install Google Analytics 4 (10 minutes, optional)
+
+1. Open [analytics.google.com](https://analytics.google.com) → sign in with a Google account → **Start measuring**, create an account and a property (names are up to you; pick your timezone)
+2. In the property → **Data streams** → **Add stream** → choose **Web** → enter `https://your-domain` → create
+3. Note the **Measurement ID** (looks like `G-AB12CD34EF`) → put it into the environment variable **`PUBLIC_GA_ID`** (same place as above)
+4. Save and redeploy → open your site and **click Accept on the consent banner once**
+5. Back in GA4 → **Reports** → **Realtime** — you should see 1 active user (you)
+
+**⚠️ The two most common "no data" causes**:
+- **GA is consent-gated in this template**: until a visitor clicks Accept, the GA script never loads — that's the design keeping Lighthouse intact and privacy compliant, not a bug. Verify by accepting once yourself and checking Realtime.
+- **Reporting lag**: Realtime is instant; standard reports can lag 24 to 48 hours — don't call it broken too early.
 
 ## Realistic revenue expectations
 
