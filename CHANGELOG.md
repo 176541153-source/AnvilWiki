@@ -5,6 +5,22 @@ All notable changes to AnvilWiki are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.0] — 2026-08-26
+
+**新手动线优化批:README 按零基础标准重构、落地页转化动线修复(Fork 直达 + 站内链接)、仓库文档漂移清理。含少量代码变更(landing 文案层 + HandbookHub),fork 常规 merge 即得。**
+
+### Changed
+
+- **README.md 全面重构(新手动线三硬伤修复)**:快速开始新增 pnpm 一行安装前置(此前新手第一条命令就 `command not found`)、补上缺失的「push 回你的 fork」步骤(此前第 3 步改完直接跳 Cloudflare,连到的仍是 demo 远端)、新增零终端路径旁路(fork → Actions → Initialize AnvilWiki → Run workflow——专为不会编程人群设计的通道此前从未在 README 出现);wrangler.toml 技术警告从第一屏下沉到部署步骤提示框(SITE_URL 已由 apply-template 写入 `[vars]`、dashboard 同名变量被忽略的因果首次讲清);特性区长句压缩为每条 ≤2 行 + 细节链接化(content-pipeline/multi-site/ads);文档导航 11 行表收敛为 4 入口(站内文档中心 / docs/README.md 全索引 / requirements/ / PRD),消除与 docs/README.md 的双头漂移;英文区新增快速链接表与中文区逐节对齐(此前英文文档导航比中文少 4 项,恰好漏掉 v2.1/v2.2 的变现/挖词文档);新增语言切换锚点、首屏 demo 截图(此前零截图)、中文区 License 行、尾部 Contributing & Changelog 入口(两文件一直存在但零链接)。
+- **落地页转化批(中英同步)**:hero 与 FinalCta 主 CTA 改为直达 `github.com/PNGTRID/AnvilWiki/fork`(此前整页无 Fork 按钮、主 CTA 只是页内锚点,核心转化动作被降级);docsEntry SEO 卡与 DevGuide 五步链接全部从出站 GitHub 改为站内手册对应章(第 3/4/5/8 章,不再把访客半途送离官网);landing.ts 写死的 6 处手册章数移除(Hub 卡片本就动态计算,永不漂移)、「stars 仍是两位数」时效措辞中性化(星数破百即成不实陈述);公告条压缩到一行;hero 副标题双语压缩(hero 截图链接复用 tertiaryCta,故 tertiary 保持指向 Demo)。
+- **手册小修**:`templatize-your-site` 与 `sync-and-contribute` 两章「下一步」补 markdown 链接(zh/en,此前为纯文本);HandbookHub 文档中心新增「完全零基础?从学习手册第 1 章开始」start-here 胶囊(landing.ts 接口 + en/zh 数据 + 组件三处联动,新增 `beginnerHint` 字段)。
+
+### Fixed
+
+- **仓库文档漂移清理(专家团三线审计产出)**:`Comments.astro` 头注释指向已不存在的 v1.4 spec 改指 `docs/comments.md`;PRD §15.2 文档策略表 7→20 项补齐(v2.1/v2.2 新文档全部入表);`docs/roadmap.md` 版本头 v2.0.1→当前版;`docs/ROADMAP-v1.5-v1.6.md` 归档至 `docs/superpowers/`(docs/README.md + PRD 两处引用同步);AGENTS.md Status 头「v2.0.0 released」开头漂移修正为标明当前最新版;`landing.astro` 头注释节序编号修复(两个 6)。
+- **README 徽章与按钮修正**:删除指向上游仓库的 Deploy to Cloudflare 按钮(未 fork 的新手点它会部署官方 demo 且走 Workers 流程,与快速开始的 Pages Connect 路径无任何说明地并存);Docs 徽章从中文文档中心改链英文站(国际访客不再落地中文页);`#5-分钟快速开始` 锚点保留,deployment.md 反链不受重构影响。
+- **CHANGELOG 引用区补漏**:`[Unreleased]` compare 行停在 v2.1.1(v2.2.0 发版时漏更),补 `[2.2.0]` 行并随本次更新至 v2.3.0。
+
 ## [2.2.0] — 2026-08-26
 
 **变现 + 外链实操文档批:广告链路三教程(AdSense 收款 / Adsterra 接入 / 平台全景含游戏垂直四家)+ 外链九渠道操作层。零代码变更,fork 常规 merge 即得。**
@@ -609,7 +625,9 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
-[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.1.1...HEAD
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.3.0...HEAD
+[2.3.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.2.0...v2.3.0
+[2.2.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.1.1...v2.2.0
 [2.1.1]: https://github.com/PNGTRID/AnvilWiki/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.0.1...v2.1.0
 [2.0.1]: https://github.com/PNGTRID/AnvilWiki/compare/v2.0.0...v2.0.1
