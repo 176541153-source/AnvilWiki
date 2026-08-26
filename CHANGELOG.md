@@ -5,9 +5,9 @@ All notable changes to AnvilWiki are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [2.2.0] — 2026-08-26
 
-**变现文档批:广告链路三缺口补齐(AdSense 收款 / Adsterra 接入 / 平台全景三档)。零代码变更。**
+**变现 + 外链实操文档批:广告链路三教程(AdSense 收款 / Adsterra 接入 / 平台全景含游戏垂直四家)+ 外链九渠道操作层。零代码变更,fork 常规 merge 即得。**
 
 ### Added
 

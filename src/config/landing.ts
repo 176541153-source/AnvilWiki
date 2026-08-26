@@ -11,7 +11,7 @@
  */
 
 /** Keep in sync with package.json "version" (used by the announcement bar). */
-export const PROJECT_VERSION = '2.1.1';
+export const PROJECT_VERSION = '2.2.0';
 
 export type LandingLocale = 'en' | 'zh';
 
@@ -238,7 +238,7 @@ const en: LandingContent = {
   description:
     'An open-source game wiki template with an AI-native content workflow: pick the right game, generate pages by talking to your AI tool, codes pages stay fresh on autopilot. Lighthouse 4×100, free on Cloudflare, 100% ad revenue yours.',
   announcement: {
-    text: `v${PROJECT_VERSION} — handbook sync & init hardening: the learning manual now carries the full field playbook (9 sourcing channels, metric pass-lines, Clarity heatmaps, backlink strategy, GA4 + Cloudflare analytics tutorials), and the fork-init cleanup list is documented with both init channels aligned. Forks merge clean.`,
+    text: `v${PROJECT_VERSION} — monetization & link-building playbook: AdSense payout walkthrough (W-8BEN / PIN mailer / wire transfer), Adsterra onboarding with the popunder-vs-AdSense red line, an 11-platform ad ladder incl. gaming-vertical networks (NitroPay, Venatus, Playwire, PubNation), and a 9-channel step-by-step backlink guide. Zero code changes — forks merge clean.`,
     href: RELEASES,
   },
   hero: {
@@ -677,7 +677,7 @@ const zh: LandingContent = {
   description:
     '开源游戏 wiki 模板 + AI 原生内容工作流:选对游戏、和 AI 对话就能产页、codes 页自动保鲜。Lighthouse 4×100、Cloudflare 免费部署、广告收入 100% 归你。',
   announcement: {
-    text: `v${PROJECT_VERSION} 发布 —— 手册同步与初始化加固:学习手册 7 章接齐实战打法(挖词 9 渠道/四条及格线/Clarity 热力图/外链策略/GA4 + CF 统计接入教程),fork 初始化删除清单首次文档化、两条通道对齐。fork 直接 merge。`,
+    text: `v${PROJECT_VERSION} 发布 —— 变现与外链实操批:AdSense 收款全流程(W-8BEN/PIN/电汇)、Adsterra 接入(popunder 与 AdSense 共存红线)、11 平台广告阶梯含游戏垂直网络(NitroPay/Venatus/Playwire/PubNation)、外链九渠道逐步打法。零代码变更,fork 直接 merge。`,
     href: RELEASES,
   },
   hero: {
