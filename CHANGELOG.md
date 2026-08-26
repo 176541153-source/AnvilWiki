@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Adsterra 收款节起付信息对齐官方 2026 口径**:USDT(TRC-20)$100、Paxum $5、PayPal $25、本地货币 $25、wire 默认 $1000 + 手续费、**前两笔付款所有方式放宽到 $20**;两条主路线(USDT/OKX 与 Payoneer)流程不变。
 - **学习手册第 7 章双语新增「第三步:通过审核后,先把收款三件事办了」**(zh/en):W-8BEN/PIN/电汇三件事操作级概要 + 出账节奏,指向 ads.md 逐步细节;tldr「两步走」改「三步走」(zh 168 / en 354 字符,均低于 480 上限);「卡住了怎么办」补「PIN 明信片一直没到」(4 次寄送机会 + 官方人工验证通道);「先说时机」节的 ads.md 引用描述随新范围更新(时机/收款/Adsterra 接入/平台全景)。
 - **全仓描述一致性同步**:docs/README.md 三处(文档索引表 / 路径 A 学习路线 / 问题路由图)+ README.md 文档导航一处,ads.md 描述统一为「广告时机 + AdSense 收款 + Adsterra 接入 + 平台全景三档」。
+- **`docs/ads.md` 平台全景节补「游戏垂直网络」层**(全网调研批):全景表从 7 家扩到 11 家,全部平台名挂官网直链(AdSense/Adsterra/PropellerAds/HilltopAds/Journey=journeymv.com/Monumetric/Raptive/Mediavine + 新增 4 家)——新增 **NitroPay**(Overwolf 旗下,100k PV 门槛可人工批、发布商 80% 分成、NET-7 全行业最快档,官方定位原话 "niche gaming wikis")进阶·游戏垂直档,新增 **Venatus**(约 150 万 PV + 20% Tier-1,客户 Rovio/EA/OP.GG——游戏工具站同画像)、**Playwire**(约 100 万 PV + 英语流量,案例 Raider.IO)、**PubNation**(Mediavine 旗下游戏/体育/科技排他线,游戏站申请 Mediavine 会被主动转介至此)成熟·游戏垂直档;新增「游戏垂直网络:你这类站的隐藏加分项」小节(游戏受众 CPM 天生偏低的定价逻辑 + NitroPay RPM 下滑社区报告的"先并行测试再切换"实操 + Snigel/Freestar 同量级小注 + AdInPlay 偏页游门户不进表)+「游戏 wiki 站的分阶段路线」五档表(0-1k/1k-10k/10k-100k/100k-100 万/100 万+,含 RPM 锚点:突破靠 Tier-1 占比与竞价密度,不是多挂几家);「进阶/成熟档怎么接」扩为含全部垂直网络的申请制说明。
 
 ## [2.1.1] — 2026-08-26
 

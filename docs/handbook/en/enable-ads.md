@@ -19,7 +19,7 @@ The switches in this chapter can be flipped anytime, but **when** you flip them 
 - Let the site run **1 to 2 days** after launch first — so Google's first crawl and the first visitors see a clean, fast page.
 - **The peers rule**: while none of the sites on Google's page one run ads, hold off too. Before your rankings settle, don't trade user experience for ad money — one webmaster watched the #1 spot slide continuously after adding a banner, and only recovered after removing it.
 
-Ads are how you monetize, not how you grow — don't reverse the order. The full pre-flight checklist, the complete AdSense payout walkthrough, the Adsterra onboarding tutorial, and how to level up ad platforms as traffic grows (starter / intermediate / mature tiers) all live in the repo doc [docs/ads.md](https://github.com/PNGTRID/AnvilWiki/blob/main/docs/ads.md).
+Ads are how you monetize, not how you grow — don't reverse the order. The full pre-flight checklist, the complete AdSense payout walkthrough, the Adsterra onboarding tutorial, and how to level up ad platforms as traffic grows (starter / intermediate / mature tiers plus gaming-vertical networks like NitroPay, all with official site links) live in the repo doc [docs/ads.md](https://github.com/PNGTRID/AnvilWiki/blob/main/docs/ads.md).
 
 ## What you'll have when this chapter is done
 

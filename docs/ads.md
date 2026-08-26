@@ -1,7 +1,7 @@
 # 广告变现:什么时候接、怎么接、钱怎么收
 
 > 模板广告位的**接入操作**(AdSense 4 个环境变量、Cloudflare 里填哪里)见站内[学习手册 · 第 7 章「接广告,开始赚钱」](https://anvilwiki.pages.dev/zh/landing/docs/enable-ads)和 [deployment.md 环境变量清单](deployment.md#环境变量清单)。
-> 本文解决剩下的四个实战问题:**什么时候把广告打开**(时机错了会掉排名)、**AdSense 的钱怎么进国内银行卡**(三道验证 + 电汇)、**Adsterra 怎么从注册接到上线**(格式取舍 + 与 AdSense 共存的红线)、**广告平台怎么随流量升级**(起步/进阶/成熟三档)。
+> 本文解决剩下的四个实战问题:**什么时候把广告打开**(时机错了会掉排名)、**AdSense 的钱怎么进国内银行卡**(三道验证 + 电汇)、**Adsterra 怎么从注册接到上线**(格式取舍 + 与 AdSense 共存的红线)、**广告平台怎么随流量升级**(起步/进阶/成熟三档 + 游戏垂直网络)。
 
 ## 你的广告开关在哪(30 秒背景)
 
@@ -171,23 +171,52 @@ Adsterra 的 wire transfer(电汇)默认最低支付额是 $1000(另收手续费
 
 ## 五、广告平台全景:起步/进阶/成熟三档
 
-接广告不是一次性决定。流量长起来后,该换"管理型"广告平台(它们替你对接几十家广告主实时竞价,RPM 通常高于 AdSense)。按站点阶段选档:
+接广告不是一次性决定。流量长起来后,该换"管理型"广告平台(它们替你对接几十家广告主实时竞价,RPM 通常高于 AdSense)。按站点阶段选档,平台名都挂了官网直链:
 
 | 档位 | 平台 | 门槛(2026-08 快照) | 起付/结算 | 一句话定位 |
 | --- | --- | --- | --- | --- |
-| 起步·主力 | **Google AdSense** | 无流量门槛,内容审核制 | $100,月结 21 日 | 默认起点;完整教程见手册第 7 章 + 本文第二节 |
-| 起步·备胎 | **Adsterra** | 零流量门槛,分钟级审核 | USDT $100(首两笔 $20) | AdSense 被拒/等待期的回血位;教程见本文第三节 |
-| 起步·备胎 | **PropellerAds / HilltopAds** | 无流量门槛 | 约 $20-100,按收款方式 | 和 Adsterra 同模式(注册→加站→粘脚本);popunder 类格式体验差,只做兜底 |
-| 进阶 | **Journey by Mediavine** | 1,000 sessions/月 + 连 GA4 + 原创 brand-safe 内容 | 平台分成(发布商约七成),月结 | 2026 年起门槛大降,1 千 session 就能上车的正规军 |
-| 进阶 | **Monumetric(Propel 档)** | 10,000 pageviews/月,需至少 6 个广告位 | 一次性 $99 安装费,NET-60 | 管理型;小站先算清 $99+两月账期能不能回本 |
-| 成熟 | **Mediavine(主产品)** | 年广告收入 $5,000+(2026 年取消了 5 万 sessions 门槛) | 月结 | 行业标杆,布局优化全程替你管 |
-| 成熟 | **Raptive**(原 AdThrive) | 25,000 pageviews/月(原 10 万,已大降) | 月结 | 娱乐流量 RPM 天花板,游戏站终局候选 |
+| 起步·主力 | [Google AdSense](https://adsense.google.com) | 无流量门槛,内容审核制 | $100,月结 21 日 | 默认起点;完整教程见手册第 7 章 + 本文第二节 |
+| 起步·备胎 | [Adsterra](https://adsterra.com) | 零流量门槛,分钟级审核 | USDT $100(首两笔 $20) | AdSense 被拒/等待期的回血位;教程见本文第三节 |
+| 起步·备胎 | [PropellerAds](https://propellerads.com) / [HilltopAds](https://hilltopads.com) | 无流量门槛 | 约 $20-100,按收款方式 | 和 Adsterra 同模式(注册→加站→粘脚本);popunder 类格式体验差,只做兜底 |
+| 进阶 | [Journey by Mediavine](https://www.journeymv.com) | 1,000 sessions/月 + 连 GA4 + 原创 brand-safe 内容 | 平台分成(发布商约七成),月结 | 2026 年起门槛大降,1 千 session 就能上车的正规军 |
+| 进阶 | [Monumetric(Propel 档)](https://www.monumetric.com) | 10,000 pageviews/月,需至少 6 个广告位 | 一次性 $99 安装费,NET-60 | 管理型;小站先算清 $99+两月账期能不能回本 |
+| 进阶·游戏垂直 | [NitroPay](https://nitropay.com) | 100,000 pageviews/月(小站可人工批) | 发布商 80%,NET-7 | Overwolf 旗下,官方定位就是 niche gaming wikis;游戏站到量后的首选候选 |
+| 成熟 | [Raptive](https://raptive.com)(原 AdThrive) | 25,000 pageviews/月(原 10 万,已大降) | 月结 | 娱乐流量 RPM 天花板,游戏站终局候选 |
+| 成熟 | [Mediavine(主产品)](https://www.mediavine.com) | 年广告收入 $5,000+(2026 年取消了 5 万 sessions 门槛) | 月结 | 行业标杆,布局优化全程替你管;游戏站申请可能被转介到自家 PubNation |
+| 成熟·游戏垂直 | [Venatus](https://www.venatus.com) | 约 150 万 pageviews/月 + 20% Tier-1 流量(第三方口径,以官网洽谈为准) | 月结 | 服务 Rovio/EA/OP.GG 的游戏娱乐垂直网络(OP.GG 就是游戏工具站,和 wiki 同画像) |
+| 成熟·游戏垂直 | [Playwire](https://www.playwire.com) | 约 100 万 pageviews/月 + 英语国家流量为主 | 月结 | 游戏垂直老牌(前身 Intergi),游戏站案例 Raider.IO |
+| 成熟·游戏垂直 | [PubNation](https://www.pubnation.com) | 百万级 sessions(排他申请制,无公开门槛) | 月结 | Mediavine 旗下游戏/体育/科技垂直线,企业级全托管 |
 
-### 进阶/成熟档怎么接(申请制,四家流程一致)
+### 游戏垂直网络:你这类站的隐藏加分项
 
-Journey / Monumetric / Mediavine / Raptive 都是"管理型"平台:**不是你粘完脚本就完事,而是提交申请 → 人工审核(几天到两周) → 通过后按邮件指引接入**(多数也是给脚本你粘,或 GA4 授权),之后他们持续替你优化广告布局。要点:
+通用平台给游戏流量的定价天生偏低——受众以 18-40 男性为主,广告主出价不积极(一线站长社区有 60 万 PV 月入 $133 的极端案例,低 Tier-1 占比 + 弱竞价是主因)。而**游戏垂直网络直采游戏广告主**(游戏发行商的买量预算直接进来),同一份流量往往能卖出更高的价。游戏 wiki 站到量之后,垂直层通常比通用大厂更划算:
 
-1. **先装 GA4**:Journey 明确要求连接 GA4,其余三家审核也都看 GA 数据——装法见手册第 7 章「统计三件套」的 10 分钟教程
+- **[NitroPay](https://nitropay.com)**:Overwolf 旗下,门槛 10 万 PV/月(没到也可以发邮件申请人工批),发布商分 80%、**NET-7 结算**(每月结束后 7 天内打款,全行业最快档),官方定位原话就是 "niche gaming wikis"。注意它近年有 RPM 下滑的社区报告(同流量对比 Mediavine 系,有站长收入腰斩)——**到量后先小流量并行测试一两个月,数据说话再整体切换**,别盲信"垂直 = 高价"。
+- **[Venatus](https://www.venatus.com)**:游戏/体育/娱乐垂直,客户有 Rovio、EA、OP.GG。门槛约 150 万 PV/月 + 20% Tier-1 流量(US/UK/CA/AU/DE/FR),第三方对比口径,以官网洽谈为准。
+- **[Playwire](https://www.playwire.com)**:游戏垂直老牌(前身 Intergi),游戏站案例 Raider.IO,Google 认证发布伙伴。门槛约 100 万 PV/月,要求英语国家流量为主。
+- **[PubNation](https://www.pubnation.com)**:Mediavine 旗下专做游戏/体育/科技的排他制高端线——你申请 Mediavine 主产品时,如果是游戏站,可能被他们主动转介到这里(同集团里更懂游戏流量的团队),有体育站加入后 RPM 翻倍的公开案例。
+
+同量级还有 [Snigel](https://www.snigel.com)(已并入 Publisher Collective,无公开硬门槛、质量评估制)和 [Freestar](https://www.freestar.com)(约 100 万 PV 门槛),了解即可。**AdInPlay 没进表**:它偏浏览器游戏门户(页游站)画像,wiki 攻略站不是它的最佳匹配。
+
+### 游戏 wiki 站的分阶段路线
+
+把上面的表按"你的站现在多少量"拉成一条直线:
+
+| 你的站(每月) | 主力方案 | 备注 |
+| --- | --- | --- |
+| 0 - 1k sessions | [AdSense](https://adsense.google.com) + [Adsterra](https://adsterra.com) 备胎 | 唯一零门槛正规军 |
+| 1k - 10k sessions | [Journey by Mediavine](https://www.journeymv.com) | 2026 年起的最低上车点,需连 GA4 |
+| 10k - 100k PV | Journey 续跑 / [Raptive](https://raptive.com)(25k PV 起) / [Monumetric](https://www.monumetric.com) | Monumetric 的 $99 安装费 + NET-60 要先算账 |
+| 100k - 100 万 PV | [NitroPay](https://nitropay.com)(游戏垂直) / Journey / Raptive | 到这档先并行测试 NitroPay 再决定切不切 |
+| 100 万+ PV | [Venatus](https://www.venatus.com) / [Playwire](https://www.playwire.com) / [PubNation](https://www.pubnation.com) / [Mediavine 主产品](https://www.mediavine.com) | 游戏垂直天花板层 |
+
+收入预期锚点:Mediavine 系游戏文章 RPM 约 $5-8,AdSense 约 $5——想突破这个量级,靠的是 **Tier-1 流量占比**和**管理型平台的竞价密度**,不是多挂几家平台。
+
+### 进阶/成熟档怎么接(申请制,流程都一样)
+
+进阶/成熟档(含四家游戏垂直网络)都是"管理型"平台:**不是你粘完脚本就完事,而是提交申请 → 人工审核(几天到两周) → 通过后按邮件指引接入**(多数也是给脚本你粘,或 GA4 授权),之后他们持续替你优化广告布局。要点:
+
+1. **先装 GA4**:Journey 明确要求连接 GA4,其余各家审核也都看 GA 数据——装法见手册第 7 章「统计三件套」的 10 分钟教程
 2. 申请表**如实填流量数据**(他们自己会核,虚报直接拒)
 3. 通过后按邮件指引走,一般 1-2 周完成切换
 4. **切换 = 换主力,不是叠加**——见下面铁律

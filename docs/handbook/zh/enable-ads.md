@@ -19,7 +19,7 @@ updated: 2026-08-26
 - 上线后先跑 **1 到 2 天**再开——让 Google 第一次收录、第一批访客看到的是干净、快的页面。
 - **同类站原则**:Google 第一页的对手都没挂广告时,你也不挂。排名没稳定前,别为一点广告费赌体验和排名——有站长开广告后主关键词从第一名一路下滑,撤掉才恢复。
 
-广告是变现手段,不是起量手段,顺序别反了。完整的时机自查清单、AdSense 收款全流程、Adsterra 接入教程、以及广告平台怎么随流量升级(起步/进阶/成熟三档),都在仓库文档 [docs/ads.md](https://github.com/PNGTRID/AnvilWiki/blob/main/docs/ads.md)。
+广告是变现手段,不是起量手段,顺序别反了。完整的时机自查清单、AdSense 收款全流程、Adsterra 接入教程、以及广告平台怎么随流量升级(起步/进阶/成熟三档 + NitroPay 等游戏垂直网络,全带官网直链),都在仓库文档 [docs/ads.md](https://github.com/PNGTRID/AnvilWiki/blob/main/docs/ads.md)。
 
 ## 这章做完你会得到
 
