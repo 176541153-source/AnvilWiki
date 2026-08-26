@@ -5,6 +5,19 @@ All notable changes to AnvilWiki are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+**变现文档批:广告链路三缺口补齐(AdSense 收款 / Adsterra 接入 / 平台全景三档)。零代码变更。**
+
+### Added
+
+- **`docs/ads.md` 新增「AdSense:让钱真正进你的银行卡」完整教程**:三道验证逐个拆开——W-8BEN 税务表(个人 + 国家选中国 + 勾「申请税收协定优惠」Royalties 条款 = 协定税率 10%,不交默认预扣 30%)、地址 PIN 明信片($10 触发、平信 2-4 周、4 次寄送机会、生成后 4 个月未验证暂停广告展示、4 次用尽走人工验证)、KYC 身份验证(姓名用汉字而银行收款人用拼音,两处不一致是正常的);电汇绑卡(收款人拼音 + SWIFT 码 + 普通储蓄卡即可 + 开自动付款);出账节奏($100 起付、每月 21 日打款、1-3 工作日到账、当月 20 日截点);到账后手机银行结汇。动机:最亏的翻车剧本是攒到 $100 才发现 PIN 没验证、付款挂起。
+- **`docs/ads.md` 新增「Adsterra 接入:从注册到广告上线」教程**:注册加站 5 步(分钟级自动审核、零流量门槛、三种被拒原因:违法成人/误导/采集拼凑)+ 五种广告格式取舍表(Banner 首选 / Direct Link 零成本灵活 / In-Page Push 可选补充 / Social Bar 流量大了再试 / Popunder 禁用)+ **与 AdSense 共存红线**(Google 广告投放位置政策:挂 AdSense 的站不允许触发 popunder——哪怕弹出的页面里没有 Google 广告也算违规;共存只开 Banner / Direct Link / In-Page Push,别做成 AdSense 同款样式,全页广告总数 ≤4-5)+ 脚本粘贴位置(全站格式粘 `BaseLayout.astro` `<head>` 同 Clarity 一位一法、Banner 进 `ArticlePage.astro` 指定槽位、模板 3 个 AdSense 位零改动互不干扰)。
+- **`docs/ads.md` 新增「广告平台全景:起步/进阶/成熟三档」**:七平台阶梯表用 2026-08 调研快照——起步主力 AdSense、备胎 Adsterra + PropellerAds/HilltopAds(约 $20-100 起付按方式);进阶 Journey by Mediavine(2026 年起门槛降到 1,000 sessions/月 + GA4 + 原创内容,发布商约七成分成)、Monumetric Propel(10,000 pageviews + 一次性 $99 安装费 + NET-60,小站先算账);成熟 Mediavine 主产品(改年广告收入 $5,000+ 门槛,取消 5 万 sessions)、Raptive(25,000 pageviews,原 10 万)+ 管理型平台申请制四步(先装 GA4 → 如实填 → 按邮件指引接入 → 切换=换主力不是叠加)+ 三条铁律(同一时期主力只挂一家/门槛起付数字会变申请前核对官方页/Ezoic 接管 DNS 与 Cloudflare Pages 架构冲突明确不推荐 + Media.net 偏美英加金融流量不匹配)。
+- **Adsterra 收款节起付信息对齐官方 2026 口径**:USDT(TRC-20)$100、Paxum $5、PayPal $25、本地货币 $25、wire 默认 $1000 + 手续费、**前两笔付款所有方式放宽到 $20**;两条主路线(USDT/OKX 与 Payoneer)流程不变。
+- **学习手册第 7 章双语新增「第三步:通过审核后,先把收款三件事办了」**(zh/en):W-8BEN/PIN/电汇三件事操作级概要 + 出账节奏,指向 ads.md 逐步细节;tldr「两步走」改「三步走」(zh 168 / en 354 字符,均低于 480 上限);「卡住了怎么办」补「PIN 明信片一直没到」(4 次寄送机会 + 官方人工验证通道);「先说时机」节的 ads.md 引用描述随新范围更新(时机/收款/Adsterra 接入/平台全景)。
+- **全仓描述一致性同步**:docs/README.md 三处(文档索引表 / 路径 A 学习路线 / 问题路由图)+ README.md 文档导航一处,ads.md 描述统一为「广告时机 + AdSense 收款 + Adsterra 接入 + 平台全景三档」。
+
 ## [2.1.1] — 2026-08-26
 
 **手册同步批 + 初始化清理规范批:v2.1.0 的仓库文档层喂进站内学习手册(7 章双语),fork 初始化的删除清单首次文档化并修两处通道漂移。章数不变(learn 11/dev 7)、提示词 18 不变。**

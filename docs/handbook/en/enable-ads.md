@@ -4,7 +4,7 @@ description: "After 15 to 20 articles, apply for Google AdSense, pass review, fi
 manual: learn
 order: 7
 icon: lucide:dollar-sign
-tldr: "Earning takes two steps. First self-check the application conditions (your own domain, 15 to 20 articles, privacy pages already built into the template); after passing AdSense review, fill 1 publisher ID and 3 ad-slot IDs into the 4 Cloudflare variables, save, deploy — the ads go live. Zero revenue in the first 1 to 2 weeks is normal. Rejected? Add content and reapply."
+tldr: "Earning takes three steps: self-check first (own domain, 15 to 20 articles, privacy pages built in), pass AdSense review, fill the 4 IDs into the Cloudflare variables — ads go live. On approval day, do the three payout tasks: W-8BEN tax form, PIN mailer, wire transfer. Zero revenue in the first 1 to 2 weeks is normal. Rejected? Add content and reapply."
 updated: 2026-08-26
 ---
 
@@ -19,7 +19,7 @@ The switches in this chapter can be flipped anytime, but **when** you flip them 
 - Let the site run **1 to 2 days** after launch first — so Google's first crawl and the first visitors see a clean, fast page.
 - **The peers rule**: while none of the sites on Google's page one run ads, hold off too. Before your rankings settle, don't trade user experience for ad money — one webmaster watched the #1 spot slide continuously after adding a banner, and only recovered after removing it.
 
-Ads are how you monetize, not how you grow — don't reverse the order. The full pre-flight checklist, plus Adsterra payout routes beyond AdSense (USDT / Payoneer), live in the repo doc [docs/ads.md](https://github.com/PNGTRID/AnvilWiki/blob/main/docs/ads.md).
+Ads are how you monetize, not how you grow — don't reverse the order. The full pre-flight checklist, the complete AdSense payout walkthrough, the Adsterra onboarding tutorial, and how to level up ad platforms as traffic grows (starter / intermediate / mature tiers) all live in the repo doc [docs/ads.md](https://github.com/PNGTRID/AnvilWiki/blob/main/docs/ads.md).
 
 ## What you'll have when this chapter is done
 
@@ -63,6 +63,16 @@ Ads are how you monetize, not how you grow — don't reverse the order. The full
 
 **You'll see**: ads appear at the bottom / in the sidebar / mid-article (fresh ad slots can take hours to days to fill with real ads — blank at first is normal).
 **Confirm it worked**: all four variables are in Cloudflare (leave any one empty and that spot simply doesn't render — that's by design; want just one slot? Fill just one). The revenue is all yours — no platform cut.
+
+## Step 3: Right after approval, do the three payout tasks
+
+The ads are live and revenue is accumulating — but **between a dashboard balance and money in your bank account sit several verifications, each with a waiting period**. The most painful scenario: you hit $100 only to discover the PIN was never verified, the payment is held, and you wait an extra month for nothing. Do these three things on approval day:
+
+1. **Submit the tax form (W-8BEN, 10 minutes)**: dashboard → Payments → Payments info → Tax info. Individual, country China, tick "Claim tax treaty benefits" (Royalties article) — the treaty rate is 10%; skip it and the default withholding is 30%.
+2. **Watch for the PIN mailer**: when your balance reaches $10, Google mails a 6-digit PIN to your account address — regular post, 2 to 4 weeks; enter it under "Payments → Verification check" when it arrives. If unverified 4 months after generation, ad serving is paused — so check your address now, not at $10.
+3. **Add a wire-transfer payment method (10 minutes)**: Payments → Add payment method → Wire transfer. Payee name in **pinyin**, plus the SWIFT code (ask your bank's support line); an ordinary domestic debit card works. Turn on automatic payments while you're there.
+
+Payout rhythm: $100 minimum, automatic monthly payout on the 21st, arriving in 1 to 3 business days; convert the USD to local currency in your mobile banking app. Step-by-step details (including the manual-verification route when the PIN never arrives) are in the repo doc [docs/ads.md](https://github.com/PNGTRID/AnvilWiki/blob/main/docs/ads.md).
 
 ## Optional: comments and analytics (the same switch-panel game)
 
@@ -110,6 +120,7 @@ The three don't conflict. For the beginner phase, the recommended combo is **Clo
 
 - **"An ad slot stays blank"**: new site, new slot — filling can take hours to days; also confirm all 4 variable names are spelled exactly right (case-sensitive).
 - **"AdSense rejected me"**: it's almost always content volume — add 5 to 10 real guides and reapply.
+- **"The PIN mailer never arrives"**: you get 4 mailing attempts (1 automatic + 3 manual re-sends); if all fail, use the official form for manual verification (upload an ID + proof of address) — details in docs/ads.md, section 2.
 
 ## ✅ Acceptance criteria (all must hold)
 
