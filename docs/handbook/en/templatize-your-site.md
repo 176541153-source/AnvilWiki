@@ -95,4 +95,4 @@ Why it matters: when you copy site #5 half a year from now, you execute the chec
 
 ## What's next
 
-The template is ready; the next chapter answers "what fills a new site": Chapter 10 · batch-create inner pages — turn one keyword list into dozens of traffic entrances.
+The template is ready; the next chapter answers "what fills a new site": [Chapter 10 · batch-create inner pages](/landing/docs/batch-pages) — turn one keyword list into dozens of traffic entrances.

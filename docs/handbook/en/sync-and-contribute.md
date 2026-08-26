@@ -75,4 +75,4 @@ Three long-term promises: article registration-card fields are **added only, nev
 
 ## Next chapter
 
-Upstream syncing keeps you current as the template grows. The final chapter puts an AI on ops duty — the anvilwiki-ops CLI and MCP.
+Upstream syncing keeps you current as the template grows. The final chapter puts an AI on ops duty — [the anvilwiki-ops CLI and MCP](/landing/docs/ai-ops).

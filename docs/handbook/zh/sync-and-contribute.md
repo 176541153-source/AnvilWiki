@@ -75,4 +75,4 @@ pnpm build && pnpm check-links
 
 ## 下一章
 
-上游同步解决了「模板在长」,最后一章解决「站在长起来的网站上,让 AI 替你跑运营循环」——anvilwiki-ops 命令行与 MCP。
+上游同步解决了「模板在长」,最后一章解决「站在长起来的网站上,让 AI 替你跑运营循环」——[anvilwiki-ops 命令行与 MCP](/zh/landing/docs/ai-ops)。

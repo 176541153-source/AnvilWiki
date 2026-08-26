@@ -6,36 +6,22 @@
 > The game wiki template with an AI-native content workflow — 100% of your ad revenue.
 > Open source, natively optimized for Cloudflare Pages, free to deploy.
 
+**[📖 中文文档](#-中文文档) · [English Documentation](#-english-documentation)**
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Astro](https://img.shields.io/badge/Astro-5.x-FF5D01?logo=astro&logoColor=white)](https://astro.build)
 [![Cloudflare Pages](https://img.shields.io/badge/Cloudflare-Pages-F38020?logo=cloudflare&logoColor=white)](https://pages.cloudflare.com)
 [![Release](https://img.shields.io/github/v/release/PNGTRID/AnvilWiki?label=Release&color=brightgreen)](https://github.com/PNGTRID/AnvilWiki/releases)
 [![Live Demo](https://img.shields.io/badge/Demo-anvilwiki.pages.dev-brightgreen)](https://anvilwiki.pages.dev/)
-[![Docs](https://img.shields.io/badge/Docs-/landing/docs-8b5cf6)](https://anvilwiki.pages.dev/zh/landing/docs)
+[![Docs](https://img.shields.io/badge/Docs-/landing/docs-8b5cf6)](https://anvilwiki.pages.dev/landing/docs)
 
-[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/PNGTRID/AnvilWiki)
-
-> ⚠️ **Fork 部署前必读 / Before deploying a fork**:仓库里的 `wrangler.toml` 存在时,它是 Cloudflare Pages env 的**唯一真相源**,dashboard 的 Environment variables UI 会被完全忽略。fork 后要么跑 `pnpm apply-template`(自动把 `[vars]` 重置为你的域名并清空 demo 值),要么手动改 `[vars]` 或删除该文件。详见 [`docs/deployment.md`](docs/deployment.md)。
->
-> ⚠️ The shipped `wrangler.toml`, when present, is the **sole source of truth** for your Cloudflare Pages env — the dashboard's Environment variables UI is ignored. Run `pnpm apply-template` after forking (it resets `[vars]` to your domain and clears demo values), or edit/delete the file yourself. See [`docs/deployment.md`](docs/deployment.md) for details.
+[![Demo site homepage](public/images/showcase/demo-home.webp)](https://anvilwiki.pages.dev/)
 
 > Lighthouse 4×100 — 实测于 [anvilwiki.pages.dev](https://anvilwiki.pages.dev/)（2026-08-12）
-<table>
-  <tr>
-    <td align="center" width="25%">
-      <img src="https://img.shields.io/badge/Performance-100-058627?style=for-the-badge&logo=lighthouse&logoColor=white" alt="Performance" />
-    </td>
-    <td align="center" width="25%">
-      <img src="https://img.shields.io/badge/Accessibility-100-058627?style=for-the-badge&logo=lighthouse&logoColor=white" alt="Accessibility" />
-    </td>
-    <td align="center" width="25%">
-      <img src="https://img.shields.io/badge/Best_Practices-100-058627?style=for-the-badge&logo=lighthouse&logoColor=white" alt="Best Practices" />
-    </td>
-    <td align="center" width="25%">
-      <img src="https://img.shields.io/badge/SEO-100-058627?style=for-the-badge&logo=lighthouse&logoColor=white" alt="SEO" />
-    </td>
-  </tr>
-</table>
+> [![Performance 100](https://img.shields.io/badge/Performance-100-058627?style=flat-square&logo=lighthouse&logoColor=white)](https://anvilwiki.pages.dev/)
+> [![Accessibility 100](https://img.shields.io/badge/Accessibility-100-058627?style=flat-square&logo=lighthouse&logoColor=white)](https://anvilwiki.pages.dev/)
+> [![Best Practices 100](https://img.shields.io/badge/Best_Practices-100-058627?style=flat-square&logo=lighthouse&logoColor=white)](https://anvilwiki.pages.dev/)
+> [![SEO 100](https://img.shields.io/badge/SEO-100-058627?style=flat-square&logo=lighthouse&logoColor=white)](https://anvilwiki.pages.dev/)
 
 ---
 
@@ -61,35 +47,47 @@ AnvilWiki 是一个**游戏 SEO 内容站模板**——用来快速搭建围绕�
 
 ### 核心特性
 
-- 📚 **零基础双手册(站内文档中心)**:学习手册 11 章 + 开发手册 7 章,中英双语,从选游戏到赚到钱、模板化复制、批量铺内页,再到 SEO 进阶(排名 + AI 引用),每一步都是 SOP + 可复制的 AI 提示词;每章带手册目录树和本页目录
-- 🤖 **AI 全链路(v2.0 内容经营操作系统)**:内容技能随仓库分发(`.agent/skills/`,Agent Skills 开放标准)——对 ZCode / Claude Code / Codex 说「根据这些笔记写篇攻略」,产出直接通过构建质检;**PR 门控内容管道**(GitHub Actions):关键词清单 → 确定性生成 → 八道质量门禁全绿 → 自动开草稿 PR,AI 永不直推;运营工具包 `anvilwiki-ops` 1.0(npx 免安装 + MCP):AI 替你拉 GSC/Cloudflare 数据、给优化清单、改完内容走 PR 上线,还能**一套工具管 N 个站**(多站注册表)并追踪 **AI 引用**(ChatGPT/Perplexity 来路 + AI Overviews 收录)
-- 🧰 **模板健康检查 + 批量产页 + 封面产能**:`pnpm template-audit` 一键检查「这个站还能不能干净地复制成下一个游戏的站」;`pnpm bulk-new-posts` 从关键词清单批量生成内页草稿;`pnpm gen-covers` 自动生成 og:image 封面(1200×675,中/日文标题自动配 Noto 字体,品牌色取自主题)——跑通一个站后,30 分钟复制下一个,几十个内页连封面批量铺
-- 💰 **变现三件套**:AdSense 广告位(3 个位置,env 驱动,默认关闭)+ 联盟链接组件 + **Affiliate 建议位**(v2.0:配置驱动的文末推荐卡,默认空不渲染)——无平台抽成
+- 📚 **零基础双手册**:学习手册 11 章 + 开发手册 7 章,中英双语,从选游戏到赚到钱,每步 SOP + 18 个可复制 AI 提示词([站内阅读](https://anvilwiki.pages.dev/zh/landing/docs))
+- 🤖 **AI 对话即产页**:内容技能随仓库分发(`.agent/skills/`),对 ZCode / Claude Code / Codex 说「根据这些笔记写篇攻略」,产出自动通过构建质检;批量产页走 **PR 门控管道**——AI 写、八道质量门禁验、你审完才合并([docs/content-pipeline.md](docs/content-pipeline.md))
+- 🧭 **一套工具管 N 个站**:`anvilwiki-ops`(npx 免安装 + MCP)让 AI 替你拉 GSC/Cloudflare 数据、给优化清单,并追踪 ChatGPT/Perplexity 等 **AI 引用来路**([docs/multi-site.md](docs/multi-site.md))
+- 🧰 **产能三件套**:`pnpm template-audit` 检查「这个站还能不能干净复制成下一个」、`pnpm bulk-new-posts` 从关键词清单批量铺内页草稿、`pnpm gen-covers` 自动生成 1200×675 封面(中日文标题自动配字体)
+- 💰 **变现三件套**:AdSense 广告位 ×3 + 联盟链接组件 + 文末建议位,全部默认关闭、env/config 驱动,收入 100% 归你([docs/ads.md](docs/ads.md))
 - 🔍 **SEO 工程化**:sitemap(含 lastmod)/ JSON-LD 全套 / hreflang / Quick Answer 摘要块 / llms.txt(AI 搜索),全部自动生成
-- ⚡ **极快**:Astro 零 JS 优先,Lighthouse 4×100 开箱即得(开了广告也不掉分)
+- ⚡ **Lighthouse 4×100 开箱即得**:Astro 零 JS 优先,开了广告也不掉分
 - 🆓 **零成本**:Cloudflare Pages 免费无限带宽 + 全球 CDN + SSL,永远没有服务器账单
-- 🌍 **多语言开箱即用**:英文无前缀(SEO 最优),其他语言带前缀,缺失内容自动回退英文(直链永不 404)
-- 🎮 **wiki 级内容呈现**:Boss 数据卡、兑换码一键复制、文章 TOC 滚动高亮、画廊灯箱、Giscus 评论(默认关闭)
+- 🌍 **多语言开箱即用**:英文无前缀(SEO 最优),缺失内容自动回退英文,直链永不 404
+- 🎮 **wiki 级呈现**:Boss 数据卡、兑换码一键复制、TOC 滚动高亮、画廊灯箱、Giscus 评论(默认关)
 
 ### 5 分钟快速开始
 
+**开始前需要**:[Node.js 22+](https://nodejs.org) 和 pnpm(没装 pnpm?终端跑 `npm install -g pnpm`;或跟着[学习手册第 2 章](https://anvilwiki.pages.dev/zh/landing/docs/install-tools)把 6 样工具一次装齐)。
+
 ```bash
-# 1. Fork 本仓库,然后克隆(换成你的 GitHub 用户名)
+# 1. Fork 本仓库(仓库右上角 Fork 按钮),然后克隆你的 fork(换成你的 GitHub 用户名)
 git clone https://github.com/<你的用户名>/AnvilWiki.git
 cd AnvilWiki
 
-# 2. 安装依赖并启动(Node 22+ / pnpm 11)
+# 2. 安装依赖并本地预览
 pnpm install
-pnpm dev          # 打开 http://localhost:4321
+pnpm dev            # 打开 http://localhost:4321,能看到 demo 站 = 环境通了
 
-# 3. 一条问答式命令,把 demo 站换成你的游戏
+# 3. 一条问答式命令,把 demo 站换成你的游戏(游戏名/主题色/域名/语言…)
 pnpm apply-template
 
-# 4. 部署:cloudflare.com → Pages → Connect to Git → 选仓库
-#    自动识别 Astro:构建命令 pnpm build,输出目录 dist,环境变量 NODE_VERSION=22
+# 4. 把改动推回你的 fork
+git add .
+git commit -m "Apply my game"
+git push           # 第 5 步 Cloudflare 连的是 GitHub 远端仓库,不推上去它连到的还是 demo
+
+# 5. 部署:cloudflare.com → Workers & Pages → Create → Pages → Connect to Git → 选你的 fork
+#    构建命令 pnpm build、输出目录 dist 会自动识别;环境变量加 NODE_VERSION=22
 ```
 
-**完全新手?别从这里开始**——先去[学习手册第 2 章](https://anvilwiki.pages.dev/zh/landing/docs/install-tools),它把终端、Node、Git、AI 助手怎么装、每步会看到什么,全部一步步写清了。
+> 💡 **SITE_URL 不用去 dashboard 配**:第 3 步已经把它写进 `wrangler.toml` 的 `[vars]`——只要这个文件存在,它就是 Cloudflare Pages 环境变量的**唯一真相源**,dashboard 里配的同名变量会被忽略。以后换域名,改 `[vars]` 里的 `SITE_URL`(必须含 `https://`)即可;也可以删掉该文件改用 dashboard 配置。完整说明 + 踩坑诊断见 [docs/deployment.md](docs/deployment.md)。
+
+**不想碰终端?有一条零命令路径**:fork 后打开你仓库的 **Actions** 页签 → 左侧选 **Initialize AnvilWiki** → **Run workflow**(填你的域名)→ 合并它开好的 PR → 直接做上面的第 5 步。游戏名、主题色等之后随时可以让 AI 助手帮你改。
+
+**完全新手?别从这里开始**——先去[学习手册](https://anvilwiki.pages.dev/zh/landing/docs/learn):第 1 章帮你选游戏,第 2 章把终端、Node、Git、AI 助手怎么装、每步会看到什么全部写清,第 3 章才建站。手册源码在 [`docs/handbook/`](docs/handbook/),fork 后依然保留(但站内文档中心页面会自动移除,属正常)。
 
 ### 用 AI 直接生成内容(无需脚本)
 
@@ -104,24 +102,14 @@ fork 后用 ZCode / Claude Code / Codex / Cursor 打开仓库,直接对话即可
 
 完整的提示词库(选品分析、产页、批量产页、翻译、SEO 体检、关键词选题等 18 个模板)在[学习手册](https://anvilwiki.pages.dev/zh/landing/docs/learn)里,整段复制就能用。
 
-### 文档导航
+### 文档在哪里?
 
-**首选:[站内文档中心](https://anvilwiki.pages.dev/zh/landing/docs)** —— 双手册(中英),手册 markdown 源码在 [`docs/handbook/`](docs/handbook/)(fork 后保留,可直接用提示词 SOP)。
-
-仓库内参考文档(查阅式,按需取用):
-
-| 文档 | 内容 |
+| 入口 | 内容 |
 |---|---|
-| [docs/game-selection.md](docs/game-selection.md) | 选品漏斗 + 首日 10 页方法论 |
-| [docs/sourcing.md](docs/sourcing.md) | 挖词渠道(9 个)+ 意图满足度判断 + 选词决策管理表 |
-| [requirements/](requirements/) | 建站前内容准备模板(事实来源表 + 对标参考表) |
-| [docs/ads.md](docs/ads.md) | 广告时机 + AdSense 收款 + Adsterra 接入 + 平台全景三档 + 游戏垂直 |
-| [docs/apply-template.md](docs/apply-template.md) | 配置参考手册(按文件组织) |
-| [docs/content-format.md](docs/content-format.md) | MDX 文章格式规范(字段表) |
-| [docs/deployment.md](docs/deployment.md) | Cloudflare Pages 部署(含 wrangler.toml 大坑) |
-| [docs/staying-up-to-date.md](docs/staying-up-to-date.md) | fork 后怎么同步上游 |
-| [docs/development.md](docs/development.md) | 给模板写代码:架构、验证、发版 |
-| [docs/README.md](docs/README.md) | 全部文档索引 + 四条阅读路径 |
+| 📚 [站内文档中心](https://anvilwiki.pages.dev/zh/landing/docs) | **首选**:双手册 + 「从零到赚钱 10 件事」全景清单,中英双语 |
+| 🗂️ [docs/README.md](docs/README.md) | 仓库内全部参考文档索引(选品/挖词/部署/SEO/广告/内容管道/多站运营…),按角色与时机分类,附四条阅读路径 |
+| 📋 [requirements/](requirements/) | 建站前素材准备模板:事实来源表 + 对标参考表 |
+| 🏗️ [docs/PRD.md](docs/PRD.md) | 架构唯一真相源:想知道「为什么这么设计」看这里 |
 
 ### 为什么不用 Fandom / 自建 Next.js?
 
@@ -155,7 +143,7 @@ fork 后用 ZCode / Claude Code / Codex / Cursor 打开仓库,直接对话即可
 
 提 PR 在 `src/config/landing.ts` 的 `COMMUNITY_SITES` 追加一条即可——官网([/landing](https://anvilwiki.pages.dev/landing) 与 [/zh/landing](https://anvilwiki.pages.dev/zh/landing))的「Built with AnvilWiki」区块会自动展示。
 
-### 交流群 / 技术栈
+### 交流群 / 技术栈 / 许可
 
 微信扫码添加主理人好友,拉你进群交流讨论(部署问题、功能建议、游戏内容站经验都欢迎;[项目官网](https://anvilwiki.pages.dev/zh/landing)右下角也有同款悬浮扫码按钮):
 
@@ -165,11 +153,19 @@ fork 后用 ZCode / Claude Code / Codex / Cursor 打开仓库,直接对话即可
 
 技术栈:Astro 5(静态输出)+ Tailwind CSS 3 + MDX 4 + astro-icon/lucide + Content Layer API(Zod)+ Pagefind 搜索 + pnpm 11 / Node 22。
 
+许可:**MIT**,见 [LICENSE](LICENSE)。
+
 ---
 
 ## 📖 English Documentation
 
-**Start here: the [Learning Manual](https://anvilwiki.pages.dev/landing/docs/learn)** — 11 chapters, written for complete beginners, every step a SOP with copy-paste AI prompts. The [Development Manual](https://anvilwiki.pages.dev/landing/docs/dev) (7 chapters) covers deep customization and AI-driven ops. Both bilingual, with a [10-job whole-picture checklist](https://anvilwiki.pages.dev/landing/docs) at the docs hub.
+| I want to… | Go here |
+|---|---|
+| **Build a money-making game site from zero** | 📚 [Learning Manual (11 chapters)](https://anvilwiki.pages.dev/landing/docs/learn) — every step a SOP with copy-paste AI prompts |
+| See the whole journey first | 🗺️ [Docs hub](https://anvilwiki.pages.dev/landing/docs) — a 10-job whole-picture checklist |
+| Customize deeply / contribute code | 🔧 [Development Manual (7 chapters)](https://anvilwiki.pages.dev/landing/docs/dev) |
+| See what it looks like | 🎮 [Live demo](https://anvilwiki.pages.dev/) — a complete wiki for the fictional game "Anvil Quest" |
+| Compare Fandom / Wiki.js / alternatives | ⚖️ [Full comparison](https://anvilwiki.pages.dev/landing/comparison) |
 
 ### What is this?
 
@@ -177,34 +173,46 @@ AnvilWiki is an **open-source game wiki site template**: build a content site ar
 
 ### Quick Start (5 min)
 
+**Prerequisites**: [Node.js 22+](https://nodejs.org) and pnpm (no pnpm? run `npm install -g pnpm` — or let [Chapter 2 of the Learning Manual](https://anvilwiki.pages.dev/landing/docs/install-tools) walk you through all six tools).
+
 ```bash
-# 1. Fork this repo, then clone (replace with YOUR username)
+# 1. Fork this repo (Fork button, top right), then clone YOUR fork (replace the username)
 git clone https://github.com/<your-username>/AnvilWiki.git
 cd AnvilWiki
 
-# 2. Install & run (Node 22+ / pnpm 11)
+# 2. Install & preview locally
 pnpm install
-pnpm dev          # visit http://localhost:4321
+pnpm dev            # open http://localhost:4321 — seeing the demo site means your env works
 
-# 3. One guided command swaps the demo for your game
+# 3. One guided Q&A command swaps the demo for your game (name/theme/domain/locales…)
 pnpm apply-template
 
-# 4. Deploy: cloudflare.com → Pages → Connect to Git
-#    Astro auto-detected: build `pnpm build`, output `dist`, env NODE_VERSION=22
+# 4. Push the changes back to your fork
+git add .
+git commit -m "Apply my game"
+git push           # step 5 connects Cloudflare to the REMOTE repo — skip this and it deploys the demo
+
+# 5. Deploy: cloudflare.com → Workers & Pages → Create → Pages → Connect to Git → pick your fork
+#    Build `pnpm build` and output `dist` are auto-detected; add env NODE_VERSION=22
 ```
 
-Complete beginner? Start from [Chapter 2 of the Learning Manual](https://anvilwiki.pages.dev/landing/docs/install-tools) instead — it walks you through installing every tool, with "what you'll see" on each step.
+> 💡 **No need to set SITE_URL in the dashboard**: step 3 already wrote it into `[vars]` in `wrangler.toml` — while that file exists it is the **sole source of truth** for Cloudflare Pages env, and same-named dashboard variables are ignored. To change domains later, edit `SITE_URL` in `[vars]` (must include `https://`), or delete the file and use the dashboard instead. Full explanation + troubleshooting: [docs/deployment.md](docs/deployment.md).
+
+**Prefer zero terminal?** There's a no-command path: open your fork's **Actions** tab → **Initialize AnvilWiki** → **Run workflow** (enter your domain) → merge the PR it opens → jump straight to step 5 above. Game name, theme color and more can be changed later with your AI assistant.
+
+**Complete beginner?** Don't start here — start with the [Learning Manual](https://anvilwiki.pages.dev/landing/docs/learn): Chapter 1 picks your game, Chapter 2 installs every tool with "what you'll see" on each step, Chapter 3 builds the site. The handbook source lives in [`docs/handbook/`](docs/handbook/) and stays in your fork (the in-site docs center pages are auto-removed for forks — that's expected).
 
 ### Key Features
 
-- 📚 **Two beginner manuals** (Learning 11 chapters / Development 7, bilingual) with 18 copy-paste AI prompts
-- 🤖 **AI-native workflow (v2.0 content OS)**: agent skills ship inside the repo — say "write a boss guide from these notes", get a build-check-passing page; a **PR-gated content pipeline** (GitHub Actions) turns a keyword list into draft PRs — deterministic generator → all 8 quality gates → draft PR, AI never pushes to main; the `anvilwiki-ops` 1.0 toolkit (npx + MCP) has your AI pull GSC/Cloudflare data, rank SEO actions, ship content through validated PRs, **run N sites from one registry**, and track **AI referrals** (ChatGPT/Perplexity traffic + AI Overviews pages)
-- 🧰 **Template health check + batch pages + cover generation**: `pnpm template-audit` scores how cleanly this repo can be copied into your next game's site; `pnpm bulk-new-posts` scaffolds dozens of draft inner pages from a keyword list; `pnpm gen-covers` auto-generates og:image covers (1200×675, CJK titles auto-subset Noto fonts, brand color from your theme) — once your first site works, the next one takes ~30 minutes, covers included
-- 💰 **Monetization trio**: AdSense slots (3 positions, env-gated, off by default), affiliate link component, and the **Affiliate suggestion slot** (v2.0: config-driven end-of-article cards, empty by default)
+- 📚 **Two beginner manuals**: Learning (11 chapters) + Development (7), bilingual, zero to revenue, every step a SOP with 18 copy-paste AI prompts ([read online](https://anvilwiki.pages.dev/landing/docs))
+- 🤖 **Talk to generate pages**: agent skills ship inside the repo (`.agent/skills/`) — say "write a boss guide from these notes" and get a build-check-passing page; batches go through a **PR-gated pipeline** — AI writes, 8 quality gates verify, you review and merge ([docs/content-pipeline.md](docs/content-pipeline.md))
+- 🧭 **Run N sites from one toolkit**: `anvilwiki-ops` (npx + MCP) lets your AI pull GSC/Cloudflare data, rank SEO actions, and track **AI referrals** from ChatGPT/Perplexity ([docs/multi-site.md](docs/multi-site.md))
+- 🧰 **Production trio**: `pnpm template-audit` scores how cleanly this site can be copied into the next game's, `pnpm bulk-new-posts` scaffolds a batch of inner pages from a keyword list, `pnpm gen-covers` auto-generates 1200×675 covers (CJK titles auto-fonted)
+- 💰 **Monetization trio**: 3 AdSense slots + affiliate link component + end-of-article suggestion cards — all off by default, env/config-gated, 100% revenue yours ([docs/ads.md](docs/ads.md))
 - 🔍 **SEO engineering**: sitemap (lastmod) / JSON-LD suite / hreflang / Quick Answer blocks / llms.txt — all automatic
-- ⚡ **Fast**: zero-JS-first Astro, Lighthouse 4×100 out of the box
+- ⚡ **Lighthouse 4×100 out of the box**: zero-JS-first Astro, stays green with ads on
 - 🆓 **Free forever**: Cloudflare Pages, unlimited bandwidth, global CDN, SSL
-- 🌍 **i18n built in**: English at root, prefixed locales, English fallback so URLs never 404
+- 🌍 **i18n built in**: English at root (SEO-optimal), English fallback, URLs never 404
 - 🎮 **Wiki-grade presentation**: boss stat cards, tap-to-copy codes, TOC scroll-spy, gallery lightbox, Giscus comments (off by default)
 
 ### Generate content by talking to your AI (no scripts needed)
@@ -220,7 +228,14 @@ After forking, open the repo in ZCode / Claude Code / Codex / Cursor and just ta
 
 The full prompt library (game selection, page generation, batch production, translation, SEO audits, keyword research — 18 templates) lives in the [Learning Manual](https://anvilwiki.pages.dev/landing/docs/learn); copy-paste ready.
 
-Repository reference docs: [game-selection](docs/game-selection.md) · [apply-template](docs/apply-template.md) · [content-format](docs/content-format.md) · [deployment](docs/deployment.md) · [staying-up-to-date](docs/staying-up-to-date.md) · [development](docs/development.md) · [full index](docs/README.md)
+### Where are the docs?
+
+| Entry | Contents |
+|---|---|
+| 📚 [In-site docs center](https://anvilwiki.pages.dev/landing/docs) | **Start here**: both manuals + the 10-job whole-picture checklist, bilingual |
+| 🗂️ [docs/README.md](docs/README.md) | Index of every reference doc in the repo (game selection / keywords / deployment / SEO / ads / content pipeline / multi-site…), organized by role and timing |
+| 📋 [requirements/](requirements/) | Pre-build prep templates: source-of-truth table + benchmark table |
+| 🏗️ [docs/PRD.md](docs/PRD.md) | The single source of truth for architecture decisions |
 
 ### Why not Fandom / a hand-rolled Next.js site?
 
@@ -268,8 +283,13 @@ Tech stack: Astro 5 (static output) + Tailwind CSS 3 + MDX 4 + astro-icon/lucide
 
 ---
 
+## Contributing & Changelog
+
+- 想给模板贡献代码?先读 [CONTRIBUTING.md](CONTRIBUTING.md) 和 [docs/development.md](docs/development.md)。To contribute, start with [CONTRIBUTING.md](CONTRIBUTING.md).
+- 每个版本改了什么:[CHANGELOG.md](CHANGELOG.md) · [GitHub Releases](https://github.com/PNGTRID/AnvilWiki/releases)。Every release is documented in [CHANGELOG.md](CHANGELOG.md).
+
 ## Design Notes
 
-- **Three-layer separation** (code / config / content) is the core architectural decision — it's what makes forks mergeable upstream. See [docs/PRD.md](docs/PRD.md).
-- Optional features (ads, comments, analytics) are **env-gated and off by default** — a fresh fork ships zero-JS and zero-cookie, preserving the Lighthouse 4×100 contract.
-- The demo game "Anvil Quest" is fictional by design: forks replace it wholesale via `pnpm apply-template`, and the project landing + docs center are removed for forks automatically (the handbook markdown stays as repo docs).
+- **三层分离(代码/配置/内容)是核心架构决策**——fork 之后还能持续合并上游更新的根基。**Three-layer separation (code / config / content) is the core architectural decision** — it's what keeps forks mergeable upstream. See [docs/PRD.md](docs/PRD.md).
+- 可选功能(广告/评论/统计)默认关闭、env 门控——新 fork 零 JS、零 cookie,保住 Lighthouse 4×100 契约。**Optional features are env-gated and off by default** — a fresh fork ships zero-JS and zero-cookie.
+- demo 游戏「Anvil Quest」是刻意虚构的,fork 后整体替换;项目官网与文档中心页面会自动从 fork 中移除(手册源码保留在 `docs/handbook/`)。**The demo game is fictional by design**; the project landing + docs pages are auto-removed for forks (handbook sources stay in `docs/handbook/`).

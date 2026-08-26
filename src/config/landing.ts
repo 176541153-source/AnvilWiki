@@ -121,6 +121,8 @@ export interface LandingContent {
   handbook: {
     hubTitle: string;
     hubSubtitle: string;
+    /** Explicit "complete beginner start here" pill on the docs hub. */
+    beginnerHint: { text: string; href: string };
     manuals: { learn: ManualCopy; dev: ManualCopy };
     chapterLabel: string;
     /** Empty for en ("Chapter 3"); "章" for zh ("第 3 章"). */
@@ -167,6 +169,7 @@ export interface LandingContent {
 }
 
 const RELEASES = 'https://github.com/PNGTRID/AnvilWiki/releases';
+const FORK_URL = 'https://github.com/PNGTRID/AnvilWiki/fork';
 const SHOWCASE_DATA =
   'https://github.com/PNGTRID/AnvilWiki/blob/main/src/config/landing.ts';
 
@@ -238,15 +241,15 @@ const en: LandingContent = {
   description:
     'An open-source game wiki template with an AI-native content workflow: pick the right game, generate pages by talking to your AI tool, codes pages stay fresh on autopilot. Lighthouse 4×100, free on Cloudflare, 100% ad revenue yours.',
   announcement: {
-    text: `v${PROJECT_VERSION} — monetization & link-building playbook: AdSense payout walkthrough (W-8BEN / PIN mailer / wire transfer), Adsterra onboarding with the popunder-vs-AdSense red line, an 11-platform ad ladder incl. gaming-vertical networks (NitroPay, Venatus, Playwire, PubNation), and a 9-channel step-by-step backlink guide. Zero code changes — forks merge clean.`,
+    text: `v${PROJECT_VERSION} — monetization & link-building playbook: AdSense payouts, Adsterra onboarding, an 11-platform ad ladder, and a 9-channel backlink guide. Zero code changes.`,
     href: RELEASES,
   },
   hero: {
     badge: 'Open Source · MIT · Cloudflare Pages',
     title: 'Turn a trending game into a traffic site — in 24 hours, not weeks',
     subtitle:
-      'AnvilWiki pairs an SEO-hardened game wiki template (Astro + Cloudflare Pages, Lighthouse 4×100, free unlimited bandwidth) with an AI-native content workflow that ships inside your repo: pick the right game, generate pages by just talking to your AI tool, codes pages stay fresh on autopilot. Every ad dollar is yours.',
-    primaryCta: { label: 'Get Started', href: '#docs' },
+      'An SEO-hardened game wiki template (Astro + Cloudflare Pages — Lighthouse 4×100, free unlimited bandwidth) with an AI content workflow that ships inside your repo: talk to your AI to generate pages, codes stay fresh on autopilot. Every ad dollar is yours.',
+    primaryCta: { label: 'Fork on GitHub', href: FORK_URL },
     secondaryCta: { label: 'Star on GitHub', href: 'https://github.com/PNGTRID/AnvilWiki' },
     tertiaryCta: { label: 'Live Demo', href: '/' },
     installCommand: `git clone https://github.com/PNGTRID/AnvilWiki.git
@@ -467,7 +470,7 @@ pnpm install && pnpm dev`,
           bestFor: 'Modern self-hosted wikis',
         },
       ],
-      note: 'AnvilWiki itself is young — v2.0 shipped in 2026-08 and its GitHub stars are still a two-digit number, not a decade of ecosystem like the projects above. What you get instead is an architecture written for the AI-search era: static, structured, agent-driven. Judge it by the demo, not the star count.',
+      note: 'AnvilWiki itself is young — v2.0 shipped in 2026-08 and its GitHub star count is still small, not a decade of ecosystem like the projects above. What you get instead is an architecture written for the AI-search era: static, structured, agent-driven. Judge it by the demo, not the star count.',
     },
     notFor: {
       title: 'When NOT to pick AnvilWiki',
@@ -543,8 +546,8 @@ pnpm install && pnpm dev`,
       {
         icon: 'lucide:search',
         title: 'SEO Guide',
-        description: 'How AnvilWiki handles sitemaps, JSON-LD, hreflang, and more.',
-        href: 'https://github.com/PNGTRID/AnvilWiki/blob/main/docs/seo.md',
+        description: 'From indexed to ranking — keyword maps, on-page checks, and AI citations.',
+        href: '/landing/docs/seo-traffic',
       },
     ],
     readLabel: 'Read',
@@ -559,40 +562,40 @@ pnpm install && pnpm dev`,
         description:
           'Clone your fork and start the dev server — the demo wiki (fictional game "Anvil Quest") works out of the box.',
         command: 'pnpm install && pnpm dev',
-        linkLabel: 'README',
-        href: 'https://github.com/PNGTRID/AnvilWiki#readme',
+        linkLabel: 'Ch.3 · Launch your site',
+        href: '/landing/docs/launch-your-site',
       },
       {
         title: 'Make it yours',
         description:
           'One interactive CLI swaps game identity, theme color, locales and nav — and resets demo values (incl. wrangler.toml).',
         command: 'pnpm apply-template',
-        linkLabel: 'apply-template.md',
-        href: 'https://github.com/PNGTRID/AnvilWiki/blob/main/docs/apply-template.md',
+        linkLabel: 'Ch.3 · Apply the template',
+        href: '/landing/docs/launch-your-site',
       },
       {
         title: 'Write pages by chatting',
         description:
           'Open the repo in ZCode / Claude Code / Codex and just talk — agent skills ship inside the repo and the Zod schema gates every page.',
         command: '"write a boss guide from these notes"',
-        linkLabel: 'content-format.md',
-        href: 'https://github.com/PNGTRID/AnvilWiki/blob/main/docs/content-format.md',
+        linkLabel: 'Ch.4 · Write pages with AI',
+        href: '/landing/docs/first-10-pages',
       },
       {
         title: 'Deploy for free',
         description:
           'Push to GitHub and connect Cloudflare Pages — the Astro build is auto-detected; free unlimited bandwidth + global CDN.',
         command: 'pnpm build && git push',
-        linkLabel: 'deployment.md',
-        href: 'https://github.com/PNGTRID/AnvilWiki/blob/main/docs/deployment.md',
+        linkLabel: 'Ch.5 · Put it online',
+        href: '/landing/docs/put-site-online',
       },
       {
         title: 'Stay fresh',
         description:
           'A weekly audit workflow flags stale pages, codes skills keep redemption pages current, and upstream updates sync cleanly.',
         command: 'pnpm refresh-audit',
-        linkLabel: 'staying-up-to-date.md',
-        href: 'https://github.com/PNGTRID/AnvilWiki/blob/main/docs/staying-up-to-date.md',
+        linkLabel: 'Ch.8 · Stay fresh',
+        href: '/landing/docs/weekly-ops',
       },
     ],
     allDocs: {
@@ -603,17 +606,21 @@ pnpm install && pnpm dev`,
   handbook: {
     hubTitle: 'AnvilWiki Docs',
     hubSubtitle:
-      'Two separate hands-on manuals, written for complete beginners: the Learning Manual (11 chapters) walks you from game selection to a live, indexed, monetized wiki — then shows you how to templatize it, batch-produce inner pages to scale, and win rankings and AI citations with SEO; the Development Manual (7 chapters) covers customization and engineering. Every step is a SOP with copy-paste AI prompts.',
+      'Two separate hands-on manuals, written for complete beginners: the Learning Manual walks you from game selection to a live, indexed, monetized wiki — then shows you how to templatize it, batch-produce inner pages, and win rankings and AI citations; the Development Manual covers customization and engineering. Every step is a SOP with copy-paste AI prompts.',
+    beginnerHint: {
+      text: 'Complete beginner? Start with Learning Manual Chapter 1 — pick your game',
+      href: '/landing/docs/pick-your-game',
+    },
     manuals: {
       learn: {
         label: 'Learning Manual',
         description:
-          '11 chapters, zero experience required: pick the right game, install the tools, launch your site, write 10 pages with AI on day one, get on Google, turn on ads, run a 30-minute weekly ops loop — then turn your first site into a template, batch-create dozens of traffic-entrance pages, and climb from indexed to ranking and AI-cited.',
+          'Zero experience required: pick the right game, install the tools, launch your site, write 10 pages with AI on day one, get on Google, turn on ads, run a 30-minute weekly ops loop — then turn your first site into a template, batch-create dozens of traffic-entrance pages, and climb from indexed to ranking and AI-cited.',
       },
       dev: {
         label: 'Development Manual',
         description:
-          '7 chapters for customizers and contributors: the change map, categories & locales, theme & homepage copy, feature switches, CI & security, syncing upstream or contributing back, and running ops through AI (anvilwiki-ops CLI + MCP).',
+          'For customizers and contributors: the change map, categories & locales, theme & homepage copy, feature switches, CI & security, syncing upstream or contributing back, and running ops through AI (anvilwiki-ops CLI + MCP).',
       },
     },
     chapterLabel: 'Chapter',
@@ -649,8 +656,8 @@ pnpm install && pnpm dev`,
   finalCta: {
     title: 'Ready to launch your game wiki?',
     subtitle: 'Fork, configure, deploy — all in 30 minutes, completely free.',
-    primaryCta: { label: 'Get Started', href: '#docs' },
-    secondaryCta: { label: 'Read the Docs', href: 'https://github.com/PNGTRID/AnvilWiki#readme' },
+    primaryCta: { label: 'Fork on GitHub', href: FORK_URL },
+    secondaryCta: { label: 'Open the docs center', href: '/landing/docs' },
   },
   community: {
     title: 'Join the discussion',
@@ -677,15 +684,15 @@ const zh: LandingContent = {
   description:
     '开源游戏 wiki 模板 + AI 原生内容工作流:选对游戏、和 AI 对话就能产页、codes 页自动保鲜。Lighthouse 4×100、Cloudflare 免费部署、广告收入 100% 归你。',
   announcement: {
-    text: `v${PROJECT_VERSION} 发布 —— 变现与外链实操批:AdSense 收款全流程(W-8BEN/PIN/电汇)、Adsterra 接入(popunder 与 AdSense 共存红线)、11 平台广告阶梯含游戏垂直网络(NitroPay/Venatus/Playwire/PubNation)、外链九渠道逐步打法。零代码变更,fork 直接 merge。`,
+    text: `v${PROJECT_VERSION} 发布——变现与外链实操批:AdSense 收款、Adsterra 接入、11 平台广告阶梯、外链九渠道打法。零代码变更。`,
     href: RELEASES,
   },
   hero: {
     badge: '开源 · MIT 协议 · Cloudflare Pages',
     title: '把一个爆发期游戏,24 小时变成你的流量站',
     subtitle:
-      'AnvilWiki = SEO 强化到极致的游戏 wiki 模板(Astro + Cloudflare Pages,Lighthouse 4×100,免费无限带宽)+ 随仓库分发的 AI 内容工作流:选对游戏、跟 AI 对话就能产页、codes 页自动保鲜——每一分广告收入都归你。',
-    primaryCta: { label: '快速开始', href: '#docs' },
+      'SEO 强化的游戏 wiki 模板(Astro + Cloudflare Pages,Lighthouse 4×100、免费无限带宽)+ 随仓库分发的 AI 内容工作流:跟 AI 对话就能产页、codes 页自动保鲜——每一分广告收入都归你。',
+    primaryCta: { label: 'Fork 本仓库', href: FORK_URL },
     secondaryCta: { label: 'GitHub 加星', href: 'https://github.com/PNGTRID/AnvilWiki' },
     tertiaryCta: { label: '查看 Demo', href: '/' },
     installCommand: `git clone https://github.com/PNGTRID/AnvilWiki.git
@@ -885,7 +892,7 @@ pnpm install && pnpm dev`,
           bestFor: '现代自托管 wiki',
         },
       ],
-      note: 'AnvilWiki 本身还很年轻——v2.0 于 2026-08 发布,GitHub stars 仍是两位数,没有上面这些项目十年积累的生态;你换来的是为 AI 搜索时代写的架构:静态、结构化、agent 驱动。请用 demo 判断它,而不是用 star 数。',
+      note: 'AnvilWiki 本身还很年轻——v2.0 于 2026-08 发布,GitHub star 数还很少,没有上面这些项目十年积累的生态;你换来的是为 AI 搜索时代写的架构:静态、结构化、agent 驱动。请用 demo 判断它,而不是用 star 数。',
     },
     notFor: {
       title: '什么时候不该选 AnvilWiki',
@@ -951,8 +958,8 @@ pnpm install && pnpm dev`,
       {
         icon: 'lucide:search',
         title: 'SEO 指南',
-        description: 'AnvilWiki 如何处理 sitemap、JSON-LD、hreflang 等。',
-        href: 'https://github.com/PNGTRID/AnvilWiki/blob/main/docs/seo.md',
+        description: '从被收录到有排名——选词地图、单页自检、AI 引用。',
+        href: '/zh/landing/docs/seo-traffic',
       },
     ],
     readLabel: '阅读',
@@ -965,40 +972,40 @@ pnpm install && pnpm dev`,
         title: 'Fork 并本地跑起来',
         description: '克隆你的 fork、启动开发服务器——demo wiki(虚构游戏「Anvil Quest」)开箱即用。',
         command: 'pnpm install && pnpm dev',
-        linkLabel: 'README',
-        href: 'https://github.com/PNGTRID/AnvilWiki#readme',
+        linkLabel: '第 3 章·建起你的站',
+        href: '/zh/landing/docs/launch-your-site',
       },
       {
         title: '换成你的游戏',
         description:
           '一条交互式 CLI 替换游戏信息、主题色、多语言与导航,并重置 demo 配置(含 wrangler.toml)。',
         command: 'pnpm apply-template',
-        linkLabel: '套用模板文档',
-        href: 'https://github.com/PNGTRID/AnvilWiki/blob/main/docs/apply-template.md',
+        linkLabel: '第 3 章·换皮命令',
+        href: '/zh/landing/docs/launch-your-site',
       },
       {
         title: '和 AI 对话产页',
         description:
           '用 ZCode / Claude Code / Codex 打开仓库直接说——agent 技能随仓库分发,Zod schema 把住每一页的质量关。',
         command: '"帮我写一篇 Boss 攻略,要点如下:…"',
-        linkLabel: '内容格式文档',
-        href: 'https://github.com/PNGTRID/AnvilWiki/blob/main/docs/content-format.md',
+        linkLabel: '第 4 章·AI 产页',
+        href: '/zh/landing/docs/first-10-pages',
       },
       {
         title: '免费部署上线',
         description:
           '推到 GitHub、连接 Cloudflare Pages——自动识别 Astro 构建,免费无限带宽 + 全球 CDN。',
         command: 'pnpm build && git push',
-        linkLabel: '部署文档',
-        href: 'https://github.com/PNGTRID/AnvilWiki/blob/main/docs/deployment.md',
+        linkLabel: '第 5 章·免费上线',
+        href: '/zh/landing/docs/put-site-online',
       },
       {
         title: '保持新鲜',
         description:
           '每周审计工作流自动标记过期页面,兑换码技能守住长尾流量,上游更新随时可同步。',
         command: 'pnpm refresh-audit',
-        linkLabel: '同步更新文档',
-        href: 'https://github.com/PNGTRID/AnvilWiki/blob/main/docs/staying-up-to-date.md',
+        linkLabel: '第 8 章·每周保鲜',
+        href: '/zh/landing/docs/weekly-ops',
       },
     ],
     allDocs: {
@@ -1009,17 +1016,21 @@ pnpm install && pnpm dev`,
   handbook: {
     hubTitle: 'AnvilWiki 文档中心',
     hubSubtitle:
-      '两本相互独立的实操手册,按完全零基础标准编写:学习手册 11 章带你从选游戏走到上线、收录、变现,再教你把站打磨成模板、批量铺内页放大、把排名和 AI 引用做上去;开发手册 7 章覆盖定制与工程。每一步都是 SOP + 可复制的 AI 提示词。',
+      '两本相互独立的实操手册,按完全零基础标准编写:学习手册带你从选游戏走到上线、收录、变现,再教你把站打磨成模板、批量铺内页放大、把排名和 AI 引用做上去;开发手册覆盖定制与工程。每一步都是 SOP + 可复制的 AI 提示词。',
+    beginnerHint: {
+      text: '完全零基础?从学习手册第 1 章「选对游戏」开始',
+      href: '/zh/landing/docs/pick-your-game',
+    },
     manuals: {
       learn: {
         label: '学习手册',
         description:
-          '11 章,零经验起步:选对游戏、装好工具、建起自己的站、首日用 AI 产出 10 页、被 Google 收录、接上广告、每周 30 分钟运营节奏,把第一个站打磨成模板、批量做出几十个流量入口,最后从被收录走到有排名、被 AI 引用。',
+          '零经验起步:选对游戏、装好工具、建起自己的站、首日用 AI 产出 10 页、被 Google 收录、接上广告、每周 30 分钟运营节奏,把第一个站打磨成模板、批量做出几十个流量入口,最后从被收录走到有排名、被 AI 引用。',
       },
       dev: {
         label: '开发手册',
         description:
-          '7 章,面向定制者与贡献者:改动地图、加栏目与加语言、换主题与改首页、功能开关总表、CI 门禁与安全、同步上游与贡献回流、让 AI 替你运营(anvilwiki-ops 命令行与 MCP)。',
+          '面向定制者与贡献者:改动地图、加栏目与加语言、换主题与改首页、功能开关总表、CI 门禁与安全、同步上游与贡献回流、让 AI 替你运营(anvilwiki-ops 命令行与 MCP)。',
       },
     },
     chapterLabel: '第',
@@ -1055,8 +1066,8 @@ pnpm install && pnpm dev`,
   finalCta: {
     title: '准备好上线你的游戏 wiki 了吗?',
     subtitle: 'Fork、配置、部署——30 分钟搞定,完全免费。',
-    primaryCta: { label: '快速开始', href: '#docs' },
-    secondaryCta: { label: '阅读文档', href: 'https://github.com/PNGTRID/AnvilWiki#readme' },
+    primaryCta: { label: 'Fork 开始建站', href: FORK_URL },
+    secondaryCta: { label: '打开文档中心', href: '/zh/landing/docs' },
   },
   community: {
     title: '扫码进群,一起讨论',

@@ -1318,7 +1318,7 @@ describe('sitemap', () => {
 | v1.4 | 评论系统（Giscus，默认关闭，env 驱动） | 低 | ✅ 已实现（`Comments.astro` env 门控 + 官方 `<script data-loading="lazy">` + 双 MutationObserver 暗色同步；详见 `docs/comments.md`） |
 | v1.5 | 图片优化（Astro Image，自动 WebP/AVIF + 响应式 srcset） | 中 | ✅ 已实现（content schema `image()` loader + `ArticleCover.astro` + `image.responsiveStyles`，封面图自动 WebP/srcset，`content.config.ts` 迁至 `src/`） |
 | ~~v2.0~~（v1.x 期里程碑，原标 v2.0，实际随 v1 线交付） | 套用模板 CLI（`pnpm apply-template` 引导式配置） | 高 | ✅ 已实现（`scripts/apply-template.ts` 步骤 1 自动化：hex→HSL 主题色、site/navigation/routing/ui/locales/manifest 重写，`--dry-run` / `--no-clear-content` flag。注：此行版本号是规划期占位，与下方 **v2.0.0** 正式版无关） |
-| v1.5 | 内链 + 时效性 + 表达力（详见 `docs/ROADMAP-v1.5-v1.6.md`） | 高 | ✅ 已实现（标签落地页 `/tags` + 可点击 tag / gameVersion 徽章 / `/recent` / Callout / Accordion / draft（dev 可见 build 排除）/ VideoObject JSON-LD / 404 增强（搜索+分类入口）/ SponsorCard env 门控 + FUNDING.yml / README wrangler 警告） |
+| v1.5 | 内链 + 时效性 + 表达力（详见 `docs/superpowers/ROADMAP-v1.5-v1.6.md`） | 高 | ✅ 已实现（标签落地页 `/tags` + 可点击 tag / gameVersion 徽章 / `/recent` / Callout / Accordion / draft（dev 可见 build 排除）/ VideoObject JSON-LD / 404 增强（搜索+分类入口）/ SponsorCard env 门控 + FUNDING.yml / README wrangler 警告） |
 | v1.6 | 创作者维护工具 + 部署自动化（check-i18n / setup workflow / 内容层 CLI / 死链对账等） | 中 | ✅ 已实现（`pnpm check-i18n` 翻译覆盖率 + `pnpm check-links` dist 内链审计（均入 CI）/ Initialize workflow 一键初始化 / CF Web Analytics 门控 / staying-up-to-date 文档 / apply-template 内容骨架 / README 对比表+showcase 征集） |
 | v1.7 | 内容表达力二期 + E-E-A-T（画廊/作者体系/联盟链接/内容 lint） | 中 | ✅ 已实现（`gallery` frontmatter + 原生 dialog lightbox + ImageObject JSON-LD / `authors.ts` 注册表 + Person JSON-LD / `<AffiliateLink>` sponsored nofollow 组件 / `pnpm check-content` 内容 lint；og:image 自动生成与 PWA 留待 v1.8 按用户反馈排期） |
 | v1.8 | AI 原生内容生产 + 新鲜度管道（第一性原理路线②③①④） | 高 | ✅ 已实现（`.agent/skills/` 3 技能 + AGENTS.md 对话式产页章节 / `codes` frontmatter + CodesTable 自动分区 + FAQPage JSON-LD / `pnpm refresh-audit` 确定性审计 + content-pipeline.yml 每周定时开 issue（绝不自动改内容）/ docs/game-selection.md 选品漏斗 + 首日 10 页） |
@@ -1374,12 +1374,25 @@ describe('sitemap', () => {
 | 文档 | 受众 | 位置 |
 |---|---|---|
 | README.md（中英双语） | 所有用户，新手入门 | 仓库根目录 |
-| docs/PRD.md | 贡献者、想深入了解设计的人 | 本文档 |
-| docs/deployment.md | 新手，部署指南 | docs/ |
-| docs/apply-template.md | 套用模板用户，配置参考 | docs/ |
+| docs/README.md | 文档中心索引（按角色与时机组织，附阅读路径） | docs/ |
+| docs/handbook/（中英 18+18 篇） | 零基础站长（learn 11 章）/ 定制者（dev 7 章）；站内 `/landing/docs` 渲染同一内容 | docs/handbook/ |
+| docs/game-selection.md | 想建站赚钱的人：选品漏斗 + 首日 10 页 | docs/ |
+| docs/sourcing.md | 挖词 9 渠道 + 意图满足度判断（v2.1.0） | docs/ |
+| requirements/（2 张填空模板） | 产页前素材准备：事实来源表 + 对标参考表（v2.1.0） | 仓库根 requirements/ |
+| docs/apply-template.md | 套用模板用户，配置参考（含初始化清理规范） | docs/ |
+| docs/deployment.md | 新手，部署指南（含 wrangler.toml 大坑 + 数据复盘） | docs/ |
 | docs/content-format.md | 内容创作者，MDX 格式 | docs/ |
-| docs/seo.md | 进阶用户，SEO 调优 | docs/ |
+| docs/content-pipeline.md | 想批量铺内容的站长：PR 门控管道（v2.0） | docs/ |
+| docs/multi-site.md | 多站运营：anvilwiki-ops 1.0 + AI 引用追踪（v2.0） | docs/ |
+| docs/seo.md | 进阶用户，SEO 调优 + 外链实操 | docs/ |
+| docs/ads.md | 开始赚钱的站长：广告时机 + 收款 + 平台全景（v2.1.0 起） | docs/ |
+| docs/comments.md | 需要 Giscus 评论的站长 | docs/ |
+| docs/staying-up-to-date.md | fork 用户：怎么同步上游更新 | docs/ |
 | docs/migration-from-nextjs.md | 传统 Next.js 模板用户，迁移指南 | docs/ |
+| docs/development.md | 贡献者：架构、模式、验证、发版 | docs/ |
+| docs/PRD.md | 贡献者、想深入了解设计的人 | 本文档 |
+| docs/roadmap.md | 想判断模板方向的人：演化主线 + 不做清单 | docs/ |
+| docs/superpowers/ | ADR 级设计决策存档（specs/）+ 实施计划（plans/）+ v1.5-v1.6 规划存档 | docs/superpowers/ |
 
 ### 15.3 Demo 站策略
 
