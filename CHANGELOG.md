@@ -5,6 +5,14 @@ All notable changes to AnvilWiki are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.1] — 2026-08-27
+
+**紧急修复批:根除 `tailwind.config.mjs` 在 ESM 文件内误用 CommonJS `require()` 的开箱即炸地雷。单文件级修复,fork 常规 merge 即得。**
+
+### Fixed
+
+- **`tailwind.config.mjs` 插件行改纯 ESM 写法**:第 76 行 `plugins: [require('@tailwindcss/typography')]`(CommonJS `require()` 出现在 `.mjs` 纯 ESM 文件里,自 v0.1.0 就存在)改为顶部 `import typography from '@tailwindcss/typography'` + `plugins: [typography]`。根因链(Windows fork 用户下载 ZIP 后 `pnpm dev` 报障实证):Tailwind 3.4 配置加载器先试原生 `require(config)`、同步抛错才回退 jiti(jiti 会给模块注入 `require`,缺陷因此被长期掩盖);但在部分 Node 构建(require(esm) 路径)上,被原生 require 的 ESM 模块内部抛出的 ReferenceError 以异步 unhandledRejection 上报而非同步 throw——catch 接不住,dev server 启动一切正常、浏览器首次请求页面触发 CSS 处理时炸出 `Unhandled rejection: require is not defined`(Astro 错误 overlay)。本机(Node 22.23)最小复现为同步抛出被 catch 救回,与用户环境的行为分岔即解释了「为什么我们一直没炸」。修复后两条加载路径(jiti / require-esm)均干净求值;经双路径最小复现脚本 + `pnpm build` + typecheck(0 错)+ lint + test(9 套件 89 用例)+ dev 冒烟(首页 HTTP 200、无 rejection 日志)全绿验证;全仓扫描确认无其他 `.mjs` 含 `require()`,文档无旧写法引用。
+
 ## [2.3.0] — 2026-08-26
 
 **新手动线优化批:README 按零基础标准重构、落地页转化动线修复(Fork 直达 + 站内链接)、仓库文档漂移清理。含少量代码变更(landing 文案层 + HandbookHub),fork 常规 merge 即得。**
@@ -625,7 +633,8 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
-[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.3.0...HEAD
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.3.1...HEAD
+[2.3.1]: https://github.com/PNGTRID/AnvilWiki/compare/v2.3.0...v2.3.1
 [2.3.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.2.0...v2.3.0
 [2.2.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.1.1...v2.2.0
 [2.1.1]: https://github.com/PNGTRID/AnvilWiki/compare/v2.1.0...v2.1.1

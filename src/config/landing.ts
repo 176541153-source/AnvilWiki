@@ -11,7 +11,7 @@
  */
 
 /** Keep in sync with package.json "version" (used by the announcement bar). */
-export const PROJECT_VERSION = '2.3.0';
+export const PROJECT_VERSION = '2.3.1';
 
 export type LandingLocale = 'en' | 'zh';
 
@@ -241,7 +241,7 @@ const en: LandingContent = {
   description:
     'An open-source game wiki template with an AI-native content workflow: pick the right game, generate pages by talking to your AI tool, codes pages stay fresh on autopilot. Lighthouse 4×100, free on Cloudflare, 100% ad revenue yours.',
   announcement: {
-    text: `v${PROJECT_VERSION} — onboarding & conversion polish: README rebuilt for complete beginners (prereqs, push-back-to-fork, zero-terminal Actions path), the landing page forks straight from the hero, and doc drift is cleaned up.`,
+    text: `v${PROJECT_VERSION} — critical fork fix: tailwind.config.mjs shipped CommonJS require() inside an ESM file, crashing first page load on some Node builds with "require is not defined". Now pure ESM everywhere.`,
     href: RELEASES,
   },
   hero: {
@@ -684,7 +684,7 @@ const zh: LandingContent = {
   description:
     '开源游戏 wiki 模板 + AI 原生内容工作流:选对游戏、和 AI 对话就能产页、codes 页自动保鲜。Lighthouse 4×100、Cloudflare 免费部署、广告收入 100% 归你。',
   announcement: {
-    text: `v${PROJECT_VERSION} 发布——新手动线优化批:README 按零基础标准重构(前置/推送步骤/零终端通道),落地页主按钮直达 Fork,文档漂移清理。`,
+    text: `v${PROJECT_VERSION} 修复——tailwind.config.mjs 在 ESM 文件里误用 require(),部分 Node 环境首次访问即崩;已改纯 ESM 写法,全 Node 版本可用。`,
     href: RELEASES,
   },
   hero: {
