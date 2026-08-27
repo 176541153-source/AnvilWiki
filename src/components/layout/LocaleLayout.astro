@@ -15,6 +15,8 @@ import { getUi } from '~/i18n/ui';
 interface Props {
   locale: Locale;
   title: string;
+  /** Pass an empty string when `title` is already the final search title. */
+  titleSuffix?: string;
   description: string;
   alternates?: Array<{ hreflang: string; href: string }>;
   image?: string;
