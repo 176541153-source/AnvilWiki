@@ -158,13 +158,19 @@ describe('SEO helpers', () => {
       expect(t).toContain('—');
     });
 
-    it('keeps the complete search title within 65 characters', () => {
+    it('keeps a complete search title instead of clipping it for branding', () => {
+      const title = 'Complete long-tail search title that still fits under sixty-five';
+      const t = pageTitle(title);
+      expect(t).toBe(title);
+      expect(t).not.toContain(site.name);
+    });
+
+    it('marks an overlong fallback title as clipped', () => {
       const t = pageTitle(
         'An extremely detailed long-tail boss strategy and rewards guide for beginners',
       );
       expect(t.length).toBeLessThanOrEqual(65);
-      expect(t).toContain('—');
-      expect(t).toContain(site.name);
+      expect(t).toMatch(/…$/);
     });
   });
 });

@@ -283,14 +283,12 @@ export function videoObjectJsonLd(opts: {
   };
 }
 
-/** Build the <title> string with consistent suffix. */
-export function pageTitle(title: string): string {
-  const suffix = ` — ${site.name}`;
-  if (title.includes(site.name)) return title.slice(0, 65).trim();
-  if ((title + suffix).length <= 65) return title + suffix;
+const MAX_PAGE_TITLE_LENGTH = 65;
 
-  if (suffix.length >= 65) return site.name.slice(0, 65).trim();
-  const available = 65 - suffix.length;
+function clipPageTitle(title: string): string {
+  if (title.length <= MAX_PAGE_TITLE_LENGTH) return title;
+
+  const available = MAX_PAGE_TITLE_LENGTH - 1;
   const clipped = title.slice(0, available + 1);
   const boundary = Math.max(
     clipped.lastIndexOf(' '),
@@ -298,13 +296,27 @@ export function pageTitle(title: string): string {
     clipped.lastIndexOf('-'),
   );
   const base = (
-    boundary >= Math.floor(available * 0.65)
+    boundary >= Math.floor(available * 0.75)
       ? clipped.slice(0, boundary)
       : clipped.slice(0, available)
   )
     .replace(/[\s:—-]+$/, '')
     .trim();
-  return `${base}${suffix}`;
+
+  return `${base}…`;
+}
+
+/**
+ * Build the <title> string without sacrificing a complete search title just
+ * to fit the site-name suffix. Search intent is more useful than branding;
+ * the suffix is added only when the complete result still fits.
+ */
+export function pageTitle(title: string): string {
+  const cleanTitle = title.trim();
+  const suffix = ` — ${site.name}`;
+  if (cleanTitle.includes(site.name)) return clipPageTitle(cleanTitle);
+  if ((cleanTitle + suffix).length <= MAX_PAGE_TITLE_LENGTH) return cleanTitle + suffix;
+  return clipPageTitle(cleanTitle);
 }
 
 /** VideoGame JSON-LD — injected on the homepage for game entity recognition. */
