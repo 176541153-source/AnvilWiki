@@ -28,13 +28,15 @@ export const GET: APIRoute = async () => {
       return parsed?.locale === defaultLocale && !e.data.noindex && !e.data.draft;
     })
     .sort((a, b) => a.data.category.localeCompare(b.data.category));
+  const categories = [...new Set(entries.map((entry) => entry.data.category))];
+  const coverage = categories.length > 0 ? categories.join(', ') : 'game guides';
 
   const lines: string[] = [
     `# ${site.name}`,
     '',
     `> ${site.description}`,
     '',
-    `Wiki for ${site.game.name} (${site.game.platform}, by ${site.game.developer}). Articles cover boss guides, tier lists, codes, items, and beginner tips.`,
+    `Wiki for ${site.game.name} (${site.game.platform}, by ${site.game.developer}). Published sections: ${coverage}.`,
     '',
     '## Articles',
     '',

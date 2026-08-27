@@ -52,7 +52,8 @@ const placeholder = search.placeholder ?? 'Search...';
       data-pagefind-ui
       data-no-results={noResults}
       data-placeholder={placeholder}
-    ></div>
+    >
+    </div>
 
     {/* Footer hint bar — keyboard shortcuts + branding */}
     <footer class="search-footer">
@@ -441,21 +442,29 @@ const placeholder = search.placeholder ?? 'Search...';
           const noResults = target?.getAttribute('data-no-results') ?? 'No matches found';
           const placeholder = target?.getAttribute('data-placeholder') ?? 'Search';
           if (target && typeof PFUI === 'function') {
+            const normalizeResultUrl = (value) =>
+              (value ?? '')
+                .replace(/\/index\.html(?=([?#]|$))/, '/')
+                .replace(/\.html(?=([?#]|$))/, '')
+                .replace(/\/+(?=([?#]|$))/, '') || '/';
             new PFUI({
               element: '#' + target.id,
               showSubResults: true,
               showImages: false,
               showEmptyFilters: false,
-              // Pagefind maps dist/<dir>/index.html → "/<dir>/" (trailing slash).
-              // The site uses trailingSlash:'never', so those URLs 404 on click.
-              // Strip the trailing slash from every result URL before render.
+              // With file output Pagefind indexes artifact URLs ending in
+              // `.html`; older directory builds ended in `/`. Normalize both
+              // to Cloudflare's extensionless no-slash public URL.
               processResult: (result) => {
                 if (result?.url) {
-                  result.url = result.url.replace(/\/+$/, '') || '/';
+                  result.url = normalizeResultUrl(result.url);
                 }
                 if (result?.meta?.url) {
-                  result.meta.url = result.meta.url.replace(/\/+$/, '') || '/';
+                  result.meta.url = normalizeResultUrl(result.meta.url);
                 }
+                result?.sub_results?.forEach((sub) => {
+                  if (sub?.url) sub.url = normalizeResultUrl(sub.url);
+                });
                 return result;
               },
               translations: {
@@ -463,21 +472,14 @@ const placeholder = search.placeholder ?? 'Search...';
                 zero_results: noResults,
               },
             });
-            // processResult covers main results, but sub-results (nested
-            // anchors like /bosses/emberfang/#section) are rendered separately
-            // and still carry trailing slashes. Intercept all clicks inside
-            // the results area and rewrite the href on the fly.
+            // Defensive click normalization covers Pagefind UI versions that
+            // materialize sub-results after processResult.
             target.addEventListener('click', (e) => {
               const link = e.target.closest('a[href]');
               if (!link) return;
               const href = link.getAttribute('href');
               if (!href) return;
-              // Normalize: strip trailing slash before a #anchor or at end.
-              // "/bosses/emberfang/" → "/bosses/emberfang"
-              // "/bosses/emberfang/#anchor" → "/bosses/emberfang#anchor"
-              const fixed = href
-                .replace(/\/+(#|$)/, '$1')  // "/.../#anchor" → "/...#anchor", "/.../"  → "/..."
-                || '/';
+              const fixed = normalizeResultUrl(href);
               if (fixed !== href) {
                 e.preventDefault();
                 window.location.href = fixed;
@@ -529,23 +531,35 @@ const placeholder = search.placeholder ?? 'Search...';
     // also hook the open/close calls directly.
     const origShow = modal.showModal?.bind(modal);
     const origClose = modal.close?.bind(modal);
-    if (origShow) modal.showModal = () => { origShow(); setBodyLock(true); };
-    if (origClose) modal.close = (rv) => { origClose(rv); setBodyLock(false); };
+    if (origShow)
+      modal.showModal = () => {
+        origShow();
+        setBodyLock(true);
+      };
+    if (origClose)
+      modal.close = (rv) => {
+        origClose(rv);
+        setBodyLock(false);
+      };
 
     // Prevent scroll-through: when wheeling inside the results area and
     // hitting the top/bottom boundary, stop the event so the background
     // page doesn't start scrolling.
-    modal.addEventListener('wheel', (e) => {
-      const scroller = modal.querySelector('.pagefind-ui__results-area');
-      if (!scroller) return;
-      const { scrollTop, scrollHeight, clientHeight } = scroller;
-      const atTop = scrollTop === 0;
-      const atBottom = scrollTop + clientHeight >= scrollHeight;
-      const goingUp = e.deltaY < 0;
-      const goingDown = e.deltaY > 0;
-      if ((atTop && goingUp) || (atBottom && goingDown)) {
-        e.preventDefault();
-      }
-    }, { passive: false });
+    modal.addEventListener(
+      'wheel',
+      (e) => {
+        const scroller = modal.querySelector('.pagefind-ui__results-area');
+        if (!scroller) return;
+        const { scrollTop, scrollHeight, clientHeight } = scroller;
+        const atTop = scrollTop === 0;
+        const atBottom = scrollTop + clientHeight >= scrollHeight;
+        const goingUp = e.deltaY < 0;
+        const goingDown = e.deltaY > 0;
+        if ((atTop && goingUp) || (atBottom && goingDown)) {
+          e.preventDefault();
+        }
+      },
+      { passive: false },
+    );
   })();
 </script>

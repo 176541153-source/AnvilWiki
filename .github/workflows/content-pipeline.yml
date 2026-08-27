@@ -22,9 +22,9 @@ permissions:
 
 jobs:
   audit:
-    # Upstream-only: forks shouldn't get weekly issue spam about the demo
-    # content. Delete this `if` (or change the repo name) to enable on a fork.
-    if: github.repository == 'PNGTRID/AnvilWiki'
+    # Forks opt in with an Actions repository variable instead of editing
+    # workflow code: Settings → Variables → ENABLE_FRESHNESS_AUDIT=true.
+    if: github.repository == 'PNGTRID/AnvilWiki' || vars.ENABLE_FRESHNESS_AUDIT == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:

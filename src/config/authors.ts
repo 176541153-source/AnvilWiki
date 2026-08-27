@@ -9,6 +9,8 @@
  * `Person` JSON-LD `sameAs`). Avatar is not yet rendered — URLs only for now.
  */
 export interface AuthorInfo {
+  /** Schema identity for the byline. Editorial desks should use Organization. */
+  type?: 'Person' | 'Organization';
   /** Profile page (personal site, social, or your site's author page). */
   url?: string;
   /** Social profiles folded into JSON-LD sameAs. */
@@ -19,7 +21,7 @@ export const authors: Record<string, AuthorInfo> = {
   // Example:
   // 'Yuan Ruiqin': { url: 'https://yuanruiqin.dev', sameAs: ['https://github.com/PNGTRID'] },
   // DEMO (anvilwiki.pages.dev) — removed by apply-template / setup.yml.
-  'Forge Master Kael': { url: '/about' },
+  'Forge Master Kael': { type: 'Person', url: '/about' },
 };
 
 /** Look up an author by frontmatter name (undefined = no entry). */

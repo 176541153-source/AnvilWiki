@@ -33,13 +33,15 @@ describe('tag/recent URL helpers', () => {
 describe('videoObjectJsonLd', () => {
   it('builds a VideoObject with YouTube thumbnail and embed URLs', () => {
     const json = videoObjectJsonLd({
-      videoId: 'dQw4w9WgXcQ',
+      id: 'dQw4w9WgXcQ',
       title: 'Test',
+      description: 'A verified gameplay video used in this schema test.',
       uploadDate: new Date('2026-01-01'),
     });
     expect(json['@type']).toBe('VideoObject');
     expect(json.thumbnailUrl[0]).toBe('https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg');
     expect(json.embedUrl).toBe('https://www.youtube.com/embed/dQw4w9WgXcQ');
+    expect(json.contentUrl).toBe('https://www.youtube.com/watch?v=dQw4w9WgXcQ');
     expect(json.uploadDate).toBe('2026-01-01T00:00:00.000Z');
   });
 });

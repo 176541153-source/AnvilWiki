@@ -12,7 +12,13 @@ import ListPage from '~/components/article/ListPage.astro';
 import ArticlePage from '~/components/article/ArticlePage.astro';
 import { CONTENT_TYPES } from '~/config/navigation';
 import { defaultLocale, locales, type Locale } from '~/i18n/routing';
-import { getEntryWithFallback, localesForEntry, parseEntryId, type ResolvedEntry } from '~/lib/content';
+import {
+  getEntryWithFallback,
+  localesForCategory,
+  localesForEntry,
+  parseEntryId,
+  type ResolvedEntry,
+} from '~/lib/content';
 import { detailPath, languageAlternates, listPath } from '~/lib/url';
 
 export async function getStaticPaths() {
@@ -69,23 +75,32 @@ if (view === 'not-found') {
 }
 
 // Build hreflang alternates for this page.
-// List page: /<category> for default locale, /<locale>/<category> otherwise —
-// list pages are built for every locale, so all locales are valid alternates.
+// List page alternates only include locales with indexable content in this
+// category. Empty localized shells are noindex and must not enter hreflang.
 // Article page: hreflang must match the page's content language, so only
 // locales with a real translated MDX version (localesForEntry) are declared
 // — e.g. a ja-only article must not emit hreflang="en" pointing at a 404,
 // and an English page never falsely claims another language. (This route is
 // the default locale, so no fallback case exists here.)
 const entryLocales = view === 'article' ? await localesForEntry(category, articleSlug) : [];
-const altLocales =
-  view === 'list' ? locales : Array.from(new Set([locale, ...entryLocales]));
+const categoryLocales = view === 'list' ? await localesForCategory(category) : [];
+const altLocales = view === 'list' ? locales : Array.from(new Set([locale, ...entryLocales]));
 const alternates =
   view === 'list'
-    ? languageAlternates((loc) => listPath(category, loc), locales)
+    ? categoryLocales.includes(locale)
+      ? languageAlternates((loc) => listPath(category, loc), categoryLocales)
+      : []
     : languageAlternates((loc) => detailPath(category, articleSlug, loc), entryLocales);
 ---
 
 {view === 'list' && <ListPage locale={locale} category={category} alternates={alternates} />}
-{view === 'article' && resolved && (
-  <ArticlePage locale={locale} resolved={resolved} alternates={alternates} availableLocales={altLocales} />
-)}
+{
+  view === 'article' && resolved && (
+    <ArticlePage
+      locale={locale}
+      resolved={resolved}
+      alternates={alternates}
+      availableLocales={altLocales}
+    />
+  )
+}

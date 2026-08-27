@@ -390,7 +390,7 @@ const wiki = defineCollection({
       summary: z.string().max(200).optional(),   // Quick Answer 卡（AI Overviews / 精选摘要候选）
       author: z.string().optional(),             // 作者名（回退 site.defaultAuthor）
       boss: z.object({ /* hp/weakness/resistant/location/recommendedLevel */ }).optional(), // Boss 数据卡
-      videos: z.array(z.string()).optional(),    // YouTube ID 列表（点击才加载的懒嵌入 + VideoObject）
+      videos: z.array(z.union([z.string(), z.object({ id: z.string(), title: z.string(), description: z.string(), uploadDate: z.coerce.date() })])).optional(), // 裸 ID 只懒加载；真实元数据 object 才生成 VideoObject
       gallery: z.array(z.object({ image: image(), caption: z.string().max(200).optional(), alt: z.string().max(200).optional() })).default([]), // 画廊 + 灯箱
       codes: z.array(z.object({ code: z.string().min(1), reward: z.string().optional(), status: z.enum(['active','expired']).default('active'), expiryDate: z.string().max(40).optional(), source: z.string().optional() })).optional(), // 兑换码表
     }),

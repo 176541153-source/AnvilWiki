@@ -70,7 +70,11 @@ function hexToHsl(hex: string): { h: number; s: number; l: number } {
     process.exit(1);
   }
   let h = m[1];
-  if (h.length === 3) h = h.split('').map((c) => c + c).join('');
+  if (h.length === 3)
+    h = h
+      .split('')
+      .map((c) => c + c)
+      .join('');
   const r = parseInt(h.slice(0, 2), 16) / 255;
   const g = parseInt(h.slice(2, 4), 16) / 255;
   const b = parseInt(h.slice(4, 6), 16) / 255;
@@ -132,7 +136,11 @@ async function ask(rl: readline.Interface, question: string, fallback?: string):
   return answer || (fallback ?? '');
 }
 
-async function askBool(rl: readline.Interface, question: string, fallback = false): Promise<boolean> {
+async function askBool(
+  rl: readline.Interface,
+  question: string,
+  fallback = false,
+): Promise<boolean> {
   const answer = (await rl.question(`${question} [${fallback ? 'Y/n' : 'y/N'}]: `))
     .trim()
     .toLowerCase();
@@ -205,9 +213,24 @@ function buildHomePreset(input: SkinInput): Record<string, unknown> | null {
         badge: 'Quick start',
         title: 'Jump straight in',
         cards: [
-          { title: 'Codes', description: 'Free gold, XP, cosmetics', icon: 'lucide:gift', href: '/codes' },
-          { title: 'Bosses', description: 'Phase-by-phase strategy', icon: 'lucide:swords', href: '/bosses' },
-          { title: 'Tier list', description: 'Best weapons ranked', icon: 'lucide:bar-chart-3', href: `/${cats.find((c) => c !== 'codes') ?? first}` },
+          {
+            title: 'Codes',
+            description: 'Free gold, XP, cosmetics',
+            icon: 'lucide:gift',
+            href: '/codes',
+          },
+          {
+            title: 'Bosses',
+            description: 'Phase-by-phase strategy',
+            icon: 'lucide:swords',
+            href: '/bosses',
+          },
+          {
+            title: 'Tier list',
+            description: 'Best weapons ranked',
+            icon: 'lucide:bar-chart-3',
+            href: `/${cats.find((c) => c !== 'codes') ?? first}`,
+          },
         ],
       },
       explore: {
@@ -398,9 +421,7 @@ function rewriteRoutingTs(input: SkinInput): string {
     fr: 'Français',
     de: 'Deutsch',
   };
-  const labels = input.locales
-    .map((l) => `  ${l}: '${KNOWN[l] ?? l}'`)
-    .join(',\n');
+  const labels = input.locales.map((l) => `  ${l}: '${KNOWN[l] ?? l}'`).join(',\n');
   const newLabels = `export const LOCALE_LABELS: Record<Locale, string> = {\n${labels},\n};`;
   const localesRe = /export const locales = \[[\s\S]*?\] as const;/;
   const labelsRe = /export const LOCALE_LABELS: Record<Locale, string> = \{[\s\S]*?\};/;
@@ -421,9 +442,7 @@ function rewriteUiTs(input: SkinInput): string {
   //   (b) the `const messages = { ... }` map entries
   // The `import { defaultLocale, ... } from './routing'` line sits between them
   // and must NOT be touched.
-  const imports = input.locales
-    .map((l) => `import ${l} from '~/locales/${l}.json';`)
-    .join('\n');
+  const imports = input.locales.map((l) => `import ${l} from '~/locales/${l}.json';`).join('\n');
   const messagesEntries = input.locales
     .map((l) => `  ${l}: ${l} as Record<string, unknown>,`)
     .join('\n');
@@ -462,7 +481,8 @@ function rewriteLocaleJson(input: SkinInput, _locale: string, existing?: string)
     legalNotice: input.legalNotice,
   };
   obj.footer = obj.footer ?? {};
-  (obj.footer as Record<string, unknown>).copyrightText = `© ${new Date().getFullYear()} ${input.gameName} Wiki. All rights reserved.`;
+  (obj.footer as Record<string, unknown>).copyrightText =
+    `© ${new Date().getFullYear()} ${input.gameName} Wiki. All rights reserved.`;
   // Clear nav + overview so the user re-fills them once categories are known.
   obj.nav = {};
   obj.overview = {};
@@ -592,9 +612,9 @@ function clearDemoAssets() {
 }
 
 /**
- * After clearing demo content, drop one scaffold article per chosen category
- * (English) so the site builds and list pages aren't empty. The scaffold
- * passes schema validation (description ≥ 40 chars) out of the box.
+ * After clearing demo content, drop one draft scaffold per chosen category.
+ * Drafts keep the tree buildable in dev without sending placeholder copy to
+ * production lists, search, sitemap, RSS, or llms.txt.
  */
 function scaffoldContent(categories: { key: string }[]): number {
   const enBase = path.resolve(ROOT, 'src/content/wiki/en');
@@ -618,6 +638,7 @@ description: "A starter article for the ${key} category. Replace this scaffold w
 category: "${key}"
 date: ${new Date().toISOString().slice(0, 10)}
 tags: []
+draft: true
 ---
 
 ## First section — write question-shaped headings
@@ -703,7 +724,13 @@ async function main() {
   console.log('Game identity');
   console.log('━'.repeat(60));
   const gameName = await ask(rl, 'Full game name', 'Anvil Quest');
-  const shortNameDefault = gameName.split(' ').map((w) => w[0]).join('').slice(0, 4).toUpperCase() + ' Wiki';
+  const shortNameDefault =
+    gameName
+      .split(' ')
+      .map((w) => w[0])
+      .join('')
+      .slice(0, 4)
+      .toUpperCase() + ' Wiki';
   const shortName = await ask(rl, 'Short name (PWA / mobile)', shortNameDefault);
   const domain = await ask(rl, 'Domain (no protocol)', 'anvilwiki.pages.dev');
   const tagline = await ask(rl, 'Hero tagline', `Your home for everything ${gameName}`);
@@ -886,9 +913,7 @@ async function main() {
 
   for (const locale of uniqueLocales) {
     const localePath = `src/locales/${locale}.json`;
-    const existing = fs.existsSync(path.resolve(ROOT, localePath))
-      ? read(localePath)
-      : undefined;
+    const existing = fs.existsSync(path.resolve(ROOT, localePath)) ? read(localePath) : undefined;
     write(localePath, rewriteLocaleJson(skinInput, locale, existing));
     if (!DRY_RUN) {
       // Ensure content dir exists for this locale.
@@ -919,14 +944,18 @@ async function main() {
     console.log(`   🗑️  Removed ${n} demo MDX file${n === 1 ? '' : 's'} under src/content/wiki/`);
     if (categories.length > 0) {
       const s = scaffoldContent(categories);
-      console.log(`   📄 Created ${s} scaffold article${s === 1 ? '' : 's'} (one per category, en/)`);
+      console.log(
+        `   📄 Created ${s} scaffold article${s === 1 ? '' : 's'} (one per category, en/)`,
+      );
     }
   }
 
   if (skinInput.clearLanding) {
     const n = removeLandingPage();
     if (n > 0) {
-      console.log(`   🗑️  Removed ${n} project landing page file${n === 1 ? '' : 's'} (src/components/landing/, src/config/landing.ts, src/pages/landing* incl. the /landing/docs center, public/images/showcase/ + wechat-qr.jpg; docs/handbook markdown stays as repo docs)`);
+      console.log(
+        `   🗑️  Removed ${n} project landing page file${n === 1 ? '' : 's'} (src/components/landing/, src/config/landing.ts, src/pages/landing* incl. the /landing/docs center, public/images/showcase/ + wechat-qr.jpg; docs/handbook markdown stays as repo docs)`,
+      );
     }
   }
 
@@ -936,12 +965,16 @@ async function main() {
   console.log('━'.repeat(60));
   console.log('\n📌 Remaining tasks (see docs/apply-template.md):');
   console.log('   • Replace the icon set — your site still shows the demo anvil icons.');
-  console.log('           Generate a full set from one image at https://favicon.io/favicon-converter/,');
+  console.log(
+    '           Generate a full set from one image at https://favicon.io/favicon-converter/,',
+  );
   console.log('           then drag the files into public/ overwriting: favicon.ico, favicon.svg,');
   console.log('           favicon-16x16.png, favicon-32x32.png, apple-touch-icon.png,');
   console.log('           android-chrome-192x192.png, android-chrome-512x512.png.');
   console.log('           Same for the homepage hero image: public/images/hero.webp / hero.svg.');
-  console.log('           (CLI cannot generate binary assets — see the learning manual, chapter 3, step 5.)');
+  console.log(
+    '           (CLI cannot generate binary assets — see the learning manual, chapter 3, step 5.)',
+  );
   console.log('   • Fill homepage modules in src/locales/<locale>.json');
   console.log('           (home.hero / start / explore / faq / updates).');
   console.log('   • Add article MDX under src/content/wiki/<locale>/<category>/.');

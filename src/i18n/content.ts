@@ -40,6 +40,11 @@ function isPublished(e: WikiEntry): boolean {
   return !e.data.draft || isDev;
 }
 
+/** Public discovery surfaces must not advertise deliberately noindex pages. */
+function isDiscoverable(e: WikiEntry): boolean {
+  return isPublished(e) && !e.data.noindex;
+}
+
 // parseEntryId lives in lib/content-utils.ts (pure, vitest-testable).
 import { parseEntryId } from '~/lib/content-utils';
 export { parseEntryId };
@@ -84,7 +89,7 @@ export async function getEntriesByCategory(category: string, locale: Locale): Pr
   return all
     .filter((e) => {
       const parsed = parseEntryId(e.id);
-      return isPublished(e) && parsed?.locale === locale && parsed.category === category;
+      return isDiscoverable(e) && parsed?.locale === locale && parsed.category === category;
     })
     .sort((a, b) => b.data.date.getTime() - a.data.date.getTime()); // newest first
 }
@@ -100,7 +105,20 @@ export async function localesForEntry(category: string, slug: string): Promise<L
   const found = new Set<Locale>();
   for (const entry of all) {
     const parsed = parseEntryId(entry.id);
-    if (isPublished(entry) && parsed?.category === category && parsed.slug === slug) {
+    if (isDiscoverable(entry) && parsed?.category === category && parsed.slug === slug) {
+      found.add(parsed.locale);
+    }
+  }
+  return Array.from(found);
+}
+
+/** Locales with at least one indexable article in a category. */
+export async function localesForCategory(category: string): Promise<Locale[]> {
+  const all = await getCollection('wiki');
+  const found = new Set<Locale>();
+  for (const entry of all) {
+    const parsed = parseEntryId(entry.id);
+    if (isDiscoverable(entry) && parsed?.category === category) {
       found.add(parsed.locale);
     }
   }
@@ -113,7 +131,7 @@ export async function localesForEntry(category: string, slug: string): Promise<L
 export async function getRecentEntries(locale: Locale, limit = 6): Promise<WikiEntry[]> {
   const all = await getCollection('wiki');
   return all
-    .filter((e) => isPublished(e) && parseEntryId(e.id)?.locale === locale)
+    .filter((e) => isDiscoverable(e) && parseEntryId(e.id)?.locale === locale)
     .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
     .slice(0, limit);
 }
@@ -136,7 +154,7 @@ export async function getRelatedEntries(
   return all
     .filter((e) => {
       if (e.id === current.id) return false;
-      if (!isPublished(e)) return false;
+      if (!isDiscoverable(e)) return false;
       const p = parseEntryId(e.id);
       if (p?.locale !== locale) return false;
       return e.data.tags.some((t: string) => current.data.tags.includes(t));
@@ -149,12 +167,14 @@ export async function getRelatedEntries(
  * All tags for a locale with article counts, most-used first.
  * Does NOT fall back to English (list accuracy rule — PRD §9.3).
  */
-export async function getTagsWithCounts(locale: Locale): Promise<Array<{ tag: string; count: number }>> {
+export async function getTagsWithCounts(
+  locale: Locale,
+): Promise<Array<{ tag: string; count: number }>> {
   const all = await getCollection('wiki');
   const counts = new Map<string, number>();
   for (const e of all) {
     const parsed = parseEntryId(e.id);
-    if (!isPublished(e) || parsed?.locale !== locale) continue;
+    if (!isDiscoverable(e) || parsed?.locale !== locale) continue;
     for (const tag of e.data.tags) {
       counts.set(tag, (counts.get(tag) ?? 0) + 1);
     }
@@ -172,7 +192,7 @@ export async function getEntriesByTag(tagSlug: string, locale: Locale): Promise<
   const all = await getCollection('wiki');
   return all
     .filter((e) => {
-      if (!isPublished(e)) return false;
+      if (!isDiscoverable(e)) return false;
       const parsed = parseEntryId(e.id);
       if (parsed?.locale !== locale) return false;
       return e.data.tags.some((t: string) => slugifyTag(t) === tagSlug);
@@ -181,21 +201,22 @@ export async function getEntriesByTag(tagSlug: string, locale: Locale): Promise<
 }
 
 /**
- * All locales where at least one article carries this tag slug.
- * Used to build hreflang alternates that never point at a 404
- * (tag pages don't fall back to English).
+ * Locales where at least `minimumCount` indexable articles carry this tag.
+ * `minimumCount` lets hreflang skip thin/noindex tag pages.
  */
-export async function localesForTag(tagSlug: string): Promise<Locale[]> {
+export async function localesForTag(tagSlug: string, minimumCount = 1): Promise<Locale[]> {
   const all = await getCollection('wiki');
-  const found = new Set<Locale>();
+  const counts = new Map<Locale, number>();
   for (const e of all) {
-    if (!isPublished(e)) continue;
+    if (!isDiscoverable(e)) continue;
     const parsed = parseEntryId(e.id);
     if (parsed && e.data.tags.some((t: string) => slugifyTag(t) === tagSlug)) {
-      found.add(parsed.locale);
+      counts.set(parsed.locale, (counts.get(parsed.locale) ?? 0) + 1);
     }
   }
-  return Array.from(found);
+  return Array.from(counts)
+    .filter(([, count]) => count >= minimumCount)
+    .map(([locale]) => locale);
 }
 
 /**
@@ -206,7 +227,7 @@ export async function tagLabelFor(tagSlug: string, locale: Locale): Promise<stri
   const all = await getCollection('wiki');
   for (const e of all) {
     const parsed = parseEntryId(e.id);
-    if (!isPublished(e) || parsed?.locale !== locale) continue;
+    if (!isDiscoverable(e) || parsed?.locale !== locale) continue;
     const match = e.data.tags.find((t: string) => slugifyTag(t) === tagSlug);
     if (match) return match;
   }

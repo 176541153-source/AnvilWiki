@@ -32,6 +32,13 @@ lastModified: 2026-08-12
 image: '../../../../assets/covers/emberfang-cover.png'
 tags: ['boss', 'ice', 'early-game']
 noindex: false
+evidence:
+  status: verified
+  checkedAt: 2026-08-27
+  sources:
+    - label: 'Official game page'
+      url: 'https://example.com/game'
+      kind: official
 ---
 ```
 
@@ -51,10 +58,36 @@ noindex: false
 | `noindex`      | boolean  | 可选 | 默认 `false`                         | 设为 `true` 禁止搜索引擎索引此页         |
 | `summary`      | string   | 可选 | ≤ 400 字符（40–60 词直答）           | Quick Answer 卡片 + AI Overviews 摘要候选 |
 | `author`       | string   | 可选 | 缺省用 `site.defaultAuthor`           | 作者署名（E-E-A-T）                       |
+| `evidence`     | object   | 可选 | status/checkedAt/sources，sources 至少 1 条 | 页面可见的核验状态与来源；来源 URL 同步写入 Article JSON-LD `citation` |
 | `boss`         | object   | 可选 | hp/weakness/resistant/location/recommendedLevel | 结构化 Boss 数据卡（正文前渲染）   |
-| `videos`       | string[] | 可选 | YouTube 视频 ID（11 位，非完整 URL）  | 文章底部"相关视频"懒加载嵌入（每条生成 VideoObject JSON-LD） |
+| `videos`       | (string\|object)[] | 可选 | ID；或 `{ id, title, description, uploadDate }` | 两种形式都会懒加载；仅元数据完整的 object 生成 VideoObject，避免拿文章日期冒充视频上传日期 |
 | `gallery`      | object[] | 可选 | image/caption/alt（v1.7）            | 文章底部缩略图画廊 + 原生 dialog lightbox（每张生成 ImageObject JSON-LD） |
 | `codes`        | object[] | 可选 | code/reward/status/expiryDate/source（v1.8） | codes 页结构化数据：正文前自动渲染 Active（CodeBlock 一键复制）/ Expired（表格）分区 + FAQPage JSON-LD |
+
+### 核验状态与来源（推荐用于易变事实）
+
+兑换码、版本机制、掉落率、装备数值和玩家数据变化很快。对这类页面使用
+`evidence`，读者会在正文前看到核验状态、确认日期与来源链接，搜索引擎也会在
+Article JSON-LD 的 `citation` 字段读到同一组 URL。
+
+```yaml
+evidence:
+  status: mixed
+  checkedAt: 2026-08-27
+  sources:
+    - label: 'Official update notes'
+      url: 'https://example.com/update-notes'
+      kind: official
+    - label: 'Current gameplay verification'
+      url: 'https://example.com/gameplay-record'
+      kind: primary
+```
+
+`status` 可用值：`official`（完全来自官方）、`verified`（已独立核验）、
+`mixed`（不同结论的证据等级不同）、`community`（社区报告）、
+`unconfirmed`（尚未确认）。`kind` 可用值：`official`、`primary`、
+`secondary`、`community`。页面写了 `evidence` 就必须至少列出 1 条可打开的
+HTTP(S) 来源，不能只放“已验证”标签。
 
 ### 可在 MDX 中使用的模板组件
 
@@ -82,7 +115,7 @@ import Accordion from '~/components/mdx/Accordion.astro';
 - **Callout** — 提示框，`type`: `info`（默认）/ `tip` / `warn` / `danger`，零 JS（v1.5）
 - **Accordion** — 原生 `<details>` 折叠面板，用于分阶段打法/剧透/平台差异，零 JS（v1.5）
 - **AffiliateLink** — 联盟/外链 CTA 卡片，自动带 `rel="sponsored nofollow"`（SEO 合规的第二变现渠道，v1.7）
-- **Video** — 正文内联 YouTube 播放器（懒加载 facade）。放哪渲染哪：`<Video id="..." title="..."/>`；**id 必须同时登记进 frontmatter `videos`**（VideoObject JSON-LD 来源），已内联的 id 不会在文末重复渲染（v1.8）。demo 用的是稳定占位视频 ID，fork 后替换为你自己的实机视频（改内联 `id` + frontmatter `videos` 两处）
+- **Video** — 正文内联 YouTube 播放器（懒加载 facade）。放哪渲染哪：`<Video id="..." title="..."/>`；id 同时登记进 frontmatter `videos`，已内联的 id 不会在文末重复渲染。裸 ID 只负责播放；只有填写真实 `title`、`description`、`uploadDate` 的 object 才生成 VideoObject JSON-LD。demo 用的是稳定占位视频 ID，fork 后替换为自己的实机视频（改内联 `id` + frontmatter `videos` 两处）
 
 ### 媒体密度建议（排名因素）
 

@@ -10,11 +10,16 @@ import { site } from '~/config/site';
 import { defaultLocale, type Locale } from '~/i18n/routing';
 import { detailPath, listPath } from './url';
 
+const organizationId = `${siteUrl}/#organization`;
+const websiteId = `${siteUrl}/#website`;
+const gameId = `${siteUrl}/#game`;
+
 /** Organization JSON-LD — injected globally in BaseLayout. */
 export function organizationJsonLd() {
   return {
     '@context': 'https://schema.org',
     '@type': 'Organization',
+    '@id': organizationId,
     name: site.name,
     url: siteUrl,
     logo: `${siteUrl}/android-chrome-512x512.png`,
@@ -22,7 +27,9 @@ export function organizationJsonLd() {
     description: site.description,
     // Entity association: link the wiki to the game's canonical pages
     // (Steam / official site / Wikipedia) — knowledge-graph signal.
-    ...(site.sameAs && site.sameAs.length > 0 ? { sameAs: site.sameAs } : {}),
+    ...(site.organizationSameAs && site.organizationSameAs.length > 0
+      ? { sameAs: site.organizationSameAs }
+      : {}),
   };
 }
 
@@ -31,10 +38,13 @@ export function websiteJsonLd(locale: Locale = defaultLocale) {
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
+    '@id': websiteId,
     name: site.name,
     url: siteUrl,
     description: site.description,
     inLanguage: locale,
+    publisher: { '@id': organizationId },
+    about: { '@id': gameId },
   };
 }
 
@@ -52,6 +62,10 @@ export function articleJsonLd(opts: {
   authorName?: string;
   /** Profile URLs folded into the Person's sameAs (knowledge-graph signal). */
   authorSameAs?: string[];
+  /** Visible byline identity; editorial desks should be Organization. */
+  authorType?: 'Person' | 'Organization';
+  /** Source URLs also shown in the visible evidence panel. */
+  citations?: string[];
 }) {
   const {
     title,
@@ -64,6 +78,8 @@ export function articleJsonLd(opts: {
     locale,
     authorName,
     authorSameAs,
+    authorType = 'Person',
+    citations,
   } = opts;
   const coverUrl = image
     ? image.startsWith('http')
@@ -72,28 +88,30 @@ export function articleJsonLd(opts: {
     : `${siteUrl}/images/hero.webp`;
   const author = authorName
     ? {
-        '@type': 'Person',
+        '@type': authorType,
         name: authorName,
         ...(authorSameAs && authorSameAs.length > 0 ? { sameAs: authorSameAs } : {}),
       }
-    : { '@type': 'Organization', name: site.name };
+    : { '@id': organizationId };
+  const pageUrl = `${siteUrl}${detailPath(category, slug, locale)}`;
   return {
     '@context': 'https://schema.org',
     '@type': 'Article',
+    '@id': `${pageUrl}#article`,
+    url: pageUrl,
     headline: title,
     description,
     image: coverUrl,
     datePublished: datePublished.toISOString(),
     dateModified: (dateModified ?? datePublished).toISOString(),
     author,
-    publisher: {
-      '@type': 'Organization',
-      name: site.name,
-      logo: { '@type': 'ImageObject', url: `${siteUrl}/android-chrome-512x512.png` },
-    },
+    publisher: { '@id': organizationId },
+    isPartOf: { '@id': websiteId },
+    about: { '@id': gameId },
+    ...(citations && citations.length > 0 ? { citation: citations } : {}),
     mainEntityOfPage: {
       '@type': 'WebPage',
-      '@id': `${siteUrl}${detailPath(category, slug, locale)}`,
+      '@id': pageUrl,
     },
   };
 }
@@ -243,28 +261,50 @@ export function imageObjectJsonLd(opts: { url: string; caption?: string; alt?: s
 
 /**
  * VideoObject JSON-LD — one per embedded YouTube video on an article page.
- * Eligible for Google Video search results. `uploadDate` is required by
- * Google; the article's publish date is the best available signal.
+ * Eligible for Google Video search results. Authors must provide the video's
+ * real upload date; substituting the article date would be false metadata.
  */
 export function videoObjectJsonLd(opts: {
-  videoId: string;
+  id: string;
   title: string;
+  description: string;
   uploadDate: Date;
 }) {
-  const { videoId, title, uploadDate } = opts;
+  const { id, title, description, uploadDate } = opts;
   return {
     '@context': 'https://schema.org',
     '@type': 'VideoObject',
     name: title,
-    thumbnailUrl: [`https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`],
+    description,
+    thumbnailUrl: [`https://i.ytimg.com/vi/${id}/hqdefault.jpg`],
     uploadDate: uploadDate.toISOString(),
-    embedUrl: `https://www.youtube.com/embed/${videoId}`,
+    contentUrl: `https://www.youtube.com/watch?v=${id}`,
+    embedUrl: `https://www.youtube.com/embed/${id}`,
   };
 }
 
 /** Build the <title> string with consistent suffix. */
 export function pageTitle(title: string): string {
-  return `${title} — ${site.name}`;
+  const suffix = ` — ${site.name}`;
+  if (title.includes(site.name)) return title.slice(0, 65).trim();
+  if ((title + suffix).length <= 65) return title + suffix;
+
+  if (suffix.length >= 65) return site.name.slice(0, 65).trim();
+  const available = 65 - suffix.length;
+  const clipped = title.slice(0, available + 1);
+  const boundary = Math.max(
+    clipped.lastIndexOf(' '),
+    clipped.lastIndexOf(':'),
+    clipped.lastIndexOf('-'),
+  );
+  const base = (
+    boundary >= Math.floor(available * 0.65)
+      ? clipped.slice(0, boundary)
+      : clipped.slice(0, available)
+  )
+    .replace(/[\s:—-]+$/, '')
+    .trim();
+  return `${base}${suffix}`;
 }
 
 /** VideoGame JSON-LD — injected on the homepage for game entity recognition. */
@@ -272,12 +312,23 @@ export function videoGameJsonLd() {
   return {
     '@context': 'https://schema.org',
     '@type': 'VideoGame',
+    '@id': gameId,
     name: site.game.name,
     description: site.description,
-    url: siteUrl,
+    url: site.social.official,
     genre: site.game.genre,
     gamePlatform: site.game.platform,
-    publisher: { '@type': 'Organization', name: site.game.developer },
+    creator: {
+      '@type': site.game.developerType ?? 'Organization',
+      name: site.game.developer,
+      ...(site.game.developerUrl ? { url: site.game.developerUrl } : {}),
+      ...(site.game.developerSameAs && site.game.developerSameAs.length > 0
+        ? { sameAs: site.game.developerSameAs }
+        : {}),
+    },
+    mainEntityOfPage: site.social.official,
+    ...(site.sameAs && site.sameAs.length > 0 ? { sameAs: site.sameAs } : {}),
+    ...(site.game.creationDate ? { dateCreated: site.game.creationDate } : {}),
     ...(site.game.releaseDate ? { datePublished: site.game.releaseDate } : {}),
   };
 }

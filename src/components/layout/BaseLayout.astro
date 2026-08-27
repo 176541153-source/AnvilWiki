@@ -26,6 +26,13 @@ interface Props {
   alternates?: Array<{ hreflang: string; href: string }>;
   /** og:image override (absolute URL). Defaults to hero.webp. */
   image?: string;
+  /** Human-readable social image alternative text. Defaults to the page title. */
+  imageAlt?: string;
+  /**
+   * Canonical URL override. `undefined` derives the current public URL;
+   * `null` deliberately omits canonical metadata (for example, the 404 page).
+   */
+  canonical?: string | null;
   /** Optional extra JSON-LD objects to inject (WebSite, Article, etc.). */
   jsonLd?: Record<string, unknown>[];
   /** Set to true on article pages for og:type=article. */
@@ -63,6 +70,8 @@ const {
   locale,
   alternates = [],
   image = `${siteUrl}/images/hero.webp`,
+  imageAlt,
+  canonical,
   jsonLd = [],
   article = false,
   noindex = false,
@@ -81,7 +90,15 @@ const ogLocale = ogLocaleMap[mainLocale] ?? mainLocale;
 
 const suffix = titleSuffix !== undefined ? titleSuffix : site.name;
 const fullTitle = suffix && !title.includes(suffix) ? `${title} — ${suffix}` : title;
+const socialImageAlt = imageAlt ?? `${fullTitle} cover image`;
 const orgJsonLd = organizationJsonLd();
+
+// `build.format: 'file'` makes Astro.url end in `.html` at build time while
+// Cloudflare Pages exposes the public route without that extension. Metadata
+// must describe the final public URL, not the build artifact filename.
+const publicPathname = Astro.url.pathname.replace(/\/index\.html$/, '/').replace(/\.html$/, '');
+const publicUrl = new URL(publicPathname || '/', siteUrl).href;
+const canonicalUrl = canonical === undefined ? publicUrl : canonical;
 
 // Strip ANY known locale prefix (built from routing.ts so new locales keep
 // x-default pointing at the default-locale URL — a hardcoded en|ja list
@@ -97,7 +114,7 @@ const xDefaultHref = defaultAlt
   ? defaultAlt.href
   : alternates.length > 0
     ? alternates[0].href
-    : `${siteUrl}${Astro.url.pathname.replace(localePrefixRe, '')}`;
+    : `${siteUrl}${publicPathname.replace(localePrefixRe, '')}`;
 
 // Optional analytics / verification / ads (env-var gated — empty = not injected).
 const gaId = import.meta.env.PUBLIC_GA_ID as string | undefined;
@@ -126,6 +143,8 @@ const privacyLabel = footerStrings.privacyPolicy ?? 'Privacy Policy';
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.json" />
     <link rel="alternate" type="application/rss+xml" title={site.name} href="/rss.xml" />
@@ -140,17 +159,24 @@ const privacyLabel = footerStrings.privacyPolicy ?? 'Privacy Policy';
          without this, covers never surface as large preview images (v2.0). */
       <meta name="robots" content="max-image-preview:large" />
     )}
-    <link rel="canonical" href={new URL(Astro.url.pathname, siteUrl).href} />
+    {canonicalUrl && (
+      <link rel="canonical" href={canonicalUrl} data-pagefind-meta="url[href]" />
+    )}
 
-    {/* hreflang alternates */}
-    {alternates.map((alt) => <link rel="alternate" hreflang={alt.hreflang} href={alt.href} />)}
-    <link rel="alternate" hreflang="x-default" href={xDefaultHref} />
+    {/* noindex pages must not participate in an hreflang cluster. */}
+    {!noindex &&
+      alternates.map((alt) => (
+        <link rel="alternate" hreflang={alt.hreflang} href={alt.href} />
+      ))}
+    {!noindex && <link rel="alternate" hreflang="x-default" href={xDefaultHref} />}
 
     {/* Open Graph */}
     <meta property="og:type" content={article ? 'article' : 'website'} />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={image} />
+    {image.startsWith('https://') && <meta property="og:image:secure_url" content={image} />}
+    <meta property="og:image:alt" content={socialImageAlt} />
     {
       // Only declare dimensions we actually know: the default hero has fixed
       // site dims; per-article covers pass their real size; unknown = omit
@@ -168,7 +194,7 @@ const privacyLabel = footerStrings.privacyPolicy ?? 'Privacy Policy';
         </>
       ) : null
     }
-    <meta property="og:url" content={new URL(Astro.url.pathname, siteUrl).href} />
+    <meta property="og:url" content={canonicalUrl ?? publicUrl} />
     <meta property="og:site_name" content={site.name} />
     {/* OG wants language_TERRITORY (en_US / ja_JP), not a bare ISO code. */}
     <meta property="og:locale" content={ogLocale} />
@@ -192,6 +218,7 @@ const privacyLabel = footerStrings.privacyPolicy ?? 'Privacy Policy';
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={image} />
+    <meta name="twitter:image:alt" content={socialImageAlt} />
 
     {/* Theme color (browser chrome) is injected by the runtime script below —
         meta content is a plain string where var() never resolves. */}

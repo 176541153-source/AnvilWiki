@@ -21,6 +21,7 @@
 
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import { gunzipSync } from 'node:zlib';
 
 const ROOT = process.cwd();
 const DIST = path.resolve(ROOT, 'dist');
@@ -57,6 +58,7 @@ for (const file of htmlFiles) {
 const HREF_RE = /href="(\/[^"]*)"/g;
 const broken = new Map<string, string[]>(); // link -> [pages...]
 const soft404: string[] = []; // pages whose entire body is "Not Found"
+const pagefindIssues: string[] = [];
 let checked = 0;
 
 for (const file of htmlFiles) {
@@ -70,7 +72,9 @@ for (const file of htmlFiles) {
   while ((m = HREF_RE.exec(src)) !== null) {
     const href = m[1];
     // Skip asset-like and non-page links.
-    if (/\.(png|jpe?g|webp|svg|gif|ico|css|js|mjs|json|xml|txt|webmanifest|woff2?|avif)$/i.test(href))
+    if (
+      /\.(png|jpe?g|webp|svg|gif|ico|css|js|mjs|json|xml|txt|webmanifest|woff2?|avif)$/i.test(href)
+    )
       continue;
     if (href.startsWith('//')) continue;
     checked++;
@@ -84,6 +88,41 @@ for (const file of htmlFiles) {
   }
 }
 
+// Pagefind's source URL follows the physical build filename (`.html`) when
+// Astro uses file output. BaseLayout supplies canonical `meta.url`, which the
+// UI prefers. Verify every generated fragment has a public, resolvable URL so
+// postbuild search cannot silently regress to redirecting artifact links.
+const fragmentsDir = path.join(DIST, 'pagefind', 'fragment');
+if (fs.existsSync(fragmentsDir)) {
+  for (const name of fs.readdirSync(fragmentsDir)) {
+    if (!name.endsWith('.pf_fragment')) continue;
+    try {
+      const raw = gunzipSync(fs.readFileSync(path.join(fragmentsDir, name))).toString('utf8');
+      const start = raw.indexOf('{');
+      const fragment = JSON.parse(raw.slice(start)) as {
+        url?: string;
+        meta?: { url?: string };
+      };
+      const resultUrl = fragment.meta?.url ?? fragment.url;
+      if (!resultUrl) {
+        pagefindIssues.push(`${name}: missing result URL`);
+        continue;
+      }
+      const normalizedUrl =
+        resultUrl
+          .replace(/\/index\.html(?=([?#]|$))/, '/')
+          .replace(/\.html(?=([?#]|$))/, '')
+          .replace(/\/+(?=([?#]|$))/, '') || '/';
+      const pathname = new URL(normalizedUrl, 'https://local.invalid').pathname || '/';
+      if (!knownPaths.has(pathname)) {
+        pagefindIssues.push(`${name}: ${resultUrl} → ${pathname}`);
+      }
+    } catch (error) {
+      pagefindIssues.push(`${name}: unreadable fragment (${String(error)})`);
+    }
+  }
+}
+
 console.log(`\n🔗 Internal link audit — ${checked} links across ${htmlFiles.length} pages\n`);
 
 if (soft404.length > 0) {
@@ -92,9 +131,17 @@ if (soft404.length > 0) {
   console.log('');
 }
 
+if (pagefindIssues.length > 0) {
+  console.log(`❌ ${pagefindIssues.length} Pagefind result URL issue(s):`);
+  for (const issue of pagefindIssues) console.log(`   ${issue}`);
+  console.log('');
+}
+
 if (broken.size === 0) {
-  if (soft404.length === 0) console.log('✅ All internal links resolve.');
-  process.exit(soft404.length > 0 ? 1 : 0);
+  if (soft404.length === 0 && pagefindIssues.length === 0) {
+    console.log('✅ All internal links and Pagefind result URLs resolve.');
+  }
+  process.exit(soft404.length > 0 || pagefindIssues.length > 0 ? 1 : 0);
 }
 
 console.log(`❌ ${broken.size} broken internal link(s):\n`);

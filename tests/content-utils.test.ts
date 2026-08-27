@@ -42,9 +42,12 @@ describe('isPossiblyOutdated', () => {
   const fresh = new Date('2026-08-01T00:00:00Z'); // 15 days before now
   const stale = new Date('2025-08-01T00:00:00Z'); // > 1 year before now
 
-  it('is false for categories outside STALE_CATEGORIES regardless of age', () => {
+  it('is false for categories without a review policy regardless of age', () => {
     expect(isPossiblyOutdated('guides', undefined, stale, now)).toBe(false);
-    expect(isPossiblyOutdated('codes', undefined, stale, now)).toBe(false);
+  });
+
+  it('uses the shorter codes review window from config', () => {
+    expect(isPossiblyOutdated('codes', undefined, fresh, now)).toBe(true);
   });
 
   it('is false for a fresh stale-category article', () => {
@@ -53,8 +56,10 @@ describe('isPossiblyOutdated', () => {
 
   it('is true once the article is older than STALE_AFTER_DAYS', () => {
     const justUnder = new Date(now.getTime() - (STALE_AFTER_DAYS - 1) * 86400000);
+    const exact = new Date(now.getTime() - STALE_AFTER_DAYS * 86400000);
     const justOver = new Date(now.getTime() - (STALE_AFTER_DAYS + 1) * 86400000);
     expect(isPossiblyOutdated('bosses', undefined, justUnder, now)).toBe(false);
+    expect(isPossiblyOutdated('bosses', undefined, exact, now)).toBe(true);
     expect(isPossiblyOutdated('bosses', undefined, justOver, now)).toBe(true);
   });
 
@@ -64,5 +69,10 @@ describe('isPossiblyOutdated', () => {
     // Published recently but lastModified is ancient → outdated (data bug,
     // but the function must honor the explicit field).
     expect(isPossiblyOutdated('tier-list', stale, fresh, now)).toBe(true);
+  });
+
+  it('allows a per-article review-window override', () => {
+    expect(isPossiblyOutdated('guides', undefined, fresh, now, 10)).toBe(true);
+    expect(isPossiblyOutdated('bosses', undefined, fresh, now, 30)).toBe(false);
   });
 });

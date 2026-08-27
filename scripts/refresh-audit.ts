@@ -6,10 +6,10 @@
  * mutations: it only reports. The workflow turns the report into an issue
  * for the maintainer; fixing content stays a human/AI-session decision.
  *
- * Rules (mirror STALE_* in src/i18n/content.ts, kept in sync manually):
- *   - STALE categories (bosses, tier-list) older than 90 days → P1
- *   - codes articles older than 7 days → P0 (players assume daily updates)
- *   - codes articles older than 30 days → P0 + "likely contains dead codes"
+ * Rules come from src/config/seo.ts (or per-article refreshAfterDays):
+ *   - short windows (≤7 days) and codes → P0
+ *   - other configured review windows → P1
+ *   - evidence.checkedAt is the freshness clock when evidence is present
  *   - gameVersion behind the live game version is NOT auto-detectable —
  *     the report reminds the maintainer to check manually.
  *
@@ -21,15 +21,10 @@
 
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import { refreshDaysFor } from '../src/config/seo';
 
 const ROOT = process.cwd();
 const BASE = path.resolve(ROOT, 'src/content/wiki');
-
-// Keep in sync with src/i18n/content.ts.
-const STALE_CATEGORIES = ['bosses', 'tier-list'];
-const STALE_AFTER_DAYS = 90;
-const CODES_WARN_DAYS = 7;
-const CODES_CRITICAL_DAYS = 30;
 
 interface Item {
   priority: 'P0' | 'P1';
@@ -58,34 +53,34 @@ for (const file of files) {
   const fm = src.split('---')[1] ?? '';
   if (/^draft:\s*true\s*$/m.test(fm)) continue; // drafts never published
   const category = fm.match(/^category:\s*['"]?([\w-]+)/m)?.[1] ?? '';
-  const dateStr = fm.match(/^date:\s*(.+)$/m)?.[1]?.trim().replace(/['"]/g, '');
-  const lmStr = fm.match(/^lastModified:\s*(.+)$/m)?.[1]?.trim().replace(/['"]/g, '');
-  const refStr = lmStr || dateStr;
+  const dateStr = fm
+    .match(/^date:\s*(.+)$/m)?.[1]
+    ?.trim()
+    .replace(/['"]/g, '');
+  const lmStr = fm
+    .match(/^lastModified:\s*(.+)$/m)?.[1]
+    ?.trim()
+    .replace(/['"]/g, '');
+  const checkedAt = fm
+    .match(/^\s*checkedAt:\s*(.+)$/m)?.[1]
+    ?.trim()
+    .replace(/['"]/g, '');
+  const refStr = checkedAt || lmStr || dateStr;
   if (!refStr) continue;
   const ref = new Date(refStr);
   if (Number.isNaN(ref.getTime())) continue;
   const days = Math.floor((now - ref.getTime()) / DAY);
   const rel = path.relative(ROOT, file);
 
-  if (category === 'codes') {
-    if (days >= CODES_CRITICAL_DAYS) {
-      items.push({
-        priority: 'P0',
-        file: rel,
-        category,
-        days,
-        reason: `${days}d since last verify — likely contains dead codes`,
-      });
-    } else if (days >= CODES_WARN_DAYS) {
-      items.push({ priority: 'P0', file: rel, category, days, reason: `${days}d unverified (players assume daily)` });
-    }
-  } else if (STALE_CATEGORIES.includes(category) && days >= STALE_AFTER_DAYS) {
+  const override = Number(fm.match(/^refreshAfterDays:\s*(\d+)$/m)?.[1] ?? '') || undefined;
+  const maxAgeDays = refreshDaysFor(category, override);
+  if (maxAgeDays && days >= maxAgeDays) {
     items.push({
-      priority: 'P1',
+      priority: category === 'codes' || maxAgeDays <= 7 ? 'P0' : 'P1',
       file: rel,
       category,
       days,
-      reason: `stale ${days}d (> ${STALE_AFTER_DAYS}d) — banner shown on page`,
+      reason: `stale ${days}d (review every ${maxAgeDays}d) — banner shown on page`,
     });
   }
 }
@@ -108,8 +103,12 @@ if (items.length === 0) {
   }
   lines.push('');
   lines.push('**Suggested actions**');
-  lines.push('- Codes pages: get the latest code list (official Discord/Trello), then run the `anvil-update-codes` skill.');
-  lines.push('- Stale boss/tier-list pages: re-verify mechanics against the current game version, bump `lastModified`.');
+  lines.push(
+    '- Codes pages: get the latest code list (official Discord/Trello), then run the `anvil-update-codes` skill.',
+  );
+  lines.push(
+    '- Stale boss/tier-list pages: re-verify mechanics against the current game version, bump `lastModified`.',
+  );
   lines.push('- Also spot-check `gameVersion` frontmatter against the live game version.');
 }
 

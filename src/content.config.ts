@@ -3,6 +3,16 @@ import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 import { CONTENT_TYPES } from './config/navigation';
 
+function normalizedTagSlug(tag: string): string {
+  return (
+    tag
+      .trim()
+      .toLowerCase()
+      .replace(/[\s_]+/g, '-')
+      .replace(/[^a-z0-9-]/g, '') || tag.trim()
+  );
+}
+
 /**
  * Wiki content collection.
  *
@@ -24,6 +34,8 @@ const wiki = defineCollection({
   schema: ({ image }) =>
     z.object({
       title: z.string().max(80),
+      /** Optional shorter search/social title; visible H1 remains `title`. */
+      seoTitle: z.string().max(65).optional(),
       description: z.string().min(40).max(165),
       /**
        * Hard gate: the category MUST be a NAVIGATION_CONFIG key. A typo'd
@@ -34,7 +46,27 @@ const wiki = defineCollection({
       date: z.coerce.date(),
       lastModified: z.coerce.date().optional(),
       image: image().optional(),
-      tags: z.array(z.string()).default([]),
+      /** Alternative text for the social/cover image. Falls back to the article title. */
+      imageAlt: z.string().min(1).max(200).optional(),
+      tags: z
+        .array(z.string().trim().min(1, 'tag must not be blank'))
+        .superRefine((tags, context) => {
+          const seen = new Map<string, number>();
+          tags.forEach((tag, index) => {
+            const slug = normalizedTagSlug(tag);
+            const previous = seen.get(slug);
+            if (previous !== undefined) {
+              context.addIssue({
+                code: z.ZodIssueCode.custom,
+                path: [index],
+                message: `tag resolves to the same URL slug as tags[${previous}] (${slug})`,
+              });
+            } else {
+              seen.set(slug, index);
+            }
+          });
+        })
+        .default([]),
       noindex: z.boolean().default(false),
       /**
        * Draft articles: visible in `pnpm dev`, excluded from the production
@@ -47,6 +79,8 @@ const wiki = defineCollection({
        * fast-patching games. Optional.
        */
       gameVersion: z.string().max(20).optional(),
+      /** Per-article review window; overrides the category policy in config/seo.ts. */
+      refreshAfterDays: z.number().int().min(1).max(365).optional(),
       /**
        * Quick-answer summary shown before the article body (AI Overviews /
        * featured snippet). Authoring rule: 40–60 words. English at that
@@ -57,6 +91,36 @@ const wiki = defineCollection({
       summary: z.string().max(400).optional(),
       /** Article author name (E-E-A-T signal). Falls back to site.defaultAuthor. */
       author: z.string().optional(),
+      /**
+       * Optional evidence record for source-sensitive pages. When present it
+       * is rendered as a visible verification panel and its URLs are emitted
+       * as Article JSON-LD citations. Keeping the evidence beside the claim
+       * makes fast-changing game facts auditable without forcing every legacy
+       * article to migrate at once.
+       */
+      evidence: z
+        .object({
+          status: z.enum(['official', 'verified', 'mixed', 'community', 'unconfirmed']),
+          checkedAt: z.coerce.date(),
+          sources: z
+            .array(
+              z.object({
+                label: z.string().min(1).max(100),
+                url: z
+                  .string()
+                  .url()
+                  .refine((value) => /^https?:\/\//i.test(value), {
+                    message: 'evidence source URL must use http or https',
+                  }),
+                kind: z
+                  .enum(['official', 'primary', 'secondary', 'community'])
+                  .default('secondary'),
+              }),
+            )
+            .min(1)
+            .max(12),
+        })
+        .optional(),
       /**
        * Optional structured boss stats — rendered as a scannable data card
        * (BossStatCard) above the article body. Values are strings so authors
@@ -72,10 +136,24 @@ const wiki = defineCollection({
         })
         .optional(),
       /**
-       * Optional related YouTube video IDs (lazy-loaded embeds at the article
-       * bottom — zero JS until click). 11-char IDs, not full URLs.
+       * Optional related YouTube videos. A bare ID keeps the legacy lazy
+       * embed but deliberately emits no VideoObject: the video's real upload
+       * date cannot be inferred from the article date. Use the structured
+       * form when truthful metadata is available.
        */
-      videos: z.array(z.string()).optional(),
+      videos: z
+        .array(
+          z.union([
+            z.string().regex(/^[A-Za-z0-9_-]{11}$/),
+            z.object({
+              id: z.string().regex(/^[A-Za-z0-9_-]{11}$/),
+              title: z.string().min(1).max(120),
+              description: z.string().min(20).max(300),
+              uploadDate: z.coerce.date(),
+            }),
+          ]),
+        )
+        .optional(),
       /**
        * Optional image gallery — rendered as a thumbnail grid below the
        * article body with a native <dialog> lightbox (zero JS until click).

@@ -26,12 +26,10 @@ export interface SiteConfig {
     twitter?: string;
     reddit?: string;
   };
-  /**
-   * Canonical URLs about the GAME (Steam page, official site, Wikipedia entry…).
-   * Emitted as Organization JSON-LD `sameAs` — helps Google / AI engines link
-   * this wiki to the game's knowledge-graph entity.
-   */
+  /** Canonical URLs about the GAME (official store page, Wikidata, etc.). */
   sameAs?: string[];
+  /** Canonical profiles for the WIKI publisher itself, not the game entity. */
+  organizationSameAs?: string[];
   game: {
     /** Full game name. */
     name: string;
@@ -39,10 +37,18 @@ export interface SiteConfig {
     platform: string;
     /** Developer / studio name. */
     developer: string;
+    /** Whether `developer` is a studio/group or an individual creator. */
+    developerType?: 'Organization' | 'Person';
+    /** Canonical creator/developer profile URL. */
+    developerUrl?: string;
+    /** Other profiles that identify the same creator/developer entity. */
+    developerSameAs?: string[];
     /** Genre description. */
     genre: string;
     /** ISO release date (optional). */
     releaseDate?: string;
+    /** ISO date when the experience/project record was first created, if distinct from release. */
+    creationDate?: string;
   };
   /**
    * Dimensions of the default OG/Twitter share image (public/images/hero.webp).
@@ -72,14 +78,12 @@ export const site: SiteConfig = {
     reddit: 'https://reddit.com/r/anvilquest',
   },
   // 👉 APPLY TEMPLATE: point these at the game's real canonical pages.
-  sameAs: [
-    'https://example.com/anvil-quest',
-    'https://en.wikipedia.org/wiki/Anvil_Quest',
-  ],
+  sameAs: ['https://example.com/anvil-quest', 'https://en.wikipedia.org/wiki/Anvil_Quest'],
   game: {
     name: 'Anvil Quest',
     platform: 'Roblox',
     developer: 'Forge Studios',
+    developerType: 'Organization',
     genre: 'Fantasy RPG',
     releaseDate: '2026-01-15',
   },

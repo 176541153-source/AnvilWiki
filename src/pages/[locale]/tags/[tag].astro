@@ -7,6 +7,7 @@ import TagListPage from '~/components/article/TagListPage.astro';
 import { defaultLocale, isLocale, locales, type Locale } from '~/i18n/routing';
 import { slugifyTag, localesForTag, parseEntryId } from '~/lib/content';
 import { languageAlternates, tagPath } from '~/lib/url';
+import { MIN_INDEXABLE_TAG_COUNT } from '~/config/seo';
 
 export async function getStaticPaths() {
   const { getCollection } = await import('astro:content');
@@ -18,7 +19,7 @@ export async function getStaticPaths() {
     if (locale === defaultLocale) continue;
     const slugs = new Set<string>();
     for (const entry of all) {
-      if (entry.data.draft && !isDev) continue;
+      if ((entry.data.draft && !isDev) || entry.data.noindex) continue;
       const parsedId = parseEntryId(entry.id);
       if (!parsedId || parsedId.locale !== locale) continue;
       for (const tag of entry.data.tags) {
@@ -40,9 +41,11 @@ if (!isLocale(localeParam) || localeParam === defaultLocale || !tagSlug) {
 }
 const locale: Locale = localeParam;
 
-// hreflang only for locales where the tag actually exists (no fallback).
-const tagLocales = await localesForTag(tagSlug);
-const alternates = languageAlternates((loc) => tagPath(tagSlug, loc), tagLocales);
+// hreflang only connects indexable tag pages. Thin tag pages emit none.
+const tagLocales = await localesForTag(tagSlug, MIN_INDEXABLE_TAG_COUNT);
+const alternates = tagLocales.includes(locale)
+  ? languageAlternates((loc) => tagPath(tagSlug, loc), tagLocales)
+  : [];
 ---
 
 <TagListPage locale={locale} tagSlug={tagSlug} alternates={alternates} />

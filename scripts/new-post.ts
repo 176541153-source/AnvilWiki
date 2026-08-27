@@ -108,12 +108,10 @@ async function main() {
   }
 
   // Draft: visible in `pnpm dev`, excluded from the production build.
-  const draftAnswer = (
-    await rl.question('Create as draft? (dev-only, not built) [y/N]: ')
-  )
+  const draftAnswer = (await rl.question('Create as draft? (dev-only, not built) [Y/n]: '))
     .trim()
     .toLowerCase();
-  const draft = draftAnswer === 'y' || draftAnswer === 'yes';
+  const draft = draftAnswer !== 'n' && draftAnswer !== 'no';
 
   rl.close();
 
@@ -141,6 +139,15 @@ tags: []
 draft: ${draft}
 summary: "One-sentence direct answer (40-60 words). This becomes the Quick
   Answer card and the AI Overviews / featured snippet candidate."
+# Optional freshness/evidence fields — uncomment only after checking sources:
+# refreshAfterDays: 30
+# evidence:
+#   status: verified
+#   checkedAt: ${today}
+#   sources:
+#     - label: "Official source title"
+#       url: "https://example.com/replace-me"
+#       kind: official
 ---
 
 ## How do I …? ← write section headings as QUESTIONS

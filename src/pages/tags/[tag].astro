@@ -10,6 +10,7 @@ import TagListPage from '~/components/article/TagListPage.astro';
 import { defaultLocale, locales } from '~/i18n/routing';
 import { slugifyTag, localesForTag, parseEntryId } from '~/lib/content';
 import { languageAlternates, tagPath } from '~/lib/url';
+import { MIN_INDEXABLE_TAG_COUNT } from '~/config/seo';
 
 export async function getStaticPaths() {
   const { getCollection } = await import('astro:content');
@@ -22,11 +23,12 @@ export async function getStaticPaths() {
     slugsByLocale.set(locale, new Set());
   }
   for (const entry of all) {
-    if (entry.data.draft && !isDev) continue;
+    if ((entry.data.draft && !isDev) || entry.data.noindex) continue;
     const parsedId = parseEntryId(entry.id);
     if (!parsedId || !slugsByLocale.has(parsedId.locale)) continue;
     for (const tag of entry.data.tags) {
-      slugsByLocale.get(parsedId.locale)!.add(slugifyTag(tag));
+      const slug = slugifyTag(tag);
+      if (slug) slugsByLocale.get(parsedId.locale)!.add(slug);
     }
   }
 
@@ -36,9 +38,12 @@ export async function getStaticPaths() {
 }
 
 const tagSlug = Astro.params.tag ?? '';
-// hreflang only for locales where the tag actually exists (no fallback).
-const tagLocales = await localesForTag(tagSlug);
-const alternates = languageAlternates((loc) => tagPath(tagSlug, loc), tagLocales);
+// hreflang only connects indexable tag pages. Thin tag pages remain useful
+// for browsing but are noindex and emit no language cluster.
+const tagLocales = await localesForTag(tagSlug, MIN_INDEXABLE_TAG_COUNT);
+const alternates = tagLocales.includes(defaultLocale)
+  ? languageAlternates((loc) => tagPath(tagSlug, loc), tagLocales)
+  : [];
 ---
 
 <TagListPage locale={defaultLocale} tagSlug={tagSlug} alternates={alternates} />

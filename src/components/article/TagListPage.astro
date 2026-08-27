@@ -14,6 +14,7 @@ import { getEntriesByTag, localesForTag, parseEntryId, tagLabelFor } from '~/lib
 import { pageTitle, simpleBreadcrumbJsonLd, urlListJsonLd } from '~/lib/seo';
 import { detailPath, homeUrl, tagPath, tagsPath } from '~/lib/url';
 import { siteUrl } from '~/config/site';
+import { MIN_INDEXABLE_TAG_COUNT } from '~/config/seo';
 
 interface Props {
   locale: Locale;
@@ -30,21 +31,31 @@ const title = label ?? tagSlug;
 const description = `${title} — ${shared.allTags} · ${ui.site.tagline}`;
 
 const entries = await getEntriesByTag(tagSlug, locale);
+const indexable = entries.length >= MIN_INDEXABLE_TAG_COUNT;
 // Tag pages don't fall back — only offer languages where the tag exists.
 const availableLocales = await localesForTag(tagSlug);
 
 const jsonLd = [
-  urlListJsonLd({
-    name: title,
-    items: entries.map((e) => {
-      const parsed = parseEntryId(e.id);
-      return {
-        title: e.data.title,
-        url: `${siteUrl}${detailPath(parsed?.category ?? '', parsed?.slug ?? '', locale)}`,
-      };
-    }),
+  ...(indexable
+    ? [
+        urlListJsonLd({
+          name: title,
+          items: entries.map((e) => {
+            const parsed = parseEntryId(e.id);
+            return {
+              title: e.data.title,
+              url: `${siteUrl}${detailPath(parsed?.category ?? '', parsed?.slug ?? '', locale)}`,
+            };
+          }),
+        }),
+      ]
+    : []),
+  simpleBreadcrumbJsonLd({
+    pageLabel: title,
+    path: tagPath(tagSlug, locale),
+    locale,
+    homeLabel: nav.home,
   }),
-  simpleBreadcrumbJsonLd({ pageLabel: title, path: tagPath(tagSlug, locale), locale, homeLabel: nav.home }),
 ];
 ---
 
@@ -55,6 +66,7 @@ const jsonLd = [
   alternates={alternates}
   jsonLd={jsonLd}
   availableLocales={availableLocales}
+  noindex={!indexable}
 >
   <div class="space-y-6">
     <header>
@@ -69,7 +81,8 @@ const jsonLd = [
         <Icon name="lucide:tag" class="h-7 w-7 text-nav" />
         <h1 class="text-3xl font-extrabold tracking-tight">#{title}</h1>
         <span class="rounded-full bg-muted px-2.5 py-0.5 text-sm text-muted-foreground">
-          {entries.length} {shared.articlesCount}
+          {entries.length}
+          {shared.articlesCount}
         </span>
       </div>
     </header>

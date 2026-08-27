@@ -12,7 +12,13 @@ import ListPage from '~/components/article/ListPage.astro';
 import ArticlePage from '~/components/article/ArticlePage.astro';
 import { CONTENT_TYPES } from '~/config/navigation';
 import { isLocale, defaultLocale, locales, type Locale } from '~/i18n/routing';
-import { getEntryWithFallback, localesForEntry, parseEntryId, type ResolvedEntry } from '~/lib/content';
+import {
+  getEntryWithFallback,
+  localesForCategory,
+  localesForEntry,
+  parseEntryId,
+  type ResolvedEntry,
+} from '~/lib/content';
 import { detailPath, languageAlternates, listPath } from '~/lib/url';
 
 export async function getStaticPaths() {
@@ -103,17 +109,26 @@ if (view === 'not-found') {
 // MDX version (localesForEntry). A ja-only article must not emit
 // hreflang="en" pointing at a 404 either.
 const entryLocales = view === 'article' ? await localesForEntry(category, articleSlug) : [];
+const categoryLocales = view === 'list' ? await localesForCategory(category) : [];
 const alternates =
   view === 'list'
-    ? languageAlternates((loc) => listPath(category, loc), locales)
+    ? categoryLocales.includes(locale)
+      ? languageAlternates((loc) => listPath(category, loc), categoryLocales)
+      : []
     : languageAlternates((loc) => detailPath(category, articleSlug, loc), entryLocales);
 // The language switcher is UI, not a language claim — fallback URLs are real
 // reachable pages, so it offers the union (current locale + translated ones).
-const switcherLocales =
-  view === 'list' ? locales : Array.from(new Set([locale, ...entryLocales]));
+const switcherLocales = view === 'list' ? locales : Array.from(new Set([locale, ...entryLocales]));
 ---
 
 {view === 'list' && <ListPage locale={locale} category={category} alternates={alternates} />}
-{view === 'article' && resolved && (
-  <ArticlePage locale={locale} resolved={resolved} alternates={alternates} availableLocales={switcherLocales} />
-)}
+{
+  view === 'article' && resolved && (
+    <ArticlePage
+      locale={locale}
+      resolved={resolved}
+      alternates={alternates}
+      availableLocales={switcherLocales}
+    />
+  )
+}

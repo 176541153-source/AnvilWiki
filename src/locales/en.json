@@ -101,6 +101,23 @@
       "next": "Next image"
     },
     "quickAnswer": "Quick Answer",
+    "evidence": {
+      "title": "Verification and sources",
+      "checkedAt": "Checked",
+      "statuses": {
+        "official": "Official source",
+        "verified": "Verified",
+        "mixed": "Mixed evidence",
+        "community": "Community report",
+        "unconfirmed": "Unconfirmed"
+      },
+      "sourceKinds": {
+        "official": "Official source",
+        "primary": "Primary source",
+        "secondary": "Secondary source",
+        "community": "Community source"
+      }
+    },
     "skipToContent": "Skip to content",
     "tapToCopy": "Tap to copy",
     "open": "Open",

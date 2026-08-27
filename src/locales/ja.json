@@ -101,6 +101,23 @@
       "next": "次の画像"
     },
     "quickAnswer": "まとめ",
+    "evidence": {
+      "title": "検証情報と出典",
+      "checkedAt": "確認日",
+      "statuses": {
+        "official": "公式情報",
+        "verified": "検証済み",
+        "mixed": "複数レベルの根拠",
+        "community": "コミュニティ報告",
+        "unconfirmed": "未確認"
+      },
+      "sourceKinds": {
+        "official": "公式情報",
+        "primary": "一次情報",
+        "secondary": "二次情報",
+        "community": "コミュニティ情報"
+      }
+    },
     "skipToContent": "本文へスキップ",
     "tapToCopy": "タップしてコピー",
     "open": "開く",

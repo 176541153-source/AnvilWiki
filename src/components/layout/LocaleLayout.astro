@@ -18,6 +18,8 @@ interface Props {
   description: string;
   alternates?: Array<{ hreflang: string; href: string }>;
   image?: string;
+  imageAlt?: string;
+  canonical?: string | null;
   jsonLd?: Record<string, unknown>[];
   article?: boolean;
   noindex?: boolean;
@@ -33,7 +35,10 @@ interface Props {
   articleModified?: Date;
 }
 const { locale, availableLocales, ...rest } = Astro.props;
-const currentPath = Astro.url.pathname;
+// With `build.format:'file'`, Astro sees artifact paths such as `/about.html`
+// while Cloudflare exposes `/about`. Header active states and locale links
+// must use the public path, otherwise they leak `.html` links into every page.
+const currentPath = Astro.url.pathname.replace(/\/index\.html$/, '/').replace(/\.html$/, '');
 const shared = getUi(locale).shared as unknown as Record<string, any>;
 ---
 

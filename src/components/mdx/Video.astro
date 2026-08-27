@@ -12,10 +12,9 @@
  *   ...text...
  *   <Video id="Qrz5zquuIpI" title="Money guide walkthrough" />
  *
- * IMPORTANT: also register the ID in frontmatter `videos:` — that array is
- * the source for VideoObject JSON-LD. Inline placement is presentation;
- * frontmatter is structured data. The bottom fallback skips IDs already
- * inlined, so nothing renders twice.
+ * Also register the ID in frontmatter `videos:` so the bottom fallback can
+ * avoid duplicates. Use the structured object form (real title, description,
+ * and uploadDate) only when you want truthful VideoObject JSON-LD.
  */
 import LazyYouTube from '~/components/video/LazyYouTube.astro';
 
