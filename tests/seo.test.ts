@@ -9,6 +9,7 @@ import {
   pageTitle,
   videoGameJsonLd,
 } from '~/lib/seo';
+import { site } from '~/config/site';
 
 describe('SEO helpers', () => {
   describe('organizationJsonLd', () => {
@@ -39,7 +40,7 @@ describe('SEO helpers', () => {
       expect(json['@id']).toMatch(/#game$/);
       expect(json.url).toBeTruthy();
       expect(json.creator.name).toBeTruthy();
-      expect(json.creator['@type']).toBe('Organization');
+      expect(json.creator['@type']).toBe(site.game.developerType ?? 'Organization');
     });
   });
 
@@ -163,7 +164,7 @@ describe('SEO helpers', () => {
       );
       expect(t.length).toBeLessThanOrEqual(65);
       expect(t).toContain('—');
-      expect(t).toContain('Anvil Quest Wiki');
+      expect(t).toContain(site.name);
     });
   });
 });
