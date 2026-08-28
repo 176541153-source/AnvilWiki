@@ -170,7 +170,6 @@ export interface SkinInput {
   genre: string;
   releaseDate: string;
   officialUrl: string;
-  sourceUrl: string;
   locales: string[];
   categories: { key: string; icon: string }[];
   clearContent: boolean;
@@ -432,7 +431,7 @@ ${input.brandLogo ? `  brandLogo: '${input.brandLogo.replace(/'/g, "\\'")}',\n` 
   legalNotice: '${input.legalNotice.replace(/'/g, "\\'")}',
   social: {
     official: '${input.officialUrl}',
-${input.sourceUrl ? `    github: '${input.sourceUrl}',\n` : ''}  },
+  },
   about: {
     mission: 'Help ${input.gameName.replace(/'/g, "\\'")} players move from a question to the next useful in-game action.',
     coverage: [
@@ -992,7 +991,6 @@ async function main() {
     `${siteName} is a fan-made community site for ${gameName}. Not affiliated with or endorsed by the game developer.`,
   );
   const officialUrl = await ask(rl, 'Official game URL', 'https://example.com');
-  const sourceUrl = await ask(rl, 'Wiki source / corrections URL (optional)', '');
 
   console.log('\n' + '━'.repeat(60));
   console.log('Theme color');
@@ -1104,7 +1102,6 @@ async function main() {
     genre,
     releaseDate,
     officialUrl,
-    sourceUrl,
     locales: uniqueLocales,
     categories,
     clearContent,

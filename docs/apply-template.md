@@ -75,7 +75,7 @@ export const site = {
     youtube: 'https://...',
     twitter: 'https://...',
     reddit: 'https://...',
-    github: 'https://github.com/...', // → 源码或公开纠错入口（可选）
+    // 商业化游戏站默认不放 github：不要在页脚暴露源码仓库或母模板痕迹
   },
   about: {
     mission: '...', // → 为什么做这个站
@@ -96,6 +96,7 @@ export const site = {
 
 - `domain` 不带 `https://` 协议前缀（协议由 `SITE_URL` 环境变量统一管理）
 - `Cloudflare Pages hostname` 填项目实际的 `<project>.pages.dev`；脚本会生成 `public/_worker.js`，仅把该地址、它的预览子域名及 `www` 单次 301 到正式根域，正式根域直接返回页面，避免重复收录和重定向循环
+- 商业化游戏站不在 `social.github` 填代码仓库；纠错入口应使用独立站内页面或品牌邮箱，不要把用户导向 GitHub 源码
 - `name` 是品牌名，不等于 SEO 主关键词。页面 title/description 继续覆盖完整游戏词；品牌名必须避免“游戏名 + Wiki/Tools/Guide/Codes”这种批量站痕迹
 - 每站必须生成独立 `brandLogo`，并同步替换 favicon/PWA 全套；只换一个 Lucide 图标不算完成换皮
 - Logo 上线前要分别检查 32px 页头与 16px 浏览器标签尺寸；复杂主 Logo 可配同视觉语言的极简 favicon

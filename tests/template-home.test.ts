@@ -30,7 +30,6 @@ const baseInput: SkinInput = {
   genre: 'Adventure',
   releaseDate: '',
   officialUrl: 'https://example.com/signal-harbor',
-  sourceUrl: 'https://github.com/example/signal-harbor-wiki',
   locales: ['en'],
   categories: [
     { key: 'guides', icon: 'lucide:book-open' },

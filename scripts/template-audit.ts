@@ -178,6 +178,23 @@ check(() => {
 
 check(() => {
   const domain = siteSrc.match(/^\s*domain:\s*['"]([^'"]+)['"]/m)?.[1];
+  const exportedSite = siteSrc.slice(siteSrc.indexOf('export const site'));
+  const sourceRepo = exportedSite.match(
+    /\bsocial:\s*\{[\s\S]*?\bgithub:\s*['"]([^'"]+)['"]/,
+  )?.[1];
+  if (domain === DEMO_DOMAIN) {
+    warn('demo repo links to its GitHub project; production game sites must not expose a source repository');
+  } else if (sourceRepo && /github\.com/i.test(sourceRepo)) {
+    fail(
+      `production footer exposes source repository "${sourceRepo}" — remove social.github or replace it with a branded, non-repository corrections route`,
+    );
+  } else {
+    ok('production site does not expose a GitHub source repository in its footer');
+  }
+});
+
+check(() => {
+  const domain = siteSrc.match(/^\s*domain:\s*['"]([^'"]+)['"]/m)?.[1];
   const workerPath = 'public/_worker.js';
   if (!exists(workerPath)) {
     fail(
