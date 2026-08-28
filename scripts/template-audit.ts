@@ -142,14 +142,17 @@ check(() => {
       const lower = lines[i].toLowerCase();
       for (const needle of DEMO_CODE_STRINGS) {
         if (lower.includes(needle)) {
-          fail(`${REL(file)}:${i + 1} contains demo string "${needle}" in live code — the framework layer must stay game-agnostic (AGENTS.md layering).`);
+          fail(
+            `${REL(file)}:${i + 1} contains demo string "${needle}" in live code — the framework layer must stay game-agnostic (AGENTS.md layering).`,
+          );
           hits++;
           break;
         }
       }
     }
   }
-  if (hits === 0) ok(`${files.length} code-layer files scanned, zero demo-game strings in live code`);
+  if (hits === 0)
+    ok(`${files.length} code-layer files scanned, zero demo-game strings in live code`);
 });
 
 // ---------------------------------------------------------------------------
@@ -165,7 +168,9 @@ check(() => {
   if (!domain) {
     fail('could not parse `domain` in src/config/site.ts');
   } else if (domain === DEMO_DOMAIN) {
-    warn(`site.ts domain is still the demo "${DEMO_DOMAIN}" — fine for the demo repo, but a fork must rebrand (pnpm apply-template) before its second site.`);
+    warn(
+      `site.ts domain is still the demo "${DEMO_DOMAIN}" — fine for the demo repo, but a fork must rebrand (pnpm apply-template) before its second site.`,
+    );
   } else {
     ok(`site.ts domain "${domain}" is not the demo domain`);
   }
@@ -177,13 +182,17 @@ check(() => {
   // by `name:`), otherwise the SiteConfig interface's `game: {` matches first.
   const gameName = siteSrc.match(/\bgame:\s*\{\s*name:\s*['"]([^'"]+)['"]/)?.[1];
   if (!siteName || !gameName) {
-    fail(`could not parse ${!siteName ? 'site name' : ''}${!siteName && !gameName ? ' or ' : ''}${!gameName ? 'game.name' : ''} in src/config/site.ts`);
+    fail(
+      `could not parse ${!siteName ? 'site name' : ''}${!siteName && !gameName ? ' or ' : ''}${!gameName ? 'game.name' : ''} in src/config/site.ts`,
+    );
   } else {
     const demoFields: string[] = [];
     if (siteName.includes(DEMO_GAME_NAME)) demoFields.push(`site name "${siteName}"`);
     if (gameName === DEMO_GAME_NAME) demoFields.push(`game.name "${gameName}"`);
     if (demoFields.length > 0) {
-      warn(`site.ts still carries the demo game in ${demoFields.join(' and ')} — a reusable template should already carry your game's name here.`);
+      warn(
+        `site.ts still carries the demo game in ${demoFields.join(' and ')} — a reusable template should already carry your game's name here.`,
+      );
     } else {
       ok(`site.ts identity "${siteName}" / game "${gameName}" is not the demo game`);
     }
@@ -216,7 +225,9 @@ check(() => {
   if (fs.existsSync(enDir)) {
     for (const dir of fs.readdirSync(enDir, { withFileTypes: true })) {
       if (dir.isDirectory() && !navKeys.includes(dir.name)) {
-        fail(`src/content/wiki/en/${dir.name}/ exists but "${dir.name}" is not a navigation.ts key — the category is unreachable.`);
+        fail(
+          `src/content/wiki/en/${dir.name}/ exists but "${dir.name}" is not a navigation.ts key — the category is unreachable.`,
+        );
         broken = true;
       }
     }
@@ -230,7 +241,8 @@ check(() => {
 console.log('\n3. 内容层可替换性（每类文章数 + draft 遗留）');
 const contentBase = path.resolve(ROOT, 'src/content/wiki');
 const locales = fs.existsSync(contentBase)
-  ? fs.readdirSync(contentBase, { withFileTypes: true })
+  ? fs
+      .readdirSync(contentBase, { withFileTypes: true })
       .filter((d) => d.isDirectory())
       .map((d) => d.name)
   : [];
@@ -257,12 +269,12 @@ check(() => {
 for (const loc of locales.filter((l) => l !== 'en')) {
   const counts = navKeys.map((key) => {
     const dir = path.join(contentBase, loc, key);
-    return fs.existsSync(dir)
-      ? fs.readdirSync(dir).filter((f) => f.endsWith('.mdx')).length
-      : 0;
+    return fs.existsSync(dir) ? fs.readdirSync(dir).filter((f) => f.endsWith('.mdx')).length : 0;
   });
   const totalArticles = counts.reduce((a, b) => a + b, 0);
-  info(`${loc}: ${totalArticles} article${totalArticles === 1 ? '' : 's'} across ${navKeys.length} categories`);
+  info(
+    `${loc}: ${totalArticles} article${totalArticles === 1 ? '' : 's'} across ${navKeys.length} categories`,
+  );
 }
 
 check(() => {
@@ -272,11 +284,14 @@ check(() => {
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
       const p = path.join(dir, entry.name);
       if (entry.isDirectory()) walkMdx(p);
-      else if (entry.name.endsWith('.mdx') && /^draft:\s*true\b/m.test(read(REL(p)))) drafts.push(REL(p));
+      else if (entry.name.endsWith('.mdx') && /^draft:\s*true\b/m.test(read(REL(p))))
+        drafts.push(REL(p));
     }
   })(contentBase);
   if (drafts.length > 0) {
-    warn(`${drafts.length} draft:true file${drafts.length === 1 ? '' : 's'} never built — publish (remove draft) or delete before templating: ${drafts.slice(0, 5).join(', ')}${drafts.length > 5 ? ' …' : ''}`);
+    warn(
+      `${drafts.length} draft:true file${drafts.length === 1 ? '' : 's'} never built — publish (remove draft) or delete before templating: ${drafts.slice(0, 5).join(', ')}${drafts.length > 5 ? ' …' : ''}`,
+    );
   } else {
     ok('no draft:true leftovers in src/content/wiki/');
   }
@@ -296,7 +311,9 @@ check(() => {
     }
   }
   if (found.length > 0) {
-    warn(`demo cover art still present (${found.length}): ${found.join(', ')} — replaced by your own art, or removed by apply-template / setup.yml.`);
+    warn(
+      `demo cover art still present (${found.length}): ${found.join(', ')} — replaced by your own art, or removed by apply-template / setup.yml.`,
+    );
   } else {
     ok('no demo covers in src/assets/covers/');
   }
@@ -339,7 +356,9 @@ check(() => {
     }
   })(contentBase);
   if (found.length > 0) {
-    warn(`demo article content still present — ${found.length} file${found.length === 1 ? '' : 's'} still reference the demo game: ${found.slice(0, 8).join(', ')}${found.length > 8 ? ' …' : ''}. Expected on the demo repo; on a fork it means the content layer wasn't replaced (apply-template "Clear demo content").`);
+    warn(
+      `demo article content still present — ${found.length} file${found.length === 1 ? '' : 's'} still reference the demo game: ${found.slice(0, 8).join(', ')}${found.length > 8 ? ' …' : ''}. Expected on the demo repo; on a fork it means the content layer wasn't replaced (apply-template "Clear demo content").`,
+    );
   } else {
     ok('no demo articles in src/content/wiki/');
   }
@@ -354,7 +373,9 @@ check(() => {
   if (!siteUrl) {
     warn('wrangler.toml has no SITE_URL in [vars] — see docs/deployment.md');
   } else if (siteUrl === `https://${DEMO_DOMAIN}`) {
-    warn(`wrangler.toml SITE_URL is still the demo "${siteUrl}" — while this file exists it OVERRIDES the dashboard; a fork must edit [vars] or delete the file.`);
+    warn(
+      `wrangler.toml SITE_URL is still the demo "${siteUrl}" — while this file exists it OVERRIDES the dashboard; a fork must edit [vars] or delete the file.`,
+    );
   } else {
     ok(`wrangler.toml SITE_URL "${siteUrl}" is not the demo domain`);
   }
@@ -366,9 +387,16 @@ check(() => {
     return;
   }
   const src = read('wrangler.toml');
-  const hit = DEMO_GISCUS_MARKERS.find((m) => src.includes(m));
+  const configuredValues = ['PUBLIC_GISCUS_REPO', 'PUBLIC_GISCUS_REPO_ID']
+    .map((key) => src.match(new RegExp(`^${key}\\s*=\\s*"([^"]*)"`, 'm'))?.[1] ?? '')
+    .filter(Boolean);
+  const hit = DEMO_GISCUS_MARKERS.find((marker) =>
+    configuredValues.some((value) => value.includes(marker)),
+  );
   if (hit) {
-    warn(`wrangler.toml still points comments at the demo Giscus ("${hit}") — fork comments would land in PNGTRID/AnvilWiki discussions.`);
+    warn(
+      `wrangler.toml still points comments at the demo Giscus ("${hit}") — fork comments would land in PNGTRID/AnvilWiki discussions.`,
+    );
   } else {
     ok('wrangler.toml has no demo Giscus config');
   }
@@ -380,11 +408,15 @@ check(() => {
 console.log('\n' + '━'.repeat(60));
 const health = `${passed}/${total}`;
 if (violations.length > 0) {
-  console.error(`\n❌ 模板健康度：${health} — ${violations.length} 项违反分层契约，先修复 ❌ 再复制第二个站。\n`);
+  console.error(
+    `\n❌ 模板健康度：${health} — ${violations.length} 项违反分层契约，先修复 ❌ 再复制第二个站。\n`,
+  );
   process.exit(1);
 }
 if (warnings.length > 0) {
-  console.log(`\n⚠️  模板健康度：${health} — 建议修复 ${warnings.length} 项 ⚠️ 后复制第二个站（demo 仓库上这些警告是预期的）。\n`);
+  console.log(
+    `\n⚠️  模板健康度：${health} — 建议修复 ${warnings.length} 项 ⚠️ 后复制第二个站（demo 仓库上这些警告是预期的）。\n`,
+  );
 } else {
   console.log(`\n✅ 模板健康度：${health} — 模板干净，可以放心复制做下一个站。\n`);
 }

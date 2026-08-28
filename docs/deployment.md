@@ -59,11 +59,11 @@ Cloudflare 会自动检测 Astro，但请确认以下设置：
 
 展开 **Environment variables (advanced)**，添加：
 
-| 变量名                    | 值                            | 说明                                   |
-| ------------------------- | ----------------------------- | -------------------------------------- |
-| `NODE_VERSION`            | `22`                          | 确保 Node 版本（pnpm 11 需要 ≥22.13）  |
-| `SITE_URL`                | `https://<project>.pages.dev` | **先用临时域名**，必须含 `https://` 前缀 |
-| `PUBLIC_ADSENSE_CLIENT`    | （你的 AdSense Publisher ID） | 可选，留空则不显示广告                 |
+| 变量名                  | 值                            | 说明                                                      |
+| ----------------------- | ----------------------------- | --------------------------------------------------------- |
+| `NODE_VERSION`          | `22`                          | 确保 Node 版本（pnpm 11 需要 ≥22.13）                     |
+| `SITE_URL`              | `https://你的正式域名`        | **优先直接填最终 canonical 域名**，必须含 `https://` 前缀 |
+| `PUBLIC_ADSENSE_CLIENT` | （你的 AdSense Publisher ID） | 可选，留空则不显示广告                                    |
 
 > ⚠️ **`SITE_URL` 必须含 `https://` 前缀**（如 `https://anvilquestwiki.wiki`，不是裸域名 `anvilquestwiki.wiki`）。Astro 把它当 URL 解析，裸域名会让 build 报 `Invalid url`。它影响 sitemap、og:image、robots.txt 里所有绝对 URL 的生成。
 
@@ -86,15 +86,15 @@ Cloudflare 会自动检测 Astro，但请确认以下设置：
 
 构建日志里看到 `Complete!` 就成功了（页数随内容增长，不用纠结具体数字）。整个过程 2-3 分钟。
 
-### Step 5 — 访问站点
+### Step 5 — 技术地址只用于验收
 
-部署完成后，你会拿到一个 `https://<project>.pages.dev` 的地址，打开就能看到你的站点了。
+部署完成后，Cloudflare 会自动分配 `https://<project>.pages.dev`。这是 Pages 的技术地址，用于首次构建验收、排障和回滚，不是要经营的第二个网站。已经有正式域名时，不要把它提交到 GSC、不要对外传播，也不要把它写进 `SITE_URL`。
 
 ---
 
 ## 绑定自定义域名
 
-免费赠送的 `*.pages.dev` 域名可以一直用，但为了 SEO 和品牌，建议绑自定义域名。
+正式内容站必须绑定自定义域名，并把它设为唯一 canonical。`*.pages.dev` 只保留为 Cloudflare Pages 的底层技术地址。
 
 ### Step 1 — 买域名
 
@@ -136,7 +136,22 @@ SITE_URL=https://anvilquestwiki.wiki
 
 > ⚠️ 这一步必做——否则 sitemap 里的 URL 还是 `*.pages.dev`，影响 SEO。
 
-### Step 4 — HTTPS 自动生效
+### Step 4 — 把 `*.pages.dev` 永久重定向到正式域名
+
+Cloudflare Pages 无法停止生成项目的 `*.pages.dev` 技术地址。正式域名验证可用后，按 Cloudflare 官方方案建立 **Bulk Redirect**：
+
+1. 在 Pages 项目 → **Custom domains** 确认正式域名状态为 Active。
+2. 打开 **Bulk Redirects**，新建列表。
+3. Source URL 填 `<project>.pages.dev`，Target URL 填 `https://你的正式域名`，状态码选 `301`。
+4. 开启 **Preserve query string**、**Subpath matching**、**Preserve path suffix**、**Include subdomains**。
+5. 为该列表创建 Bulk Redirect Rule。
+6. 验证 `https://<project>.pages.dev/guides/example` 会跳到正式域名的同一路径，且不会跳回自身。
+
+这样既保留 Pages 的发布能力，也不会让 Google 把 `pages.dev` 当成重复站点。不要用仓库里的全站 middleware 做 Host 重定向——它会让每个静态请求多走一层 Functions，而且配置错误容易形成重定向循环。
+
+如果同时启用 `www`，先确定唯一主域（模板默认推荐裸域），再把 `www.你的域名/*` 用 301 跳到裸域同一路径。canonical、`SITE_URL`、GSC 与 sitemap 全部只使用这个唯一主域。
+
+### Step 5 — HTTPS 自动生效
 
 Cloudflare 会自动签发 Let's Encrypt SSL 证书。DNS 生效后等 5-15 分钟，`https://` 就能访问了。期间浏览器报证书错误（CN=`*.pages.dev`）是正常的，证书变 **Active** 后就好。
 
@@ -191,24 +206,24 @@ AnvilWiki 是纯静态站点（`dist/`），可以部署到任何静态托管：
 
 Dashboard（方案 C）在 Pages → **Settings** → **Environment variables** 配置。支持 Production / Preview 两套。
 
-| 变量                        | 必填 | 说明                                                   |
-| --------------------------- | ---- | ------------------------------------------------------ |
-| `SITE_URL`                  | ✅   | 站点绝对 URL（含 `https://`，无尾斜杠），影响 sitemap/og:image/robots |
-| `NODE_VERSION`              | ✅   | 固定 `22`（pnpm 11 要求 ≥22.13）                       |
-| `PUBLIC_ADSENSE_CLIENT`      | 可选 | AdSense Publisher ID（`ca-pub-XXXXXXXXXXXXXXXX`）      |
-| `PUBLIC_ADSENSE_SLOT_STICKY` | 可选 | Sticky 粘顶横幅 slot ID                                |
-| `PUBLIC_ADSENSE_SLOT_SIDEBAR`| 可选 | Sidebar 桌面端侧边栏 slot ID                           |
-| `PUBLIC_ADSENSE_SLOT_INCONTENT` | 可选 | InContent 文章内 slot ID                            |
-| `PUBLIC_GA_ID`              | 可选 | Google Analytics ID（有 cookie，经同意横幅门控）       |
-| `PUBLIC_CF_BEACON_TOKEN`    | 可选 | Cloudflare Web Analytics beacon token（无 cookie）     |
-| `PUBLIC_GSC_VERIFICATION`   | 可选 | Google Search Console 验证 meta token                 |
-| `PUBLIC_SPONSOR_URL`        | 可选 | 赞助/捐赠卡链接（空 = 不渲染）                         |
-| `PUBLIC_SPONSOR_IMAGE_URL`  | 可选 | 赞助卡二维码/横幅图（空 = 只显示文字卡）               |
-| `PUBLIC_GISCUS_REPO`        | 可选 | Giscus 仓库（`owner/repo`，4 个必填项之一）            |
-| `PUBLIC_GISCUS_REPO_ID`     | 可选 | Giscus 仓库 ID（4 个必填项之一）                       |
-| `PUBLIC_GISCUS_CATEGORY`    | 可选 | Giscus Discussion 分类名（4 个必填项之一）             |
-| `PUBLIC_GISCUS_CATEGORY_ID` | 可选 | Giscus 分类 ID（4 个必填项之一）                       |
-| `PUBLIC_GISCUS_MAPPING`     | 可选 | Giscus 页面映射方式，默认 `pathname`（唯一可选项）     |
+| 变量                            | 必填 | 说明                                                                  |
+| ------------------------------- | ---- | --------------------------------------------------------------------- |
+| `SITE_URL`                      | ✅   | 站点绝对 URL（含 `https://`，无尾斜杠），影响 sitemap/og:image/robots |
+| `NODE_VERSION`                  | ✅   | 固定 `22`（pnpm 11 要求 ≥22.13）                                      |
+| `PUBLIC_ADSENSE_CLIENT`         | 可选 | AdSense Publisher ID（`ca-pub-XXXXXXXXXXXXXXXX`）                     |
+| `PUBLIC_ADSENSE_SLOT_STICKY`    | 可选 | Sticky 粘顶横幅 slot ID                                               |
+| `PUBLIC_ADSENSE_SLOT_SIDEBAR`   | 可选 | Sidebar 桌面端侧边栏 slot ID                                          |
+| `PUBLIC_ADSENSE_SLOT_INCONTENT` | 可选 | InContent 文章内 slot ID                                              |
+| `PUBLIC_GA_ID`                  | 可选 | Google Analytics ID（有 cookie，经同意横幅门控）                      |
+| `PUBLIC_CF_BEACON_TOKEN`        | 可选 | Cloudflare Web Analytics beacon token（无 cookie）                    |
+| `PUBLIC_GSC_VERIFICATION`       | 可选 | Google Search Console 验证 meta token                                 |
+| `PUBLIC_SPONSOR_URL`            | 可选 | 赞助/捐赠卡链接（空 = 不渲染）                                        |
+| `PUBLIC_SPONSOR_IMAGE_URL`      | 可选 | 赞助卡二维码/横幅图（空 = 只显示文字卡）                              |
+| `PUBLIC_GISCUS_REPO`            | 可选 | Giscus 仓库（`owner/repo`，4 个必填项之一）                           |
+| `PUBLIC_GISCUS_REPO_ID`         | 可选 | Giscus 仓库 ID（4 个必填项之一）                                      |
+| `PUBLIC_GISCUS_CATEGORY`        | 可选 | Giscus Discussion 分类名（4 个必填项之一）                            |
+| `PUBLIC_GISCUS_CATEGORY_ID`     | 可选 | Giscus 分类 ID（4 个必填项之一）                                      |
+| `PUBLIC_GISCUS_MAPPING`         | 可选 | Giscus 页面映射方式，默认 `pathname`（唯一可选项）                    |
 
 完整说明见 [`.env.example`](../.env.example)。所有广告/评论变量**留空时对应组件不渲染**——新手可以先不配广告把站上线，后续再加。
 
@@ -267,12 +282,12 @@ curl -I https://<你的域名>/privacy-policy/
 
 上线不是终点。**上线后观察 3-7 天，做第一次数据复盘**，对着下面的数值表逐项检查。数据来源：GSC「效果」报告（CTR、点击）；Cloudflare Web Analytics（变量 `PUBLIC_CF_BEACON_TOKEN`，无 cookie）或 GA4（浏览深度）。
 
-| 指标 | 及格线 / 目标 | 去哪看 | 不及格怎么办 |
-| --- | --- | --- | --- |
-| CTR（点击率） | ≥ 2% 算合格 | GSC 效果报告 | 低于 2%：检查 TDH（title、description、H1 三个标签）和标题吸引力——标题含不含"游戏名 + 关键词"、有没有让人想点进去的钩子 |
-| 每日点击 | 1000 次/天是目标 | GSC 效果报告 | 新站从个位数涨起是正常的；复盘看的不是绝对值，是趋势——持续在涨就对，连续一周不动才需要动作（补页面/换词） |
-| 人均浏览页数 | ≥ 1.5 页 | CF Web Analytics / GA4 | < 1.5 页 = 内链不够：每篇文章补 1-2 条指向相关文章的内链（codes 页 ↔ 攻略页互指） |
-| 每周新增内页 | 10+ 篇 | 自己数 | **只加不改旧页**——新增页面是给 Google 的增量信号，复盘期别顺手大改已收录的页面 |
+| 指标          | 及格线 / 目标    | 去哪看                 | 不及格怎么办                                                                                                            |
+| ------------- | ---------------- | ---------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| CTR（点击率） | ≥ 2% 算合格      | GSC 效果报告           | 低于 2%：检查 TDH（title、description、H1 三个标签）和标题吸引力——标题含不含"游戏名 + 关键词"、有没有让人想点进去的钩子 |
+| 每日点击      | 1000 次/天是目标 | GSC 效果报告           | 新站从个位数涨起是正常的；复盘看的不是绝对值，是趋势——持续在涨就对，连续一周不动才需要动作（补页面/换词）               |
+| 人均浏览页数  | ≥ 1.5 页         | CF Web Analytics / GA4 | < 1.5 页 = 内链不够：每篇文章补 1-2 条指向相关文章的内链（codes 页 ↔ 攻略页互指）                                       |
+| 每周新增内页  | 10+ 篇           | 自己数                 | **只加不改旧页**——新增页面是给 Google 的增量信号，复盘期别顺手大改已收录的页面                                          |
 
 > 用了 [anvilwiki-ops](./multi-site.md) 的话，一条命令拉数：`anvil-ops metrics`（聚合 GSC + Cloudflare Web Analytics）。
 

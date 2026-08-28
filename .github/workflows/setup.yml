@@ -10,7 +10,9 @@
 # What this does NOT do (run `pnpm apply-template` locally for these):
 #   game name / theme color / locales / homepage copy — see docs/apply-template.md.
 #
-# After merging: connect the repo to Cloudflare Pages (docs/deployment.md).
+# After merging: connect the repo to Cloudflare Pages, bind the custom domain,
+# then Bulk Redirect the generated *.pages.dev host to that canonical domain
+# (docs/deployment.md). The Pages technical host cannot be disabled at build time.
 
 name: Initialize AnvilWiki
 
@@ -163,7 +165,7 @@ jobs:
           git fetch origin chore/init-from-template || true
           git push --force-with-lease origin chore/init-from-template
           gh pr create --title "Initialize AnvilWiki for your game" \
-            --body "Automated by the Initialize AnvilWiki workflow. wrangler.toml [vars] reset to ${SITE_URL_INPUT} (demo Giscus cleared); project landing page removed. Next: run pnpm apply-template locally for game name / theme / locales, then connect Cloudflare Pages (docs/deployment.md)." \
+            --body "Automated by the Initialize AnvilWiki workflow. wrangler.toml [vars] reset to ${SITE_URL_INPUT} (demo Giscus cleared); project landing page removed. Next: run pnpm apply-template locally for game name / task-first homepage / theme / locales, connect Cloudflare Pages, bind the custom domain, then Bulk Redirect the generated *.pages.dev host to the canonical domain (docs/deployment.md)." \
             || echo "PR already exists — leaving the existing one open."
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

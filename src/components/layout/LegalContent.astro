@@ -11,39 +11,51 @@ interface Props {
 const { page } = Astro.props;
 const game = site.game.name;
 const year = new Date().getFullYear();
+const correctionUrl = site.social.github ?? site.social.discord ?? site.social.official;
+const correctionLabel = site.social.github
+  ? 'public source repository'
+  : site.social.discord
+    ? 'community server'
+    : 'official game channel';
 ---
 
 {
   page === 'about' && (
     <>
       <p>
-        {site.name} is a fan-made community wiki dedicated to {game}, a {site.game.genre} on{' '}
-        {site.game.platform} developed by {site.game.developer}. Our mission is to provide accurate,
-        up-to-date guides, tips, and reference material to help players get the most out of the
-        game.
+        {site.name} is an independent companion for {game}, a {site.game.genre} on{' '}
+        {site.game.platform} developed by {site.game.developer}.{' '}
+        {site.about?.mission ?? site.description}
       </p>
       <h2>What We Cover</h2>
       <ul>
-        <li>Boss strategies and attack patterns</li>
-        <li>Item locations, stats, and crafting recipes</li>
-        <li>Active redeemable codes (updated daily)</li>
-        <li>Tier lists and build recommendations</li>
-        <li>Progression guides for new and returning players</li>
+        {(
+          site.about?.coverage ?? [
+            'Progression guides for new and returning players',
+            'Mechanics, items, codes, builds, and update references',
+            'Short answers that lead readers to a useful next action',
+          ]
+        ).map((item) => (
+          <li>{item}</li>
+        ))}
       </ul>
-      <h2>Community-Driven</h2>
-      <p>
-        This wiki is maintained by volunteers. If you spot an error or have content to contribute,
-        join our Discord and let us know. All content is freely accessible — no account required.
-      </p>
+      <h2>How We Verify Information</h2>
+      <ul>
+        {(
+          site.about?.methodology ?? [
+            'Official game pages and developer announcements are used as primary sources.',
+            'Community observations are labeled and dated when official confirmation is unavailable.',
+            'Potentially outdated claims are reviewed after major game updates.',
+          ]
+        ).map((item) => (
+          <li>{item}</li>
+        ))}
+      </ul>
       <h2>Contact</h2>
       <p>
-        Reach us via our{' '}
-        <a href={site.social.discord} target="_blank" rel="noopener noreferrer">
-          Discord server
-        </a>{' '}
-        or{' '}
-        <a href={site.social.official} target="_blank" rel="noopener noreferrer">
-          the game's official channels
+        Found an outdated claim? Use the <a href="/contact">contact page</a> or the{' '}
+        <a href={correctionUrl} target="_blank" rel="noopener noreferrer">
+          {correctionLabel}
         </a>
         .
       </p>
@@ -70,8 +82,8 @@ const year = new Date().getFullYear();
       </p>
       <ul>
         <li>
-          <strong>Advertising partners</strong> (e.g. Google AdSense) — may use cookies to
-          serve relevant ads. You can opt out of personalized advertising via your browser settings.
+          <strong>Advertising partners</strong> (e.g. Google AdSense) — may use cookies to serve
+          relevant ads. You can opt out of personalized advertising via your browser settings.
         </li>
         <li>
           <strong>Analytics</strong> (e.g. Google Analytics, Cloudflare Web Analytics) — GA may
@@ -86,13 +98,13 @@ const year = new Date().getFullYear();
         <li>
           <strong>Comments</strong> (giscus, opt-in) — when the comment section is enabled,
           giscus.app loads an embedded GitHub view; viewing it exposes your IP address and browser
-          info to that service, and signing in to comment is handled by GitHub under its own
-          privacy policy.
+          info to that service, and signing in to comment is handled by GitHub under its own privacy
+          policy.
         </li>
         <li>
-          <strong>Embedded videos</strong> (YouTube) — pages with videos load thumbnail images
-          from i.ytimg.com and, after you press play, the YouTube player from youtube-nocookie.com.
-          Until you interact, no YouTube cookies are set.
+          <strong>Embedded videos</strong> (YouTube) — pages with videos load thumbnail images from
+          i.ytimg.com and, after you press play, the YouTube player from youtube-nocookie.com. Until
+          you interact, no YouTube cookies are set.
         </li>
       </ul>
       <h2>Cookies</h2>
@@ -170,12 +182,9 @@ const year = new Date().getFullYear();
       </p>
       <h2>DMCA / Takedown</h2>
       <p>
-        If you believe any content on this site infringes your copyright, please contact us via our{' '}
-        <a href={site.social.discord} target="_blank" rel="noopener noreferrer">
-          Discord server
-        </a>{' '}
-        with a detailed description of the allegedly infringing material. We will review and respond
-        to valid requests promptly.
+        If you believe any content on this site infringes your copyright, please use the{' '}
+        <a href="/contact">contact page</a> with a detailed description of the allegedly infringing
+        material. We will review and respond to valid requests promptly.
       </p>
       <h2>Fan-Made Notice</h2>
       <p>{site.legalNotice}</p>
@@ -218,16 +227,23 @@ const year = new Date().getFullYear();
             </a>
           </li>
         )}
+        {site.social.github && (
+          <li>
+            <strong>Source and corrections:</strong>{' '}
+            <a href={site.social.github} target="_blank" rel="noopener noreferrer">
+              Report a content issue
+            </a>
+          </li>
+        )}
       </ul>
       <h2>Contributing</h2>
       <p>
-        Found a typo or outdated info? Want to add a guide? This wiki is open source — submit changes
-        via pull requests or reach out on Discord.
+        Found a typo or outdated fact? Use the public corrections channel listed above so the claim
+        can be reviewed against its source.
       </p>
       <h2>Reporting Issues</h2>
       <p>
-        For copyright or takedown requests, see our{' '}
-        <a href="/copyright">Copyright page</a>.
+        For copyright or takedown requests, see our <a href="/copyright">Copyright page</a>.
       </p>
     </>
   )

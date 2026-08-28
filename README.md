@@ -27,13 +27,13 @@
 
 ## 🚀 快速链接
 
-| 你想… | 去这里 |
-|---|---|
+| 你想…                            | 去这里                                                                                                                               |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
 | **零基础从零做一个赚钱的游戏站** | 📚 [学习手册(11 章)](https://anvilwiki.pages.dev/zh/landing/docs/learn)——每步写明「做什么/怎么做/你会看到什么」,含 18 个可复制提示词 |
-| 看「从零到赚钱」的全部工作量 | 🗺️ [文档中心首页](https://anvilwiki.pages.dev/zh/landing/docs)——10 件事全景清单,逐项点入 |
-| 深度定制 / 给模板写代码 | 🔧 [开发手册(7 章)](https://anvilwiki.pages.dev/zh/landing/docs/dev) |
-| 看看做出来长什么样 | 🎮 [在线 Demo](https://anvilwiki.pages.dev/)——虚构游戏「Anvil Quest」的完整 wiki |
-| 对比 Fandom / Wiki.js / 其他方案 | ⚖️ [完整对比页](https://anvilwiki.pages.dev/zh/landing/comparison)——三种物种、自托管引擎数据表、什么时候不该选 AnvilWiki |
+| 看「从零到赚钱」的全部工作量     | 🗺️ [文档中心首页](https://anvilwiki.pages.dev/zh/landing/docs)——10 件事全景清单,逐项点入                                             |
+| 深度定制 / 给模板写代码          | 🔧 [开发手册(7 章)](https://anvilwiki.pages.dev/zh/landing/docs/dev)                                                                 |
+| 看看做出来长什么样               | 🎮 [在线 Demo](https://anvilwiki.pages.dev/)——虚构游戏「Anvil Quest」的完整 wiki                                                     |
+| 对比 Fandom / Wiki.js / 其他方案 | ⚖️ [完整对比页](https://anvilwiki.pages.dev/zh/landing/comparison)——三种物种、自托管引擎数据表、什么时候不该选 AnvilWiki             |
 
 ## 📖 中文文档
 
@@ -57,6 +57,7 @@ AnvilWiki 是一个**游戏 SEO 内容站模板**——用来快速搭建围绕�
 - 🆓 **零成本**:Cloudflare Pages 免费无限带宽 + 全球 CDN + SSL,永远没有服务器账单
 - 🌍 **多语言开箱即用**:英文无前缀(SEO 最优),缺失内容自动回退英文,直链永不 404
 - 🎮 **wiki 级呈现**:Boss 数据卡、兑换码一键复制、TOC 滚动高亮、画廊灯箱、Giscus 评论(默认关)
+- 🧭 **任务优先首页**:CTA、快速行动和“遇到什么问题”诊断卡全部由 JSON 配置;About 自带来源方法与公开纠错入口,换游戏不用改组件
 
 ### 5 分钟快速开始
 
@@ -84,6 +85,8 @@ git push           # 第 5 步 Cloudflare 连的是 GitHub 远端仓库,不推�
 ```
 
 > 💡 **SITE_URL 不用去 dashboard 配**:第 3 步已经把它写进 `wrangler.toml` 的 `[vars]`——只要这个文件存在,它就是 Cloudflare Pages 环境变量的**唯一真相源**,dashboard 里配的同名变量会被忽略。以后换域名,改 `[vars]` 里的 `SITE_URL`(必须含 `https://`)即可;也可以删掉该文件改用 dashboard 配置。完整说明 + 踩坑诊断见 [docs/deployment.md](docs/deployment.md)。
+>
+> 正式域名生效后,按部署文档用 Cloudflare **Bulk Redirect** 把自动生成的 `*.pages.dev` 301 到正式域名;不要提交两个站点到 GSC。
 
 **不想碰终端?有一条零命令路径**:fork 后打开你仓库的 **Actions** 页签 → 左侧选 **Initialize AnvilWiki** → **Run workflow**(填你的域名)→ 合并它开好的 PR → 直接做上面的第 5 步。游戏名、主题色等之后随时可以让 AI 助手帮你改。
 
@@ -93,33 +96,33 @@ git push           # 第 5 步 Cloudflare 连的是 GitHub 远端仓库,不推�
 
 fork 后用 ZCode / Claude Code / Codex / Cursor 打开仓库,直接对话即可产页。Agent 会自动加载仓库里的内容规范,生成后自动跑 `pnpm check-content && pnpm build` 自检。内置 4 个技能:
 
-| 技能 | 用途 |
-|---|---|
-| `anvil-new-article` | 任意素材(口述/视频内容/原始数据)→ 合规 MDX 文章 |
+| 技能                   | 用途                                                                               |
+| ---------------------- | ---------------------------------------------------------------------------------- |
+| `anvil-new-article`    | 任意素材(口述/视频内容/原始数据)→ 合规 MDX 文章                                    |
 | `anvil-batch-articles` | 关键词清单 → 批量生成一批内页(意图归类 → `bulk-new-posts` 脚手架 → 统一提示词填充) |
-| `anvil-update-codes` | 新兑换码/过期码 → 更新 codes 页并同步多语言 |
-| `anvil-refresh` | 新鲜度巡检 → 输出「该更新什么」优先级清单 |
+| `anvil-update-codes`   | 新兑换码/过期码 → 更新 codes 页并同步多语言                                        |
+| `anvil-refresh`        | 新鲜度巡检 → 输出「该更新什么」优先级清单                                          |
 
 完整的提示词库(选品分析、产页、批量产页、翻译、SEO 体检、关键词选题等 18 个模板)在[学习手册](https://anvilwiki.pages.dev/zh/landing/docs/learn)里,整段复制就能用。
 
 ### 文档在哪里?
 
-| 入口 | 内容 |
-|---|---|
-| 📚 [站内文档中心](https://anvilwiki.pages.dev/zh/landing/docs) | **首选**:双手册 + 「从零到赚钱 10 件事」全景清单,中英双语 |
-| 🗂️ [docs/README.md](docs/README.md) | 仓库内全部参考文档索引(选品/挖词/部署/SEO/广告/内容管道/多站运营…),按角色与时机分类,附四条阅读路径 |
-| 📋 [requirements/](requirements/) | 建站前素材准备模板:事实来源表 + 对标参考表 |
-| 🏗️ [docs/PRD.md](docs/PRD.md) | 架构唯一真相源:想知道「为什么这么设计」看这里 |
+| 入口                                                           | 内容                                                                                               |
+| -------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| 📚 [站内文档中心](https://anvilwiki.pages.dev/zh/landing/docs) | **首选**:双手册 + 「从零到赚钱 10 件事」全景清单,中英双语                                          |
+| 🗂️ [docs/README.md](docs/README.md)                            | 仓库内全部参考文档索引(选品/挖词/部署/SEO/广告/内容管道/多站运营…),按角色与时机分类,附四条阅读路径 |
+| 📋 [requirements/](requirements/)                              | 建站前素材准备模板:事实来源表 + 对标参考表                                                         |
+| 🏗️ [docs/PRD.md](docs/PRD.md)                                  | 架构唯一真相源:想知道「为什么这么设计」看这里                                                      |
 
 ### 为什么不用 Fandom / 自建 Next.js?
 
-| | AnvilWiki | Fandom 类平台 | 自建 Next.js |
-| --- | --- | --- | --- |
-| 广告收入 | **100% 归你**(自带 AdSense 位) | 平台抽成 | 归你,但要自己接 |
-| 每月成本 | **¥0**(Cloudflare Pages 免费无限带宽) | 免费(代价是失去控制权) | Vercel 免费额度有限 |
-| Lighthouse | **4×100 开箱即得** | 平台决定 | 自己调优数周 |
-| AI 产页 | **技能随仓库分发,对话即产页** | 无 | 自己搭 |
-| 上手门槛 | **零基础手册 11 章** | 低但受制于人 | 高 |
+|            | AnvilWiki                             | Fandom 类平台          | 自建 Next.js        |
+| ---------- | ------------------------------------- | ---------------------- | ------------------- |
+| 广告收入   | **100% 归你**(自带 AdSense 位)        | 平台抽成               | 归你,但要自己接     |
+| 每月成本   | **¥0**(Cloudflare Pages 免费无限带宽) | 免费(代价是失去控制权) | Vercel 免费额度有限 |
+| Lighthouse | **4×100 开箱即得**                    | 平台决定               | 自己调优数周        |
+| AI 产页    | **技能随仓库分发,对话即产页**         | 无                     | 自己搭              |
+| 上手门槛   | **零基础手册 11 章**                  | 低但受制于人           | 高                  |
 
 更完整的选型对比——含 Wiki.js、BookStack、MediaWiki、DokuWiki、Docmost 五个自托管引擎的数据表,以及「什么时候不该选 AnvilWiki」:见[完整对比页](https://anvilwiki.pages.dev/zh/landing/comparison)。
 
@@ -134,11 +137,11 @@ fork 后用 ZCode / Claude Code / Codex / Cursor 打开仓库,直接对话即可
 
 真实案例是这个模板最有力的证明(按提交顺序排列):
 
-| 站点 | 游戏 | 简介 |
-| --- | --- | --- |
-| [Aniimo Wiki](https://aniimo.wiki/) | Aniimo(Roblox) | 攻略、强度榜与最新兑换码 |
-| [No Man's Sky Wiki](https://nomanssky.wiki/) | 无人深空(Steam) | 机制资料与版本更新攻略 |
-| [Steal an Egg Wiki](https://steal-anegg.wiki/) | Steal an Egg(Roblox) | 宠物、蛋、兑换码与玩法攻略 |
+| 站点                                                                    | 游戏                        | 简介                                                               |
+| ----------------------------------------------------------------------- | --------------------------- | ------------------------------------------------------------------ |
+| [Aniimo Wiki](https://aniimo.wiki/)                                     | Aniimo(Roblox)              | 攻略、强度榜与最新兑换码                                           |
+| [No Man's Sky Wiki](https://nomanssky.wiki/)                            | 无人深空(Steam)             | 机制资料与版本更新攻略                                             |
+| [Steal an Egg Wiki](https://steal-anegg.wiki/)                          | Steal an Egg(Roblox)        | 宠物、蛋、兑换码与玩法攻略                                         |
 | [Jujutsu Shenanigans Player Guide](https://jjs-player-guide.pages.dev/) | Jujutsu Shenanigans(Roblox) | 中英日三语玩家 wiki：角色路线、Black Flash、地图、兑换码与版本更新 |
 
 提 PR 在 `src/config/landing.ts` 的 `COMMUNITY_SITES` 追加一条即可——官网([/landing](https://anvilwiki.pages.dev/landing) 与 [/zh/landing](https://anvilwiki.pages.dev/zh/landing))的「Built with AnvilWiki」区块会自动展示。
@@ -159,13 +162,13 @@ fork 后用 ZCode / Claude Code / Codex / Cursor 打开仓库,直接对话即可
 
 ## 📖 English Documentation
 
-| I want to… | Go here |
-|---|---|
+| I want to…                                   | Go here                                                                                                                          |
+| -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
 | **Build a money-making game site from zero** | 📚 [Learning Manual (11 chapters)](https://anvilwiki.pages.dev/landing/docs/learn) — every step a SOP with copy-paste AI prompts |
-| See the whole journey first | 🗺️ [Docs hub](https://anvilwiki.pages.dev/landing/docs) — a 10-job whole-picture checklist |
-| Customize deeply / contribute code | 🔧 [Development Manual (7 chapters)](https://anvilwiki.pages.dev/landing/docs/dev) |
-| See what it looks like | 🎮 [Live demo](https://anvilwiki.pages.dev/) — a complete wiki for the fictional game "Anvil Quest" |
-| Compare Fandom / Wiki.js / alternatives | ⚖️ [Full comparison](https://anvilwiki.pages.dev/landing/comparison) |
+| See the whole journey first                  | 🗺️ [Docs hub](https://anvilwiki.pages.dev/landing/docs) — a 10-job whole-picture checklist                                       |
+| Customize deeply / contribute code           | 🔧 [Development Manual (7 chapters)](https://anvilwiki.pages.dev/landing/docs/dev)                                               |
+| See what it looks like                       | 🎮 [Live demo](https://anvilwiki.pages.dev/) — a complete wiki for the fictional game "Anvil Quest"                              |
+| Compare Fandom / Wiki.js / alternatives      | ⚖️ [Full comparison](https://anvilwiki.pages.dev/landing/comparison)                                                             |
 
 ### What is this?
 
@@ -197,6 +200,8 @@ git push           # step 5 connects Cloudflare to the REMOTE repo — skip this
 ```
 
 > 💡 **No need to set SITE_URL in the dashboard**: step 3 already wrote it into `[vars]` in `wrangler.toml` — while that file exists it is the **sole source of truth** for Cloudflare Pages env, and same-named dashboard variables are ignored. To change domains later, edit `SITE_URL` in `[vars]` (must include `https://`), or delete the file and use the dashboard instead. Full explanation + troubleshooting: [docs/deployment.md](docs/deployment.md).
+>
+> Once the custom domain is active, follow the deployment guide to **Bulk Redirect** the automatically generated `*.pages.dev` host to the canonical domain; never submit both properties to GSC.
 
 **Prefer zero terminal?** There's a no-command path: open your fork's **Actions** tab → **Initialize AnvilWiki** → **Run workflow** (enter your domain) → merge the PR it opens → jump straight to step 5 above. Game name, theme color and more can be changed later with your AI assistant.
 
@@ -214,38 +219,39 @@ git push           # step 5 connects Cloudflare to the REMOTE repo — skip this
 - 🆓 **Free forever**: Cloudflare Pages, unlimited bandwidth, global CDN, SSL
 - 🌍 **i18n built in**: English at root (SEO-optimal), English fallback, URLs never 404
 - 🎮 **Wiki-grade presentation**: boss stat cards, tap-to-copy codes, TOC scroll-spy, gallery lightbox, Giscus comments (off by default)
+- 🧭 **Task-first homepage**: configurable CTAs, quick actions, problem-to-next-step cards, editorial methodology, and a public corrections route — no component rewrite per game
 
 ### Generate content by talking to your AI (no scripts needed)
 
 After forking, open the repo in ZCode / Claude Code / Codex / Cursor and just talk. Agents auto-load the content spec shipped in the repo and self-check with `pnpm check-content && pnpm build` after generating. Four skills are built in:
 
-| Skill | What it does |
-|---|---|
-| `anvil-new-article` | Any source material (notes / video content / raw data) → spec-compliant MDX article |
+| Skill                  | What it does                                                                                                                   |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `anvil-new-article`    | Any source material (notes / video content / raw data) → spec-compliant MDX article                                            |
 | `anvil-batch-articles` | A keyword list → a batch of inner pages (intent classification → `bulk-new-posts` scaffolding → one unified prompt fills them) |
-| `anvil-update-codes` | New / expired codes → update the codes page across locales |
-| `anvil-refresh` | Freshness audit → prioritized "what to update" list |
+| `anvil-update-codes`   | New / expired codes → update the codes page across locales                                                                     |
+| `anvil-refresh`        | Freshness audit → prioritized "what to update" list                                                                            |
 
 The full prompt library (game selection, page generation, batch production, translation, SEO audits, keyword research — 18 templates) lives in the [Learning Manual](https://anvilwiki.pages.dev/landing/docs/learn); copy-paste ready.
 
 ### Where are the docs?
 
-| Entry | Contents |
-|---|---|
-| 📚 [In-site docs center](https://anvilwiki.pages.dev/landing/docs) | **Start here**: both manuals + the 10-job whole-picture checklist, bilingual |
-| 🗂️ [docs/README.md](docs/README.md) | Index of every reference doc in the repo (game selection / keywords / deployment / SEO / ads / content pipeline / multi-site…), organized by role and timing |
-| 📋 [requirements/](requirements/) | Pre-build prep templates: source-of-truth table + benchmark table |
-| 🏗️ [docs/PRD.md](docs/PRD.md) | The single source of truth for architecture decisions |
+| Entry                                                              | Contents                                                                                                                                                     |
+| ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 📚 [In-site docs center](https://anvilwiki.pages.dev/landing/docs) | **Start here**: both manuals + the 10-job whole-picture checklist, bilingual                                                                                 |
+| 🗂️ [docs/README.md](docs/README.md)                                | Index of every reference doc in the repo (game selection / keywords / deployment / SEO / ads / content pipeline / multi-site…), organized by role and timing |
+| 📋 [requirements/](requirements/)                                  | Pre-build prep templates: source-of-truth table + benchmark table                                                                                            |
+| 🏗️ [docs/PRD.md](docs/PRD.md)                                      | The single source of truth for architecture decisions                                                                                                        |
 
 ### Why not Fandom / a hand-rolled Next.js site?
 
-| | AnvilWiki | Fandom-style platforms | DIY Next.js |
-| --- | --- | --- | --- |
-| Ad revenue | **100% yours** (AdSense slots built in) | Platform takes a cut | Yours, but you wire it up |
-| Monthly cost | **$0** (Cloudflare Pages free unlimited bandwidth) | Free (at the cost of control) | Vercel free tier is limited |
-| Lighthouse | **4×100 out of the box** | Platform decides | Weeks of tuning |
-| AI page generation | **Skills ship with the repo — talk to generate** | None | Build it yourself |
-| Entry barrier | **11-chapter zero-to-hero manual** | Low but constrained | High |
+|                    | AnvilWiki                                          | Fandom-style platforms        | DIY Next.js                 |
+| ------------------ | -------------------------------------------------- | ----------------------------- | --------------------------- |
+| Ad revenue         | **100% yours** (AdSense slots built in)            | Platform takes a cut          | Yours, but you wire it up   |
+| Monthly cost       | **$0** (Cloudflare Pages free unlimited bandwidth) | Free (at the cost of control) | Vercel free tier is limited |
+| Lighthouse         | **4×100 out of the box**                           | Platform decides              | Weeks of tuning             |
+| AI page generation | **Skills ship with the repo — talk to generate**   | None                          | Build it yourself           |
+| Entry barrier      | **11-chapter zero-to-hero manual**                 | Low but constrained           | High                        |
 
 For the full decision guide — a data table of self-hosted wiki engines (Wiki.js, BookStack, MediaWiki, DokuWiki, Docmost) plus an honest "when NOT to pick AnvilWiki" section — see the [complete comparison](https://anvilwiki.pages.dev/landing/comparison).
 
@@ -260,11 +266,11 @@ For the full decision guide — a data table of self-hosted wiki engines (Wiki.j
 
 Real sites built with AnvilWiki (in submission order):
 
-| Site | Game | About |
-| --- | --- | --- |
-| [Aniimo Wiki](https://aniimo.wiki/) | Aniimo (Roblox) | Guides, tier lists, and fresh codes |
-| [No Man's Sky Wiki](https://nomanssky.wiki/) | No Man's Sky (Steam) | Mechanics references and update guides |
-| [Steal an Egg Wiki](https://steal-anegg.wiki/) | Steal an Egg (Roblox) | Pets, eggs, codes, and strategies |
+| Site                                                                    | Game                         | About                                                                               |
+| ----------------------------------------------------------------------- | ---------------------------- | ----------------------------------------------------------------------------------- |
+| [Aniimo Wiki](https://aniimo.wiki/)                                     | Aniimo (Roblox)              | Guides, tier lists, and fresh codes                                                 |
+| [No Man's Sky Wiki](https://nomanssky.wiki/)                            | No Man's Sky (Steam)         | Mechanics references and update guides                                              |
+| [Steal an Egg Wiki](https://steal-anegg.wiki/)                          | Steal an Egg (Roblox)        | Pets, eggs, codes, and strategies                                                   |
 | [Jujutsu Shenanigans Player Guide](https://jjs-player-guide.pages.dev/) | Jujutsu Shenanigans (Roblox) | Trilingual player wiki: character routes, Black Flash, maps, codes, and patch notes |
 
 Built a site? Open a PR appending an entry to `COMMUNITY_SITES` in `src/config/landing.ts` — it will show up in the "Built with AnvilWiki" section on the [landing page](https://anvilwiki.pages.dev/landing).

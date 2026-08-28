@@ -157,11 +157,47 @@
       "description": "The most complete Anvil Quest wiki. Boss strategies, active codes, item locations, tier lists, and beginner guides. Updated daily by the community."
     },
     "hero": {
-      "badge": "Fan-Made Community Wiki",
-      "title": "Anvil Quest Wiki",
-      "description": "Your complete guide to Anvil Quest. Boss strategies, active codes, item locations, tier lists, and everything you need to master the forge.",
-      "ctaPrimary": "Play Anvil Quest",
-      "ctaSecondary": "Browse Guides",
+      "badge": "Player-first Anvil Quest companion",
+      "title": "Find Your Next Anvil Quest Move",
+      "description": "Start with the task in front of you: learn the opening route, clear a boss wall, verify a code, or check what changed after the latest patch.",
+      "ctaPrimary": "Start the beginner route",
+      "ctaPrimaryHref": "/guides/beginner-guide",
+      "ctaPrimaryIcon": "lucide:route",
+      "ctaSecondary": "Check active codes",
+      "ctaSecondaryHref": "/codes",
+      "ctaSecondaryIcon": "lucide:gift",
+      "ctaTertiary": "Play Anvil Quest",
+      "signals": [
+        { "label": "First route", "value": "Guided" },
+        { "label": "Source policy", "value": "Dated" },
+        { "label": "Access", "value": "Free" }
+      ],
+      "panel": {
+        "eyebrow": "Question to next action",
+        "title": "Use the shortest useful route",
+        "description": "Each entry point is designed around a player task, then leads into the deeper reference only when you need it.",
+        "imageAlt": "Anvil Quest player facing a forge and adventure route"
+      },
+      "quickActions": [
+        {
+          "title": "Start",
+          "detail": "Learn the first-hour route",
+          "href": "/guides/beginner-guide",
+          "icon": "lucide:route"
+        },
+        {
+          "title": "Clear",
+          "detail": "Open boss strategies",
+          "href": "/bosses",
+          "icon": "lucide:swords"
+        },
+        {
+          "title": "Verify",
+          "detail": "Check codes and updates",
+          "href": "/codes",
+          "icon": "lucide:shield-check"
+        }
+      ],
       "videoId": ""
     },
     "updates": {
@@ -198,6 +234,37 @@
           "description": "Ranking every weapon from S to C based on DPS, utility, and synergy.",
           "icon": "lucide:list-ordered",
           "href": "/guides/weapon-tier-list"
+        }
+      ]
+    },
+    "diagnose": {
+      "badge": "Start from the problem",
+      "title": "What is blocking your next run?",
+      "description": "Choose the situation you recognize and jump to the shortest useful next step.",
+      "cards": [
+        {
+          "symptom": "I just started and do not know what matters first",
+          "action": "Open the beginner route",
+          "href": "/guides/beginner-guide",
+          "icon": "lucide:route"
+        },
+        {
+          "symptom": "A boss keeps ending the run",
+          "action": "Read the boss strategy",
+          "href": "/bosses/emberfang",
+          "icon": "lucide:swords"
+        },
+        {
+          "symptom": "I cannot find the item or upgrade I need",
+          "action": "Browse item references",
+          "href": "/items",
+          "icon": "lucide:package-search"
+        },
+        {
+          "symptom": "A code or familiar route may be outdated",
+          "action": "Check codes and recent changes",
+          "href": "/codes",
+          "icon": "lucide:history"
         }
       ]
     },
@@ -357,22 +424,22 @@
           "highlights": [
             {
               "title": "Beginner Walkthrough",
-              "youtubeId": "dQw4w9WgXcQ",
+              "thumbnail": "/images/video-placeholder.svg",
               "duration": "12:34"
             },
             {
               "title": "All Bosses Ranked",
-              "youtubeId": "aaaaaaaaaaa",
+              "thumbnail": "/images/video-placeholder.svg",
               "duration": "18:42"
             },
             {
               "title": "Speedrun Guide",
-              "youtubeId": "bbbbbbbbbbb",
+              "thumbnail": "/images/video-placeholder.svg",
               "duration": "25:10"
             },
             {
               "title": "Hidden Secrets",
-              "youtubeId": "ccccccccccc",
+              "thumbnail": "/images/video-placeholder.svg",
               "duration": "9:15"
             }
           ]
@@ -406,14 +473,17 @@
       ]
     },
     "closingCta": {
-      "title": "Ready to Master the Forge?",
-      "description": "Bookmark this wiki and check back daily for new codes, boss guides, and tier list updates.",
-      "primary": "Play Anvil Quest",
-      "secondary": "Join Our Discord"
+      "title": "Ready for the next useful step?",
+      "description": "Start with the beginner route, then return when a boss, item, code, or update creates a new question.",
+      "primary": "Open the beginner guide",
+      "primaryHref": "/guides/beginner-guide",
+      "secondary": "Play Anvil Quest",
+      "secondaryHref": "https://example.com/anvil-quest"
     }
   },
   "footer": {
     "playGame": "Play Anvil Quest",
+    "sourceAndCorrections": "Source and corrections",
     "officialDiscord": "Official Discord",
     "officialYoutube": "Official YouTube",
     "officialTwitter": "Official Twitter",

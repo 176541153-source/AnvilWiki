@@ -157,11 +157,47 @@
       "description": "Anvil Questの最も完全なWiki。ボス攻略、有効なコード、アイテムの場所、tier list、初心者ガイドを毎日更新。"
     },
     "hero": {
-      "badge": "ファン制作コミュニティWiki",
-      "title": "Anvil Quest Wiki",
-      "description": "Anvil Questの完全攻略サイト。ボス攻略、有効なコード、アイテムの場所、tier list、鍛冶を極めるために必要なすべてが揃っています。",
-      "ctaPrimary": "Anvil Questをプレイ",
-      "ctaSecondary": "ガイドを見る",
+      "badge": "プレイヤーの行動を優先する攻略サイト",
+      "title": "Anvil Questの次の一手を見つけよう",
+      "description": "初心者ルート、ボス攻略、コード確認、アップデート後の変更点など、今の目的から最短の答えへ進めます。",
+      "ctaPrimary": "初心者ルートを始める",
+      "ctaPrimaryHref": "/guides/beginner-guide",
+      "ctaPrimaryIcon": "lucide:route",
+      "ctaSecondary": "有効なコードを確認",
+      "ctaSecondaryHref": "/codes",
+      "ctaSecondaryIcon": "lucide:gift",
+      "ctaTertiary": "Anvil Questをプレイ",
+      "signals": [
+        { "label": "最初のルート", "value": "ガイド付き" },
+        { "label": "情報方針", "value": "日付を明記" },
+        { "label": "利用", "value": "無料" }
+      ],
+      "panel": {
+        "eyebrow": "質問から次の行動へ",
+        "title": "必要な最短ルートを使う",
+        "description": "各入口はプレイヤーの目的から始まり、必要なときだけ詳しい資料へ進める設計です。",
+        "imageAlt": "鍛冶場と冒険ルートに向かうAnvil Questのプレイヤー"
+      },
+      "quickActions": [
+        {
+          "title": "始める",
+          "detail": "最初の1時間の流れ",
+          "href": "/guides/beginner-guide",
+          "icon": "lucide:route"
+        },
+        {
+          "title": "突破する",
+          "detail": "ボス攻略を開く",
+          "href": "/bosses",
+          "icon": "lucide:swords"
+        },
+        {
+          "title": "確認する",
+          "detail": "コードと更新情報",
+          "href": "/codes",
+          "icon": "lucide:shield-check"
+        }
+      ],
       "videoId": ""
     },
     "updates": {
@@ -198,6 +234,37 @@
           "description": "DPS、有用性、シナジーに基づく全武器のS～Cランク付け。",
           "icon": "lucide:list-ordered",
           "href": "/guides/weapon-tier-list"
+        }
+      ]
+    },
+    "diagnose": {
+      "badge": "困りごとから始める",
+      "title": "次のプレイを止めているのは何ですか？",
+      "description": "当てはまる状況を選び、最短で役立つ次の手順へ進みます。",
+      "cards": [
+        {
+          "symptom": "始めたばかりで何を優先すべきか分からない",
+          "action": "初心者ルートを開く",
+          "href": "/guides/beginner-guide",
+          "icon": "lucide:route"
+        },
+        {
+          "symptom": "同じボスで何度も止まっている",
+          "action": "ボス攻略を読む",
+          "href": "/bosses/emberfang",
+          "icon": "lucide:swords"
+        },
+        {
+          "symptom": "必要なアイテムや強化素材が見つからない",
+          "action": "アイテム資料を見る",
+          "href": "/items",
+          "icon": "lucide:package-search"
+        },
+        {
+          "symptom": "コードや以前のルートが古いかもしれない",
+          "action": "コードと最近の変更を確認",
+          "href": "/codes",
+          "icon": "lucide:history"
         }
       ]
     },
@@ -357,22 +424,22 @@
           "highlights": [
             {
               "title": "初心者向けプレイガイド",
-              "youtubeId": "dQw4w9WgXcQ",
+              "thumbnail": "/images/video-placeholder.svg",
               "duration": "12:34"
             },
             {
               "title": "全ボス威力ランキング",
-              "youtubeId": "aaaaaaaaaaa",
+              "thumbnail": "/images/video-placeholder.svg",
               "duration": "18:42"
             },
             {
               "title": "スピードラン解説",
-              "youtubeId": "bbbbbbbbbbb",
+              "thumbnail": "/images/video-placeholder.svg",
               "duration": "25:10"
             },
             {
               "title": "隠し要素まとめ",
-              "youtubeId": "ccccccccccc",
+              "thumbnail": "/images/video-placeholder.svg",
               "duration": "9:15"
             }
           ]
@@ -406,14 +473,17 @@
       ]
     },
     "closingCta": {
-      "title": "鍛冶を極める準備はできましたか？",
-      "description": "このWikiをブックマークして、新しいコード、ボス攻略、tier listの更新を毎日チェックしましょう。",
-      "primary": "Anvil Questをプレイ",
-      "secondary": "Discordに参加"
+      "title": "次に役立つ一歩へ進みましょう",
+      "description": "初心者ルートから始め、ボス・アイテム・コード・更新で新しい疑問が出たら戻ってきてください。",
+      "primary": "初心者ガイドを開く",
+      "primaryHref": "/guides/beginner-guide",
+      "secondary": "Anvil Questをプレイ",
+      "secondaryHref": "https://example.com/anvil-quest"
     }
   },
   "footer": {
     "playGame": "Anvil Questをプレイ",
+    "sourceAndCorrections": "ソースと訂正",
     "officialDiscord": "公式Discord",
     "officialYoutube": "公式YouTube",
     "officialTwitter": "公式Twitter",

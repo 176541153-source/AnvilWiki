@@ -5,6 +5,18 @@ All notable changes to AnvilWiki are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- Config-driven task-first homepage: split Hero, configurable CTA links/icons, decision signals, quick actions, and an optional problem-to-next-step `diagnose` section.
+- Optional `brandIcon`, public source/corrections link, and About-page editorial mission/coverage/methodology in `src/config/site.ts`.
+- `apply-template` codes/guides presets now generate the reusable homepage structure directly, with regression tests for the emitted contract.
+
+### Changed
+
+- Deployment guidance now treats the custom domain as the only canonical public host and uses Cloudflare Bulk Redirects to send `*.pages.dev` to it without a request-path middleware.
+
 ## [2.3.1] — 2026-08-27
 
 **紧急修复批:根除 `tailwind.config.mjs` 在 ESM 文件内误用 CommonJS `require()` 的开箱即炸地雷。单文件级修复,fork 常规 merge 即得。**
@@ -136,11 +148,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **SEO 进阶:从被收录到排上去,再到被 AI 引用——对齐 2026 搜索新格局。**
 
 ### Added
+
 - **学习手册第 11 章「SEO 进阶」**(`docs/handbook/{zh,en}/seo-traffic.md`,learn 10→11 章,提示词 16→18 个):一页一词选词地图(意图匹配/长尾甜点/可超越性三判据 + 关键词选题提示词)、单页做满自检清单(title/H2 问句/summary/表格/内链/封面图/lastModified 八槽位表格 + 全站 SEO 自检提示词)、站点信任三慢变量(新鲜度/作者署名/内链网络)、2026 新规则失效清单(FAQ 富结果移除、llms.txt 对 Google 无效但对 ChatGPT 有用、AI Overviews 引用偏好、封面图成图片搜索入口)、2026-08 反 spam 三红线;第 10 章结尾衔接同步(中英)。
 - **`docs/seo.md` 新增「Google 官方规范更新记录(2026)」**:9 条时间线(Spam update / preferred sources 自定义按钮 / GSC 社交视频分析 / review snippet 违规规则 / canonicalization 澄清 / llms.txt 官方澄清 / FAQ 富结果移除 / og:image 成选图首选 / Discover core update),每条附「对本模板的影响」;文末 FAQPage 备注从「限制到政医站」修正为「已完全移除」。
 - **`docs/roadmap.md` 公开路线图**:八段演化主线(v0.1 地基 → v1.19 SEO 进阶,每段方向+代表能力)、近期候选池(AI 引用追踪/封面图产能/preferred sources 适配/选品决策支持)、v2.0 方向(PR 门控 CI 内容管道/多站管理/变现深化)、不做清单;`docs/README.md` 快速索引与 seo.md 描述同步收录。
 
 ### Changed
+
 - `docs/content-format.md` 媒体密度表新增封面图质量三原则(2026-03 起 Google 选图首选 og:image,封面从装饰升级为图片搜索流量入口)。
 - 全仓计数同步:学习手册 10→11 章、可复制提示词 16→18——README 中英(4+2 处)、docs/README(2 处)、PRD §5/§11/§15、`landing.ts` 手册简介(中英 4 处)+ 发布横幅(中英)+ `PROJECT_VERSION`;发版横幅文案与版本号同步(吸取 v1.18.0 漏改横幅的教训)。
 
@@ -149,12 +163,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **关卡7 模板化 + 关卡8 批量内页:跑通一个站之后的两条放大路径。**
 
 ### Added
+
 - **`pnpm template-audit` 模板健康检查**(`scripts/template-audit.ts`):代码层纯净度(剥离注释后扫 demo 字符串,注释里的用法示例不算违约)/配置层换皮(域名/站点名+游戏名/分类三处一致)/内容层可替换性(每类文章数、draft 遗留)/换皮残留(demo 封面与机制图、**demo 文章**(按内容含 demo 游戏名检测,文件名相同的 fork 自有页面不误报)、wrangler.toml demo 值)四组检查,✅⚠️❌ 三级输出 + 健康度评分(如「3/11」);仅 ❌ 违反分层契约才非零退出,demo 仓库上 ⚠️ 遗留是预期。demo 资产清单与 `apply-template.ts` / `setup.yml` 保持同步(keep-in-sync 注释)。
 - **`pnpm bulk-new-posts` 批量内页脚手架**(`scripts/bulk-new-posts.ts`):读 `new-posts.csv`/`.tsv` 关键词清单(列 `locale,category,slug,title,description`,支持 RFC-4180 引号转义、`#` 注释行、表头前注释、Excel BOM/TSV 自适应),全量校验(locale∈routing / category∈navigation / slug 自动规范化与冲突去重 / description 40-165)后**全部合法才写入**;生成的全部是 `draft: true` 草稿(不进 build),目标文件已存在则跳过绝不覆盖;`--dry-run` 预览计划;边界清晰报错——description 占位符在长标题下自动降级为固定文案(schema 40-165 恒通过)、未闭合引号、目录入参、`-n` 别名。
 - **`.agent/skills/anvil-batch-articles` 批量内容技能**:关键词清单 → 意图归类(照抄 anvil-new-article 分类表)→ 生成 `new-posts.csv` → 每类意图用同一份统一提示词模板批量填充 → `check-content` + `build` 全批验收;内置 5 条铁律(批量≠灌水、禁编造数据、内链只指真实页面、同批禁模板句复用、draft 逐篇转正)。
 - **学习手册第 9 章「把第一个站打磨成模板」+ 第 10 章「批量做内页」**(zh/en,`templatize-your-site.md` / `batch-pages.md`,learn 手册 8→10 章):第 9 章讲 template-audit 用法、换皮清单沉淀提示词、复制第二个站的 30 分钟四步;第 10 章讲内页流量逻辑、关键词四来源、统一内页生成提示词、批量三步法与灌水红线。新增 2 个可复制提示词(总 16 个)。
 
 ### Changed
+
 - 全仓计数同步:学习手册 8→10 章、可复制提示词 13→16 个(v1.17.1 加媒体提示词后实际已 14 处但宣传数未同步,本次一并校正)、脚本 9→11、技能 3→4——README 中英、docs/README、PRD §5/§11/§15、`landing.ts` 手册简介、AGENTS.md Status/Commands/技能清单、手册内交叉引用(第 4 章技能数、第 8 章结尾接第 9 章)。
 - `docs/apply-template.md` 末尾新增「模板化进阶:audit + 沉淀」一节;PRD §14 roadmap 补 v1.18 行。
 
@@ -163,10 +179,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **专家团复审补丁:demo 图内事实校正 + fork 素材清理 + 指引闭环。**
 
 ### Fixed
+
 - **demo 图与正文事实矛盾**(复审 A 批):竞技场图 4 个固定陨石标记→3 个靠边标记(正文"每 30s 标 3 个点,引到边缘");"permanent lava"→"fire puddles last 20s"(正文 20 秒);机制图 "~1.5s dodge window"→"2s to move after each mark"(正文标记后 2 秒落地)、"save your dash for the volley"(Emberfang 的设定串台)→"melee: stand at her side or back" 并补 Flame Whip "1.2s wind-up · 600 damage" 数据;Frostpike 卡 "Freeze on hit"(图自创触发条件)→"Freeze utility"(正文原话);stormcaller gallery 图注同步改"meteor marks near the edges"。
 - **fork 选 "Clear demo content" 后留下 11 张孤儿 demo 图**(约 340KB):`apply-template` 新增 `clearDemoAssets`(按名删 5 张 demo 封面 + 整删 `src/assets/gallery`、`public/images/articles`,不误伤用户自换素材),`setup.yml` 清理步骤同步同一清单(fork 真模拟构建验证)。
 
 ### Docs
+
 - PRD §14 roadmap 补 v1.17 行(v1.15/v1.16 惯例对齐)。
 - 学习手册「前 10 篇文章」章中英新增**提示词 D:配图与视频**(截图/视频来源红线、放置路径、密度表指引),frontmatter description 三段→四段;`content.config.ts` gallery 注释补 demo 目录约定。
 
@@ -177,10 +195,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 背景:模板的媒体系统(封面/gallery/内联图/视频 + ImageObject/VideoObject JSON-LD)早已齐备,但 demo 文章几乎没用到(7 篇正文内联图 0 处、gallery 1 处且复用封面、视频 1 处、codes 页无封面、ja 侧 0 媒体)——fork 用户与 AI agent 照 demo 学,只能学出纯文字站。本版把"能力 vs 示范"倒挂拉平。
 
 ### Added
+
 - **demo 素材生成脚本 `scripts/gen-demo-media.mjs`**:demo 游戏是虚构的,没有真截图——7 张扁平风示意图(封面/竞技场地图/机制图/职业卡/路线图/武器卡)以 SVG + sharp 光栅化,可复现可改;全部 800×450(16:9)。
 - **媒体密度指引**(按页面类型给封面/内联图/gallery/视频建议密度表):`docs/content-format.md` 新增专节,`.agent/skills/anvil-new-article` 同步补图片四条规则,AI 生成文章默认带上媒体。
 
 ### Changed
+
 - **codes 页补封面**(en/ja):og:image 不再回退全站 hero,分享卡片有辨识度;codes 恰是分享最频繁的页面类型。
 - **stormcaller gallery 换独立机制图**(竞技场俯视图 + Flame Whip 安全区/陨石时间线),不再复用封面充当画廊。
 - **weapon-tier-list 补正文内联卡片图 ×2**(S 档 Voidforge / A 档 Frostpike)——此前正文内联图 0 示范。
@@ -194,6 +214,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **专家团三轮审计修复批:fork 主路径致命 bug + SEO 合规 + 性能 + 文档全面同步。**
 
 ### Fixed
+
 - **fork 一键初始化后构建必炸**:setup.yml 的 landing 删除清单与 apply-template 的 `LANDING_PATHS` 双源漂移,漏删 `src/pages/landing/`(docs 路由)与 `public/images/showcase`,合并初始化 PR 后 build 因 unresolved import 失败;已对齐两处清单(fork 真模拟验证构建通过)。同修:setup.yml 输入改 env 传递防注入、`--force-with-lease` 幂等重跑。
 - **CJK 标签页生产 404**:`slugifyTag` 预编码非 ASCII 标签导致 Astro 写出字面量 `%E7…` 目录,站内链接(单编码)全部 404;改为返回原始标签,两种 URL 形态均可达。
 - **`anvil-ops submit` 在多语言仓库永远失败**:门禁 `check-i18n --strict` 与 wiki 回退设计冲突(locale 缺文章是合法状态),改非 strict 与 CI 同口径;手册/技能文件同步去「严格」表述。
@@ -203,6 +224,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **公告栏版本漂移**:PROJECT_VERSION 落后于已发版本(v1.16.0 发布时漏同步)。
 
 ### Changed
+
 - **anvilwiki-ops 0.1.3(npm)**:MCP serverInfo 版本号改运行时读 package.json(原硬编码 0.1.0 已漂移);npm 包补 LICENSE;doctor 网络异常空 `reason:` 兜底;submit 非 strict(见上)。
 - **广告位预留高度**(Sticky 90px / InContent 250px / Sidebar 600px):开启 AdSense 后填充不再推挤页面(CLS),默认关闭契约不变。
 - **landing 截图 PNG→WebP**(273K→104K)+ hero 改 `eager`+`fetchpriority="high"`;`_headers` 补 `/images/*`、`/pagefind/*` 缓存规则。
@@ -210,6 +232,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`OG_LOCALE_MAP` 放宽为 `Record<string,string>`**:`new-locale` / `apply-template` 重写 locales 后不再 typecheck 报错;zh landing 输出 `og:locale=zh_CN`。
 
 ### Docs
+
 - README 英文区补齐中文区 4 个章节(AI 技能表/平台对比/FAQ/技术栈+社区)、"Development 6"→7;AGENTS.md 测试清单与 anvil-ops 60 测试数同步、发布状态更新;deployment.md 死锚点修复;PRD §5 目录树/§5.1/§6.1 schema/§13.2 CI/§15.3 全部同步至当前现实。
 
 ## [1.16.0] — 2026-08-18
@@ -217,9 +240,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **社区案例库:首批 3 个真实用户站点上线展示。**
 
 ### Added
+
 - **社区案例库(Showcase)**:首批 3 个真实用户站点(aniimo.wiki / nomanssky.wiki / steal-anegg.wiki)三处展示——官网中英落地页新增「Built with AnvilWiki」区块(`CommunitySites.astro` + `landing.ts` 的 `COMMUNITY_SITES` 数据)+ README 中英双语案例表格 + PRD §15.6;数据与组件均随 landing 层分发,fork 时被 `apply-template` 自动清理。
 
 ### Fixed
+
 - **GSC 接入步骤修正**(手册第 7 章 + ops README,中英):服务账号邮箱会被 GSC「添加用户」直接拒收(「无效电子邮件地址」),改为官方推荐的 Google 群组中转四步法,并补「服务账号=机器人编号,非邮箱」概念段。
 - **学习手册第 3 章新增第 5 步「换上你的图标」**(中英):favicon 全套 + hero 图的手把手替换(favicon.io),原验收步顺延为第 6 步;`apply-template` CLI 结尾提示同步扩写——修复零基础主路径不教换图标、站点顶铁砧图标上线的缺口。
 - **手册第 6 章两处措辞**(中英):IndexNow 表述修正(仅自有域名接入 Cloudflare 后有 Crawler Hints,纯 pages.dev 无);GSC 验证变量补「网页 Variables vs wrangler.toml [vars]」双模式指引。
@@ -231,6 +256,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **站长运营 CLI + MCP:anvilwiki-ops(npm 包)—— AI 拉数据、给洞察、内容走 PR 上线的自动化运营闭环。**
 
 ### Added
+
 - **`tools/anvil-ops/` 独立 npm 包 `anvilwiki-ops`(0.1.1 已上架 npmjs.com,`npx` 免安装)**:CLI(`anvil-ops`,含包名别名)+ stdio MCP server(`anvil-ops mcp`,一行接入 Claude/ZCode 等 MCP 客户端);core / CLI / MCP 三层解耦,56 测试 + 真实 git bare 仓库集成测试;根 tsconfig/eslint exclude `tools/`,模板与工具互不干扰。
 - **5 命令 = 5 MCP 工具**:`doctor`(wrangler/gh/GSC/CF 配置体检,逐项给修复指引)/ `metrics`(GSC 点击曝光 CTR 排名 + CF Web Analytics 访问,table/json/md 三格式,凭据未配自动降级)/ `audit`(refresh-audit / check-i18n / check-content / check-links 聚合报告)/ `insights`(规则引擎:低 CTR 改写、排名 5-15 加深、零曝光排查、流量结构、过期 codes,阈值常量集中)/ `submit`(check-content + check-i18n --strict + build 校验 → ops/submit-* 分支 → push → gh 开 PR,**永不 push main**)。
 - **数据接入契约**:GSC 服务账号 JSON(`{` 开头内联,否则路径)+ CF API token 存 .env(gitignored,空 = 功能禁用);CF site tag 直接读 `wrangler.toml PUBLIC_CF_BEACON_TOKEN`,零额外配置;错误信息全部带「现象 + 修复指引」。
@@ -238,6 +264,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **三个 `.agent/skills` 技能补可选引用**:anvil-refresh → `insights` 流量×新鲜度合并巡检;anvil-new-article / anvil-update-codes → `submit` 校验后一键开 PR。
 
 ### Changed
+
 - 全仓手册计数与描述同步(开发手册 6→7 章):landing 中英 hub 副标题 + 手册卡、README 中英、docs/README、AGENTS 状态行 + 新增 Ops Toolkit 章节(含 pnpm workspace 劫持警示)、PRD roadmap v1.15 行。
 - AGENTS.md 产页规则 4 增补 `anvil-ops submit` 可选收尾。
 
@@ -246,6 +273,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **状态同步版:README 重构升级 + 官网/仓库文档全面刷新到最新状态(v1.14 手册分册、8+6 章、零基础优先)。**
 
 ### Changed
+
 - **README.md 重构**:新增「快速链接」表(零基础→学习手册 8 章/全景→文档中心/定制→开发手册/在线 Demo,一眼分流);核心特性压缩为 8 条并把「零基础双手册」提为第一条;快速开始压缩为 4 步并引导新手去学习手册第 2 章;新增「常见问题」(要花多少钱/不会编程能做吗/多久有收入/会被上游覆盖吗);对比表加「AI 产页/上手门槛」两行;英文区同步镜像重写;尾部新增 Design Notes。badges 的 Project page 更新为 Docs 徽章。
 - **Landing 首页文案刷新**:hub 副标题与两本手册卡片描述改为最新事实(相互独立、8 章/6 章、零基础标准、每步 SOP+提示词)。
 - **仓库文档同步**:`docs/README.md` 手册条目改为 8+6 章 + 两个手册独立页链接;`AGENTS.md` 状态行从 v1.9.0(严重滞后)更新到 v1.14.0(含文档中心/手册结构/源码位置说明)。
@@ -255,6 +283,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **手册分册成页 + 章节拆细:学习手册与开发手册各自独立页面,5+4 章拆为 8+6 章,手册页改编号列表展示。**
 
 ### Changed
+
 - **两本手册独立成页**:`/landing/docs`(及中文版)改为选择页(全景清单 + 两张手册大卡);新增 `/landing/docs/learn` 与 `/landing/docs/dev` 手册专属页(中英四页)。左侧手册树的册名、章节页面包屑同步链接到手册页。
 - **学习手册 5 → 8 章**(沿自然接缝拆):①选对游戏 ②出发前:装好 6 样工具(原第 2 章第一幕独立成章——最大流失点值得独立入口)③复制模板跑起你的站 ④让 AI 写 10 篇攻略 ⑤网站上线(含买域名)⑥让 Google 认识你(GSC/sitemap/收录独立成章)⑦接广告开始赚钱 ⑧每周保鲜与增长。
 - **开发手册 4 → 6 章**:①改动地图 ②加栏目与加语言 ③换主题色与改首页(原「定制」一分为二)④功能开关总表 ⑤CI 门禁与安全底线(原「集成」一分为二)⑥同步与回流。
@@ -266,6 +295,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **建站全景清单 + 全书直达链接:回答「一个游戏站要完成哪些工作」,每个「去哪做」都能点进去。**
 
 ### Added
+
 - **文档中心 hub 新增「建站全景清单」**:从零到赚钱的 10 件工作(选游戏 → 装工具 → 建站 → 10 页 → 上线 → Google 登记 → 买域名 → 接广告 → 周保鲜 → 定制),每项带耗时标注,点击直达对应章节——新访客 10 秒看到全部工作量的地图。
 - **手册外链补齐(zh+en 同步)**:找新游四来源([itch.io newest](https://itch.io/games/newest) / [Steam 新品](https://store.steampowered.com/explore/new/) / [Roblox Discover](https://www.roblox.com/discover) / YouTube)、竞对站([Fandom](https://www.fandom.com) / [Game8](https://game8.co))、工具链([brew.sh](https://brew.sh) / [pnpm.io](https://pnpm.io) / [Claude Code](https://claude.com/claude-code) / [Codex](https://openai.com/codex) / [Cursor](https://cursor.com))、域名注册商([Cloudflare Registrar](https://www.cloudflare.com/products/registrar/) / [Porkbun](https://porkbun.com))、维护文档(development.md)——全部从纯文本变为可点击直达。
 
@@ -274,6 +304,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **双手册全量重写:按「完全零基础也能跟着走」标准,四专家(科普写作/第一性原理架构/新手测试员/模板守门)定档。旧版实测服务的是「半熟手」,新版服务真正的目标用户。**
 
 ### Changed
+
 - **统一七段骨架(9 章)**:①你在哪·解决什么(第一性原理链:赚钱←广告←流量←排名←收录←上线←你的文件←选品,每章开头「已有 X 缺 Y 本章给 Y」)②本章产出清单 ③概念垫底(新术语=一句白话+固定类比,首现定义后文直用)④分步实操(**四段式:做什么/怎么做/你会看到/确认做对了**)⑤卡住了怎么办(症状→原因→修法)⑥验收 ⑦下一步。
 - **补最大流失点**:学习手册第 2 章新增「第一幕:出发前装好 6 样东西」——终端怎么打开(Mac/Win)、注册 GitHub、装 Node 22、装 pnpm、装 Git、装 AI 助手,每样带确认点(小白实测:旧版最大劝退环节,装环境从一句话变成完整序幕)。另补:域名购买支线(Cloudflare Registrar/Porkbun)、AdSense 广告位编号从哪来、upstream 月度同步完整三行命令(旧版断链)、GSC 验证的逐步点击路径。
 - **小白实测卡点清零式修复**:wrangler.toml 二选一给新手唯一答案(删文件)+进阶折叠;`<你>.pages.dev` 占位符讲清含义;pnpm install/dev/build 全部补「你会看到」;frontmatter/SERP/RPM/搜索意图/Lighthouse 全部首现定义;意图决策表从第 1 章后移第 3 章(读者见到页面再讲页型);删前置噪音(第 2 章 wrangler 预警段、报错 2 三处一致、第 4 章 hreflang 检查、console.log 诊断法→挪开发手册)。
@@ -281,6 +312,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **中英 18 章全部重写同源**(2 并行 agent + 事实守恒校验):13 个提示词块数量守恒、验证条款与禁令原义保留、全部数字与限定词(仅上游生效/不含换肤/8 行主题变量/P1 仅 bosses+tier-list/NODE_VERSION 进 [vars]/2-8 周/15-20 篇/≥60 分/双源)逐条 grep 验收存活。
 
 ### Fixed
+
 - en 两章 title 超 80 字符(schema 拒收)裁剪;frontmatter 全部双引号转义防 YAML 冒号问题。
 
 ## [1.12.1] — 2026-08-17
@@ -288,6 +320,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **CLI 清理完整性修复:landing 专属 showcase 截图此前不在删除清单,fork 仓库会残留 3 张无用图片。**
 
 ### Fixed
+
 - `apply-template` 的 `LANDING_PATHS` 补上 `public/images/showcase/`(demo-article/home/mobile 三张截图,仅 landing Showcase 组件引用)——此前只删 `wechat-qr.jpg`,fork 的 `public/` 与 `dist/` 会残留这 3 张图。CLI 头部注释/汇总文案同步,组件计数注释修正(13)。
 - **全量 fork 模拟验证零残留**:按最终清单删除全部 8 个路径 + 翻转 `landingLinkEnabled` 后 `pnpm build` 绿;dist 无 landing 路由、无 showcase/wechat 图,llms.txt / sitemap / robots 均零 landing 痕迹。幸存文件中的 landing 引用全部为 flag 门控(SiteHeader / llms.txt)或有意保留(`docs/handbook` 手册源 + `lib/handbook.ts` 纯函数,fork 可直接复用提示词 SOP)。dry-run 计数 23 文件,与清单逐项吻合。
 
@@ -296,6 +329,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **手册章节页三栏布局:左侧手册目录树 + 右侧本页内容目录(scrollspy)。**
 
 ### Added
+
 - **左侧手册目录树**(新组件 `HandbookNav.astro`):两本手册全部章节按序分组列出,当前章高亮(`aria-current="page"`),顶部回文档中心;xlarge 屏吸顶,以下折叠为 `<details>`。纯 HTML/CSS 零 JS。
 - **右侧本页内容目录**:复用 wiki 的 `TableOfContents`(H2/H3 锚点 + IntersectionObserver scrollspy 跟随高亮);组件新增 `desktopAt` prop(`lg` 默认 wiki 不变 / `xl` 手册三栏用),以下屏折叠为 `<details>` 置于 TL;DR 卡之后。
 - 章节页网格 `xl:grid-cols-[13rem_minmax(0,48rem)_13.5rem]`,中列正文 max-w-3xl;`landing.ts` 新增 `onThisPageLabel`/`manualsLabel` 中英文案。
@@ -305,6 +339,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Landing 导航栏手册入口:头部新增「学习手册 / 开发手册」链接,锚定文档中心对应手册区块。**
 
 ### Added
+
 - LandingLayout 头部新增两个导航项(Learning Manual / Development Manual,图标 lucide:graduation-cap / wrench,移动端隐藏与 GitHub/Demo 同策略),链接按当前语言指向 `/landing/docs#learn|dev` 或 `/zh/landing/docs#learn|dev`;对全部 landing 族页面(官网/文档 hub/章节页)生效。
 - HandbookHub 手册区块加 `id="learn"` / `id="dev"` + `scroll-mt-20`(锚点定位不被吸顶头部遮挡)。
 
@@ -313,6 +348,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **手册文档专家审查修订版:9 项事实校正(P0×2 + P1×4 + P2×3),中英双语 + 3 份关联文档同步。**
 
 ### Fixed
+
 - **[P0] fork 保鲜工作流误导**:monetize 章原称"仓库已配每周自动开 issue 的 freshness 工作流"——实际 `content-pipeline.yml` 带 `if: github.repository == 'PNGTRID/AnvilWiki'`,fork 永远收不到 issue。改为:fork 每周本地跑 `pnpm refresh-audit`(并说明删 `if` 可开启),周 SOP 重排为三步。
 - **[P0] Initialize AnvilWiki workflow 范围夸大**:launch/integrations 章原称与 apply-template CLI"等价"——实际 workflow 只做收尾清理(wrangler vars/删 landing/清 demo),不含游戏名/主题色/语言。改为如实描述。
 - **[P1] 主题色"4 行"错误(连带 3 处文档陈旧)**:v1.9 引入 `--brand-text` 派生后实际是 8 行(`--brand`/`--brand-light`/`--brand-h`/`--brand-s` × 亮/暗);手册 3 处 + **AGENTS.md 约束 #2 + docs/apply-template.md + docs/migration-from-nextjs.md ×3 处**全部改正——只改 4 行会留下旧色相文字色。
@@ -326,6 +362,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **站内文档中心版:`/landing/docs` + `/zh/landing/docs`——学习/开发双手册(9 章 × 中英),每步 SOP + 可复制 AI 提示词,四专家(游戏wiki站/SEO/自动化/模板架构)讨论定档。**
 
 ### Added
+
 - **站内文档中心**(`HandbookHub` + `HandbookChapter` 组件,4 条路由):手册源码 `docs/handbook/{en,zh}/*.md` 单一真相源(GitHub 可浏览 + 站内渲染);**fork 用户保留手册**(学习手册的提示词 SOP 对站长有直接价值),apply-template CLI 只删 landing 路由——删除清单实测 19 文件,fork 模拟(删 landing 全套后)`pnpm build` 仍绿。
 - **学习手册 5 章**:选品四层漏斗(含 P01 选品分析/P02 首日规划提示词)→ 半小时建站(CLI 逐项填法+三类新手报错)→ 首日 10 页 AI 产页(P03 攻略/P04 codes/P06 tier list + 逐篇验收三件套 + 7 条反模式)→ 部署与首次收录(wrangler.toml 二选一 + GSC/sitemap/请求收录 SOP)→ 变现与周运营(AdSense 前置清单 + P05 codes 更新/P08 巡检/P11 SEO 体检 + 每周 30 分钟节奏)。
 - **开发手册 4 章**:三层架构与改动决策树(Astro 5 六坑)→ 定制 SOP(加分类/加语言/主题/首页,含 P07 翻译/P09 文案/P10 新语言提示词)→ 集成与工程(env 门控全表 + CI 三工作流 + 安全基线)→ 同步上游与贡献回流(merge 策略 + SemVer 承诺 + 发版流程)。
@@ -334,6 +371,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - LandingLayout 支持 `pageTitle`/`pageDescription`/`togglePath`/`extraJsonLd`;语言切换器在文档页内互切;自动跳转脚本收窄到 landing 根路径(不再把读者从章节页弹走)。DocsEntry 3 卡改站内链接,DevGuide「全部文档」入口改指 /landing/docs。
 
 ### Fixed
+
 - en 手册 frontmatter 的 ASCII 冒号破坏 YAML 解析(plain scalar 含 `: `)——18 文件统一 JSON 双引号转义;tldr 上限 300→480 字符(en 译文天然更长)。
 - DocsEntry 4 卡网格在 3 列下 3+1 孤行换行(v1.10.0 已修,此处确认保持)。
 
@@ -342,10 +380,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **官网开发指南版：landing 新增「怎么用」5 步上手板块——此前只有 4 张文档卡，缺一条"从头到尾怎么走"的向导。**
 
 ### Added
+
 - **Landing「怎么用」5 步开发指南板块**（`/landing` + `/zh/landing`，位于 DocsEntry 与 Community 之间）：fork 本地跑 → `pnpm apply-template` → 与 AI 对话产页 → 免费部署 → 保持新鲜。每步附可直接照抄的命令（含对话式产页示例 prompt）与对应文档链接，板块底部链接文档中心（`docs/README.md` 四条阅读路径：建站 / 写作 / AI Agent / 贡献者）。新组件 `DevGuide.astro` + `LandingContent.devGuide` 类型与中英文案。
 - DocsEntry 卡片网格修正：`sm:grid-cols-3` → `sm:grid-cols-2 lg:grid-cols-4`（4 张卡在 3 列网格会 3+1 孤行换行），陈旧注释（"3 cards"）同步修正。
 
 ### Changed
+
 - `apply-template` CLI 删除范围确认覆盖新板块：CLI 本就整目录删除 `src/components/landing/`（现为 10 组件）+ `src/config/landing.ts`（含 devGuide 文案）+ 两个 landing 页面；注释计数同步（8 → 10）。dry-run 实测「Removed 15 project landing page files」，fork 用户套用模板后仓库零 landing 残留。
 
 ## [1.9.0] — 2026-08-16
@@ -353,6 +393,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **专家团全面审计修复版：5 视角深挖（运行时/配置 CI/SEO i18n/安全 a11y/文档 DX），P0×5 + P1×10 + P2×30 全部清零。**
 
 ### Fixed (P0)
+
 - **5 个日文 legal 页 soft-404**：`[locale]/[legal].astro` 误从 `Astro.props` 读路由参数（AGENTS.md gotcha #4 原样违例），全部页面渲染成 HTTP 200 的 "Not Found" 空壳并被 sitemap/hreflang/footer 收录——改读 `Astro.params`。`check-links` 新增 soft-404 断言防止复发（状态码检查看不见这类问题）。
 - **JSON-LD 注入面关闭**：`JsonLd.astro` 的 `JSON.stringify` 不转义 `<`，frontmatter 含 `</script>` 即可逃逸 script 标签（社区 PR 工作流下的存储型 XSS 面）——序列化后统一 `\u003c` 转义。
 - **`pnpm apply-template` 产物缺 `ogImageWidth/ogImageHeight`**：fork 用户 typecheck 必挂 + 线上 `content="undefined"`——重写模板补齐两个必填字段。
@@ -360,6 +401,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **环境变量三表矛盾**：实际消费 15 个 env，`wrangler.toml [vars]` 只有 9 个（AdSense×4/GA/GSC 连注释占位都没有）、`setup.yml` 重置块同样、deployment.md 只列 8 个——三处对齐；保留 wrangler.toml 的 fork 现在有处可填广告变量（此前按文档去 dashboard 配置会被静默忽略）。
 
 ### Fixed (fork 扩展性 / 跨平台)
+
 - 语言切换器硬编码 `/^\/(ja)(\/|$)/` 剥前缀——新增语言后切换器全部产出 404/假链接，改为从 `locales` 动态构建（与 BaseLayout 同模式）。
 - 文章页 hreflang 用全量 `locales`——ja-only 文章会产出指向 404 的 `hreflang="en"`/x-default；改用 `localesForEntry()`（原为死导出）∪ 当前 locale，x-default 由 BaseLayout 从 alternates 推导（不存在死链）。语言切换器同步受 `availableLocales` 约束。
 - `check-links.ts` 在 Windows 上全站内链误报（`path.relative` 反斜杠未归一化）；`check-content.ts` 对 CRLF 检出不健壮（frontmatter 定界符精确匹配）——归一化 + 新增根级 `.gitattributes`（`* text=auto eol=lf`）根治。
@@ -367,6 +409,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `check-i18n` 以 `locales[0]` 充当默认语言——改为 regex 读取真实的 `defaultLocale`。
 
 ### Fixed (SEO / 结构化数据)
+
 - sitemap 不过滤 `noindex` 文章（rss/llms.txt 都过滤了）——`filter` 选项补上。
 - `rss.xml.ts` 硬编码回退域名违反约束 #9——改用 `siteUrl`。
 - 空列表页输出 `itemListElement: []` 的非法 ItemList——仅在有条目时注入。
@@ -380,6 +423,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - landing 自动跳转对爬虫渲染器关闸（bot UA guard），保留中文浏览器自动跳转的 UX。
 
 ### Fixed (a11y / 前端)
+
 - **skip-to-content 链接**（WCAG 2.4.1 A 级此前失败）——`#main` + sr-only 焦点样式，文案走 locale JSON。
 - **亮色模式品牌色文本对比度 3.1:1 → 4.8:1**：新增派生变量 `--brand-text`（从 `--brand-h/--brand-s` 计算，fork 只改 `--brand` 两个主变量仍然生效），`nav.DEFAULT`/TOC 激活态/搜索高亮全部切到文本安全色；StepByStep 步骤徽章白字改 `text-background`（暗色模式同步达标）。
 - 硬编码英文 UI 文案全部 i18n 化（en/ja 双语 key）：CodeBlock "Tap to copy"、ExploreModules "View all"、QuickStart "Open"、LazyYouTube 播放标签（顺带去掉 `▶` emoji 字形，与 lucide 图标一致）、StickyBanner/ThemeToggle/TableOfContents aria-label、footer "Community/Legal"、回退页 "English fallback" 徽章、快速答案复制/有用反馈按钮的 aria/title、面包屑与上下篇导航 aria；补上被引用却不存在的 `nav.language` key。
@@ -390,6 +434,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CJK 阅读时长判定从 `locale === 'ja'` 放宽为 `['ja','zh','ko']`。
 
 ### Changed (CI / 工程化)
+
 - CI 补跑自家门禁 `check-config` + `check-content`；加 `permissions: contents: read` 与 `timeout-minutes`；`setup.yml` 幂等化（`checkout -B` + `--force-with-lease` + 空 commit/已存在 PR 跳过）；`content-pipeline.yml` 去掉重复 audit 执行、失败不再吞掉建空 issue。
 - **测试 34 → 51**：`parseEntryId`/`isPossiblyOutdated`/`STALE_*` 下沉到 `lib/content-utils.ts`（原在 `astro:content` 依赖模块内，vitest 无法加载）；补 `slugifyTag` CJK/纯符号分支、`absoluteUrl`、`languageAlternates`（含"never emits x-default"契约）测试。
 - 移除零引用的 playwright devDependency。
@@ -397,16 +442,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - vitest 路径别名改用 `fileURLToPath`（中文路径下 `.pathname` 会 percent-encode 导致 `~/lib/*` 解析失败——真实项目 dogfooding 发现）。
 
 ### Docs
+
 - PRD Node 20 → 22（两处）；AGENTS.md 版本状态行、组件词汇表补 StatBar、命令表提 pagefind postbuild；deployment.md 期望页数改为不写死数字、curl 示例去尾斜杠、新增 CSP 配置 FAQ；CHANGELOG 补 1.8.1/1.8.2 compare 链接；apply-template.md navigation 示例补必填字段 `isContentType`、home 模块数 4→6；Giscus 口径统一"4 必填 + 1 可选"；anvil-update-codes 技能措辞对齐 frontmatter 时代；seo.md "v1.5–v1.8 资产"章节移到"下一步"之前；3 处注释从 legacy 路径 `src/content/<locale>/` 更正为 `src/content/wiki/<locale>/`。
 
 ## [1.8.2] — 2026-08-15
 
 ### Fixed
+
 - **Lighthouse a11y 100 restored** (regression introduced by v1.5–v1.8 components, caught by a full re-test): small brand-orange text on tinted backgrounds (gameVersion badge, Quick Answer label, BossStatCard labels, codes table headers, article tag chips) now uses foreground color while keeping brand icons/borders; CodeBlock copy button's accessible name no longer mismatches its visible text.
 - **`pnpm check-config` deployment domain gate**: errors when the effective SITE_URL host (env > wrangler.toml) ≠ `site.ts` domain — the wrangler.toml trap that caught the first real fork user is now machine-blocked.
 - LandingLayout unused-catch lint warning cleared (lint fully clean).
 
 ### Fixed (v1.8.1)
+
 - **Inline video placement** (from real-project dogfooding): new `<Video id title>` MDX component renders a YouTube player wherever the author places it in the body; the frontmatter `videos` array becomes the structured-data registry (VideoObject JSON-LD) + bottom fallback, with inline IDs auto-deduped from the fallback. Player core extracted to a shared `LazyYouTube` (event-delegation script — no more per-instance duplication; keyboard accessible; broken-thumbnail fallback to a plain link where i.ytimg.com is unreachable, e.g. mainland China).
 - Article layout: bottom video section moved up to right after the body; Comments moved to the very end (body → videos → gallery → tags → related → prev/next → feedback → comments → sponsor).
 - i18n: "On this page" (TOC) and "Quick Answer" hardcoded English now read from locale JSON (en/ja).
@@ -416,6 +464,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **AnvilWiki v1.8 — AI 原生内容生产 + 新鲜度管道:第一性原理路线落地(技能分发、codes 数据结构、定时审计、选品工作流)。**
 
 ### Added
+
 - **`.agent/skills/` ships with the template** (Agent Skills open standard — Claude Code / ZCode / Codex / Cursor auto-discover): `anvil-new-article` (any source material → build-passing MDX), `anvil-update-codes` (apply new/expired codes incl. multilingual sync), `anvil-refresh` (freshness audit report). Plus a "Conversational Content Authoring" section in AGENTS.md as the zero-install fallback — fork users generate pages by just talking to their AI tool, scripts become the verification backend (`check-content` + `build`).
 - **Structured `codes` frontmatter**: `{code, reward, status, expiryDate, source}` array → auto-rendered CodesTable (Active section with one-click-copy CodeBlocks + freshness labels; Expired table kept for long-tail "is X still working" queries) + localized 4-question FAQPage JSON-LD. Demo codes articles (en/ja) migrated.
 - **`pnpm refresh-audit`**: deterministic freshness engine (codes pages unverified >7d = P0, stale categories >90d = P1) — markdown report, no LLM, no mutations.
@@ -427,12 +476,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **AnvilWiki v1.7 — 内容表达力二期 + E-E-A-T:画廊、作者体系、联盟链接与内容 lint。**
 
 ### Added
+
 - **Image gallery + lightbox**: `gallery` frontmatter (image/caption/alt) renders a thumbnail grid below the article body with a native `<dialog>` lightbox (prev/next/ESC/backdrop close). Each image emits ImageObject JSON-LD (Google Images eligibility). Thumbnails via Astro Image (WebP/srcset).
 - **Author system**: `src/config/authors.ts` registry — registered authors link out from the article byline and upgrade Article JSON-LD author from Organization to **Person** (with `sameAs` knowledge-graph signal). Bare `author:` names keep working unchanged.
 - **`<AffiliateLink>` MDX component**: affiliate/outbound CTA card with `rel="sponsored nofollow noopener"` baked in — an SEO-compliant second monetization channel (Steam links, game passes). Zero JS, no env gating (it's content, not infrastructure).
 - **`pnpm check-content`**: content lint — no H1 in body, heading level skips, images without alt text, internal links with trailing slashes. Exits 1, CI-ready.
 
 ### Changed
+
 - Demo: Stormcaller article now carries a gallery + named author; beginner guide demonstrates `<AffiliateLink>`; fixed a duplicate "What to Do Next" link.
 
 ## [1.6.0] — 2026-08-15
@@ -440,6 +491,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **AnvilWiki v1.6 — 创作者维护工具 + 部署自动化:翻译覆盖率、内链审计、一键初始化 workflow。**
 
 ### Added
+
 - **`pnpm check-i18n`**: translation coverage report — missing articles & UI keys per locale vs English (`--strict` to gate CI). Wired into CI as a report step.
 - **`pnpm check-links`**: internal-link audit over the built `dist/` — catches renamed-slug body links, homepage JSON links to unwritten articles, and locale links to pages that don't exist. Exits 1 on any broken link; wired into CI.
 - **"Initialize AnvilWiki" workflow** (`.github/workflows/setup.yml`): fork → Actions → Run once with your domain — resets `wrangler.toml [vars]`, removes the project landing page, opens a review PR.
@@ -449,6 +501,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **README growth pack**: AnvilWiki vs Fandom vs DIY comparison table, suggested repo topics, and a "built a site? add it to the Showcase" PR invitation.
 
 ### Fixed
+
 - Article tag links on English-fallback pages now point at the served locale's tag pages (was: requested locale → 404).
 - Tag pages: hreflang alternates and the language switcher only offer locales where the tag actually exists (tag pages don't fall back).
 - Demo content dead links: `/guides/fastest-leveling`, `/updates`, `/guides/video-walkthroughs` (caught by the new check-links on its first run).
@@ -458,6 +511,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **AnvilWiki v1.5 — 内链 + 时效性 + 表达力:标签系统、版本号、最近更新页、MDX 组件与草稿流。**
 
 ### Added
+
 - **Tag system landing pages**: `/tags` (per-locale cloud) + `/tags/<tag>` aggregation pages; article-page tags are now clickable links; tag pages carry ItemList + Breadcrumb JSON-LD and land in the sitemap with hreflang. No English fallback (list accuracy rule).
 - **`gameVersion` frontmatter**: optional badge on the article header ("applies to v2.5") — freshness / E-E-A-T signal for fast-patching games. Demo articles tagged.
 - **`/recent` page** (all locales): full recently-updated listing, feeding "patch notes"-style queries; pairs with sitemap lastmod.
@@ -474,6 +528,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **AnvilWiki v1.4 — 官网国际化版:中文官网 + 微信交流群 + demo 双向入口。**
 
 ### Added
+
 - **Chinese landing page (`/zh/landing`)**: full bilingual landing — every section localized (hero, features, comparison table, showcase, docs, CTA), EN ↔ 中文 toggle, hreflang alternates (x-default → English). The landing speaks for the PROJECT, so it ships its own en/zh pair independent of the demo game's en/ja content locales.
 - **Locale auto-detection**: visiting `/landing` with a Chinese browser language auto-redirects to `/zh/landing` (client-side, pre-render, zero runtime cost). Manual toggles are remembered in localStorage and always win.
 - **WeChat community group**: QR-code card on both landing pages + README (Chinese & English sections) — "scan to add the maintainer and join the discussion group". Image optimized 952×1374 PNG → 480×693 JPG (44 KB).
@@ -481,6 +536,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Maintainer attribution**: footer on both landing pages and README — 由 PNG 部落团队主理人 袁锐钦 开源 / "Open-sourced by 袁锐钦 (Yuan Ruiqin), lead of the PNGTRIBE team".
 
 ### Changed
+
 - Landing announcement bar is now driven by a `PROJECT_VERSION` constant (kept in sync with package.json) — no more stale hand-written version strings.
 
 ## [1.3.0] — 2026-08-15
@@ -490,6 +546,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 The final batch of the 2026-08 expert-audit backlog: a complete codes-content paradigm (the #1 traffic entry for game wikis), a full reading-experience suite, and fork-user tooling (locale scaffolding, homepage presets, schema validation).
 
 ### Added
+
 - **Codes content paradigm**: `CodeBlock.astro` one-tap copy component + a complete demo codes article (en/ja) — 5 copyable codes, expiry table, "how to redeem" question-style H2s. Codes pages are the highest-traffic wiki entry; the template now ships a reference implementation.
 - **Stale-content notice**: articles in time-sensitive categories (bosses / tier-list) older than 90 days automatically show a "possibly outdated" banner (pure `isPossiblyOutdated()` function).
 - **Reading-experience suite on articles**: prev/next navigation within a category, reading-time estimate (CJK-adapted), top-edge reading progress bar, Quick Answer copy button, "was this helpful?" feedback, related lazy-loaded videos (`videos` frontmatter, YouTube IDs), print stylesheet (`@media print` strips chrome/ads), and drop-rate `StatBar` visualization component (used in the demo boss guide).
@@ -502,6 +559,7 @@ The final batch of the 2026-08 expert-audit backlog: a complete codes-content pa
 - **i18n smoke tests**: 6 regression tests guarding against hardcoded-locale arrays in routes (the v1.1.0 bug class).
 
 ### Changed
+
 - **README repositioned**: tagline and feature list now lead with "100% ad revenue yours"; feature list rebuilt to cover all shipped capabilities.
 - **`apply-template` theme rewrite is line-based**: replaces only the 6 `--brand*` variable lines (tolerates custom vars/indentation in globals.css — the old whole-block regex silently broke on user edits).
 - **`apply-template` resets `wrangler.toml [vars]`**: forks no longer risk shipping the demo site's Giscus config (SITE_URL set to their domain, Giscus values blanked).
@@ -510,6 +568,7 @@ The final batch of the 2026-08 expert-audit backlog: a complete codes-content pa
 - docs/seo.md gains an "AI search era" chapter (what's built-in + 5 writing rules); content-format.md documents all frontmatter fields and the MDX components (`CodeBlock` / `StatBar`) + patch-notes paradigm.
 
 ### Fixed
+
 - `migration-from-nextjs.md` now carries an honesty disclaimer (estimates not battle-tested).
 
 ## [1.2.0] — 2026-08-15
@@ -519,6 +578,7 @@ The final batch of the 2026-08 expert-audit backlog: a complete codes-content pa
 This release lands the findings of a 4-expert audit (SEO/growth · developer experience · reader UX · competitive analysis): a project landing page, wiki-grade reading infrastructure (scrollspy, boss data cards, mobile fixes), AI-search visibility (llms.txt, RSS), and consent-gated analytics.
 
 ### Added
+
 - **Project landing page (`/landing`)**: 7-section marketing page introducing the AnvilWiki template itself (Hero with "100% ad revenue" positioning · Lighthouse proof bar · feature grid · comparison table vs Fandom/Starlight/DIY · showcase · docs entry · final CTA). Self-contained in `src/components/landing/` + `src/config/landing.ts`. `apply-template` CLI removes it automatically for fork users (`--keep-landing` to keep).
 - **RSS feed (`/rss.xml`)**: default-locale articles, newest first, capped at 50, excludes `noindex`. `<link rel="alternate">` auto-discovery in `BaseLayout`. Uses the already-installed `@astrojs/rss`.
 - **llms.txt (`/llms.txt`)**: Markdown site index for AI crawlers (ChatGPT/Perplexity/Claude), generated at build time from the content collection.
@@ -531,6 +591,7 @@ This release lands the findings of a 4-expert audit (SEO/growth · developer exp
 - Related-articles cards now show the description (line-clamp-2).
 
 ### Changed
+
 - **Ads system rebuilt as Google AdSense-only**. Removed the iframe isolation ad setup (`public/ads/*.html`, `AdBanner.astro`, 7 `PUBLIC_AD_*` env vars) in favor of a streamlined AdSense integration. Ads now use 3 positions (Sticky / Sidebar / InContent), each an `<AdSenseSlot position="...">` component gated on `PUBLIC_ADSENSE_CLIENT` + one slot ID env var. The Sticky banner keeps its dismiss button + localStorage logic. Empty env = no ads rendered (Lighthouse 4×100 contract preserved). See PRD §10 for details.
 - **Sticky banner is desktop-only by default** (`hidden md:block`): a 320×50 strip under the header permanently eats ~16% of a phone's first screen — a proven bounce driver. Remove the class to re-enable mobile.
 - **sitemap `<lastmod>` injection**: article/list URLs now carry `lastModified ?? date` from frontmatter (the only sitemap field Google trusts for crawl scheduling).
@@ -538,6 +599,7 @@ This release lands the findings of a 4-expert audit (SEO/growth · developer exp
 - Mobile menu now includes the language switcher (was navigation-only — non-English readers couldn't switch on phones).
 
 ### Fixed
+
 - **Third-locale forks fully 404**: five `getStaticPaths` implementations hardcoded `['ja']` while the CLI accepts any locale list — adding a 3rd language killed every route. All now derive from the `locales` array in `routing.ts`.
 - **SearchAction pointed at a nonexistent `/search` route** (Pagefind is a client-side modal) — removed from `websiteJsonLd()`.
 - **`noindex` frontmatter was never wired up** — now emits `<meta name="robots" content="noindex, nofollow">` via `BaseLayout`.
@@ -547,6 +609,7 @@ This release lands the findings of a 4-expert audit (SEO/growth · developer exp
 - **GFM tables overflowed on mobile**: `.prose table` is now a scrollable block site-wide.
 
 ### Removed
+
 - `public/ads/` directory (6 standalone ad HTML files) and `src/components/ads/AdBanner.astro` (iframe wrapper component).
 - 7 `PUBLIC_AD_*` env vars (`PUBLIC_AD_MOBILE_320X50`, `PUBLIC_AD_SIDEBAR_160X300/600`, `PUBLIC_AD_BANNER_300X250/728X90/468X60`, `PUBLIC_AD_NATIVE_BANNER`).
 
@@ -557,6 +620,7 @@ This release lands the findings of a 4-expert audit (SEO/growth · developer exp
 This release adds AI-Overview-oriented SEO features (TOC, Quick Answer, author byline, VideoGame JSON-LD) and broadens ad support (Google AdSense alongside the iframe ad isolation). Includes a round of naming normalization to keep config/locales schema generic (no demo-game-specific terms).
 
 ### Added
+
 - **Article TOC**: Auto-generated table of contents from H2/H3 headings. Sticky on desktop, collapsible `<details>` on mobile (`TableOfContents.astro`).
 - **Quick Answer summary block**: Optional `summary` frontmatter field rendered as a callout above the article body — optimized for AI Overviews and featured snippets.
 - **Article author byline**: Optional `author` frontmatter field (falls back to `site.defaultAuthor`). E-E-A-T signal.
@@ -565,6 +629,7 @@ This release adds AI-Overview-oriented SEO features (TOC, Quick Answer, author b
 - **Google AdSense support**: `AdSenseSlot.astro` component + `PUBLIC_ADSENSE_CLIENT` env var. Coexists with the iframe ad isolation setup.
 
 ### Changed
+
 - Homepage `displayType` enum renamed to generic names (`code-cards`→`badge-list`, etc.).
 - CSS theme variable renamed: `--nav-theme` → `--brand`.
 - Homepage JSON field names renamed (`eyebrow`→`badge`, `primaryCta`→`ctaPrimary`, etc.).
@@ -580,6 +645,7 @@ This release adds AI-Overview-oriented SEO features (TOC, Quick Answer, author b
 This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) is now ✅, the demo site ships Lighthouse 4×100, and optional features (search, ads, comments, image optimization, apply-template CLI) are all production-ready.
 
 ### Added
+
 - **Comments system (Giscus, opt-in)**: `Comments.astro` component, env-gated (default off = zero JS, preserves Lighthouse 4×100). Official `<script async data-loading="lazy">` + dual MutationObserver dark-mode sync via postMessage. pathname mapping → different locales get independent threads. `data-lang` follows page locale. See `docs/comments.md`.
 - Image `decoding="async"` + explicit `width`/`height` to prevent CLS (ListPage covers, VideoSection thumbnails)
 - FAQ accessibility: `aria-expanded` sync on toggle + `data-faq-group` container
@@ -587,6 +653,7 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Migration cost breakdown in `docs/migration-from-nextjs.md` (2-hour estimate per site)
 
 ### Changed
+
 - PRD status updated: "设计中 · 待 review" → "已实现"
 - PRD §14.2: v1.1 (frontmatter migration guide) marked as done
 - PRD §14.2: v1.4 (Giscus comments) marked as done — `Comments.astro` env-gated, default off
@@ -596,12 +663,14 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Demo `home.hero.videoId` cleared (was placeholder)
 
 ### Fixed
+
 - **Cloudflare Pages env injection**: `wrangler.toml` was missing the `[vars]` section, so the build process received ZERO env vars (including `SITE_URL` and all `PUBLIC_GISCUS_*`). Root cause: when `wrangler.toml` exists for a Pages project, it becomes the sole source of truth and the dashboard's "Environment variables" UI is ignored ([Cloudflare docs](https://developers.cloudflare.com/pages/functions/wrangler-configuration/)). Fix: declare all build-time env vars in `[vars]`. This bug was previously masked because `process.env.SITE_URL || 'https://...'` fallback in `astro.config.ts` covered for the missing env.
 - **`SITE_URL` protocol requirement**: now enforced — bare domain `anvilwiki.pages.dev` fails Astro build with `Invalid url`. `.env.example` was already correct (`https://...`), but the Cloudflare dashboard config had a bare domain. Documented in AGENTS.md Hard Rule 9 + `docs/deployment.md`.
 
 ## [0.2.0] — 2026-08-12
 
 ### Added
+
 - `scripts/check-sitemap.ts` — verifies every sitemap URL returns 200
 - `scripts/new-post.ts` — interactive MDX article scaffold
 - `docs/content-format.md` — frontmatter format spec + migration guide from JS metadata format
@@ -620,6 +689,7 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 ## [0.1.0] — 2026-08-11
 
 ### Added
+
 - Initial public release
 - Astro 5 static site (`output: 'static'`, zero adapter, Cloudflare Pages native)
 - Content Layer API + Zod schema for type-safe MDX articles

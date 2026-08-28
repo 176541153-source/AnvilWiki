@@ -487,7 +487,7 @@ export const CONTENT_TYPES = NAVIGATION_CONFIG.map(n => n.key);
 
 ### 6.5 首页 JSON schema（`src/locales/en.json` 的 `home` 命名空间）
 
-**首页 JSON 结构**（v0.2 重构后，覆盖 hero / updates / start / popular / explore / closingCta 六大区块；FAQ 保留在 JSON 但由 `/faq` 独立页渲染）：
+**首页 JSON 结构**（任务优先版，覆盖 hero / start / diagnose / updates / popular / explore / closingCta 七大区块；FAQ 保留在 JSON 但由 `/faq` 独立页渲染）：
 
 ```json
 {
@@ -511,11 +511,25 @@ export const CONTENT_TYPES = NAVIGATION_CONFIG.map(n => n.key);
     "meta": { "title": "...", "description": "..." },
     "hero": {
       "badge": "...",
-      "title": "Anvil Quest Wiki",
+      "title": "Find Your Next Anvil Quest Move",
       "description": "...",
       "ctaPrimary": "...",
+      "ctaPrimaryHref": "/guides/beginner-guide",
+      "ctaPrimaryIcon": "lucide:route",
       "ctaSecondary": "...",
+      "ctaSecondaryHref": "/codes",
+      "signals": [{ "label": "Source policy", "value": "Dated" }],
+      "panel": { "title": "...", "description": "...", "imageAlt": "..." },
+      "quickActions": [{ "title": "Start", "detail": "...", "href": "/guides", "icon": "lucide:route" }],
       "videoId": ""
+    },
+    "diagnose": {
+      "badge": "Start from the problem",
+      "title": "What is blocking your next run?",
+      "description": "...",
+      "cards": [
+        { "symptom": "A boss keeps ending the run", "action": "Read the strategy", "href": "/bosses", "icon": "lucide:swords" }
+      ]
     },
     "updates": { "title": "...", "browse": "..." },
     "start": {
@@ -549,7 +563,7 @@ export const CONTENT_TYPES = NAVIGATION_CONFIG.map(n => n.key);
       "description": "...",
       "items": [{ "question": "What is Anvil Quest?", "answer": "..." }]
     },
-    "closingCta": { "title": "...", "description": "...", "primary": "...", "secondary": "..." }
+    "closingCta": { "title": "...", "description": "...", "primary": "...", "primaryHref": "/guides", "secondary": "...", "secondaryHref": "https://..." }
   },
   "footer": {
     "playGame": "Play Anvil Quest",
@@ -572,9 +586,12 @@ export const CONTENT_TYPES = NAVIGATION_CONFIG.map(n => n.key);
 }
 ```
 
-**v0.2 schema 变化**：
-- `hero.stats`、`hero.ctaTertiary` 已删除（首屏做减法）。
-- `start.cards[]` 新增 `icon`（lucide 图标名）和 `href`（链接）字段，支撑 QuickStart 大卡片。
+**当前 schema 约束**：
+- Hero 的 CTA 文案、`Href` 与 `Icon` 分离，按钮可指向任意站内任务或外部官方页，不在组件里写死路径和图标。
+- `hero.signals[]` 最多 3 项，只放能帮助决策的短信号；`hero.panel` 使用统一 Hero 图，`quickActions[]` 提供三条高频任务入口。
+- `start.cards[].number` 可选；不填时组件自动生成 `01`、`02`……。
+- `diagnose.cards[]` 是可选问题诊断层，从玩家症状直接连接下一步；整段缺失时不渲染，旧 fork 向后兼容。
+- `closingCta.primaryHref` / `secondaryHref` 可独立配置，内部链接自动加语言前缀。
 - `gameInfo` 已删除（v0.2 重构时移除，游戏介绍放 `/about` 页）。
 - `explore.modules` 建议固定 4 项（Codes / Bosses / Progression / Tier List）。
 - `footer` 新增 `faq` 键。
@@ -613,18 +630,17 @@ export const defaultLocale: Locale = 'en';
 **渲染**：`src/pages/[locale]/index.astro` 读 JSON，逐 section 渲染。
 **交互**：移动端菜单用原生 `<details>`。FAQ 已移至独立 `/faq` 页（见 §7.4）。
 
-**首页结构（从上到下，v0.2 重构后）**：
+**首页结构（从上到下，任务优先版）**：
 ```
 1. SiteHeader（导航栏）
-2. Hero（满屏视觉锚点：超大标题 + 1 行描述 + 2 CTA）
-   └─ 背景水印（游戏名，纯 CSS）；stats 卡片已移除（避免抢首屏焦点）
+2. Hero（左右分栏：任务承诺 + 可配置 CTA/信号；右侧 Hero 图 + quick actions）
 3. VideoSection（YouTube 嵌入；仅当 hero.videoId 非空时渲染）
 4. QuickStart（4 个大图标卡片：新手指南 / 最新 Codes / Boss 攻略 / Tier List）
-   └─ 紧跟 Hero，对标竞品"quick actions"模式
-5. RecentUpdates + Trending（两栏：左 2/3 最近更新卡片网格 + 右 1/3 热门链接列表）
-6. ExploreModules（4 个核心模块，2×2 网格，整卡可点击）
-7. ClosingCta（底部 CTA）
-8. SiteFooter（含 FAQ 链接）
+5. Diagnose（可选：玩家问题 → 最短下一步）
+6. RecentUpdates + Trending（两栏：左 2/3 最近更新卡片网格 + 右 1/3 热门链接列表）
+7. ExploreModules（核心资料模块，整卡可点击）
+8. ClosingCta（底部 CTA）
+9. SiteFooter（品牌图标 + 公开纠错入口 + FAQ/法律链接）
 ```
 
 **v0.2 重构说明**（相比 v0.1）：
@@ -635,9 +651,12 @@ export const defaultLocale: Locale = 'en';
 - **砍减** Explore 模块 8→4（Codes / Bosses / Progression / Tier List；其余在导航已有入口）。
 - **强化** Hero：H1 升至 `text-7xl font-black`，加渐变描边；占满 80vh 建立视觉锚点。
 - **新增** QuickStart section：4 个图标卡片，对标成功游戏 wiki 的"快速入口"模式。
+- **任务优先增强**：Hero 从“介绍这个站”改为“解决当前任务”，新增 quick actions 与可选 Diagnose；竞品中验证有效的问题导向结构可以直接配置复用。
+- **可信度增强**：About 从 `site.about` 渲染 mission / coverage / methodology，页脚统一公开 source/corrections 入口；游戏事实仍留在内容层和证据字段。
 
 **关键决策**：
 - 所有文案来自 JSON，组件不含游戏特定字符串。
+- CTA 路径、图标、Hero 面板和 Diagnose 全部属于配置层；代码层不得写具体游戏工具名。
 - 模块级标题含主题名（SEO），子项不强制。
 - `home.explore.modules` 数组建议 4 项（核心高频入口），超出可放列表页。
 
@@ -1598,5 +1617,6 @@ PUBLIC_GA_ID=
 | 2026-08-26 | v2.2.0 | 变现+外链实操文档批（零代码变更）：`docs/ads.md` 新增 AdSense 收款完整教程（W-8BEN 10% 协定税率/PIN 明信片 4 次寄送 4 个月期限/电汇绑卡/每月 21 日出账节奏）、Adsterra 接入教程（五广告格式取舍表 + Google 政策「挂 AdSense 禁 popunder」共存红线 + 脚本粘贴位置 BaseLayout/ArticlePage）、广告平台全景三档表（2026-08 实时门槛：Journey 1k sessions/Mediavine $5k 年收入/Raptive 25k PV）+ 游戏垂直网络层（NitroPay/Venatus/Playwire/PubNation，全景表 11 平台全挂官网直链）+ 游戏 wiki 五档分阶段路线表；`docs/seo.md` 外链章扩到操作层（九渠道优先级清单 + 逐渠道步骤 + 三份 outreach 邮件模板 + 免费工具箱 + 做多少节奏节；HARO 2025 复活/Reddit 10% 全站规则调研校准）；学习手册第 7 章双语新增「收款三件事」节、tldr 两步走改三步走；详见 CHANGELOG [2.2.0] |
 | 2026-08-26 | v2.3.0 | 新手动线优化批（专家团三线审计驱动）：README 按零基础标准重构（pnpm 前置/「push 回 fork」步骤/零终端 Actions→Initialize AnvilWiki 通道/wrangler 警告下沉部署步骤/文档导航收敛 4 入口/英文区对齐中文区/语言切换锚+截图+Contributing·Changelog 入口/删误导性 Deploy 按钮）；落地页转化（hero 与 FinalCta 主 CTA 直达 Fork URL、docsEntry SEO 卡+devGuide 五步链接改站内手册章、写死章数 6 处移除、公告压缩）；HandbookHub 新增 beginnerHint 零基础胶囊（接口+双语数据+组件）；两章「下一步」补链接；文档漂移清理（Comments 断链/PRD §15.2 文档表 7→20 项/roadmap 版本头/ROADMAP-v1.5-v1.6.md 归档 superpowers/）；详见 CHANGELOG [2.3.0] |
 | 2026-08-27 | v2.3.1 | 紧急修复批：`tailwind.config.mjs` 根除 ESM 内 CommonJS `require()` 地雷——插件行改纯 ESM 导入（`import typography from '@tailwindcss/typography'`），根因是 Tailwind 配置加载器「先原生 require 后 jiti 回退」策略在部分 Node 构建（require(esm) 路径）把配置内 ReferenceError 以异步 unhandledRejection 上报、catch 接不住，fork 用户下载 ZIP 后 `pnpm dev` 首次访问即崩（截图报障实证）；修复经双加载路径最小复现 + build/typecheck/lint/test 全绿验证；详见 CHANGELOG [2.3.1] |
+| 2026-08-28 | Unreleased | 单站学习回流母模板：任务优先分栏 Hero、可配置 CTA/信号/quick actions、可选 Diagnose 问题路由、品牌图标、公开纠错入口与 About 编辑方法论；codes/guides 初始化预设直接生成新结构；部署文档改为正式域名唯一 canonical，并按 Cloudflare 官方 Bulk Redirect 将 `*.pages.dev` 301 到正式域名。 |
 
 > **✅ v1.0 已交付**：demo 站 [anvilwiki.pages.dev](https://anvilwiki.pages.dev/) 已上线，Lighthouse 全 100。后续按 [§14.2 迭代方向](#142-v10-后的迭代方向) 推进 v1.3+ 功能。

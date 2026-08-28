@@ -19,8 +19,8 @@
  *   pnpm apply-template --keep-landing      keep the project landing page (/landing).
  *
  * What this does NOT do (left for the user, see docs/apply-template.md):
- *   - Homepage modules (home.hero / start / explore / faq in locales)
- *   - Article MDX + nav/overview labels per category
+ *   - Final editorial review of generated homepage copy and routes
+ *   - Final article MDX bodies and per-locale category copy refinement
  *   - Translation of non-English locale JSON
  *   - favicon / hero image files (binary assets, user-provided)
  *
@@ -32,6 +32,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as readline from 'node:readline/promises';
 import { stdin as input, stdout as output } from 'node:process';
+import { pathToFileURL } from 'node:url';
 
 const ROOT = process.cwd();
 const ARGS = process.argv.slice(2);
@@ -152,9 +153,10 @@ async function askBool(
 // Rewriters
 // ---------------------------------------------------------------------------
 
-interface SkinInput {
+export interface SkinInput {
   gameName: string;
   shortName: string;
+  brandIcon: string;
   domain: string;
   tagline: string;
   description: string;
@@ -165,6 +167,7 @@ interface SkinInput {
   genre: string;
   releaseDate: string;
   officialUrl: string;
+  sourceUrl: string;
   locales: string[];
   categories: { key: string; icon: string }[];
   clearContent: boolean;
@@ -178,13 +181,29 @@ interface SkinInput {
  * All copy uses the game name the user entered — placeholders to refine,
  * not demo-game leftovers. Module hrefs point at the categories they chose.
  */
-function buildHomePreset(input: SkinInput): Record<string, unknown> | null {
+export function buildHomePreset(input: SkinInput): Record<string, unknown> | null {
   if (input.homePreset === 'keep') return null;
   const cats = input.categories.map((c) => c.key);
   const first = cats[0] ?? 'guides';
+  const labelFor = (key: string) =>
+    key
+      .split(/[-_]/)
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  const pathFor = (preferred: string) => `/${cats.includes(preferred) ? preferred : first}`;
+  const categoryActions = (cats.length > 0 ? cats : [first]).slice(0, 3).map((key) => ({
+    title: labelFor(key),
+    detail: `Open ${labelFor(key).toLowerCase()}`,
+    href: `/${key}`,
+    icon: input.categories.find((category) => category.key === key)?.icon ?? 'lucide:folder',
+  }));
 
   const common = {
-    meta: { watermark: input.gameName },
+    meta: {
+      title: `${input.gameName} Wiki — Guides, Codes and Player Reference`,
+      description: input.description,
+      watermark: input.gameName,
+    },
     updates: { badge: 'Fresh', title: 'Recent updates' },
     popular: {
       badge: 'Popular',
@@ -193,9 +212,11 @@ function buildHomePreset(input: SkinInput): Record<string, unknown> | null {
     },
     closingCta: {
       title: `Start your ${input.gameName} journey`,
-      description: `Bookmark this wiki and check back after every game update.`,
-      primary: { label: 'Browse all', href: `/${first}` },
-      secondary: { label: 'Official site', href: input.officialUrl },
+      description: 'Start with one useful route, then return when the next question appears.',
+      primary: 'Browse the wiki',
+      primaryHref: `/${first}`,
+      secondary: 'Open the official game',
+      secondaryHref: input.officialUrl,
     },
   };
 
@@ -203,11 +224,30 @@ function buildHomePreset(input: SkinInput): Record<string, unknown> | null {
     return {
       ...common,
       hero: {
-        badge: 'Updated daily',
-        title: `${input.gameName} Codes`,
-        description: `All working ${input.gameName} codes, tested daily. Plus guides and tier lists.`,
-        ctaPrimary: { label: 'All codes', href: '/codes' },
-        ctaSecondary: { label: 'Guides', href: '/guides' },
+        badge: `${input.gameName} player companion`,
+        title: `Check ${input.gameName} Codes, Then Plan the Next Run`,
+        description: `Verify code status first, then move directly into the guide or reference needed for the next run.`,
+        ctaPrimary: 'Check code status',
+        ctaPrimaryHref: pathFor('codes'),
+        ctaPrimaryIcon: 'lucide:gift',
+        ctaSecondary: 'Open beginner guides',
+        ctaSecondaryHref: pathFor('guides'),
+        ctaSecondaryIcon: 'lucide:book-open',
+        ctaTertiary: 'Open the official game',
+        ctaTertiaryHref: input.officialUrl,
+        signals: [
+          { label: 'Primary path', value: 'Codes' },
+          { label: 'Source policy', value: 'Dated' },
+          { label: 'Access', value: 'Free' },
+        ],
+        panel: {
+          eyebrow: 'Status before redemption',
+          title: 'Know what is current before you paste a code',
+          description:
+            'Use dated status, clear source labels, and direct links to the next useful guide.',
+          imageAlt: `${input.gameName} homepage guide panel`,
+        },
+        quickActions: categoryActions,
       },
       start: {
         badge: 'Quick start',
@@ -230,6 +270,37 @@ function buildHomePreset(input: SkinInput): Record<string, unknown> | null {
             description: 'Best weapons ranked',
             icon: 'lucide:bar-chart-3',
             href: `/${cats.find((c) => c !== 'codes') ?? first}`,
+          },
+        ],
+      },
+      diagnose: {
+        badge: 'Start from the problem',
+        title: 'What do you need before the next run?',
+        description: 'Choose the closest task and jump to the shortest useful route.',
+        cards: [
+          {
+            symptom: 'I want to verify a code before redeeming it',
+            action: 'Check code status',
+            href: pathFor('codes'),
+            icon: 'lucide:badge-check',
+          },
+          {
+            symptom: 'I am new and do not know what matters first',
+            action: 'Open beginner guides',
+            href: pathFor('guides'),
+            icon: 'lucide:route',
+          },
+          {
+            symptom: 'A difficult fight or build keeps blocking progress',
+            action: 'Open strategy references',
+            href: pathFor('bosses'),
+            icon: 'lucide:swords',
+          },
+          {
+            symptom: 'A familiar route may have changed after an update',
+            action: 'Read recent updates',
+            href: '/recent',
+            icon: 'lucide:history',
           },
         ],
       },
@@ -257,11 +328,60 @@ function buildHomePreset(input: SkinInput): Record<string, unknown> | null {
   return {
     ...common,
     hero: {
-      badge: input.gameName,
-      title: `${input.gameName} Wiki`,
-      description: `Complete ${input.gameName} guides — bosses, items, and progression.`,
-      ctaPrimary: { label: 'Beginner guide', href: '/guides' },
-      ctaSecondary: { label: 'Browse all', href: `/${first}` },
+      badge: `${input.gameName} player companion`,
+      title: `Find Your Next ${input.gameName} Move`,
+      description: `Start from the task in front of you, then open the deeper reference only when you need it.`,
+      ctaPrimary: 'Start the beginner route',
+      ctaPrimaryHref: pathFor('guides'),
+      ctaPrimaryIcon: 'lucide:route',
+      ctaSecondary: `Browse ${labelFor(first)}`,
+      ctaSecondaryHref: `/${first}`,
+      ctaSecondaryIcon: 'lucide:book-open',
+      ctaTertiary: 'Open the official game',
+      ctaTertiaryHref: input.officialUrl,
+      signals: [
+        { label: 'First route', value: 'Guided' },
+        { label: 'Source policy', value: 'Dated' },
+        { label: 'Access', value: 'Free' },
+      ],
+      panel: {
+        eyebrow: 'Question to next action',
+        title: 'Use the shortest useful route',
+        description: 'Task-first entry points reduce browsing and make the next step obvious.',
+        imageAlt: `${input.gameName} homepage guide panel`,
+      },
+      quickActions: categoryActions,
+    },
+    diagnose: {
+      badge: 'Start from the problem',
+      title: 'What is blocking the next run?',
+      description: 'Choose the situation you recognize and open the shortest useful next step.',
+      cards: [
+        {
+          symptom: 'I just started and do not know what matters first',
+          action: 'Open the beginner route',
+          href: pathFor('guides'),
+          icon: 'lucide:route',
+        },
+        {
+          symptom: 'A difficult encounter keeps ending the run',
+          action: 'Open strategy guides',
+          href: pathFor('bosses'),
+          icon: 'lucide:swords',
+        },
+        {
+          symptom: 'I cannot find the item or upgrade I need',
+          action: 'Browse references',
+          href: pathFor('items'),
+          icon: 'lucide:package-search',
+        },
+        {
+          symptom: 'A familiar route may be outdated',
+          action: 'Read recent updates',
+          href: '/recent',
+          icon: 'lucide:history',
+        },
+      ],
     },
     start: {
       badge: 'Quick start',
@@ -302,13 +422,29 @@ function rewriteSiteTs(input: SkinInput): string {
   const newSite = `export const site: SiteConfig = {
   name: '${input.gameName} Wiki',
   shortName: '${input.shortName}',
+  brandIcon: '${input.brandIcon}',
   description: '${input.description.replace(/'/g, "\\'")}',
   domain: '${input.domain}',
   tagline: '${input.tagline.replace(/'/g, "\\'")}',
   legalNotice: '${input.legalNotice.replace(/'/g, "\\'")}',
   social: {
     official: '${input.officialUrl}',
+${input.sourceUrl ? `    github: '${input.sourceUrl}',\n` : ''}  },
+  about: {
+    mission: 'Help ${input.gameName.replace(/'/g, "\\'")} players move from a question to the next useful in-game action.',
+    coverage: [
+${(input.categories.length > 0 ? input.categories : [{ key: 'guides', icon: '' }])
+  .slice(0, 4)
+  .map((category) => `      '${category.key.replace(/[-_]/g, ' ')} references and guides',`)
+  .join('\n')}
+    ],
+    methodology: [
+      'Official game pages and developer announcements are treated as primary sources.',
+      'Community observations are labeled and dated instead of presented as permanent facts.',
+      'Potentially outdated claims are reviewed after major game updates.',
+    ],
   },
+  sameAs: ['${input.officialUrl}'],
   game: {
     name: '${input.gameName}',
     platform: '${input.platform}',
@@ -320,6 +456,7 @@ function rewriteSiteTs(input: SkinInput): string {
   // update these in src/config/site.ts to match (wrong dims mis-crop share cards).
   ogImageWidth: 1200,
   ogImageHeight: 630,
+  defaultAuthor: '${input.gameName.replace(/'/g, "\\'")} Wiki Editorial Team',
 };`;
   const siteRe = /export const site: SiteConfig = \{[\s\S]*?\n\};/;
   if (!siteRe.test(src)) {
@@ -462,8 +599,9 @@ function rewriteUiTs(input: SkinInput): string {
   return updated;
 }
 
-function rewriteLocaleJson(input: SkinInput, _locale: string, existing?: string): string {
-  // Start from existing (if any) or a minimal skeleton; reset site/footer/nav/overview.
+export function rewriteLocaleJson(input: SkinInput, _locale: string, existing?: string): string {
+  // Start from existing (if any) or a minimal skeleton; reset site/footer and
+  // rebuild category navigation from the selected taxonomy.
   let obj: Record<string, unknown> = {};
   if (existing) {
     try {
@@ -472,6 +610,30 @@ function rewriteLocaleJson(input: SkinInput, _locale: string, existing?: string)
       obj = {};
     }
   }
+  const previousSite = (obj.site ?? {}) as Record<string, unknown>;
+  const previousGameName =
+    typeof previousSite.name === 'string' ? previousSite.name.replace(/\s+Wiki$/i, '').trim() : '';
+  const previousNav = (obj.nav ?? {}) as Record<string, unknown>;
+  const previousOverview = (obj.overview ?? {}) as Record<string, unknown>;
+  const labelFor = (key: string) =>
+    key
+      .split(/[-_]/)
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  const replacePreviousGame = (value: unknown): unknown => {
+    if (!previousGameName || previousGameName === input.gameName) return value;
+    if (typeof value === 'string') return value.replaceAll(previousGameName, input.gameName);
+    if (Array.isArray(value)) return value.map(replacePreviousGame);
+    if (value && typeof value === 'object') {
+      return Object.fromEntries(
+        Object.entries(value as Record<string, unknown>).map(([key, child]) => [
+          key,
+          replacePreviousGame(child),
+        ]),
+      );
+    }
+    return value;
+  };
   // Always (re)write the site-level strings for this locale.
   obj.site = {
     name: `${input.gameName} Wiki`,
@@ -483,9 +645,23 @@ function rewriteLocaleJson(input: SkinInput, _locale: string, existing?: string)
   obj.footer = obj.footer ?? {};
   (obj.footer as Record<string, unknown>).copyrightText =
     `© ${new Date().getFullYear()} ${input.gameName} Wiki. All rights reserved.`;
-  // Clear nav + overview so the user re-fills them once categories are known.
-  obj.nav = {};
-  obj.overview = {};
+  const nav: Record<string, unknown> = {};
+  for (const key of ['home', 'toggleTheme', 'menu', 'close', 'search', 'language']) {
+    if (previousNav[key] !== undefined) nav[key] = previousNav[key];
+  }
+  const overview: Record<string, unknown> = {};
+  for (const category of input.categories) {
+    const label = labelFor(category.key);
+    nav[category.key] = previousNav[category.key] ?? label;
+    overview[category.key] = previousOverview[category.key]
+      ? replacePreviousGame(previousOverview[category.key])
+      : {
+          overviewTitle: `All ${label}`,
+          overviewDescription: `${input.gameName} ${label.toLowerCase()} and player reference pages.`,
+        };
+  }
+  obj.nav = nav;
+  obj.overview = overview;
   // Homepage preset skeleton (unless 'keep').
   const home = buildHomePreset(input);
   if (home) obj.home = home;
@@ -501,10 +677,18 @@ function rewriteLocaleJson(input: SkinInput, _locale: string, existing?: string)
  * point its comment section at the original repo's GitHub Discussions.
  * We rewrite SITE_URL to the forker's domain and blank the Giscus values.
  */
-function rewriteWranglerVars(input: SkinInput): string | null {
-  const filePath = 'wrangler.toml';
-  if (!fs.existsSync(path.resolve(ROOT, filePath))) return null;
-  const src = read(filePath);
+export function replaceWranglerVars(src: string, input: SkinInput): string {
+  const headerMatch = /^\[vars\]\s*$/m.exec(src);
+  if (!headerMatch || headerMatch.index === undefined) {
+    throw new Error('Could not find a line-start [vars] section in wrangler.toml.');
+  }
+  const sectionStart = headerMatch.index;
+  const afterHeader = sectionStart + headerMatch[0].length;
+  const tail = src.slice(afterHeader);
+  const nextSection = /^\[[^\]\r\n]+\]\s*$/m.exec(tail);
+  const sectionEnd =
+    nextSection?.index === undefined ? src.length : afterHeader + nextSection.index;
+  const suffix = src.slice(sectionEnd);
   const newVars = `[vars]
 # Site (must include https:// protocol — Astro validates this as a URL)
 SITE_URL = "https://${input.domain}"
@@ -527,12 +711,18 @@ PUBLIC_CF_BEACON_TOKEN = ""
 #PUBLIC_ADSENSE_SLOT_INCONTENT = ""
 #PUBLIC_GA_ID = ""
 #PUBLIC_GSC_VERIFICATION = ""`;
-  const varsRe = /\[vars\][\s\S]*?(?=\n*\[|\n*$)/;
-  if (!varsRe.test(src)) {
-    console.warn(`⚠️ Could not find [vars] section in ${filePath} — edit it manually.`);
+  return `${src.slice(0, sectionStart)}${newVars}${suffix ? `\n${suffix.replace(/^\s+/, '')}` : '\n'}`;
+}
+
+function rewriteWranglerVars(input: SkinInput): string | null {
+  const filePath = 'wrangler.toml';
+  if (!fs.existsSync(path.resolve(ROOT, filePath))) return null;
+  try {
+    return replaceWranglerVars(read(filePath), input);
+  } catch (error) {
+    console.warn(`⚠️ ${(error as Error).message} Edit ${filePath} manually.`);
     return null;
   }
-  return src.replace(varsRe, newVars);
 }
 
 function rewriteManifest(input: SkinInput): string {
@@ -687,8 +877,9 @@ function removeLandingPage(): number {
     if (!fs.existsSync(abs)) continue;
     const stat = fs.statSync(abs);
     if (stat.isDirectory()) {
+      const entryCount = fs.readdirSync(abs).length;
       if (!DRY_RUN) fs.rmSync(abs, { recursive: true, force: true });
-      removed += fs.readdirSync(abs).length;
+      removed += entryCount;
     } else {
       if (!DRY_RUN) fs.unlinkSync(abs);
       removed++;
@@ -732,6 +923,7 @@ async function main() {
       .slice(0, 4)
       .toUpperCase() + ' Wiki';
   const shortName = await ask(rl, 'Short name (PWA / mobile)', shortNameDefault);
+  const brandIcon = await ask(rl, 'Brand icon (Iconify name)', 'lucide:book-open');
   const domain = await ask(rl, 'Domain (no protocol)', 'anvilwiki.pages.dev');
   const tagline = await ask(rl, 'Hero tagline', `Your home for everything ${gameName}`);
   const description = await ask(
@@ -745,6 +937,7 @@ async function main() {
     `${gameName} Wiki is a fan-made community site. Not affiliated with or endorsed by the game developer.`,
   );
   const officialUrl = await ask(rl, 'Official game URL', 'https://example.com');
+  const sourceUrl = await ask(rl, 'Wiki source / corrections URL (optional)', '');
 
   console.log('\n' + '━'.repeat(60));
   console.log('Theme color');
@@ -842,6 +1035,7 @@ async function main() {
   const skinInput: SkinInput = {
     gameName,
     shortName,
+    brandIcon,
     domain,
     tagline,
     description,
@@ -852,6 +1046,7 @@ async function main() {
     genre,
     releaseDate,
     officialUrl,
+    sourceUrl,
     locales: uniqueLocales,
     categories,
     clearContent,
@@ -864,6 +1059,7 @@ async function main() {
   console.log('━'.repeat(60));
   console.log(`   Game:        ${gameName}`);
   console.log(`   Short name:  ${shortName}`);
+  console.log(`   Brand icon:  ${brandIcon}`);
   console.log(`   Domain:      ${domain}`);
   console.log(`   Theme:       ${themeHex} → HSL(${preview.h}, ${preview.s}%, ${preview.l}%)`);
   console.log(`   Locales:     ${uniqueLocales.join(', ')}`);
@@ -975,18 +1171,22 @@ async function main() {
   console.log(
     '           (CLI cannot generate binary assets — see the learning manual, chapter 3, step 5.)',
   );
-  console.log('   • Fill homepage modules in src/locales/<locale>.json');
-  console.log('           (home.hero / start / explore / faq / updates).');
+  console.log('   • Review the generated task-first homepage in src/locales/<locale>.json');
+  console.log('           (hero / quick actions / diagnose / start / explore / FAQ).');
   console.log('   • Add article MDX under src/content/wiki/<locale>/<category>/.');
-  console.log('           Then fill nav.<key> + overview.<key> in locale JSONs.');
+  console.log(
+    '           Category nav + overview labels are scaffolded; refine the copy per locale.',
+  );
   console.log('   • Translate non-English locale JSONs + copy MDX bodies.');
   console.log('   • After deploy, run `pnpm check-sitemap` to verify all URLs.');
   console.log('\n   Then: pnpm dev    (preview)');
   console.log('         pnpm build  (verify production build)\n');
 }
 
-main().catch((err) => {
-  console.error('\n❌', err instanceof Error ? err.message : err);
-  if (err instanceof Error && err.stack) console.error(err.stack);
-  process.exit(1);
-});
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch((err) => {
+    console.error('\n❌', err instanceof Error ? err.message : err);
+    if (err instanceof Error && err.stack) console.error(err.stack);
+    process.exit(1);
+  });
+}

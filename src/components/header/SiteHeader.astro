@@ -32,7 +32,9 @@ const headerLocales = availableLocales ?? locales;
 
 // Build the strip regex from `locales` — a hardcoded "en|ja" list would
 // silently break for forks that add languages (same rationale as BaseLayout).
-const localePrefixRe = new RegExp(`^/(${locales.filter((l) => l !== defaultLocale).join('|')})(?=/|$)`);
+const localePrefixRe = new RegExp(
+  `^/(${locales.filter((l) => l !== defaultLocale).join('|')})(?=/|$)`,
+);
 
 const samePagePathFor = (loc: Locale) => {
   // Strip existing locale prefix, then prepend the new one.
@@ -49,7 +51,7 @@ const samePagePathFor = (loc: Locale) => {
       class="flex items-center gap-2 font-bold text-foreground"
       aria-label={site.name}
     >
-      <Icon name="lucide:hammer" class="h-6 w-6 text-nav" />
+      <Icon name={site.brandIcon ?? 'lucide:hammer'} class="h-6 w-6 text-nav" />
       <span class="hidden sm:inline">{site.shortName}</span>
     </a>
 
@@ -78,19 +80,25 @@ const samePagePathFor = (loc: Locale) => {
 
     {/* Right actions */}
     <div class="ml-auto flex items-center gap-1">
-      {landingLinkEnabled && (
-        <a
-          href="/landing"
-          class="inline-flex h-9 w-9 items-center justify-center rounded-md text-muted-foreground transition hover:bg-muted hover:text-nav"
-          aria-label="About the AnvilWiki template"
-          title="About the AnvilWiki template"
-        >
-          <Icon name="lucide:hammer" class="h-5 w-5" />
-        </a>
-      )}
+      {
+        landingLinkEnabled && (
+          <a
+            href="/landing"
+            class="inline-flex h-9 w-9 items-center justify-center rounded-md text-muted-foreground transition hover:bg-muted hover:text-nav"
+            aria-label="About the AnvilWiki template"
+            title="About the AnvilWiki template"
+          >
+            <Icon name="lucide:hammer" class="h-5 w-5" />
+          </a>
+        )
+      }
       <SearchButton locale={locale} />
       <ThemeToggle />
-      <LanguageSwitcher locale={locale} pathFor={samePagePathFor} availableLocales={availableLocales} />
+      <LanguageSwitcher
+        locale={locale}
+        pathFor={samePagePathFor}
+        availableLocales={availableLocales}
+      />
 
       {/* Mobile menu */}
       <details class="relative md:hidden">
@@ -139,15 +147,17 @@ const samePagePathFor = (loc: Locale) => {
               ))
             }
           </div>
-          {landingLinkEnabled && (
-            <a
-              href="/landing"
-              class="mt-1 flex items-center gap-2 border-t border-border px-3 py-2 text-sm text-muted-foreground transition hover:bg-muted hover:text-nav"
-            >
-              <Icon name="lucide:hammer" class="h-4 w-4" />
-              <span>AnvilWiki Template</span>
-            </a>
-          )}
+          {
+            landingLinkEnabled && (
+              <a
+                href="/landing"
+                class="mt-1 flex items-center gap-2 border-t border-border px-3 py-2 text-sm text-muted-foreground transition hover:bg-muted hover:text-nav"
+              >
+                <Icon name="lucide:hammer" class="h-4 w-4" />
+                <span>AnvilWiki Template</span>
+              </a>
+            )
+          }
         </div>
       </details>
     </div>
@@ -160,7 +170,9 @@ const samePagePathFor = (loc: Locale) => {
     btn.addEventListener('click', () => {
       (document.getElementById('search-trigger') as HTMLButtonElement | null)?.click();
       // Close the mobile menu afterwards.
-      document.querySelectorAll('details[open]').forEach((d) => (d as HTMLDetailsElement).open = false);
+      document
+        .querySelectorAll('details[open]')
+        .forEach((d) => ((d as HTMLDetailsElement).open = false));
     });
   });
 </script>

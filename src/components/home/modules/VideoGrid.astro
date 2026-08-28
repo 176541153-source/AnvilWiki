@@ -12,10 +12,12 @@
  *
  * highlights 字段:
  *   - title     (string, 必填): 视频标题。同时作为 <img> 的 alt(a11y)。
- *   - youtubeId (string, 必填): YouTube video id,11 位字符(如
+ *   - youtubeId (string, 与 thumbnail 二选一): YouTube video id,11 位字符(如
  *                "dQw4w9WgXcQ")。组件据此自动拼接封面 URL
  *                https://i.ytimg.com/vi/{id}/hqdefault.jpg,
  *                用户无需单独提供缩略图。
+ *   - thumbnail (string, 与 youtubeId 二选一): 本地或远程封面地址。
+ *                演示数据使用本地占位图，避免伪 YouTube ID 产生破图。
  *   - duration  (string, 可选): 视频时长(如 "12:34")。渲染为缩略图
  *                右下角的 badge。
  *
@@ -28,7 +30,7 @@
  *     "displayType": "video-grid",
  *     "highlights": [
  *       { "title": "Beginner Guide", "youtubeId": "dQw4w9WgXcQ", "duration": "12:34" },
- *       { "title": "Boss Fight", "youtubeId": "abc123xyz", "duration": "8:21" }
+ *       { "title": "Boss Fight", "thumbnail": "/images/video-placeholder.svg", "duration": "8:21" }
  *     ]
  *   }
  *
@@ -48,9 +50,19 @@
  *   都不包 <a>),并扩 schema 为 highlights[i].href。本次不做。
  */
 interface Props {
-  highlights: Array<{ title: string; youtubeId: string; duration?: string }>;
+  highlights: Array<{
+    title: string;
+    youtubeId?: string;
+    thumbnail?: string;
+    duration?: string;
+  }>;
 }
 const { highlights } = Astro.props;
+const thumbnailFor = (highlight: Props['highlights'][number]) =>
+  highlight.thumbnail ??
+  (highlight.youtubeId
+    ? `https://i.ytimg.com/vi/${highlight.youtubeId}/hqdefault.jpg`
+    : '/images/video-placeholder.svg');
 ---
 
 <div class="grid gap-2 sm:grid-cols-2">
@@ -59,7 +71,7 @@ const { highlights } = Astro.props;
       <div class="overflow-hidden rounded-md border bg-card">
         <div class="relative aspect-video">
           <img
-            src={`https://i.ytimg.com/vi/${h.youtubeId}/hqdefault.jpg`}
+            src={thumbnailFor(h)}
             alt={h.title}
             loading="lazy"
             decoding="async"

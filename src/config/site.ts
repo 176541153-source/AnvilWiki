@@ -10,6 +10,8 @@ export interface SiteConfig {
   name: string;
   /** Short name for PWA manifest and mobile logo. e.g. "AQ Wiki" */
   shortName: string;
+  /** Iconify/Lucide icon used in the site header and footer. */
+  brandIcon?: string;
   /** Site description for Organization JSON-LD and og:site_name. */
   description: string;
   /** Domain without protocol or trailing slash. e.g. "anvilquestwiki.wiki" */
@@ -25,6 +27,14 @@ export interface SiteConfig {
     youtube?: string;
     twitter?: string;
     reddit?: string;
+    /** Source repository or public corrections tracker for this wiki. */
+    github?: string;
+  };
+  /** Optional editorial profile rendered on the About page (E-E-A-T / GEO trust signal). */
+  about?: {
+    mission: string;
+    coverage: string[];
+    methodology: string[];
   };
   /** Canonical URLs about the GAME (official store page, Wikidata, etc.). */
   sameAs?: string[];
@@ -64,6 +74,7 @@ export interface SiteConfig {
 export const site: SiteConfig = {
   name: 'Anvil Quest Wiki',
   shortName: 'AQ Wiki',
+  brandIcon: 'lucide:hammer',
   description:
     'Complete Anvil Quest wiki with boss guides, tier lists, codes, item locations, and beginner tips. Updated daily by the community.',
   domain: 'anvilwiki.pages.dev',
@@ -76,6 +87,21 @@ export const site: SiteConfig = {
     youtube: 'https://youtube.com/@example',
     twitter: 'https://twitter.com/example',
     reddit: 'https://reddit.com/r/anvilquest',
+    github: 'https://github.com/PNGTRID/AnvilWiki',
+  },
+  about: {
+    mission:
+      'Help Anvil Quest players find the shortest reliable path from a question to the next useful in-game action.',
+    coverage: [
+      'Beginner routes and progression guides',
+      'Boss mechanics, item references, codes, and tier lists',
+      'Dated update notes for information that can change after a patch',
+    ],
+    methodology: [
+      'Official game pages and developer announcements are treated as primary sources.',
+      'Community observations are labeled and dated instead of presented as permanent facts.',
+      'Corrections are accepted through the public source repository.',
+    ],
   },
   // 👉 APPLY TEMPLATE: point these at the game's real canonical pages.
   sameAs: ['https://example.com/anvil-quest', 'https://en.wikipedia.org/wiki/Anvil_Quest'],

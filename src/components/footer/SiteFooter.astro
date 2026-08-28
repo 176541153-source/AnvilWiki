@@ -18,6 +18,7 @@ const footer = ui.footer as Record<string, string>;
 
 const socials = [
   { key: 'playGame', href: site.social.official, icon: 'lucide:external-link' },
+  { key: 'sourceAndCorrections', href: site.social.github, icon: 'lucide:github' },
   { key: 'officialDiscord', href: site.social.discord, icon: 'lucide:message-circle' },
   { key: 'officialYoutube', href: site.social.youtube, icon: 'lucide:youtube' },
   { key: 'officialTwitter', href: site.social.twitter, icon: 'lucide:twitter' },
@@ -33,7 +34,7 @@ const legalLinks = ['about', 'faq', 'privacyPolicy', 'termsOfService', 'copyrigh
       {/* Brand */}
       <div>
         <div class="flex items-center gap-2 font-bold">
-          <Icon name="lucide:hammer" class="h-6 w-6 text-nav" />
+          <Icon name={site.brandIcon ?? 'lucide:hammer'} class="h-6 w-6 text-nav" />
           <span>{site.name}</span>
         </div>
         <p class="mt-2 text-sm text-muted-foreground">{site.tagline}</p>
@@ -65,7 +66,9 @@ const legalLinks = ['about', 'faq', 'privacyPolicy', 'termsOfService', 'copyrigh
 
       {/* Legal */}
       <div>
-        <h2 class="text-sm font-semibold uppercase tracking-wider text-muted-foreground">{footer.legal ?? 'Legal'}</h2>
+        <h2 class="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+          {footer.legal ?? 'Legal'}
+        </h2>
         <ul class="mt-3 space-y-2">
           {
             legalLinks.map((key) => (

@@ -8,9 +8,10 @@
  * Sections (top to bottom):
  *   1. Hero          — title, description, CTAs (strong visual anchor)
  *   2. QuickStart    — 4 large icon cards (Codes / Bosses / Guides / Tier)
- *   3. Recent Updates + Trending links (two columns)
- *   4. Explore       — 4 content modules with displayTypes
- *   5. ClosingCta      — bottom call-to-action
+ *   3. Diagnose      — optional problem-to-next-action cards
+ *   4. Recent Updates + Trending links (two columns)
+ *   5. Explore       — content modules with displayTypes
+ *   6. ClosingCta    — bottom call-to-action
  *
  * v0.2 refactor: trimmed from 8 sections to 5. Removed GameInfo (info
  * duplicated Hero stats), FAQ (moved to /faq), standalone TrendingNow
@@ -27,7 +28,7 @@ import { NAVIGATION_CONFIG } from '~/config/navigation';
 import { type Locale } from '~/i18n/routing';
 import { getUi } from '~/i18n/ui';
 import { getRecentEntries, parseEntryId } from '~/lib/content';
-import { localizePath, listPath, detailPath, recentPath } from '~/lib/url';
+import { localizePath, detailPath, recentPath } from '~/lib/url';
 
 interface Props {
   locale: Locale;
@@ -38,6 +39,7 @@ interface Props {
 const { locale, jsonLd = [], alternates = [] } = Astro.props;
 const ui = getUi(locale);
 const home = ui.home as any;
+const nav = ui.nav as Record<string, string>;
 const shared = ui.shared as unknown as Record<string, any>;
 
 const recent = await getRecentEntries(locale, 6);
@@ -49,9 +51,29 @@ const hero = home.hero ?? {};
 // locale JSON per the template's own rule).
 const updates = home.updates ?? {};
 const start = home.start ?? { cards: [] };
+const diagnose = home.diagnose ?? { cards: [] };
 const popular = home.popular ?? { quickLinks: [] };
 const explore = home.explore ?? { modules: [] };
 const closingCta = home.closingCta ?? {};
+const heroQuickActions = Array.isArray(hero.quickActions) ? hero.quickActions : [];
+const heroSignals = Array.isArray(hero.signals) ? hero.signals : [];
+
+function actionHref(href: string | undefined, fallback: string): string {
+  const target = href || fallback;
+  return /^(?:[a-z][a-z0-9+.-]*:|\/\/|#)/i.test(target) ? target : localizePath(target, locale);
+}
+
+function isExternalHref(href: string): boolean {
+  return /^(?:https?:)?\/\//i.test(href);
+}
+
+const primaryHref = actionHref(hero.ctaPrimaryHref, site.social.official);
+const secondaryHref = actionHref(
+  hero.ctaSecondaryHref,
+  `/${NAVIGATION_CONFIG[0]?.key ?? 'guides'}`,
+);
+const tertiaryHref = actionHref(hero.ctaTertiaryHref, site.social.official);
+const showHeroPanel = Boolean(hero.panel) || heroQuickActions.length > 0;
 
 // QuickLink may be a string or { label, href } — normalize for the sidebar list.
 type QuickLink = string | { label: string; href: string };
@@ -72,56 +94,150 @@ function trendingLabel(link: QuickLink): string {
   jsonLd={jsonLd}
 >
   {/* ─────────────────────────────── Hero ─────────────────────────────── */}
-  <section
-    class="relative flex min-h-[52vh] items-center overflow-hidden border-b border-border md:min-h-[68vh]"
-  >
-    {
-      /* Subtle theme-color gradient backdrop — gives the hero a visual anchor
-        without requiring an image asset. Sits behind the watermark. */
-    }
+  <section class="relative overflow-hidden border-b border-border">
     <div
       aria-hidden="true"
-      class="from-nav/8 pointer-events-none absolute inset-0 bg-gradient-to-br via-transparent to-transparent"
+      class="pointer-events-none absolute inset-0 bg-gradient-to-br from-nav/10 via-background to-background"
     >
     </div>
-    {/* Faint game-name watermark — pure CSS, no image asset required. */}
-    <span
-      aria-hidden="true"
-      class="pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 select-none text-center text-[18vw] font-black leading-none text-foreground/[0.03] md:text-[14vw]"
+    <div
+      class:list={[
+        'relative mx-auto grid w-full max-w-7xl items-center gap-10 px-4 py-12 lg:py-16',
+        showHeroPanel
+          ? 'min-h-[38rem] lg:grid-cols-[minmax(0,1fr)_minmax(22rem,0.86fr)]'
+          : 'min-h-[32rem]',
+      ]}
     >
-      {site.game.name}
-    </span>
-
-    <div class="relative mx-auto w-full max-w-7xl px-4 py-16 md:py-24">
-      <p class="text-sm font-semibold uppercase tracking-wider text-foreground">{hero.badge}</p>
-      <h1
-        class="mt-3 max-w-3xl bg-gradient-to-r from-foreground to-foreground/60 bg-clip-text text-4xl font-black tracking-tight text-transparent sm:text-5xl md:text-6xl lg:text-7xl"
-      >
-        {hero.title}
-      </h1>
-      <p class="mt-5 max-w-xl text-base text-muted-foreground md:text-lg">{hero.description}</p>
-      <div class="mt-8 flex flex-wrap gap-3">
+      <div class="max-w-2xl">
+        <p
+          class="inline-flex items-center gap-2 rounded-full border border-nav/30 bg-nav/10 px-3 py-1 text-xs font-semibold text-foreground"
+        >
+          <span class="h-1.5 w-1.5 rounded-full bg-nav" aria-hidden="true"></span>
+          {hero.badge}
+        </p>
+        <h1
+          class="mt-5 text-4xl font-black tracking-[-0.035em] text-foreground sm:text-5xl lg:text-6xl"
+        >
+          {hero.title}
+        </h1>
+        <p class="mt-5 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
+          {hero.description}
+        </p>
+        <div class="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+          {
+            hero.ctaPrimary && (
+              <a
+                href={primaryHref}
+                target={isExternalHref(primaryHref) ? '_blank' : undefined}
+                rel={isExternalHref(primaryHref) ? 'noopener noreferrer' : undefined}
+                class="btn-primary min-h-11 gap-2 px-5"
+              >
+                <Icon name={hero.ctaPrimaryIcon ?? 'lucide:arrow-right'} class="h-4 w-4" />
+                {hero.ctaPrimary}
+              </a>
+            )
+          }
+          {
+            hero.ctaSecondary && (
+              <a
+                href={secondaryHref}
+                target={isExternalHref(secondaryHref) ? '_blank' : undefined}
+                rel={isExternalHref(secondaryHref) ? 'noopener noreferrer' : undefined}
+                class="btn-outline min-h-11 gap-2 px-5"
+              >
+                <Icon name={hero.ctaSecondaryIcon ?? 'lucide:book-open'} class="h-4 w-4" />
+                {hero.ctaSecondary}
+              </a>
+            )
+          }
+          {
+            hero.ctaTertiary && (
+              <a
+                href={tertiaryHref}
+                target={isExternalHref(tertiaryHref) ? '_blank' : undefined}
+                rel={isExternalHref(tertiaryHref) ? 'noopener noreferrer' : undefined}
+                class="inline-flex min-h-11 items-center justify-center gap-2 px-2 text-sm font-medium text-foreground hover:text-nav"
+              >
+                {hero.ctaTertiary}
+                <Icon name={hero.ctaTertiaryIcon ?? 'lucide:external-link'} class="h-3.5 w-3.5" />
+              </a>
+            )
+          }
+        </div>
         {
-          hero.ctaPrimary && (
-            <a
-              href={site.social.official}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="btn-primary"
-            >
-              <Icon name="lucide:play" class="mr-2 h-4 w-4" />
-              {hero.ctaPrimary}
-            </a>
-          )
-        }
-        {
-          hero.ctaSecondary && (
-            <a href={listPath(NAVIGATION_CONFIG[1]?.key ?? 'guides', locale)} class="btn-outline">
-              {hero.ctaSecondary}
-            </a>
+          heroSignals.length > 0 && (
+            <dl class="mt-8 grid max-w-xl grid-cols-3 divide-x divide-border border-y border-border py-3">
+              {heroSignals.map((signal: { value: string; label: string }) => (
+                <div class="px-3 first:pl-0">
+                  <dt class="text-xs text-muted-foreground">{signal.label}</dt>
+                  <dd class="mt-0.5 text-sm font-bold text-foreground">{signal.value}</dd>
+                </div>
+              ))}
+            </dl>
           )
         }
       </div>
+
+      {
+        showHeroPanel && (
+          <div class="lg:pl-4">
+            <div class="overflow-hidden rounded-2xl border border-border bg-card shadow-2xl shadow-nav/10">
+              <div class="relative aspect-[16/10] overflow-hidden">
+                <img
+                  src={hero.panel?.imageSrc ?? '/images/hero.webp'}
+                  alt={hero.panel?.imageAlt ?? site.name}
+                  width={site.ogImageWidth}
+                  height={site.ogImageHeight}
+                  fetchpriority="high"
+                  class="h-full w-full object-cover"
+                />
+                <div
+                  aria-hidden="true"
+                  class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent"
+                />
+                {hero.panel && (
+                  <div class="absolute inset-x-0 bottom-0 p-5 text-white">
+                    {hero.panel.eyebrow && (
+                      <p class="text-xs font-semibold uppercase tracking-wider text-white/70">
+                        {hero.panel.eyebrow}
+                      </p>
+                    )}
+                    <p class="mt-1 text-xl font-bold leading-tight">{hero.panel.title}</p>
+                    <p class="mt-1 max-w-md text-sm text-white/75">{hero.panel.description}</p>
+                  </div>
+                )}
+              </div>
+              {heroQuickActions.length > 0 && (
+                <div class="grid divide-y divide-border sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+                  {heroQuickActions.map(
+                    (action: { title: string; detail: string; href: string; icon: string }) => {
+                      const href = actionHref(action.href, '/');
+                      return (
+                        <a
+                          href={href}
+                          target={isExternalHref(href) ? '_blank' : undefined}
+                          rel={isExternalHref(href) ? 'noopener noreferrer' : undefined}
+                          class="group flex items-start gap-2 p-4 transition hover:bg-muted/70"
+                        >
+                          <Icon name={action.icon} class="mt-0.5 h-4 w-4 shrink-0 text-nav" />
+                          <span class="min-w-0">
+                            <span class="block text-xs font-bold text-foreground group-hover:text-nav">
+                              {action.title}
+                            </span>
+                            <span class="mt-0.5 block text-[0.7rem] leading-snug text-muted-foreground">
+                              {action.detail}
+                            </span>
+                          </span>
+                        </a>
+                      );
+                    },
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        )
+      }
     </div>
   </section>
 
@@ -130,6 +246,48 @@ function trendingLabel(link: QuickLink): string {
 
   {/* ───────────────────────────── Quick Start ────────────────────────── */}
   <QuickStart locale={locale} badge={start.badge} title={start.title} cards={start.cards} />
+
+  {/* ─────────────────────── Problem-to-action routes ─────────────────────── */}
+  {
+    Array.isArray(diagnose.cards) && diagnose.cards.length > 0 && (
+      <section class="border-t border-border bg-muted/35">
+        <div class="section">
+          <p class="text-sm font-semibold uppercase tracking-wider text-nav">{diagnose.badge}</p>
+          <div class="mt-1 max-w-2xl">
+            <h2 class="text-2xl font-bold md:text-3xl">{diagnose.title}</h2>
+            <p class="mt-2 text-sm leading-relaxed text-muted-foreground">{diagnose.description}</p>
+          </div>
+          <div class="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {diagnose.cards.map(
+              (card: { symptom: string; action: string; href: string; icon: string }) => {
+                const href = actionHref(card.href, '/');
+                return (
+                  <a
+                    href={href}
+                    target={isExternalHref(href) ? '_blank' : undefined}
+                    rel={isExternalHref(href) ? 'noopener noreferrer' : undefined}
+                    class="group flex min-h-40 flex-col rounded-xl border border-border bg-card p-5 transition hover:-translate-y-0.5 hover:border-nav/60 hover:shadow-lg"
+                  >
+                    <Icon name={card.icon} class="h-5 w-5 text-nav" />
+                    <h3 class="mt-4 text-base font-bold leading-snug text-foreground">
+                      {card.symptom}
+                    </h3>
+                    <span class="mt-auto flex items-center gap-1.5 pt-4 text-sm font-semibold text-nav">
+                      {card.action}
+                      <Icon
+                        name="lucide:arrow-right"
+                        class="h-4 w-4 transition group-hover:translate-x-0.5"
+                      />
+                    </span>
+                  </a>
+                );
+              },
+            )}
+          </div>
+        </div>
+      </section>
+    )
+  }
 
   {/* ───────────────────── Recent Updates + Trending ───────────────────── */}
   <section class="section border-t border-border">
@@ -154,7 +312,7 @@ function trendingLabel(link: QuickLink): string {
                 return (
                   <a href={detailPath(parsed.category, parsed.slug, locale)} class="card p-4">
                     <p class="text-xs uppercase tracking-wider text-muted-foreground">
-                      {parsed.category}
+                      {nav[parsed.category] ?? parsed.category}
                     </p>
                     <h3 class="mt-1 font-semibold leading-snug">{entry.data.title}</h3>
                     <p class="mt-1 line-clamp-2 text-sm text-muted-foreground">
@@ -228,18 +386,34 @@ function trendingLabel(link: QuickLink): string {
           <p class="mx-auto mt-2 max-w-xl text-muted-foreground">{closingCta.description}</p>
           <div class="mt-6 flex justify-center gap-3">
             <a
-              href={site.social.official}
-              target="_blank"
-              rel="noopener noreferrer"
+              href={actionHref(closingCta.primaryHref, site.social.official)}
+              target={
+                isExternalHref(actionHref(closingCta.primaryHref, site.social.official))
+                  ? '_blank'
+                  : undefined
+              }
+              rel={
+                isExternalHref(actionHref(closingCta.primaryHref, site.social.official))
+                  ? 'noopener noreferrer'
+                  : undefined
+              }
               class="btn-primary"
             >
               {closingCta.primary}
             </a>
-            {closingCta.secondary && site.social.discord && (
+            {closingCta.secondary && (closingCta.secondaryHref || site.social.discord) && (
               <a
-                href={site.social.discord}
-                target="_blank"
-                rel="noopener noreferrer"
+                href={actionHref(closingCta.secondaryHref, site.social.discord ?? '/')}
+                target={
+                  isExternalHref(actionHref(closingCta.secondaryHref, site.social.discord ?? '/'))
+                    ? '_blank'
+                    : undefined
+                }
+                rel={
+                  isExternalHref(actionHref(closingCta.secondaryHref, site.social.discord ?? '/'))
+                    ? 'noopener noreferrer'
+                    : undefined
+                }
                 class="btn-outline"
               >
                 {closingCta.secondary}

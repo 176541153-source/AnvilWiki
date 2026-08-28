@@ -10,16 +10,16 @@
 
 ## 文件索引
 
-| 要改什么 | 去哪个文件 |
-|---|---|
-| 站点名称、域名、社交链接、游戏信息 | [src/config/site.ts](#1-site配置) |
-| 导航分类（bosses / guides / codes...） | [src/config/navigation.ts](#2-navigation配置) |
-| 主题色 | [src/styles/globals.css](#3-主题色) |
-| 支持的语言 | [src/i18n/routing.ts](#4-语言列表) + [src/i18n/ui.ts](#4-语言列表) |
-| 所有 UI 文案（首页、导航、页脚） | [src/locales/en.json](#5-ui文案) |
-| favicon / Hero 图 / PWA | [public/](#6-静态资源) |
-| 文章内容 | [src/content/wiki/](#7-mdx-文章) |
-| 广告 key | Cloudflare 环境变量 `PUBLIC_ADSENSE_*`（参考 [Google AdSense](https://adsense.google.com/)） |
+| 要改什么                                                 | 去哪个文件                                                                                   |
+| -------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| 站点名称、品牌图标、域名、社交链接、编辑方法论、游戏信息 | [src/config/site.ts](#1-site配置)                                                            |
+| 导航分类（bosses / guides / codes...）                   | [src/config/navigation.ts](#2-navigation配置)                                                |
+| 主题色                                                   | [src/styles/globals.css](#3-主题色)                                                          |
+| 支持的语言                                               | [src/i18n/routing.ts](#4-语言列表) + [src/i18n/ui.ts](#4-语言列表)                           |
+| 所有 UI 文案（首页、导航、页脚）                         | [src/locales/en.json](#5-ui文案)                                                             |
+| favicon / Hero 图 / PWA                                  | [public/](#6-静态资源)                                                                       |
+| 文章内容                                                 | [src/content/wiki/](#7-mdx-文章)                                                             |
+| 广告 key                                                 | Cloudflare 环境变量 `PUBLIC_ADSENSE_*`（参考 [Google AdSense](https://adsense.google.com/)） |
 
 > 想自动化基础配置？运行 `pnpm apply-template`，它会交互式引导你完成 site.ts / navigation.ts / globals.css / routing.ts / locales 的修改。
 
@@ -29,21 +29,21 @@
 
 模板作为 demo 站分发，自带一批**demo 专属内容**——fork 做你自己的游戏站时它们全是累赘。两条初始化通道共享同一份删除清单：
 
-| 通道 | 怎么触发 | 特点 |
-|---|---|---|
-| `pnpm apply-template`（本地 CLI） | 终端交互式，自己点确认 | 会改游戏名/主题/语言/栏目；删除前逐项确认 |
+| 通道                                        | 怎么触发                   | 特点                                                                                             |
+| ------------------------------------------- | -------------------------- | ------------------------------------------------------------------------------------------------ |
+| `pnpm apply-template`（本地 CLI）           | 终端交互式，自己点确认     | 会改游戏名/主题/语言/栏目；删除前逐项确认                                                        |
 | Actions → **Initialize AnvilWiki** workflow | fork 仓库里点 Run workflow | 只做安全项（wrangler 重置 + 删 landing + 清 demo），**开 PR 前先跑 `pnpm build` 验证**再交给你审 |
 
 **删除清单（两个通道一致，改动必须同步 `scripts/apply-template.ts` 与 `.github/workflows/setup.yml`）：**
 
-| 类别 | 具体内容 | 说明 |
-|---|---|---|
-| demo 文章 | `src/content/wiki/*/*/*.mdx` 全部（目录结构保留） | CLI 清空后**每个所选栏目自动补 1 篇英文脚手架**，保证 build 不空转 |
-| demo 配图 | `src/assets/gallery/`、`public/images/articles/` 整目录；5 张封面按**文件名**删（`src/assets/covers/` 下 `*-cover.png`） | 按名删除而非通配——你已换成自己封面时绝不会被误删 |
-| 项目官网 | `src/components/landing/`、`src/config/landing.ts`、`src/pages/landing*`（含站内文档中心 /landing/docs）、`src/pages/zh/landing*`（中文官网）、`public/images/showcase/`、`public/images/wechat-qr.jpg` | fork 站不需要 AnvilWiki 项目自述页；`docs/handbook/` **markdown 源保留**当参考文档，只删路由 |
-| 官网回链 | `src/config/project.ts` 的 `landingLinkEnabled` 翻为 `false` | 页面 header 的"返回官网"按钮随删随关 |
-| demo 凭据 | `wrangler.toml` `[vars]` 重置：`SITE_URL` 换成你的域名，Giscus/Sponsor/CF Analytics 全部清空，AdSense 等可选槽留注释位 | 不重置的话，你站的评论区会指回官方仓库的 Discussions |
-| demo 作者 | `src/config/authors.ts` 里 `// DEMO` 标记的作者条目 | 否则 Person JSON-LD 会引用虚构作者 |
+| 类别      | 具体内容                                                                                                                                                                                                | 说明                                                                                         |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| demo 文章 | `src/content/wiki/*/*/*.mdx` 全部（目录结构保留）                                                                                                                                                       | CLI 清空后**每个所选栏目自动补 1 篇英文脚手架**，保证 build 不空转                           |
+| demo 配图 | `src/assets/gallery/`、`public/images/articles/` 整目录；5 张封面按**文件名**删（`src/assets/covers/` 下 `*-cover.png`）                                                                                | 按名删除而非通配——你已换成自己封面时绝不会被误删                                             |
+| 项目官网  | `src/components/landing/`、`src/config/landing.ts`、`src/pages/landing*`（含站内文档中心 /landing/docs）、`src/pages/zh/landing*`（中文官网）、`public/images/showcase/`、`public/images/wechat-qr.jpg` | fork 站不需要 AnvilWiki 项目自述页；`docs/handbook/` **markdown 源保留**当参考文档，只删路由 |
+| 官网回链  | `src/config/project.ts` 的 `landingLinkEnabled` 翻为 `false`                                                                                                                                            | 页面 header 的"返回官网"按钮随删随关                                                         |
+| demo 凭据 | `wrangler.toml` `[vars]` 重置：`SITE_URL` 换成你的域名，Giscus/Sponsor/CF Analytics 全部清空，AdSense 等可选槽留注释位                                                                                  | 不重置的话，你站的评论区会指回官方仓库的 Discussions                                         |
+| demo 作者 | `src/config/authors.ts` 里 `// DEMO` 标记的作者条目                                                                                                                                                     | 否则 Person JSON-LD 会引用虚构作者                                                           |
 
 **保留不删（有意设计）**：favicon/hero 图等二进制资产（CLI 生成不了，脚手架下一步指引你手动换）；`docs/handbook/` 手册源码；空的语言 JSON 文件（无害孤儿，路由不再引用）。
 
@@ -61,32 +61,43 @@
 
 ```ts
 export const site = {
-  name: 'Anvil Quest Wiki',          // → 改成 "{你的游戏名} Wiki"
-  shortName: 'AQW',                  // → 缩写
-  description: '...',                // → 含游戏名 + 核心关键词
-  domain: 'anvilwiki.pages.dev',     // → 你的域名（不带 https://）
-  tagline: '...',                    // → 副标题
-  legalNotice: '...',                // → 法律声明
+  name: 'Anvil Quest Wiki', // → 改成 "{你的游戏名} Wiki"
+  shortName: 'AQW', // → 缩写
+  brandIcon: 'lucide:hammer', // → 页头/页脚品牌图标
+  description: '...', // → 含游戏名 + 核心关键词
+  domain: 'anvilwiki.pages.dev', // → 你的域名（不带 https://）
+  tagline: '...', // → 副标题
+  legalNotice: '...', // → 法律声明
   social: {
-    official: 'https://...',         // → 游戏官网
-    discord: 'https://...',          // → 没有就留 undefined
+    official: 'https://...', // → 游戏官网
+    discord: 'https://...', // → 没有就留 undefined
     youtube: 'https://...',
     twitter: 'https://...',
     reddit: 'https://...',
+    github: 'https://github.com/...', // → 源码或公开纠错入口（可选）
+  },
+  about: {
+    mission: '...', // → 为什么做这个站
+    coverage: ['...'], // → 覆盖哪些问题
+    methodology: ['...'], // → 如何核实、标注和更新信息
   },
   game: {
-    name: 'Anvil Quest',             // → 游戏名
-    platform: 'Steam',              // → Roblox / Steam / PS5 等
-    developer: '...',               // → 开发商
-    genre: 'Action RPG',            // → 游戏类型
-    releaseDate: '2026-01-01',      // → 发售日（可选）
+    name: 'Anvil Quest', // → 游戏名
+    platform: 'Steam', // → Roblox / Steam / PS5 等
+    developer: '...', // → 开发商
+    genre: 'Action RPG', // → 游戏类型
+    releaseDate: '2026-01-01', // → 发售日（可选）
   },
 };
 ```
 
 **注意事项**：
+
 - `domain` 不带 `https://` 协议前缀（协议由 `SITE_URL` 环境变量统一管理）
 - 社交链接没有的留 `undefined`，不要删字段
+- `brandIcon` 使用 [Lucide](https://lucide.dev/) 图标名并加 `lucide:` 前缀
+- `about.methodology` 应写真实执行的方法；它会显示在 About 页，是搜索引擎和 AI 判断来源可信度的依据
+- 有公开仓库或纠错页时填写 `social.github`，页脚、About、Contact 会自动显示统一入口
 
 ---
 
@@ -100,7 +111,7 @@ export const site = {
 export const NAVIGATION_CONFIG = [
   { key: 'bosses', path: '/bosses', icon: 'lucide:swords', isContentType: true, order: 1 },
   { key: 'guides', path: '/guides', icon: 'lucide:book-open', isContentType: true, order: 2 },
-  { key: 'codes',  path: '/codes',  icon: 'lucide:gift',     isContentType: true, order: 3 },
+  { key: 'codes', path: '/codes', icon: 'lucide:gift', isContentType: true, order: 3 },
   // → 改成你的游戏需要的内容分类。isContentType 与 order 都是必填
   //   （isContentType 标记"有 MDX 内容目录的分类"，order 控制导航排序）。
 ];
@@ -108,11 +119,11 @@ export const NAVIGATION_CONFIG = [
 
 **必须同步的三处**（改了 navigation.ts 就必须同步另外两处）：
 
-| 位置 | 例子 |
-|---|---|
-| `navigation.ts` 的 `key` | `bosses` |
-| `en.json` 的 `nav.bosses` | `"bosses": "Bosses"`（显示文本） |
-| `src/content/wiki/<locale>/bosses/` | 目录名必须 = key |
+| 位置                                | 例子                             |
+| ----------------------------------- | -------------------------------- |
+| `navigation.ts` 的 `key`            | `bosses`                         |
+| `en.json` 的 `nav.bosses`           | `"bosses": "Bosses"`（显示文本） |
+| `src/content/wiki/<locale>/bosses/` | 目录名必须 = key                 |
 
 `icon` 从 [lucide 图标库](https://lucide.dev/)选，加 `lucide:` 前缀。
 
@@ -124,14 +135,14 @@ export const NAVIGATION_CONFIG = [
 
 ```css
 :root {
-  --brand: 22 90% 52%;        /* 亮色主色（HSL，空格分隔） */
-  --brand-light: 22 90% 62%;  /* 亮色浅色变体 */
-  --brand-h: 22;              /* 色相（--brand-text 派生用） */
-  --brand-s: 90%;             /* 饱和度（--brand-text 派生用） */
+  --brand: 22 90% 52%; /* 亮色主色（HSL，空格分隔） */
+  --brand-light: 22 90% 62%; /* 亮色浅色变体 */
+  --brand-h: 22; /* 色相（--brand-text 派生用） */
+  --brand-s: 90%; /* 饱和度（--brand-text 派生用） */
 }
 .dark {
-  --brand: 22 85% 48%;        /* 暗色主色 */
-  --brand-light: 22 85% 58%;  /* 暗色浅色变体 */
+  --brand: 22 85% 48%; /* 暗色主色 */
+  --brand-light: 22 85% 58%; /* 暗色浅色变体 */
   --brand-h: 22;
   --brand-s: 85%;
 }
@@ -140,6 +151,7 @@ export const NAVIGATION_CONFIG = [
 **怎么换色**：把你的 hex 色值转成 HSL（用 [w3schools HSL 转换器](https://www.w3schools.com/colors/colors_hsl.asp) 或任何工具），替换这 8 行的值（`--brand-text` 由 `--brand-h/--brand-s` 自动派生，不用手改——漏改 h/s 会让文字色残留旧色相）。其他 CSS 变量（`--background` / `--foreground` / `--border` 等）通过 `var(--brand)` 自动跟随，不用改。
 
 **验证**：
+
 ```bash
 grep "brand" src/styles/globals.css          # 确认 8 行已更新
 grep -rn "#[0-9a-fA-F]\{6\}" src/components/  # 确认组件里无硬编码 hex
@@ -179,6 +191,7 @@ echo '{}' > src/locales/ru.json
 ```
 
 **必须同步的三处**：
+
 1. `routing.ts` 的 `locales` 数组
 2. `src/locales/` 下实际存在的 JSON 文件
 3. `ui.ts` 的 import + `messages` 对象
@@ -195,24 +208,27 @@ echo '{}' > src/locales/ru.json
 
 ### 主要命名空间
 
-| 命名空间 | 内容 | 示例 |
-|---|---|---|
-| `site` | 站点名、描述、法律声明 | `site.name`、`site.description` |
-| `nav` | 导航栏分类文本 | `nav.bosses: "Bosses"` |
-| `overview` | 列表页标题和描述 | `overview.bosses.overviewTitle` |
-| `home` | 首页所有文案 | `home.hero`、`home.start`、`home.explore` 等 |
-| `footer` | 页脚 | `footer.copyrightText` |
-| `shared` | 通用文案 | `shared.readMore`、`shared.noArticles` |
+| 命名空间   | 内容                   | 示例                                         |
+| ---------- | ---------------------- | -------------------------------------------- |
+| `site`     | 站点名、描述、法律声明 | `site.name`、`site.description`              |
+| `nav`      | 导航栏分类文本         | `nav.bosses: "Bosses"`                       |
+| `overview` | 列表页标题和描述       | `overview.bosses.overviewTitle`              |
+| `home`     | 首页所有文案           | `home.hero`、`home.start`、`home.explore` 等 |
+| `footer`   | 页脚                   | `footer.copyrightText`                       |
+| `shared`   | 通用文案               | `shared.readMore`、`shared.noArticles`       |
 
 ### 首页 home 命名空间结构
 
 首页的数据结构详见 [PRD §6.5](./PRD.md#65-首页-home-命名空间)。关键字段：
 
 - `home.meta.title` / `description`：SEO 元数据（title 50-60 字符，description 150-160 字符）
-- `home.hero`：Hero 区域（`badge` / `title` / `description` / `ctaPrimary` / `ctaSecondary`）
+- `home.hero`：任务型 Hero（CTA 文案/链接/图标、`signals[]`、图片 `panel`、`quickActions[]`）
 - `home.start.cards[]`：QuickStart 卡片（4 张，每张含 `icon` + `href`）
+- `home.diagnose.cards[]`：从“我遇到了什么问题”直接跳到下一步；不用时可整段删除
 - `home.explore.modules[]`：内容模块（当前 demo 为 6 个，每个含 `displayType` + `highlights[]`）
-- `home.closingCta`：底部号召文案
+- `home.closingCta`：底部号召文案 + 可配置的 `primaryHref` / `secondaryHref`
+
+`pnpm apply-template` 的 codes / guides 两个预设会直接生成这套任务型首页骨架。生成后只需要把问题、入口和来源方法改成当前游戏的真实情况，不需要再改首页组件。
 
 **SEO 要求**：`home.explore.modules[].name` 必须包含游戏名。
 
@@ -221,6 +237,7 @@ echo '{}' > src/locales/ru.json
 非英文 JSON 缺 key 时会通过 deepMerge 自动 fallback 英文。所以你可以先只翻译部分 key，不会崩溃。
 
 不要翻译的内容：
+
 - 法律页正文（硬编码英文）
 - 文章正文（走 MDX 文件，放 `src/content/wiki/<locale>/`）
 
@@ -230,13 +247,13 @@ echo '{}' > src/locales/ru.json
 
 **目录**：`public/`
 
-| 文件 | 说明 |
-|---|---|
-| `favicon.ico` / `favicon-16x16.png` / `favicon-32x32.png` | 浏览器标签图标 |
-| `apple-touch-icon.png` | iOS 主屏图标（180×180） |
-| `android-chrome-192x192.png` / `android-chrome-512x512.png` | Android 主屏图标 |
-| `manifest.json` | PWA manifest（改 `name` / `short_name`） |
-| `images/hero.webp` | Hero 图（模板自带可能是占位，必须换成真实图） |
+| 文件                                                        | 说明                                          |
+| ----------------------------------------------------------- | --------------------------------------------- |
+| `favicon.ico` / `favicon-16x16.png` / `favicon-32x32.png`   | 浏览器标签图标                                |
+| `apple-touch-icon.png`                                      | iOS 主屏图标（180×180）                       |
+| `android-chrome-192x192.png` / `android-chrome-512x512.png` | Android 主屏图标                              |
+| `manifest.json`                                             | PWA manifest（改 `name` / `short_name`）      |
+| `images/hero.webp`                                          | Hero 图（模板自带可能是占位，必须换成真实图） |
 
 **Hero 图**：模板自带的可能是占位文件。换成你的真实 Hero 图，格式推荐 WebP（体积最小）。如果你拿到的是 PNG/JPG，用任何工具转成 WebP 后覆盖。
 
@@ -252,16 +269,17 @@ echo '{}' > src/locales/ru.json
 
 ```mdx
 ---
-title: "文章标题 - 游戏名"
-description: "155 字符以内的描述，含关键词"
-category: "bosses"
+title: '文章标题 - 游戏名'
+description: '155 字符以内的描述，含关键词'
+category: 'bosses'
 date: 2026-08-11
 lastModified: 2026-08-11
-image: "../../../../assets/covers/your-cover.png"
-tags: ["boss", "guide"]
+image: '../../../../assets/covers/your-cover.png'
+tags: ['boss', 'guide']
 ---
 
 ## 正文从 H2 开始
+
 不写 H1——ArticlePage 自动用 title 渲染 H1。
 ```
 
