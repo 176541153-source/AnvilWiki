@@ -177,6 +177,43 @@ check(() => {
 });
 
 check(() => {
+  const domain = siteSrc.match(/^\s*domain:\s*['"]([^'"]+)['"]/m)?.[1];
+  const workerPath = 'public/_worker.js';
+  if (!exists(workerPath)) {
+    fail(
+      'public/_worker.js is missing — production forks must canonicalize pages.dev and www without redirecting the apex host',
+    );
+    return;
+  }
+  const worker = read(workerPath);
+  const canonicalHost = worker.match(/^const CANONICAL_HOST = ['"]([^'"]+)['"]/m)?.[1];
+  const pagesHost = worker.match(/^const PAGES_HOST = ['"]([^'"]+)['"]/m)?.[1];
+  if (!domain || !canonicalHost || !pagesHost) {
+    fail('could not parse canonical worker host constants');
+    return;
+  }
+  if (canonicalHost !== domain) {
+    fail(
+      `public/_worker.js canonical host "${canonicalHost}" does not match site.ts domain "${domain}"`,
+    );
+    return;
+  }
+  if (!pagesHost.endsWith('.pages.dev')) {
+    fail(`public/_worker.js Pages host "${pagesHost}" must end with .pages.dev`);
+    return;
+  }
+  if (!worker.includes('return env.ASSETS.fetch(request)')) {
+    fail('public/_worker.js does not pass canonical requests to env.ASSETS.fetch(request)');
+    return;
+  }
+  if (domain === DEMO_DOMAIN) {
+    warn('demo worker is inert on its pages.dev canonical host; forks rewrite both host constants');
+  } else {
+    ok(`canonical worker serves "${domain}" directly and redirects "${pagesHost}" / www`);
+  }
+});
+
+check(() => {
   const siteName = siteSrc.match(/^\s*name:\s*['"]([^'"]+)['"]/m)?.[1];
   // Anchor game.name to the exported object (`game: {` immediately followed
   // by `name:`), otherwise the SiteConfig interface's `game: {` matches first.

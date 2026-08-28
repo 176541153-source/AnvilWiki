@@ -160,6 +160,7 @@ export interface SkinInput {
   brandIcon: string;
   brandLogo: string;
   domain: string;
+  pagesHost: string;
   tagline: string;
   description: string;
   legalNotice: string;
@@ -716,6 +717,40 @@ PUBLIC_CF_BEACON_TOKEN = ""
   return `${src.slice(0, sectionStart)}${newVars}${suffix ? `\n${suffix.replace(/^\s+/, '')}` : '\n'}`;
 }
 
+/**
+ * Build a host-aware Pages worker that keeps the custom apex as the only
+ * indexable origin. It redirects the generated pages.dev hostname, preview
+ * deployment subdomains, and www in one hop while serving apex assets directly.
+ */
+export function buildCanonicalWorker(input: SkinInput): string {
+  return `const CANONICAL_HOST = ${JSON.stringify(input.domain)};
+const PAGES_HOST = ${JSON.stringify(input.pagesHost)};
+
+function shouldRedirect(hostname) {
+  return (
+    hostname === \`www.\${CANONICAL_HOST}\` ||
+    (PAGES_HOST !== CANONICAL_HOST &&
+      (hostname === PAGES_HOST || hostname.endsWith(\`.\${PAGES_HOST}\`)))
+  );
+}
+
+export default {
+  async fetch(request, env) {
+    const url = new URL(request.url);
+
+    if (shouldRedirect(url.hostname)) {
+      url.protocol = 'https:';
+      url.hostname = CANONICAL_HOST;
+      url.port = '';
+      return Response.redirect(url, 301);
+    }
+
+    return env.ASSETS.fetch(request);
+  },
+};
+`;
+}
+
 function rewriteWranglerVars(input: SkinInput): string | null {
   const filePath = 'wrangler.toml';
   if (!fs.existsSync(path.resolve(ROOT, filePath))) return null;
@@ -937,6 +972,14 @@ async function main() {
     '',
   );
   const domain = await ask(rl, 'Domain (no protocol)', 'anvilwiki.pages.dev');
+  const defaultPagesHost = domain.endsWith('.pages.dev')
+    ? domain
+    : `${domain.slice(0, domain.lastIndexOf('.'))}.pages.dev`;
+  const pagesHost = await ask(
+    rl,
+    'Cloudflare Pages hostname (no protocol, used only for canonical redirect)',
+    defaultPagesHost,
+  );
   const tagline = await ask(rl, 'Hero tagline', `Your home for everything ${gameName}`);
   const description = await ask(
     rl,
@@ -1051,6 +1094,7 @@ async function main() {
     brandIcon,
     brandLogo,
     domain,
+    pagesHost,
     tagline,
     description,
     legalNotice,
@@ -1077,6 +1121,7 @@ async function main() {
   console.log(`   Brand icon:  ${brandIcon}`);
   console.log(`   Brand logo:  ${brandLogo || '(not set — replace before production)'}`);
   console.log(`   Domain:      ${domain}`);
+  console.log(`   Pages host:  ${pagesHost}`);
   console.log(`   Theme:       ${themeHex} → HSL(${preview.h}, ${preview.s}%, ${preview.l}%)`);
   console.log(`   Locales:     ${uniqueLocales.join(', ')}`);
   console.log(`   Categories:  ${categories.map((c) => c.key).join(', ') || '(none)'}`);
@@ -1090,6 +1135,7 @@ async function main() {
   console.log('     - src/i18n/ui.ts');
   console.log(`     - src/locales/{${uniqueLocales.join(',')}}.json`);
   console.log('     - public/manifest.json');
+  console.log('     - public/_worker.js (pages.dev + www → canonical domain)');
   console.log('     - wrangler.toml ([vars] reset to your domain, demo Giscus cleared)');
 
   if (!DRY_RUN) {
@@ -1136,6 +1182,9 @@ async function main() {
 
   write('public/manifest.json', rewriteManifest(skinInput));
   console.log('   ✅ public/manifest.json');
+
+  write('public/_worker.js', buildCanonicalWorker(skinInput));
+  console.log('   ✅ public/_worker.js (single-hop canonical host redirects)');
 
   const wrangler = rewriteWranglerVars(skinInput);
   if (wrangler !== null) {

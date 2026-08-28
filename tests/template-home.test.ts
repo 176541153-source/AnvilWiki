@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { describe, expect, test } from 'vitest';
 import {
   buildHomePreset,
+  buildCanonicalWorker,
   replaceWranglerVars,
   rewriteLocaleJson,
   type SkinInput,
@@ -19,6 +20,7 @@ const baseInput: SkinInput = {
   brandIcon: 'lucide:radar',
   brandLogo: '/logo.png',
   domain: 'signal-harbor.wiki',
+  pagesHost: 'signal-harbor.pages.dev',
   tagline: 'Find the next route',
   description: 'Signal Harbor guides, codes, routes, and dated update references for players.',
   legalNotice: 'Signal Harbor Wiki is an independent fan site.',
@@ -73,6 +75,15 @@ describe('task-first homepage preset', () => {
 });
 
 describe('reusable homepage contract', () => {
+  test('canonical worker redirects pages.dev previews and www without redirecting apex', () => {
+    const generated = buildCanonicalWorker(baseInput);
+
+    expect(generated).toContain(`const CANONICAL_HOST = "${baseInput.domain}"`);
+    expect(generated).toContain(`const PAGES_HOST = "${baseInput.pagesHost}"`);
+    expect(generated).toContain('hostname.endsWith(`.${PAGES_HOST}`)');
+    expect(generated).toContain('return env.ASSETS.fetch(request)');
+  });
+
   test('locale generator keeps utility labels and creates every selected category', () => {
     const generated = JSON.parse(
       rewriteLocaleJson(
