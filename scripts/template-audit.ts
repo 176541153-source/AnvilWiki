@@ -200,6 +200,77 @@ check(() => {
 });
 
 check(() => {
+  const domain = siteSrc.match(/^\s*domain:\s*['"]([^'"]+)['"]/m)?.[1];
+  const siteName = siteSrc.match(/^\s*name:\s*['"]([^'"]+)['"]/m)?.[1];
+  const gameName = siteSrc.match(/\bgame:\s*\{\s*name:\s*['"]([^'"]+)['"]/)?.[1];
+  if (!domain || !siteName || !gameName) {
+    fail('could not parse domain/site name/game name for brand uniqueness check');
+    return;
+  }
+  if (domain === DEMO_DOMAIN) {
+    warn('demo repo keeps its descriptive name; production forks must use a distinct brand');
+    return;
+  }
+  const normalize = (value: string) =>
+    value
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, ' ')
+      .trim();
+  const brand = normalize(siteName);
+  const game = normalize(gameName);
+  const generic = new Set([
+    game,
+    `${game} wiki`,
+    `${game} tools`,
+    `${game} tool`,
+    `${game} guide`,
+    `${game} guides`,
+    `${game} codes`,
+  ]);
+  if (generic.has(brand)) {
+    fail(
+      `site name "${siteName}" is only the game name plus a generic suffix — create a distinct brand while keeping the exact game keyword in page titles/descriptions.`,
+    );
+  } else {
+    ok(`site brand "${siteName}" is distinct from the generic game-name patterns`);
+  }
+});
+
+check(() => {
+  const domain = siteSrc.match(/^\s*domain:\s*['"]([^'"]+)['"]/m)?.[1];
+  const brandLogo = siteSrc.match(/^\s*brandLogo:\s*['"]([^'"]+)['"]/m)?.[1];
+  if (domain === DEMO_DOMAIN && !brandLogo) {
+    warn('demo repo uses the fallback icon; production forks must configure a custom brandLogo');
+    return;
+  }
+  if (!brandLogo) {
+    fail(
+      'production fork has no site.brandLogo — a generic Lucide icon is not a finished identity',
+    );
+    return;
+  }
+  const logoPath = brandLogo.startsWith('/') ? `public${brandLogo}` : brandLogo;
+  if (!exists(logoPath)) {
+    fail(`site.brandLogo points to missing file "${logoPath}"`);
+    return;
+  }
+  const faviconFiles = [
+    'public/favicon.ico',
+    'public/favicon-16x16.png',
+    'public/favicon-32x32.png',
+    'public/apple-touch-icon.png',
+    'public/android-chrome-192x192.png',
+    'public/android-chrome-512x512.png',
+  ];
+  const missing = faviconFiles.filter((file) => !exists(file));
+  if (missing.length > 0) {
+    fail(`custom logo is set, but favicon/PWA assets are missing: ${missing.join(', ')}`);
+  } else {
+    ok(`custom brandLogo "${brandLogo}" and complete favicon/PWA asset set are present`);
+  }
+});
+
+check(() => {
   let broken = false;
   let enJson: Record<string, any> | null = null;
   try {

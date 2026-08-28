@@ -14,8 +14,10 @@ const read = (relativePath: string) => readFileSync(join(root, relativePath), 'u
 
 const baseInput: SkinInput = {
   gameName: 'Signal Harbor',
-  shortName: 'SH Wiki',
+  siteName: 'Harbor Signal Lab',
+  shortName: 'SH Lab',
   brandIcon: 'lucide:radar',
+  brandLogo: '/logo.png',
   domain: 'signal-harbor.wiki',
   tagline: 'Find the next route',
   description: 'Signal Harbor guides, codes, routes, and dated update references for players.',
@@ -91,6 +93,7 @@ describe('reusable homepage contract', () => {
 
     expect(generated.nav.home).toBe('Home');
     expect(generated.nav.search).toBe('Search');
+    expect(generated.site.name).toBe(baseInput.siteName);
     expect(Object.keys(generated.overview)).toEqual(['guides', 'codes', 'bosses', 'items']);
     expect(generated.overview.guides.overviewDescription).toContain(baseInput.gameName);
     expect(generated.overview.codes.overviewTitle).toBe('All Codes');
@@ -121,6 +124,7 @@ describe('reusable homepage contract', () => {
   });
 
   test('header/footer branding and public corrections are configuration driven', () => {
+    expect(read('src/components/header/SiteHeader.astro')).toContain('site.brandLogo');
     expect(read('src/components/header/SiteHeader.astro')).toContain(
       "site.brandIcon ?? 'lucide:hammer'",
     );

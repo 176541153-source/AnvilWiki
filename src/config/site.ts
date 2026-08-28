@@ -12,6 +12,8 @@ export interface SiteConfig {
   shortName: string;
   /** Iconify/Lucide icon used in the site header and footer. */
   brandIcon?: string;
+  /** Optional custom logo image in public/. Preferred over brandIcon when provided. */
+  brandLogo?: string;
   /** Site description for Organization JSON-LD and og:site_name. */
   description: string;
   /** Domain without protocol or trailing slash. e.g. "anvilquestwiki.wiki" */

@@ -10,16 +10,16 @@
 
 ## 文件索引
 
-| 要改什么                                                 | 去哪个文件                                                                                   |
-| -------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| 站点名称、品牌图标、域名、社交链接、编辑方法论、游戏信息 | [src/config/site.ts](#1-site配置)                                                            |
-| 导航分类（bosses / guides / codes...）                   | [src/config/navigation.ts](#2-navigation配置)                                                |
-| 主题色                                                   | [src/styles/globals.css](#3-主题色)                                                          |
-| 支持的语言                                               | [src/i18n/routing.ts](#4-语言列表) + [src/i18n/ui.ts](#4-语言列表)                           |
-| 所有 UI 文案（首页、导航、页脚）                         | [src/locales/en.json](#5-ui文案)                                                             |
-| favicon / Hero 图 / PWA                                  | [public/](#6-静态资源)                                                                       |
-| 文章内容                                                 | [src/content/wiki/](#7-mdx-文章)                                                             |
-| 广告 key                                                 | Cloudflare 环境变量 `PUBLIC_ADSENSE_*`（参考 [Google AdSense](https://adsense.google.com/)） |
+| 要改什么                                                    | 去哪个文件                                                                                   |
+| ----------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| 独立品牌名、专属 Logo、域名、社交链接、编辑方法论、游戏信息 | [src/config/site.ts](#1-site配置)                                                            |
+| 导航分类（bosses / guides / codes...）                      | [src/config/navigation.ts](#2-navigation配置)                                                |
+| 主题色                                                      | [src/styles/globals.css](#3-主题色)                                                          |
+| 支持的语言                                                  | [src/i18n/routing.ts](#4-语言列表) + [src/i18n/ui.ts](#4-语言列表)                           |
+| 所有 UI 文案（首页、导航、页脚）                            | [src/locales/en.json](#5-ui文案)                                                             |
+| favicon / Hero 图 / PWA                                     | [public/](#6-静态资源)                                                                       |
+| 文章内容                                                    | [src/content/wiki/](#7-mdx-文章)                                                             |
+| 广告 key                                                    | Cloudflare 环境变量 `PUBLIC_ADSENSE_*`（参考 [Google AdSense](https://adsense.google.com/)） |
 
 > 想自动化基础配置？运行 `pnpm apply-template`，它会交互式引导你完成 site.ts / navigation.ts / globals.css / routing.ts / locales 的修改。
 
@@ -61,9 +61,10 @@
 
 ```ts
 export const site = {
-  name: 'Anvil Quest Wiki', // → 改成 "{你的游戏名} Wiki"
-  shortName: 'AQW', // → 缩写
-  brandIcon: 'lucide:hammer', // → 页头/页脚品牌图标
+  name: 'Forge Atlas', // → 独立品牌名，不要只写“游戏名 + Wiki/Tools/Guide”
+  shortName: 'Forge Atlas', // → 导航与 PWA 短名
+  brandIcon: 'lucide:hammer', // → 专属图缺失时的备用图标
+  brandLogo: '/logo.png', // → public/logo.png，页头/页脚优先使用
   description: '...', // → 含游戏名 + 核心关键词
   domain: 'anvilwiki.pages.dev', // → 你的域名（不带 https://）
   tagline: '...', // → 副标题
@@ -94,8 +95,11 @@ export const site = {
 **注意事项**：
 
 - `domain` 不带 `https://` 协议前缀（协议由 `SITE_URL` 环境变量统一管理）
+- `name` 是品牌名，不等于 SEO 主关键词。页面 title/description 继续覆盖完整游戏词；品牌名必须避免“游戏名 + Wiki/Tools/Guide/Codes”这种批量站痕迹
+- 每站必须生成独立 `brandLogo`，并同步替换 favicon/PWA 全套；只换一个 Lucide 图标不算完成换皮
+- Logo 上线前要分别检查 32px 页头与 16px 浏览器标签尺寸；复杂主 Logo 可配同视觉语言的极简 favicon
 - 社交链接没有的留 `undefined`，不要删字段
-- `brandIcon` 使用 [Lucide](https://lucide.dev/) 图标名并加 `lucide:` 前缀
+- `brandIcon` 使用 [Lucide](https://lucide.dev/) 图标名并加 `lucide:` 前缀，仅作为 `brandLogo` 缺失时的回退
 - `about.methodology` 应写真实执行的方法；它会显示在 About 页，是搜索引擎和 AI 判断来源可信度的依据
 - 有公开仓库或纠错页时填写 `social.github`，页脚、About、Contact 会自动显示统一入口
 
@@ -247,13 +251,14 @@ echo '{}' > src/locales/ru.json
 
 **目录**：`public/`
 
-| 文件                                                        | 说明                                          |
-| ----------------------------------------------------------- | --------------------------------------------- |
-| `favicon.ico` / `favicon-16x16.png` / `favicon-32x32.png`   | 浏览器标签图标                                |
-| `apple-touch-icon.png`                                      | iOS 主屏图标（180×180）                       |
-| `android-chrome-192x192.png` / `android-chrome-512x512.png` | Android 主屏图标                              |
-| `manifest.json`                                             | PWA manifest（改 `name` / `short_name`）      |
-| `images/hero.webp`                                          | Hero 图（模板自带可能是占位，必须换成真实图） |
+| 文件                                                        | 说明                                           |
+| ----------------------------------------------------------- | ---------------------------------------------- |
+| `logo.png`                                                  | 页头/页脚主 Logo（建议透明背景，至少 256×256） |
+| `favicon.ico` / `favicon-16x16.png` / `favicon-32x32.png`   | 浏览器标签极简图标                             |
+| `apple-touch-icon.png`                                      | iOS 主屏图标（180×180）                        |
+| `android-chrome-192x192.png` / `android-chrome-512x512.png` | Android 主屏图标                               |
+| `manifest.json`                                             | PWA manifest（改 `name` / `short_name`）       |
+| `images/hero.webp`                                          | Hero 图（模板自带可能是占位，必须换成真实图）  |
 
 **Hero 图**：模板自带的可能是占位文件。换成你的真实 Hero 图，格式推荐 WebP（体积最小）。如果你拿到的是 PNG/JPG，用任何工具转成 WebP 后覆盖。
 
@@ -300,6 +305,9 @@ tags: ['boss', 'guide']
 □ routing.ts 语言与 locales/*.json 同步
 □ en.json 无 demo 游戏名残留
 □ favicon 全套已替换
+□ 站点使用独立品牌名，不是“游戏名 + Wiki/Tools/Guide/Codes”
+□ public/logo.png 已配置为 site.brandLogo，32px 下清楚可辨
+□ favicon 在 16px 下仍清楚可辨，且不是其他站复用图
 □ hero 图是真实图片（非占位）
 □ 所有 MDX frontmatter 通过 Zod schema（pnpm build 不报错）
 □ sitemap URL 全部返回 200（pnpm check-sitemap）

@@ -155,8 +155,10 @@ async function askBool(
 
 export interface SkinInput {
   gameName: string;
+  siteName: string;
   shortName: string;
   brandIcon: string;
+  brandLogo: string;
   domain: string;
   tagline: string;
   description: string;
@@ -420,10 +422,10 @@ function rewriteSiteTs(input: SkinInput): string {
   const filePath = 'src/config/site.ts';
   const src = read(filePath);
   const newSite = `export const site: SiteConfig = {
-  name: '${input.gameName} Wiki',
+  name: '${input.siteName.replace(/'/g, "\\'")}',
   shortName: '${input.shortName}',
   brandIcon: '${input.brandIcon}',
-  description: '${input.description.replace(/'/g, "\\'")}',
+${input.brandLogo ? `  brandLogo: '${input.brandLogo.replace(/'/g, "\\'")}',\n` : ''}  description: '${input.description.replace(/'/g, "\\'")}',
   domain: '${input.domain}',
   tagline: '${input.tagline.replace(/'/g, "\\'")}',
   legalNotice: '${input.legalNotice.replace(/'/g, "\\'")}',
@@ -456,7 +458,7 @@ ${(input.categories.length > 0 ? input.categories : [{ key: 'guides', icon: '' }
   // update these in src/config/site.ts to match (wrong dims mis-crop share cards).
   ogImageWidth: 1200,
   ogImageHeight: 630,
-  defaultAuthor: '${input.gameName.replace(/'/g, "\\'")} Wiki Editorial Team',
+  defaultAuthor: '${input.siteName.replace(/'/g, "\\'")} Editorial Team',
 };`;
   const siteRe = /export const site: SiteConfig = \{[\s\S]*?\n\};/;
   if (!siteRe.test(src)) {
@@ -636,7 +638,7 @@ export function rewriteLocaleJson(input: SkinInput, _locale: string, existing?: 
   };
   // Always (re)write the site-level strings for this locale.
   obj.site = {
-    name: `${input.gameName} Wiki`,
+    name: input.siteName,
     shortName: input.shortName,
     description: input.description,
     tagline: input.tagline,
@@ -644,7 +646,7 @@ export function rewriteLocaleJson(input: SkinInput, _locale: string, existing?: 
   };
   obj.footer = obj.footer ?? {};
   (obj.footer as Record<string, unknown>).copyrightText =
-    `© ${new Date().getFullYear()} ${input.gameName} Wiki. All rights reserved.`;
+    `© ${new Date().getFullYear()} ${input.siteName}. All rights reserved.`;
   const nav: Record<string, unknown> = {};
   for (const key of ['home', 'toggleTheme', 'menu', 'close', 'search', 'language']) {
     if (previousNav[key] !== undefined) nav[key] = previousNav[key];
@@ -735,7 +737,7 @@ function rewriteManifest(input: SkinInput): string {
     console.error(`❌ Invalid JSON in ${filePath}.`);
     process.exit(1);
   }
-  obj.name = `${input.gameName} Wiki`;
+  obj.name = input.siteName;
   obj.short_name = input.shortName;
   obj.description = input.description;
   const c = hexToHsl(input.themeHex);
@@ -915,15 +917,25 @@ async function main() {
   console.log('Game identity');
   console.log('━'.repeat(60));
   const gameName = await ask(rl, 'Full game name', 'Anvil Quest');
+  const siteName = await ask(
+    rl,
+    'Distinct site brand (do not use only "<game> Wiki/Tools/Guide")',
+    `${gameName} Field Lab`,
+  );
   const shortNameDefault =
     gameName
       .split(' ')
       .map((w) => w[0])
       .join('')
       .slice(0, 4)
-      .toUpperCase() + ' Wiki';
+      .toUpperCase() + ' Lab';
   const shortName = await ask(rl, 'Short name (PWA / mobile)', shortNameDefault);
   const brandIcon = await ask(rl, 'Brand icon (Iconify name)', 'lucide:book-open');
+  const brandLogo = await ask(
+    rl,
+    'Custom logo path in public/ (recommended; blank uses the icon)',
+    '',
+  );
   const domain = await ask(rl, 'Domain (no protocol)', 'anvilwiki.pages.dev');
   const tagline = await ask(rl, 'Hero tagline', `Your home for everything ${gameName}`);
   const description = await ask(
@@ -934,7 +946,7 @@ async function main() {
   const legalNotice = await ask(
     rl,
     'Legal / copyright notice',
-    `${gameName} Wiki is a fan-made community site. Not affiliated with or endorsed by the game developer.`,
+    `${siteName} is a fan-made community site for ${gameName}. Not affiliated with or endorsed by the game developer.`,
   );
   const officialUrl = await ask(rl, 'Official game URL', 'https://example.com');
   const sourceUrl = await ask(rl, 'Wiki source / corrections URL (optional)', '');
@@ -1034,8 +1046,10 @@ async function main() {
   // --- Summarize planned changes -----------------------------------------
   const skinInput: SkinInput = {
     gameName,
+    siteName,
     shortName,
     brandIcon,
+    brandLogo,
     domain,
     tagline,
     description,
@@ -1058,8 +1072,10 @@ async function main() {
   console.log(`📋 Planned changes${DRY_RUN ? ' (DRY RUN — nothing will be written)' : ''}`);
   console.log('━'.repeat(60));
   console.log(`   Game:        ${gameName}`);
+  console.log(`   Site brand:  ${siteName}`);
   console.log(`   Short name:  ${shortName}`);
   console.log(`   Brand icon:  ${brandIcon}`);
+  console.log(`   Brand logo:  ${brandLogo || '(not set — replace before production)'}`);
   console.log(`   Domain:      ${domain}`);
   console.log(`   Theme:       ${themeHex} → HSL(${preview.h}, ${preview.s}%, ${preview.l}%)`);
   console.log(`   Locales:     ${uniqueLocales.join(', ')}`);
