@@ -40,6 +40,8 @@
 用 Google Trends 对比锚定词(`{game name} codes` / `{game name} wiki` vs 一个已知基准词):
 **只有搜索量真实存在且在上升,才值得建站。** YouTube 高播放但 Trends 无搜索 = 观众在YouTube看,不搜 wiki。
 
+执行门槛:同时检查目标市场 7 天与 30 天窗口,排除数据不足、低量 0 和孤立尖峰;最近段至少比前段高 15%,且 7 天非零点至少占一半。Trends 是抽样、归一化的相对兴趣,单个 100 或 Breakout 不是绝对搜索量证明。
+
 ### 第 4 层 · 竞争验证(2 分钟)
 
 Google 搜 `{game name} wiki` 和 `{game name} codes`,看前 10:
@@ -47,8 +49,12 @@ Google 搜 `{game name} wiki` 和 `{game name} codes`,看前 10:
 - Fandom 有但内容薄、更新慢 → 可切
 - Fandom/Game8 内容厚且日更 → 放弃,换下一个
 
+至少覆盖两个查询意图并逐条记录 5 个以上结果。以下任一项一票否决:5+ 专门站、3+ 大型攻略站、4+ 内容厚且答对意图的结果,或任一内容厚且高频更新的强站。只有在 5 条以上审计中至少 3 条且 60% 以上明确答错意图时,才允许 intent gap 例外。
+
 **双源规则**:需求信号至少两个独立来源交叉确认(如 Trends + YouTube);
 只有单一来源(如仅 Reddit 讨论)的,先观察一周再决定。
+
+**顺序规则**:需求、独立双源、SERP 竞争、内容深度(8+ 独立页面且 4+ 有搜索/社区证据)是硬门槛;任一失败直接淘汰。分数只给全部过门槛的候选排序,不能覆盖淘汰。
 
 ### 第 7 条判断 · 意图满足度(位置满了 ≠ 没机会)
 
@@ -61,19 +67,20 @@ Google 搜 `{game name} wiki` 和 `{game name} codes`,看前 10:
 选品完成后 → fork 本仓库 → `pnpm apply-template`(或跑一次 "Initialize AnvilWiki"
 workflow)→ 详细步骤见 [apply-template.md](apply-template.md) 和 [deployment.md](deployment.md)。
 
-## 首日 10 页(黄金窗口的黄金 24 小时)
+## 首批 8–12 页(黄金窗口的黄金 24 小时)
 
-fork 完成的第一天,目标不是打磨站点,是**让 Google 尽快看到 10 个可索引页面**。
+fork 完成的第一天,目标不是打磨站点,是**让 Google 尽快看到 8-12 个有真实需求和事实来源的可索引页面**。
 用 AI 直接产页(见 README「用 AI 直接生成内容」,或 `/anvil-new-article` 技能):
 
 | 顺序 | 页面 | 为什么第一 |
 |---|---|---|
-| 1 | `{game} codes`(用 `codes` frontmatter + 自动 Active/Expired 分区) | codes 是流量最高的页面类型,玩家默认日更 |
-| 2 | beginner guide(`guides`) | "how to start X" 是新手第一搜 |
-| 3-5 | 3 个最重要 Boss/关卡攻略(`bosses`,带 boss 数据卡) | 长尾明确、可引用性强 |
-| 6 | tier list / 最佳装备排名 | Commercial 意图,RPM 高 |
-| 7 | how to redeem / 基础机制 FAQ | 问题式 H2 → featured snippet 候选 |
-| 8-10 | 补齐选品时验证过的 Top 3 搜索词对应页面 | 窗口词优先 |
+| 1 | `{game} wiki/guide` 导航页 | 承接站点级实体词,串起已验证内容簇 |
+| 2-4 | beginner/progression 与真实新手阻塞点 | 来自下拉、相关查询或社区未解决问题 |
+| 5-8 | how-to/quest/item/weapon/boss/map 中真实存在的系统 | 一页一意图,有官方资料或可复现实测 |
+| 条件页 | codes / tier / value / trade / drop rate | 仅在游戏有该系统、数据可核验且能持续更新时创建 |
+| 条件工具 | calculator / tracker / interactive map | 只有工具能明显减少重复计算或查找步骤时创建 |
+
+新游戏的新武器、角色、任务词可能先于第三方搜索量出现,抢先发布有窗口;但大站进场后可能被替换。首发速度只能算时效优势,不能代替整站竞争审计。禁止为每个游戏机械生成 `codes + 3 boss + tier list`。
 
 每篇都必须:问题式 H2 + 首段 40-60 词直答(summary 字段)→ 这是 AI 搜索时代被引用的最小单元。
 

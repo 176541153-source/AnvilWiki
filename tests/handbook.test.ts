@@ -85,6 +85,17 @@ describe('handbook: en/zh parity (hard requirement)', () => {
       }
     }
   });
+
+  it('game-selection chapter preserves executable hard gates in both locales', () => {
+    const zh = fs.readFileSync(path.join(HANDBOOK_DIR, 'zh', 'pick-your-game.md'), 'utf8');
+    const en = fs.readFileSync(path.join(HANDBOOK_DIR, 'en', 'pick-your-game.md'), 'utf8');
+    for (const phrase of ['先淘汰,后打分', '不少于 5 个第一页结果', '60%']) {
+      expect(zh, `zh/pick-your-game.md: missing hard-gate phrase ${phrase}`).toContain(phrase);
+    }
+    for (const phrase of ['eliminate first, score second', 'five page-one results', '60%']) {
+      expect(en, `en/pick-your-game.md: missing hard-gate phrase ${phrase}`).toContain(phrase);
+    }
+  });
 });
 
 describe('lib/handbook pure functions', () => {
