@@ -1,6 +1,6 @@
 ---
 title: "Chapter 1 · Pick Your Game: Pick Wrong and All the Work After Is Wasted"
-description: "Four hard gates filter English-market game keywords worth building for: source candidates, verify real search demand, audit competition result by result, and validate content depth. Build-or-drop in two days, AI prompt included."
+description: "Choose English-market game keywords with four hard gates: search demand, independent sources, SERP competition, and content depth. Includes an AI prompt."
 manual: learn
 order: 1
 icon: lucide:crosshair
