@@ -14,7 +14,7 @@ src/content/wiki/en/guides/beginner-guide.mdx  → /guides/beginner-guide
 src/content/wiki/ja/bosses/emberfang.mdx           → /ja/bosses/emberfang（日文版）
 ```
 
-> `category` 必须与 `src/config/navigation.ts` 的 `key` 一致。
+> `category` 必须与 `src/config/navigation.ts` 的 `key` 一致。**新建分类必须先有文章，再进 `navigation.ts`**——空分类的列表页是 thin content（约百词的空状态页），进了导航就会进 sitemap「邀请收录」低质页面（真实事故：/starships 空分类页被收录）。正确顺序：先写好第一批 3-5 篇文章放进新分类目录，再把分类加进导航。
 
 ---
 
@@ -55,6 +55,7 @@ noindex: false
 | `videos`       | string[] | 可选 | YouTube 视频 ID（11 位，非完整 URL）  | 文章底部"相关视频"懒加载嵌入（每条生成 VideoObject JSON-LD） |
 | `gallery`      | object[] | 可选 | image/caption/alt（v1.7）            | 文章底部缩略图画廊 + 原生 dialog lightbox（每张生成 ImageObject JSON-LD） |
 | `codes`        | object[] | 可选 | code/reward/status/expiryDate/source（v1.8） | codes 页结构化数据：正文前自动渲染 Active（CodeBlock 一键复制）/ Expired（表格）分区 + FAQPage JSON-LD |
+| `faq`          | object[] | 可选 | 每项 `{question, answer}`（非空字符串） | 文末可见 FAQ 区块 + FAQPage JSON-LD（可见内容与结构化数据一致，符合 Google 富结果政策） |
 
 ### 可在 MDX 中使用的模板组件
 
@@ -138,6 +139,14 @@ title: 'Emberfang Boss Guide'
 
 **不要写 H1**——`ArticlePage` 组件自动用 frontmatter 的 `title` 渲染 H1。如果你也写 H1，会导致双 H1，影响 SEO。
 
+### 关键词密度（别堆游戏名）
+
+标题和正文里游戏名的重复度保持在 **1-3%**。本模板的标题体系默认处处带游戏名（站名、H1、分类标题、首页模块名），正文再照抄这个习惯，游戏名密度会冲到 5-6%，属于关键词堆砌，谷歌会压排名。写法：标题里游戏名最多出现一次，正文自然提及即可——页面主题靠站内互链和分类结构传达，不靠重复名词。
+
+### 每篇至少 3 条站内链接
+
+从每篇文章正文链向 **≥3 篇**本站相关文章（`check-content` 会给不足 3 条的文章出 warning）。内链帮谷歌理解站点结构，也给新页面导权重；零内链的文章是「孤岛页」，收录和排名都吃亏。链接要落在自然的语境词上，不要文末堆一排。
+
 ### 支持的 Markdown 语法
 
 - 标题（H2-H4，建议不跳级）
@@ -145,7 +154,7 @@ title: 'Emberfang Boss Guide'
 - 表格（GitHub Flavored Markdown）
 - 代码块（```语法高亮）
 - 引用（`>`）
-- 链接（相对路径用 `/bosses/emberfang`，绝对路径用完整 URL）
+- 链接（站内页面用带尾斜杠的绝对路径，如 `/bosses/emberfang/`——全站 trailingSlash 为 always；外链用完整 URL）
 - 图片（`![alt](/images/articles/xxx.png)`，正文图片放 `public/images/articles/`，建议 16:9（800×450）——globals.css 为正文图预留 16:9 盒子，非 16:9 会信箱式留边，不裁剪、零 CLS）
   - ⚠️ 封面图（frontmatter `image` 字段）不同：走 Astro Image 优化（自动 WebP/srcset），放在 `src/assets/covers/`，写相对 MDX 文件的路径。详见上面的 frontmatter 示例。gallery 图（`src/assets/gallery/`）同封面走优化管线。
   - 💡 demo 示范：`en/bosses/stormcaller.mdx`（gallery 机制图）、`en/guides/weapon-tier-list.mdx`（正文内联卡片图）、`en/guides/beginner-guide.mdx`（gallery 路线图）。demo 素材可用 `node scripts/gen-demo-media.mjs` 复现/修改。

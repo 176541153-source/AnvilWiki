@@ -17,6 +17,8 @@
 
 ---
 
+> 🚨 **一个站只允许一个部署源——一个 git 仓库 + 一个部署入口。** 不要在两个目录（包括两个 AI 会话各开的目录）里同时开发同一个站再各自部署：它们会共用同一个 Cloudflare Pages 项目，**谁后部署谁覆盖线上**，另一边的修复和文章会静默消失（真实事故：上线当天部分文章 404、已修复的问题在线上复发）。其他任何副本一律只读参考、绝不部署；有产出先并回唯一仓库再继续。
+
 ## 方式一：Cloudflare Pages Git 自动部署（推荐新手）
 
 这是最简单的方式——连一下 GitHub 仓库，之后每次 `git push` 自动构建部署。
@@ -95,6 +97,8 @@ Cloudflare 会自动检测 Astro，但请确认以下设置：
 ## 绑定自定义域名
 
 免费赠送的 `*.pages.dev` 域名可以一直用，但为了 SEO 和品牌，建议绑自定义域名。
+
+**顺序铁律：先绑域名 → 再改 SITE_URL（`wrangler.toml` 的 `[vars]`）→ 再部署。** 顺序反了的后果：谷歌先收录 `*.pages.dev` 临时域名，等正式域名生效要重新等收录，返工一天（即下文 Step 3 的警告，把顺序定对可以整段避开）。
 
 ### Step 1 — 买域名
 
@@ -255,6 +259,10 @@ curl -I https://<你的域名>/privacy-policy/
    - 提交 `sitemap-index.xml`
    - 等 24-48 小时看收录情况
 
+3. **主动推送收录**：
+   - **Cloudflare Crawler Hints**：Cloudflare 控制台 → 你的域名 → Caching → Crawler Hints 打开（免费，一行配置，让 Cloudflare 主动告诉谷歌你的内容更新了）
+   - **IndexNow 一键推送**：本仓库自带 `pnpm submit-indexnow`——构建部署后运行，它读取 `dist/` 的 sitemap 把全站 URL 主动推给 IndexNow（必应等搜索引擎）。首次运行会自动生成密钥文件 `public/<key>.txt`：把它提交并部署一次，再跑一遍命令即完成推送
+
 ### 性能验证
 
 1. **PageSpeed Insights**：https://pagespeed.web.dev
@@ -271,7 +279,7 @@ curl -I https://<你的域名>/privacy-policy/
 | --- | --- | --- | --- |
 | CTR（点击率） | ≥ 2% 算合格 | GSC 效果报告 | 低于 2%：检查 TDH（title、description、H1 三个标签）和标题吸引力——标题含不含"游戏名 + 关键词"、有没有让人想点进去的钩子 |
 | 每日点击 | 1000 次/天是目标 | GSC 效果报告 | 新站从个位数涨起是正常的；复盘看的不是绝对值，是趋势——持续在涨就对，连续一周不动才需要动作（补页面/换词） |
-| 人均浏览页数 | ≥ 1.5 页 | CF Web Analytics / GA4 | < 1.5 页 = 内链不够：每篇文章补 1-2 条指向相关文章的内链（codes 页 ↔ 攻略页互指） |
+| 人均浏览页数 | ≥ 1.5 页 | CF Web Analytics / GA4 | < 1.5 页 = 内链不够：每篇文章至少 3 条站内链接（不足则补，指向相关文章，codes 页 ↔ 攻略页互指） |
 | 每周新增内页 | 10+ 篇 | 自己数 | **只加不改旧页**——新增页面是给 Google 的增量信号，复盘期别顺手大改已收录的页面 |
 
 > 用了 [anvilwiki-ops](./multi-site.md) 的话，一条命令拉数：`anvil-ops metrics`（聚合 GSC + Cloudflare Web Analytics）。

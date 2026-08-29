@@ -8,6 +8,7 @@ import {
   faqPageJsonLd,
   pageTitle,
 } from '~/lib/seo';
+import { site } from '~/config/site';
 
 describe('SEO helpers', () => {
   describe('organizationJsonLd', () => {
@@ -43,7 +44,7 @@ describe('SEO helpers', () => {
       expect(json.headline).toBe('Test Article');
       expect(json.datePublished).toContain('2026-01-01');
       expect(json.image).toMatch(/^https?:\/\//);
-      expect(json.mainEntityOfPage['@id']).toMatch(/\/bosses\/test-slug$/);
+      expect(json.mainEntityOfPage['@id']).toMatch(/\/bosses\/test-slug\/$/);
     });
 
     it('uses dateModified when provided, otherwise falls back to datePublished', () => {
@@ -122,6 +123,18 @@ describe('SEO helpers', () => {
       const t = pageTitle('Hello');
       expect(t).toContain('Hello');
       expect(t).toContain('—');
+      expect(t.endsWith(site.name)).toBe(true);
+    });
+
+    it('skips the suffix when the title already carries the game name', () => {
+      const t = pageTitle('Anvil Quest Boss Guide');
+      expect(t).toBe('Anvil Quest Boss Guide');
+    });
+
+    it('switches to the short suffix for long titles (>50 chars)', () => {
+      const long = 'Best Weapons and Armor for Early Game Players Ranked';
+      const t = pageTitle(long);
+      expect(t).toBe(`${long} — ${site.shortName}`);
     });
   });
 });

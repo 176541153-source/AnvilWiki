@@ -117,13 +117,34 @@ Google 的[广告投放位置政策](https://support.google.com/adsense/answer/1
 - 共存时别把第三方广告做成和 AdSense 一模一样的样式(政策禁止混淆布局)
 - 最后数一下**全页广告总数别超过 4-5 个**:密度过高既是 AdSense 政策风险,也伤排名
 
-### 脚本粘哪里(和接 Clarity 同一位置、同一方法)
+### 广告位怎么挂(独立文件 + iframe 隔离,必读)
 
-1. **全站生效**(Popunder / Social Bar 这类不需要指定位置的格式):fork 里打开 `src/components/layout/BaseLayout.astro`,把脚本粘进 `<head>`——和接 [Clarity 跟踪代码](deployment.md#用-microsoft-clarity-看用户在你站点上干什么免费)完全同一位置同一方法
-2. **指定位置生效**(Banner):粘进对应组件,比如 `src/components/article/ArticlePage.astro`(文章页)里正文后的位置
-3. 提交部署,几分钟到几小时内广告开始填充
+**不要把 Adsterra 的脚本直接粘进组件源码。** 正确姿势:每个广告位一个独立 html 文件,放 `public/ads/` 目录(自行新建),例如 `public/ads/incontent.html`,文件内容就是 Adsterra 后台拿到的 `<script>` 片段(它自带 `window.atOptions` 配置)。然后在页面里用 iframe 挂载:
 
-模板自带的 3 个 AdSense 位**不需要任何改动**——它们由 AdSense 的 4 个环境变量控制,和 Adsterra 脚本互不干扰。
+```html
+<iframe src="/ads/incontent.html" style="width:100%;max-width:728px;height:90px;border:0"
+  loading="lazy" sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+  title="Advertisement"></iframe>
+```
+
+逐参数说清楚为什么这么挂:
+
+- **为什么必须 iframe 隔离**:多个广告位的脚本都用 `window.atOptions` 这个全局变量存配置,直接粘进同一个页面会互相覆盖(串号——A 位拿到 B 位的配置);独立文件各持各的配置,互不干扰
+- **为什么 sandbox 给这四个权限**:`allow-scripts` 广告脚本要跑;`allow-same-origin` 缺了它素材渲染空白(cookie/localStorage 抛异常);`allow-popups allow-forms` 点击交互要用
+- **为什么绝不加 `allow-top-navigation`**:移动端部分创意会试图带着你的整个页面跳走(劫持),这个权限一给就拦不住。劫持的教训同样适用于回报方向:把用户体验砸了,排名迟早还回来
+
+全站生效格式(Popunder / Social Bar 类)是另一条路:这类型才需要把脚本粘进 `src/components/layout/BaseLayout.astro` 的 `<head>`——但**挂 AdSense 的站禁用 Popunder**(见上节红线),Social Bar 流量起来前也别碰,所以正常路径用不到它。
+
+模板自带的 3 个 AdSense 位**不需要任何改动**——它们由 AdSense 的 4 个环境变量控制,和 Adsterra 的 iframe 互不干扰。
+
+### 怎么验证广告真的在展示
+
+只信两样:**手机关 Wi-Fi 用 4G 流量实测** + **Adsterra 后台的 Impressions 数据**。先排掉两个常见误判:
+
+- 开着代理/电脑环境,广告经常不加载——「后台有数据」不等于正常显示
+- 用无头浏览器/自动化工具测试返回 403,那是 Adsterra 的**反自动化检测**,不是广告坏了,别拿它验证
+
+第三种信号对照:GSC 有点击但 Impressions 很低 → 广告没正常加载(查代理/广告位代码/位置是不是太深滚不到);Impressions 高但收益平 → 先观察一两周再说,别天天换位。
 
 ---
 

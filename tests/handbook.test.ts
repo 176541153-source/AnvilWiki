@@ -132,8 +132,8 @@ describe('lib/handbook pure functions', () => {
   });
 
   it('handbookPath builds locale-correct URLs', () => {
-    expect(handbookPath('en', 'pick-your-game')).toBe('/landing/docs/pick-your-game');
-    expect(handbookPath('zh', 'pick-your-game')).toBe('/zh/landing/docs/pick-your-game');
-    expect(handbookPath('zh', '', true)).toBe('/zh/landing/docs');
+    expect(handbookPath('en', 'pick-your-game')).toBe('/landing/docs/pick-your-game/');
+    expect(handbookPath('zh', 'pick-your-game')).toBe('/zh/landing/docs/pick-your-game/');
+    expect(handbookPath('zh', '', true)).toBe('/zh/landing/docs/');
   });
 });

@@ -26,9 +26,19 @@ import { CONTENT_TYPES } from './src/config/navigation';
  * discards conflicting hreflang clusters, which would silently undo the
  * per-page logic on exactly the duplicated-content URLs that need it most.
  *
+ * Also builds `categoryCoverage`: category → locales with ≥1 published MDX.
+ * (category × locale) list pages with zero articles are thin-content empty
+ * states (ListPage renders them noindex) — they are excluded from the
+ * sitemap here, and the list-page alternates only advertise covered locales
+ * (mirroring localesForCategory on the page side).
+ *
  * Plain fs scan at config time — `astro:content` is not importable here.
  */
-function buildLastmodMap(noindexPaths: Set<string>, coverage: Map<string, Set<string>>): Map<string, string> {
+function buildLastmodMap(
+  noindexPaths: Set<string>,
+  coverage: Map<string, Set<string>>,
+  categoryCoverage: Map<string, Set<string>>,
+): Map<string, string> {
   const map = new Map<string, string>();
   const base = path.resolve('./src/content/wiki');
   if (!fs.existsSync(base)) return map;
@@ -81,6 +91,12 @@ function buildLastmodMap(noindexPaths: Set<string>, coverage: Map<string, Set<st
       cov.add(loc);
       coverage.set(covKey, cov);
 
+      // Category-level coverage: which locales have ≥1 article in this
+      // category (drives list-page alternates + empty-list exclusion).
+      const catCov = categoryCoverage.get(cat) ?? new Set<string>();
+      catCov.add(loc);
+      categoryCoverage.set(cat, catCov);
+
       // List pages: newest article in the category wins.
       const listPath = loc === defaultLocale ? `/${cat}` : `/${loc}/${cat}`;
       const existing = map.get(listPath);
@@ -90,6 +106,16 @@ function buildLastmodMap(noindexPaths: Set<string>, coverage: Map<string, Set<st
     }
   };
   walk(base);
+
+  // Empty (category × locale) list pages: noindex thin content on the page
+  // side (ListPage), excluded from the sitemap here. Same paths, same truth.
+  for (const cat of CONTENT_TYPES) {
+    const covered = categoryCoverage.get(cat);
+    for (const l of locales) {
+      if (covered?.has(l)) continue;
+      noindexPaths.add(l === defaultLocale ? `/${cat}` : `/${l}/${cat}`);
+    }
+  }
 
   // Handbook chapters (docs/handbook/<locale>/<slug>.md) → /landing/docs/<slug>
   // (+ /zh/ prefix). Same frontmatter-driven lastmod contract; the `updated`
@@ -125,9 +151,15 @@ function buildLastmodMap(noindexPaths: Set<string>, coverage: Map<string, Set<st
 
 const siteOrigin = process.env.SITE_URL || 'https://anvilwiki.pages.dev';
 
+// trailingSlash:'always' makes every generated URL end with "/", but the
+// lookup tables above (lastmodMap / noindexPaths / coverage keys) are built
+// slash-free — normalize once here instead of at every key construction.
+const normalizePath = (p: string) => (p !== '/' && p.endsWith('/') ? p.slice(0, -1) : p);
+
 const noindexPaths = new Set<string>();
 const localeCoverage = new Map<string, Set<string>>();
-const lastmodMap = buildLastmodMap(noindexPaths, localeCoverage);
+const categoryCoverage = new Map<string, Set<string>>();
+const lastmodMap = buildLastmodMap(noindexPaths, localeCoverage, categoryCoverage);
 
 /**
  * Article/list hreflang alternates that match the page-level <head> truth.
@@ -145,22 +177,26 @@ function alternatesFor(pagePath: string): Array<{ lang: string; url: string }> |
       return Array.from(cov).map((l) => ({
         lang: l,
         url: new URL(
-          l === defaultLocale ? `/${art[2]}/${art[3]}` : `/${l}/${art[2]}/${art[3]}`,
+          l === defaultLocale ? `/${art[2]}/${art[3]}/` : `/${l}/${art[2]}/${art[3]}/`,
           siteOrigin,
         ).href,
       }));
     }
   }
-  // Category list: localized list routes always exist (empty state by design).
+  // Category list: only locales that actually have an article in the
+  // category (empty-state lists are noindex and excluded from the sitemap —
+  // advertising them as alternates would invite crawling thin content).
   const list = pagePath.match(/^\/(?:([a-z]{2,3})\/)?([a-z-]+)$/);
   if (
     list &&
     (locales as readonly string[]).includes(list[1] ?? defaultLocale) &&
     CONTENT_TYPES.includes(list[2])
   ) {
-    return locales.map((l) => ({
+    const catCov = categoryCoverage.get(list[2]);
+    if (!catCov) return undefined;
+    return Array.from(catCov).map((l) => ({
       lang: l,
-      url: new URL(l === defaultLocale ? `/${list[2]}` : `/${l}/${list[2]}`, siteOrigin).href,
+      url: new URL(l === defaultLocale ? `/${list[2]}/` : `/${l}/${list[2]}/`, siteOrigin).href,
     }));
   }
   return undefined;
@@ -170,7 +206,12 @@ function alternatesFor(pagePath: string): Array<{ lang: string; url: string }> |
 export default defineConfig({
   site: process.env.SITE_URL || 'https://anvilwiki.pages.dev',
   output: 'static',
-  trailingSlash: 'never',
+  // Cloudflare Pages serves directory builds at /path/ — with 'never' every
+  // canonical/sitemap/internal link said /path, so each page 308'd once and
+  // Google's self-described signals were all off by a hop (three-site
+  // production lesson; the terminal fix is 'always' everywhere, NOT a
+  // _redirects reverse-301 which loops on CF).
+  trailingSlash: 'always',
   image: {
     // Emit explicit width/height on responsive <Image> output to prevent CLS.
     responsiveStyles: true,
@@ -198,7 +239,7 @@ export default defineConfig({
       // Alternates are built per-URL in `serialize` from real MDX coverage.
       // noindex articles stay out of the sitemap (self-contradictory signal
       // otherwise — the page asks not to be indexed while the sitemap submits it).
-      filter: (url) => !noindexPaths.has(decodeURIComponent(new URL(url).pathname)),
+      filter: (url) => !noindexPaths.has(normalizePath(decodeURIComponent(new URL(url).pathname))),
       // Inject <lastmod> from article frontmatter (see buildLastmodMap) and
       // hreflang alternates that mirror the page-level truth (see alternatesFor).
       serialize(item) {
@@ -206,7 +247,7 @@ export default defineConfig({
           // Decode: non-ASCII slugs (CJK filenames) come percent-encoded in
           // item.url, while lastmodMap keys are raw filesystem names —
           // without decoding the lookup silently misses.
-          const pagePath = decodeURIComponent(new URL(item.url).pathname);
+          const pagePath = normalizePath(decodeURIComponent(new URL(item.url).pathname));
           const lm = lastmodMap.get(pagePath);
           if (lm) item.lastmod = lm;
           // sitemap `links` = hreflang alternates (the lib's own i18n option

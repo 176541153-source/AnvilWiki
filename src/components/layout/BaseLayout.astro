@@ -80,7 +80,15 @@ const ogLocaleMap = OG_LOCALE_MAP as Record<string, string>;
 const ogLocale = ogLocaleMap[mainLocale] ?? mainLocale;
 
 const suffix = titleSuffix !== undefined ? titleSuffix : site.name;
-const fullTitle = suffix && !title.includes(suffix) ? `${title} — ${suffix}` : title;
+// Skip suffixing when the title already carries any identity marker —
+// pageTitle() may have appended the short suffix ("X — AQ Wiki"), the title
+// may contain the game name, or a caller passed a pre-suffixed string.
+const hasIdentity =
+  title.includes(suffix) ||
+  title.includes(site.name) ||
+  title.includes(site.shortName) ||
+  title.includes(site.game.name);
+const fullTitle = suffix && !hasIdentity ? `${title} — ${suffix}` : title;
 const orgJsonLd = organizationJsonLd();
 
 // Strip ANY known locale prefix (built from routing.ts so new locales keep
@@ -116,7 +124,7 @@ const consentLabels = {
 };
 // Consent banner links to the localized privacy policy (informed consent).
 const footerStrings = (getUi(locale).footer ?? {}) as unknown as Record<string, string>;
-const privacyHref = locale === defaultLocale ? '/privacy-policy' : `/${locale}/privacy-policy`;
+const privacyHref = locale === defaultLocale ? '/privacy-policy/' : `/${locale}/privacy-policy/`;
 const privacyLabel = footerStrings.privacyPolicy ?? 'Privacy Policy';
 ---
 
@@ -125,7 +133,12 @@ const privacyLabel = footerStrings.privacyPolicy ?? 'Privacy Policy';
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" href="/favicon.ico" sizes="any" />
+    {/* pnpm gen-assets regenerates these in place with the live brand color.
+        SVG first (sharp modern browsers), 32px PNG fallback; the legacy
+        favicon.ico stays in public/ but is never referenced (sharp can't
+        emit ICO — see scripts/gen-assets.ts). */}
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.json" />
     <link rel="alternate" type="application/rss+xml" title={site.name} href="/rss.xml" />
@@ -188,7 +201,10 @@ const privacyLabel = footerStrings.privacyPolicy ?? 'Privacy Policy';
     )}
 
     {/* Twitter */}
-    <meta name="twitter:card" content={article ? 'summary_large_image' : 'summary'} />
+    {/* Every page's og:image is ≥1200px wide (hero 1200×630, article covers
+        1200×675) — always claim the large card (Aniimo: a global "summary"
+        undersold every share). */}
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={image} />

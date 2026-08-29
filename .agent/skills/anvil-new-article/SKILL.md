@@ -42,7 +42,8 @@ description: 从用户提供的素材(口述要点/视频内容/别的攻略/原
 - 兑换码用 `<CodeBlock code="..." label="..." />`(import 自 `~/components/article/CodeBlock.astro`)
 - 提示/警告用 `<Callout type="warn|tip">`,多阶段细节用 `<Accordion title="...">`(import 自 `~/components/mdx/`)
 - 图片放 `src/assets/covers/`,frontmatter `image` 写相对路径
-- 内链用无尾斜杠相对路径(`/bosses/emberfang`,不是 `https://...` 也不是 `/bosses/emberfang/`)
+- 站内页面链接必须**带尾斜杠**(`/bosses/emberfang/`,不是 `/bosses/emberfang` 也不是 `https://...`)——全站 trailingSlash 为 always
+- 非默认语言(如 ja)正文里的站内链接必须带语言前缀(`/ja/bosses/x/`)——裸 `/bosses/x/` 会静默跳到英文页
 - 视频**两条规则**:
   1. **frontmatter `videos: [id]` 必须登记**(这是 VideoObject JSON-LD 的来源)
   2. 位置:想放在某个小节下面,就在该小节末尾 `import Video from '~/components/mdx/Video.astro'` + `<Video id="..." title="..."/>`(与 Callout 同款心智);只想文末展示则只写 frontmatter(内联过的 id 不会在文末重复渲染)
@@ -55,7 +56,7 @@ description: 从用户提供的素材(口述要点/视频内容/别的攻略/原
 ### Step 4 — 自检(必须执行)
 
 ```bash
-pnpm check-content     # H1/alt/跳级/尾斜杠 lint
+pnpm check-content     # H1/alt/跳级/尾斜杠 lint(页面内链必须以 / 结尾)
 pnpm build             # Zod schema + 全站构建,任何 frontmatter 错误在这里暴露
 ```
 

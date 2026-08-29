@@ -8,7 +8,14 @@
  *   1. No H1 in the body (`# ...`) — H1 is rendered from frontmatter title.
  *   2. Headings must not skip levels (H2 → H4 without an H3 in between).
  *   3. Images need alt text (`![alt](src)`, empty `![](src)` fails).
- *   4. Internal MD links must not end with "/" (site is trailingSlash:'never').
+ *   4. Internal MD page links must end with "/" (site is trailingSlash:'always';
+ *      Cloudflare serves /path/, a bare /path costs a 308 and misaligns
+ *      canonical). Asset paths and anchors are exempt.
+ *   5. Non-default-locale bodies: internal links MUST carry the locale prefix
+ *      (`/ja/bosses/x`) — a bare `/bosses/x` silently lands on the English
+ *      page (Aniimo shipped 177 such links before noticing).
+ *   6. Fewer than 3 internal links in a body → warning (orphan-ish page:
+ *      no internal links = no crawl paths, no PageRank flow).
  *
  * Style: warnings don't fail the build; errors exit 1 (can gate CI).
  *
@@ -20,6 +27,16 @@ import * as path from 'node:path';
 
 const ROOT = process.cwd();
 const BASE = path.resolve(ROOT, 'src/content/wiki');
+
+// Parsed from routing.ts (NOT hardcoded) so forks that change the default
+// locale keep this rule honest.
+const DEFAULT_LOCALE =
+  fs.readFileSync(path.resolve(ROOT, 'src/i18n/routing.ts'), 'utf8').match(
+    /export const defaultLocale(?:: Locale)? = '([a-z-]+)'/,
+  )?.[1] ?? 'en';
+
+// Asset paths are locale-less by design (public/ is shared) — rule 5 skips them.
+const ASSET_RE = /\.(png|webp|jpe?g|gif|svg|ico|json|xml|txt|css|js|woff2?|avif|mp4)$/i;
 
 const files: string[] = [];
 (function walk(dir: string) {
@@ -52,6 +69,10 @@ for (const file of files) {
   const secondFm = lines.indexOf('---', 1);
   const bodyStart = secondFm === -1 ? 0 : secondFm + 1;
   const body = lines.slice(bodyStart);
+  // Locale of this file (path shape: <locale>/<category>/<slug>.mdx) — rule 5
+  // only applies to non-default locales.
+  const fileLocale = path.relative(BASE, file).split(path.sep)[0];
+  let internalLinkCount = 0;
 
   let prevLevel = 1; // H1 "level" from the frontmatter title.
   body.forEach((line, i) => {
@@ -78,12 +99,43 @@ for (const file of files) {
       if (!alt.trim()) error(file, ln, `image without alt text: ${m.slice(0, 60)}`);
     }
 
-    // 4. Trailing-slash internal links (trailingSlash: 'never').
-    const links = line.match(/\]\((\/[^)#\s]*\/)\)/g) ?? [];
-    for (const m of links) {
-      error(file, ln, `internal link ends with "/" (trailingSlash never): ${m.slice(0, 60)}`);
+    // 4 + 5 + 6. Internal MD links (non-image): trailing slash, locale
+    // prefix, and link counting. (?<!!) excludes image syntax ![alt](/…) —
+    // assets are locale-less by design (public/ is shared).
+    const mdLinks = line.match(/(?<!!)\[[^\]]*\]\([^)]+\)/g) ?? [];
+    for (const m of mdLinks) {
+      const href = m.match(/\]\(([^)\s]+)/)?.[1] ?? '';
+      if (!href.startsWith('/') || href === '/') continue;
+      internalLinkCount++;
+      // Strip #anchor / ?query before shape checks.
+      const pathOnly = href.split('#')[0].split('?')[0];
+      // 4. Page links end with "/" (assets exempt).
+      if (!ASSET_RE.test(pathOnly) && !pathOnly.endsWith('/')) {
+        error(
+          file,
+          ln,
+          `internal page link must end with "/" (trailingSlash always): ${m.slice(0, 60)}`,
+        );
+      }
+      // 5. Non-default-locale bodies carry their own locale prefix.
+      if (fileLocale !== DEFAULT_LOCALE && !ASSET_RE.test(pathOnly)) {
+        const ok = href.startsWith(`/${fileLocale}/`) || href === `/${fileLocale}`;
+        if (!ok) {
+          error(
+            file,
+            ln,
+            `non-default-locale body links without the "${fileLocale}/" prefix (silently lands on the ${DEFAULT_LOCALE} page): ${m.slice(0, 60)}`,
+          );
+        }
+      }
     }
   });
+
+  // 6. Fewer than 3 internal links → warning (zero internal links = orphan
+  // page: no crawl paths, no PageRank flow — Aniimo shipped 54/56 like that).
+  if (internalLinkCount < 3) {
+    warn(file, bodyStart, `only ${internalLinkCount} internal link(s) in body — aim for ≥3`);
+  }
 }
 
 console.log(

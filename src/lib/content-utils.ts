@@ -46,3 +46,49 @@ export function isPossiblyOutdated(
   const ageMs = now.getTime() - ref.getTime();
   return ageMs > STALE_AFTER_DAYS * 24 * 60 * 60 * 1000;
 }
+
+/** Minimal shape selectRelatedEntries needs — WikiEntry satisfies it. */
+export interface RelatedLike {
+  id: string;
+  data: { tags: readonly string[]; category: string; date: Date };
+}
+
+/**
+ * Related-article selection with a three-tier fallback:
+ *   1. shared tags (strongest signal, newest first);
+ *   2. same category, filling up to `limit`;
+ *   3. newest site-wide — ONLY when nothing matched at all (a "Related"
+ *      section of unrelated articles is worse than none).
+ * Excludes the current article and never returns duplicates. Pure function
+ * (the astro:content-dependent pool loading stays in i18n/content.ts).
+ */
+export function selectRelatedEntries<T extends RelatedLike>(
+  pool: readonly T[],
+  current: RelatedLike,
+  limit = 3,
+): T[] {
+  const chosen: T[] = [];
+  const chosenIds = new Set<string>([current.id]);
+  const newestFirst = (a: RelatedLike, b: RelatedLike) => b.data.date.getTime() - a.data.date.getTime();
+
+  const take = (candidates: T[]) => {
+    for (const entry of candidates) {
+      if (chosen.length >= limit) return;
+      if (chosenIds.has(entry.id)) continue;
+      chosen.push(entry);
+      chosenIds.add(entry.id);
+    }
+  };
+
+  // Tier 1: shared tags.
+  take(pool.filter((e) => e.data.tags.some((t) => current.data.tags.includes(t))).sort(newestFirst));
+  // Tier 2: same category fills the remainder.
+  if (chosen.length < limit) {
+    take(pool.filter((e) => e.data.category === current.data.category).sort(newestFirst));
+  }
+  // Tier 3: site-wide newest, only when the article is an island.
+  if (chosen.length === 0) {
+    take([...pool].sort(newestFirst));
+  }
+  return chosen;
+}

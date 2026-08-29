@@ -110,6 +110,20 @@ const wiki = defineCollection({
           }),
         )
         .optional(),
+      /**
+       * Per-article FAQ (any page type). Rendered as a visible <details>
+       * block near the end of the page AND as FAQPage JSON-LD — markup must
+       * mirror visible content (Google rich-results policy). Merged with the
+       * codes FAQ into a single FAQPage entity (one per page).
+       */
+      faq: z
+        .array(
+          z.object({
+            question: z.string().min(1),
+            answer: z.string().min(1),
+          }),
+        )
+        .optional(),
     }),
 });
 

@@ -40,8 +40,9 @@ const htmlFiles: string[] = [];
   }
 })(DIST);
 
-/** Existing site paths (site is trailingSlash:'never'). "/bosses/x" → exists
- *  if dist/bosses/x/index.html or dist/bosses/x.html exists. */
+/** Existing site paths (trailingSlash:'always' — both shapes tolerated on
+ *  lookup). "/bosses/x" → exists if dist/bosses/x/index.html or
+ *  dist/bosses/x.html exists. */
 const knownPaths = new Set<string>(['/']);
 for (const file of htmlFiles) {
   // Normalize to forward slashes — path.relative() yields "\" on Windows,

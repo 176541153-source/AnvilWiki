@@ -83,7 +83,7 @@ pnpm dev
 ### 第 5 步:换上你的图标(2 分钟,强烈建议)
 
 **做什么**:把浏览器标签页和手机主屏上的「铁砧图标」换成你游戏的图标。上一步的命令能改所有文字,但图标是图片文件,机器没法替你画——不换的话,你的站顶着模板示例的图标上线。
-**怎么做**:打开 [favicon.io/favicon-converter](https://favicon.io/favicon-converter/) → 上传一张你游戏的图(正方形最好)→ 点生成并下载 → 解压后把里面的图标文件**全部拖进项目的 `public/` 文件夹覆盖同名文件**(favicon.ico、favicon-16x16.png、favicon-32x32.png、favicon.svg、apple-touch-icon.png、android-chrome-192x192.png、android-chrome-512x512.png)。顺手把 `public/images/` 里的 hero.webp / hero.svg(首页大图)也换成你的图。
+**怎么做**:打开 [favicon.io/favicon-converter](https://favicon.io/favicon-converter/) → 上传一张你游戏的图(正方形最好)→ 点生成并下载 → 解压后把里面的图标文件**全部拖进项目的 `public/` 文件夹覆盖同名文件**(favicon.ico、favicon-16x16.png、favicon-32x32.png、favicon.svg、apple-touch-icon.png、android-chrome-192x192.png、android-chrome-512x512.png)。顺手把 `public/images/` 里的 hero.webp / hero.svg(首页大图)也换成你的图。不追求自定义图案的话,模板自带的 `pnpm gen-assets` 命令会用你的主题色一键生成全套图标和首页大图,更省事。
 **你会看到**:刷新 localhost:4321,标签页图标变成你的图。
 **确认做对了**:`public/` 里不再有铁砧图;手机「添加到主屏幕」后图标也是你的。
 

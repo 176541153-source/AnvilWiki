@@ -11,6 +11,7 @@ export {
   getEntryWithFallback,
   getEntriesByCategory,
   localesForEntry,
+  localesForCategory,
   getRecentEntries,
   getRelatedEntries,
   getTagsWithCounts,
@@ -22,6 +23,12 @@ export {
 } from '~/i18n/content';
 
 // Pure helpers live in content-utils (no astro:content import — vitest-loadable).
-export { parseEntryId, isPossiblyOutdated, STALE_AFTER_DAYS, STALE_CATEGORIES } from '~/lib/content-utils';
+export {
+  parseEntryId,
+  isPossiblyOutdated,
+  selectRelatedEntries,
+  STALE_AFTER_DAYS,
+  STALE_CATEGORIES,
+} from '~/lib/content-utils';
 
 export { slugifyTag } from '~/lib/url';

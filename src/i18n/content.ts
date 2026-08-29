@@ -18,6 +18,7 @@
 import { getCollection, getEntry, type CollectionEntry } from 'astro:content';
 import { defaultLocale, type Locale } from './routing';
 import { slugifyTag } from '~/lib/url';
+import { selectRelatedEntries } from '~/lib/content-utils';
 
 export type WikiEntry = CollectionEntry<'wiki'>;
 
@@ -108,6 +109,24 @@ export async function localesForEntry(category: string, slug: string): Promise<L
 }
 
 /**
+ * All locales that have at least one published article in a category.
+ * Drives the list-page hreflang alternates: declaring a locale whose list
+ * page is the empty state would advertise a thin-content page (and must
+ * mirror the sitemap-side coverage in astro.config.ts).
+ */
+export async function localesForCategory(category: string): Promise<Locale[]> {
+  const all = await getCollection('wiki');
+  const found = new Set<Locale>();
+  for (const entry of all) {
+    const parsed = parseEntryId(entry.id);
+    if (isPublished(entry) && parsed?.category === category) {
+      found.add(parsed.locale);
+    }
+  }
+  return Array.from(found);
+}
+
+/**
  * Recent articles for a locale (for homepage "Recent Updates").
  */
 export async function getRecentEntries(locale: Locale, limit = 6): Promise<WikiEntry[]> {
@@ -119,30 +138,29 @@ export async function getRecentEntries(locale: Locale, limit = 6): Promise<WikiE
 }
 
 /**
- * Related articles (by shared tags). Excludes the current article.
- * Newest-first, consistent with every other list in this module — collection
- * order is path-alphabetical and would make "Related" arbitrary.
+ * Related articles — three-tier fallback (Aniimo production lesson: word-level
+ * tags rarely overlap, so a tags-only match left 54/56 articles with zero
+ * related links). Tiers: shared tags → same category → newest site-wide (only
+ * when nothing matched at all — a "Related" section of unrelated articles is
+ * worse than none). Selection logic lives in selectRelatedEntries
+ * (lib/content-utils.ts, vitest-loadable); this wrapper only loads the pool.
  */
 export async function getRelatedEntries(
   current: WikiEntry,
   locale: Locale,
   limit = 3,
 ): Promise<WikiEntry[]> {
-  if (current.data.tags.length === 0) return [];
   const all = await getCollection('wiki');
-  const parsed = parseEntryId(current.id);
-  if (!parsed) return [];
-
-  return all
-    .filter((e) => {
-      if (e.id === current.id) return false;
-      if (!isPublished(e)) return false;
-      const p = parseEntryId(e.id);
-      if (p?.locale !== locale) return false;
-      return e.data.tags.some((t: string) => current.data.tags.includes(t));
-    })
-    .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
-    .slice(0, limit);
+  const pool = all.filter((e) => {
+    if (e.id === current.id) return false;
+    if (!isPublished(e)) return false;
+    return parseEntryId(e.id)?.locale === locale;
+  });
+  return selectRelatedEntries(
+    pool,
+    { id: current.id, data: { tags: current.data.tags, category: current.data.category, date: current.data.date } },
+    limit,
+  );
 }
 
 /**

@@ -85,7 +85,8 @@ export function prevNext<T extends ChapterLike>(
 /** Public URL of a handbook chapter for a given landing locale. */
 export function handbookPath(locale: HandbookLocale, slug: string, isHub = false): string {
   const base = locale === 'en' ? '/landing/docs' : `/zh/landing/docs`;
-  return isHub || !slug ? base : `${base}/${slug}`;
+  // trailingSlash:'always' — hub and chapter URLs both end with "/".
+  return isHub || !slug ? `${base}/` : `${base}/${slug}/`;
 }
 
 /** GitHub source URL ("Edit on GitHub" link). */

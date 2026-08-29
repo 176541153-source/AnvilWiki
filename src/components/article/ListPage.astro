@@ -66,12 +66,16 @@ const jsonLd = [
 ];
 ---
 
+<!-- An empty list is a ~100-word thin-content page (NMS /starships was indexed
+     as one). noindex keeps it out of Google until real articles exist; the
+     sitemap filter excludes the same paths (astro.config.ts). -->
 <LocaleLayout
   locale={locale}
   title={pageTitle(title)}
   description={description}
   alternates={alternates}
   jsonLd={jsonLd}
+  noindex={entries.length === 0}
 >
   <div class="space-y-6">
     <header>

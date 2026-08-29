@@ -40,9 +40,9 @@ export const GET: APIRoute = async (context) => {
         title: e.data.title,
         description: e.data.description,
         pubDate: e.data.date,
-        // Pass an ABSOLUTE URL — @astrojs/rss normalizes relative links by
-        // appending a trailing slash, which 404s on this site
-        // (trailingSlash: 'never'). See the same class of bug in SearchButton.
+        // ABSOLUTE URL — the trailing slash it carries is now CORRECT
+        // (trailingSlash:'always'); the historical bug was passing relative
+        // links under 'never', where rss added a slash the site 404'd on.
         link: `${siteUrl}${detailPath(e.data.category, slug, defaultLocale)}`,
         categories: [e.data.category],
       };

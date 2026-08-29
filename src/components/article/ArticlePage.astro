@@ -78,6 +78,11 @@ const codesFaqItems =
     ? ((shared.codesFaq as Array<{ question: string; answer: string }>) ?? [])
     : [];
 const codesFaqTitle = shared.codesFaqTitle ?? 'Codes FAQ';
+// Per-article FAQ (frontmatter `faq`, any page type). Merged with the codes
+// FAQ into ONE FAQPage JSON-LD entity — Google allows one per page.
+const articleFaqItems = (entry.data.faq ?? []) as Array<{ question: string; answer: string }>;
+const faqJsonLdItems = [...codesFaqItems, ...articleFaqItems];
+const faqTitle = shared.faqTitle ?? 'FAQ';
 
 // Videos inlined in the MDX body (via <Video id="..."/>) skip the bottom
 // fallback — the ID appearing in the raw body is the inline marker. Videos
@@ -139,10 +144,9 @@ const jsonLd = [
   ...entry.data.gallery.map((g: { image: { src: string }; caption?: string; alt?: string }) =>
     imageObjectJsonLd({ url: `${siteUrl}${g.image.src}`, caption: g.caption, alt: g.alt }),
   ),
-  // Structured codes page → standard 4-question FAQ schema (localized).
-  ...(entry.data.codes && entry.data.codes.length > 0
-    ? [faqPageJsonLd((shared.codesFaq as Array<{ question: string; answer: string }>) ?? [])]
-    : []),
+  // Structured FAQ → FAQPage schema (codes FAQ + per-article frontmatter FAQ
+  // merged — a single FAQPage per page, every question visibly rendered).
+  ...(faqJsonLdItems.length > 0 ? [faqPageJsonLd(faqJsonLdItems)] : []),
 ];
 ---
 
@@ -306,6 +310,27 @@ const jsonLd = [
         <h2 class="text-xl font-bold">{codesFaqTitle}</h2>
         <div class="mt-4 space-y-2">
           {codesFaqItems.map((item) => (
+            <details class="group rounded-lg border border-border bg-card">
+              <summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 text-sm font-semibold text-foreground [&::-webkit-details-marker]:hidden">
+                {item.question}
+                <Icon name="lucide:chevron-down" class="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" />
+              </summary>
+              <div class="border-t border-border px-4 py-3 text-sm text-foreground">
+                {item.answer}
+              </div>
+            </details>
+          ))}
+        </div>
+      </section>
+    )}
+
+    {/* Visible per-article FAQ (frontmatter `faq`) — same strings feed the
+        merged FAQPage JSON-LD above. Native <details>, zero JS. */}
+    {articleFaqItems.length > 0 && (
+      <section class="mt-8 not-prose" aria-label={faqTitle}>
+        <h2 class="text-xl font-bold">{faqTitle}</h2>
+        <div class="mt-4 space-y-2">
+          {articleFaqItems.map((item) => (
             <details class="group rounded-lg border border-border bg-card">
               <summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 text-sm font-semibold text-foreground [&::-webkit-details-marker]:hidden">
                 {item.question}

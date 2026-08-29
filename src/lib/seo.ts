@@ -262,9 +262,20 @@ export function videoObjectJsonLd(opts: {
   };
 }
 
-/** Build the <title> string with consistent suffix. */
+/**
+ * Build the <title> string with a smart suffix (three-site production
+ * lesson: a fixed full-name suffix pushed keywords out of the ~60-char SERP
+ * display window on long titles).
+ * - title already carries the game name → no suffix (repetition buys nothing);
+ * - title > 50 chars → short suffix (site.shortName) to stay in the window;
+ * - otherwise → full site name.
+ * BaseLayout's own suffix guard also checks all three names, so callers may
+ * pass either a raw title or pageTitle() output without double suffixing.
+ */
 export function pageTitle(title: string): string {
-  return `${title} — ${site.name}`;
+  if (title.includes(site.game.name)) return title;
+  const suffix = title.length > 50 ? site.shortName : site.name;
+  return `${title} — ${suffix}`;
 }
 
 /** VideoGame JSON-LD — injected on the homepage for game entity recognition. */

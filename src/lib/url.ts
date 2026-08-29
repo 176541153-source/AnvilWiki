@@ -11,11 +11,14 @@ import { siteUrl } from '~/config/site';
 /** Build a path with the locale prefix applied (or none for default locale). */
 export function localizePath(path: string, locale: Locale): string {
   const cleanPath = path.startsWith('/') ? path : `/${path}`;
-  if (locale === defaultLocale) return cleanPath;
-  // For the root path "/", avoid producing "/<locale>/" (trailing slash).
-  // The site uses trailingSlash: 'never', so "/ja/" would 404.
-  if (cleanPath === '/') return `/${locale}`;
-  return `/${locale}${cleanPath}`;
+  // trailingSlash:'always' — every page URL ends with "/" (Cloudflare Pages
+  // serves directory builds that way; canonical/sitemap/internal links must
+  // match or every page 308s once for Google). Callers pass slash-free paths;
+  // callers that already end with "/" are normalized, not double-slashed.
+  const slashed = cleanPath === '/' ? '/' : `${cleanPath.replace(/\/+$/, '')}/`;
+  if (locale === defaultLocale) return slashed;
+  if (cleanPath === '/') return `/${locale}/`;
+  return `/${locale}${slashed}`;
 }
 
 /** Build an absolute URL (with domain) for a path + locale. */

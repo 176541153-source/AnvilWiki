@@ -58,7 +58,10 @@ const samePagePathFor = (loc: Locale) => {
       {
         NAVIGATION_CONFIG.map((item) => {
           const path = localizePath(item.path, locale);
-          const isActive = currentPath === path || currentPath.startsWith(path + '/');
+          // `path` ends with "/" (trailingSlash:'always') — appending again
+          // would produce "//" and silently break child-page highlighting.
+          const activePrefix = path.endsWith('/') ? path : path + '/';
+          const isActive = currentPath === path || currentPath.startsWith(activePrefix);
           return (
             <a
               href={path}
@@ -80,7 +83,7 @@ const samePagePathFor = (loc: Locale) => {
     <div class="ml-auto flex items-center gap-1">
       {landingLinkEnabled && (
         <a
-          href="/landing"
+          href="/landing/"
           class="inline-flex h-9 w-9 items-center justify-center rounded-md text-muted-foreground transition hover:bg-muted hover:text-nav"
           aria-label="About the AnvilWiki template"
           title="About the AnvilWiki template"
@@ -141,7 +144,7 @@ const samePagePathFor = (loc: Locale) => {
           </div>
           {landingLinkEnabled && (
             <a
-              href="/landing"
+              href="/landing/"
               class="mt-1 flex items-center gap-2 border-t border-border px-3 py-2 text-sm text-muted-foreground transition hover:bg-muted hover:text-nav"
             >
               <Icon name="lucide:hammer" class="h-4 w-4" />

@@ -8,7 +8,7 @@
 export interface SiteConfig {
   /** Full site name, used in <title> suffix and Organization JSON-LD. e.g. "Anvil Quest Wiki" */
   name: string;
-  /** Short name for PWA manifest and mobile logo. e.g. "AQ Wiki" */
+  /** Short name for PWA manifest, mobile logo, and the long-title <title> suffix (>50 chars). e.g. "AQ Wiki" */
   shortName: string;
   /** Site description for Organization JSON-LD and og:site_name. */
   description: string;

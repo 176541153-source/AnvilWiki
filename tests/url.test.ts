@@ -12,18 +12,18 @@ import {
 describe('url helpers', () => {
   describe('localizePath', () => {
     it('returns the path unchanged for the default locale (en)', () => {
-      expect(localizePath('/bosses', 'en')).toBe('/bosses');
-      expect(localizePath('/bosses/emberfang', 'en')).toBe('/bosses/emberfang');
+      expect(localizePath('/bosses', 'en')).toBe('/bosses/');
+      expect(localizePath('/bosses/emberfang', 'en')).toBe('/bosses/emberfang/');
     });
 
     it('prepends the locale prefix for non-default locales', () => {
-      expect(localizePath('/bosses', 'ja')).toBe('/ja/bosses');
-      expect(localizePath('/bosses/emberfang', 'ja')).toBe('/ja/bosses/emberfang');
+      expect(localizePath('/bosses', 'ja')).toBe('/ja/bosses/');
+      expect(localizePath('/bosses/emberfang', 'ja')).toBe('/ja/bosses/emberfang/');
     });
 
     it('ensures leading slash on input without one', () => {
-      expect(localizePath('about', 'en')).toBe('/about');
-      expect(localizePath('about', 'ja')).toBe('/ja/about');
+      expect(localizePath('about', 'en')).toBe('/about/');
+      expect(localizePath('about', 'ja')).toBe('/ja/about/');
     });
   });
 
@@ -32,30 +32,30 @@ describe('url helpers', () => {
       expect(homeUrl('en')).toBe('/');
     });
     it('returns /ja for non-default locale', () => {
-      expect(homeUrl('ja')).toBe('/ja');
+      expect(homeUrl('ja')).toBe('/ja/');
     });
   });
 
   describe('listPath', () => {
     it('builds the correct list URL for each locale', () => {
-      expect(listPath('bosses', 'en')).toBe('/bosses');
-      expect(listPath('bosses', 'ja')).toBe('/ja/bosses');
-      expect(listPath('codes', 'en')).toBe('/codes');
+      expect(listPath('bosses', 'en')).toBe('/bosses/');
+      expect(listPath('bosses', 'ja')).toBe('/ja/bosses/');
+      expect(listPath('codes', 'en')).toBe('/codes/');
     });
   });
 
   describe('detailPath', () => {
     it('builds the correct article URL for each locale', () => {
-      expect(detailPath('bosses', 'emberfang', 'en')).toBe('/bosses/emberfang');
-      expect(detailPath('bosses', 'emberfang', 'ja')).toBe('/ja/bosses/emberfang');
+      expect(detailPath('bosses', 'emberfang', 'en')).toBe('/bosses/emberfang/');
+      expect(detailPath('bosses', 'emberfang', 'ja')).toBe('/ja/bosses/emberfang/');
     });
 
     it('handles nested slugs', () => {
       expect(detailPath('guides', 'early-game/beginner', 'en')).toBe(
-        '/guides/early-game/beginner',
+        '/guides/early-game/beginner/',
       );
       expect(detailPath('guides', 'early-game/beginner', 'ja')).toBe(
-        '/ja/guides/early-game/beginner',
+        '/ja/guides/early-game/beginner/',
       );
     });
   });
@@ -91,9 +91,9 @@ describe('slugifyTag (CJK / non-ASCII fallback)', () => {
 
 describe('absoluteUrl', () => {
   it('prefixes siteUrl and applies the locale prefix rules', () => {
-    expect(absoluteUrl('/bosses', 'en')).toMatch(/^https:\/\/[^/]+\/bosses$/);
-    expect(absoluteUrl('/bosses', 'ja')).toMatch(/^https:\/\/[^/]+\/ja\/bosses$/);
-    expect(absoluteUrl('/', 'ja')).toMatch(/^https:\/\/[^/]+\/ja$/);
+    expect(absoluteUrl('/bosses', 'en')).toMatch(/^https:\/\/[^/]+\/bosses\/$/);
+    expect(absoluteUrl('/bosses', 'ja')).toMatch(/^https:\/\/[^/]+\/ja\/bosses\/$/);
+    expect(absoluteUrl('/', 'ja')).toMatch(/^https:\/\/[^/]+\/ja\/$/);
   });
 });
 
@@ -101,8 +101,8 @@ describe('languageAlternates', () => {
   it('builds absolute hreflang entries for exactly the given locales', () => {
     const alts = languageAlternates((loc) => detailPath('bosses', 'x', loc), ['en', 'ja']);
     expect(alts).toHaveLength(2);
-    expect(alts[0]).toEqual({ hreflang: 'en', href: expect.stringMatching(/\/bosses\/x$/) });
-    expect(alts[1]).toEqual({ hreflang: 'ja', href: expect.stringMatching(/\/ja\/bosses\/x$/) });
+    expect(alts[0]).toEqual({ hreflang: 'en', href: expect.stringMatching(/\/bosses\/x\/$/) });
+    expect(alts[1]).toEqual({ hreflang: 'ja', href: expect.stringMatching(/\/ja\/bosses\/x\/$/) });
   });
 
   it('never emits x-default (BaseLayout derives it separately)', () => {

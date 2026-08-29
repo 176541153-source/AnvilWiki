@@ -240,7 +240,7 @@ echo '{}' > src/locales/ru.json
 
 **Hero 图**：模板自带的可能是占位文件。换成你的真实 Hero 图，格式推荐 WebP（体积最小）。如果你拿到的是 PNG/JPG，用任何工具转成 WebP 后覆盖。
 
-**favicon 生成**：用 [favicon.io](https://favicon.io/favicon-converter/) 从一张图生成全套。
+**favicon / Hero 图生成**：模板自带 `pnpm gen-assets`——按你的主题色自动生成 favicon 全套（svg + 各尺寸 png）和首页大图 hero.webp（1200×630），直接覆盖 `public/` 里的同名文件，无需再手动去 [favicon.io](https://favicon.io/favicon-converter/)。想要自定义图案的仍然可以手动替换。
 
 ---
 

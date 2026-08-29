@@ -47,6 +47,8 @@
     "new-post": "tsx scripts/new-post.ts",
     "bulk-new-posts": "tsx scripts/bulk-new-posts.ts",
     "gen-covers": "tsx scripts/gen-covers.ts",
+    "gen-assets": "tsx scripts/gen-assets.ts",
+    "submit-indexnow": "tsx scripts/submit-indexnow.ts",
     "template-audit": "tsx scripts/template-audit.ts",
     "new-locale": "tsx scripts/new-locale.ts",
     "apply-template": "tsx scripts/apply-template.ts",
