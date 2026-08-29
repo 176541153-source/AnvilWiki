@@ -5,6 +5,35 @@ All notable changes to AnvilWiki are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.0] — 2026-08-29
+
+**三站踩坑复盘加固批:依据《Aniimo / No Man's Sky / Steal An Egg 三站生产事故复盘》(48 类问题)对照模板全量审计,落地 16 项缺口修复。⚠️ 含一个行为变更(trailingSlash `never`→`always`),fork 站合并本批后需全站内链跟随翻转(check-content 新规则会拦)。**
+
+### Changed
+
+- **尾斜杠策略全站翻转为 `trailingSlash: 'always'`**(复盘 #8,三站共识终态):Cloudflare Pages 以 `/path/` 提供目录式构建,旧 `never` 下 canonical/sitemap/内链全部多一跳 308、自述权重信号打偏。同步翻转全部触点:`src/lib/url.ts` localizePath(全站 path 构造唯一龙头,root 特判反转);astro.config sitemap filter/serialize 统一 strip 归一化(lastmod/noindex/hreflang 查找键为无斜杠形态)+ alternates 输出带斜杠;Pagefind 搜索结果 processResult 从「剥斜杠」反转为「保斜杠」并删除子结果点击拦截器;SiteHeader 导航高亮 `startsWith(path + '/')` 归一化(斜杠态下拼出 `//` 会静默杀死子页高亮);`handbook.ts` handbookPath、llms.txt、BaseLayout privacyHref、LegalContent、SiteHeader `/landing` 链接、`landing.ts` 46 处硬编码内链(en+zh)全部补斜杠;demo 文章内链迁移 + 各篇补足 ≥3 条内链;`_redirects` 反向重定向明确禁用(模板期曾无限循环)。
+- **空分类/空语言列表页 noindex + 移出 sitemap**(复盘 #13):ListPage 空态自动 `noindex`(LocaleLayout 既有通路);astro.config 新增 categoryCoverage(fs 扫描),(分类×语言)零文章的列表路径进 noindexPaths;列表页 hreflang alternates 从「无条件全语言」改为按真实 MDX 覆盖,页面级(sitemap 同源 `localesForCategory()`)与 sitemap 级一致——Google 会丢弃冲突的 hreflang 簇,两侧必须同真相。配套硬规范「新建分类必须先有文章再进 navigation.ts」写入 content-format.md 与 AGENTS.md。
+- **文章级 FAQ frontmatter 字段**(复盘 #12):可选 `faq: [{question, answer}]`,渲染为可见 `<details>` 区块(原生零 JS)并与 codes FAQ 合并为**单个** FAQPage JSON-LD(一页一个;markup 必须可见,符合 Google 富结果政策);新增 `shared.faqTitle` i18n 键(en/ja)。
+- **智能标题后缀**(复盘 #11):`pageTitle()` 三分支——title 已含游戏名(`site.game.name`)不加后缀、>50 字符用短后缀 `site.shortName`(关键词留在 SERP ~60 字符窗口内)、否则全名;BaseLayout 后缀守卫同步检查全部三个身份名,杜绝双重拼接。NMS 实测旧写法 76-86 字符 title 被后缀挤出展示窗。
+- **相关文章三层兜底**(复盘 #15/#44):tags 交集 → 同分类补足 → 全站最新(仅在零匹配时,无关文章的「相关」比没有更糟);选择逻辑下沉 `lib/content-utils.ts` 纯函数(vitest 可测),Aniimo 曾 54/56 篇因 tags 单层匹配零关联。
+- **Adsterra 教程改写为 iframe 隔离模式**(复盘 #33/34/36):docs/ads.md「脚本粘哪里」整节重写——每广告位独立 `public/ads/*.html`(防 `window.atOptions` 全局串号)+ iframe `sandbox="allow-scripts allow-same-origin allow-popups allow-forms"`(缺 allow-same-origin 素材空白;**绝不加 allow-top-navigation**,防移动端创意劫持整页跳转);新增「怎么验证广告真的在展示」(只信手机 4G 实测 + 后台 Impressions;无头浏览器 403 是反自动化检测非故障)。
+- **twitter:card 非文章页 `summary`→无条件 `summary_large_image`**(复盘 #10):全站 og:image 均 ≥1200 宽(hero 1200×630 / 封面 1200×675),全局大卡分享不再被压成小条。
+- **footer 版权行与免责声明分开渲染**(复盘 #44 同款短路):`copyrightText ?? legalNotice` 改为两行各渲各的——apply-template 重写 copyrightText 后 fork 站不再丢失免责声明;footer 补 `/recent` 与 `/tags` 入口(复用 `shared.recentTitle`/`allTags` 现成键,零新增 i18n;两页此前为零内链孤儿页)。
+
+### Added
+
+- **`pnpm submit-indexnow`**(复盘 #16/Q15):读 `dist/sitemap-index.xml` 递归展开全部 URL,按 10,000/批 POST `api.indexnow.org`;密钥自动检测/生成(`public/<key>.txt`,hex 文件名=内容,IndexNow 协议密钥本就公开);首次运行生成密钥后提示「提交+部署再重跑」;`--dry-run` 零副作用。手册第 6 章双语新增「第 4 步:用 IndexNow 把全站网址推一遍」。
+- **`pnpm gen-assets`**(复盘 #26):按 globals.css 实时品牌色生成 favicon 全套(favicon.svg + 16/32/180/192/512 PNG,satori+Resvg,CJK 首字母经 Noto 子集)+ hero.webp(1200×630 品牌渐变+站名,sharp 转 webp)+ manifest theme_color 同步——**写入现有文件名,零引用改动**;hash 缓存放 node_modules/.cache(不进 git 不进部署产物);favicon.ico 因 sharp 不支持 ICO 有意保留不引用(BaseLayout 改指 svg+png)。fork「demo 铁砧图标上线」事故从根上关闭。
+- **check-content 新规则 5/6**:非默认语言正文内链必须带语言前缀(`error` 级——ja 正文裸 `/guides/x/` 静默跳英文页,Aniimo 177 处事故);正文站内链接 <3 条出 `warning`。
+- **deployment.md 三块防事故内容**(复盘 #1/#45/#4):「一个站只允许一个部署源」🚨 警告(NMS 双仓库互相覆盖生产事故)、「先绑域名→改 SITE_URL→再部署」顺序铁律、Crawler Hints + IndexNow 上线日推送;content-format.md 新增关键词密度指引(游戏名 1-3%,模板默认标题堆到 5-6% 属堆砌)+ ≥3 内链规则。
+- **.gitignore 密钥模式**(复盘安全守则):`*-secret.json`/`*.pem`/`*.key`/`seo-reports/`,建站期即生效而非出事再补。
+- **手册第 6 章双语新增 GSC「网页索引」四状态灯速查**(已编入/已发现-未编入/已抓取-未编入/已排除)。
+
+### Fixed
+
+- **rss.xml.ts / check-links.ts / SearchButton 等处陈述 `trailingSlash:'never'` 的注释全部随翻转更新**(否则误导后续维护);skills(anvil-new-article / anvil-batch-articles)内链写作规则口径同步反转;AGENTS.md authoring 硬规则新增「Body link rules」条目、命令清单登记两个新脚本、分类约束补「先有文章再进导航」。
+- **复盘认定不动的项**:StickyBanner 桌面端 sticky 设计保留(复盘 #37 针对的是 Adsterra 320×50 移动条桌面误显;本模板为 728×90 桌面 leaderboard + dismiss + CLS 预留 + 移动端明确排除,场景不同源)。
+
 ## [2.3.1] — 2026-08-27
 
 **紧急修复批:根除 `tailwind.config.mjs` 在 ESM 文件内误用 CommonJS `require()` 的开箱即炸地雷。单文件级修复,fork 常规 merge 即得。**
@@ -633,7 +662,8 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
-[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.3.1...HEAD
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.4.0...HEAD
+[2.4.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.3.1...v2.4.0
 [2.3.1]: https://github.com/PNGTRID/AnvilWiki/compare/v2.3.0...v2.3.1
 [2.3.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.2.0...v2.3.0
 [2.2.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.1.1...v2.2.0

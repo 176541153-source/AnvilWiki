@@ -11,7 +11,7 @@
  */
 
 /** Keep in sync with package.json "version" (used by the announcement bar). */
-export const PROJECT_VERSION = '2.3.1';
+export const PROJECT_VERSION = '2.4.0';
 
 export type LandingLocale = 'en' | 'zh';
 
@@ -241,7 +241,7 @@ const en: LandingContent = {
   description:
     'An open-source game wiki template with an AI-native content workflow: pick the right game, generate pages by talking to your AI tool, codes pages stay fresh on autopilot. Lighthouse 4×100, free on Cloudflare, 100% ad revenue yours.',
   announcement: {
-    text: `v${PROJECT_VERSION} — critical fork fix: tailwind.config.mjs shipped CommonJS require() inside an ESM file, crashing first page load on some Node builds with "require is not defined". Now pure ESM everywhere.`,
+    text: `v${PROJECT_VERSION} — hardened from three production-site postmortems: sitewide trailing-slash URLs (no more 308 hops for Google), empty categories go noindex, per-article FAQ schema, smart title suffixes, related-article fallbacks, plus built-in IndexNow push and themed-asset generators.`,
     href: RELEASES,
   },
   hero: {
@@ -684,7 +684,7 @@ const zh: LandingContent = {
   description:
     '开源游戏 wiki 模板 + AI 原生内容工作流:选对游戏、和 AI 对话就能产页、codes 页自动保鲜。Lighthouse 4×100、Cloudflare 免费部署、广告收入 100% 归你。',
   announcement: {
-    text: `v${PROJECT_VERSION} 修复——tailwind.config.mjs 在 ESM 文件里误用 require(),部分 Node 环境首次访问即崩;已改纯 ESM 写法,全 Node 版本可用。`,
+    text: `v${PROJECT_VERSION} 加固——三站生产事故复盘落地 16 项:全站尾斜杠统一(谷歌零 308)、空分类自动 noindex、文章级 FAQ 结构化数据、智能标题后缀、相关文章三层兜底,新增 IndexNow 推送与主题色图标一键生成。`,
     href: RELEASES,
   },
   hero: {
