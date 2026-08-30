@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **`apply-template --answers answers.json` 非交互模式 + CI E2E job**:CLI 的 bug 全部只在真实(非 dry-run)模式触发,而测试套件对该 CLI 零覆盖、demo 仓永远不跑它——三个真实模式 bug 因此全部漏过八道门禁(PR #10 ENOENT、home 模板 schema 漂移、authors 虚报)。新增 `pnpm test:e2e`(scripts/e2e-apply-template.mjs):`git archive HEAD` 导出模板到临时目录 → 真实模式跑 CLI(--answers 驱动,与交互走同一 ask/askBool 路径)→ 断言输出形态(landing 删净/meta/CTA 字段类型)→ **对产物跑完整 build**(fork 用户的第一闪构建必须成功);CI 新增 `e2e-template` job 跑它,workflows.test.ts 钉契约防删。
+
 ### Fixed
 
 - **`apply-template` 真实模式删 landing 目录 ENOENT 崩溃**(社区 PR #10, oyjq0000):`removeLandingPage()` 先 `rmSync` 删目录再 `readdirSync` 同路径数条目,非 dry-run 必抛 ENOENT 中断初始化(dry-run 不触发、测试套件零覆盖该 CLI,故自 v1.12 存活);改为先计数后删除,dry-run 行为与计数不变。

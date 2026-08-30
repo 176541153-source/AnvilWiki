@@ -17,6 +17,9 @@
  *   pnpm apply-template --dry-run         print every planned change, write nothing.
  *   pnpm apply-template --no-clear-content  keep demo MDX files in place.
  *   pnpm apply-template --keep-landing      keep the project landing page (/landing).
+ *   pnpm apply-template --answers answers.json  non-interactive: JSON array of
+ *                               raw answers, one per prompt in order ("" = enter
+ *                               = default). For CI and scripted runs.
  *
  * What this does NOT do (left for the user, see docs/apply-template.md):
  *   - Homepage modules (home.hero / start / explore / faq in locales)
@@ -38,6 +41,46 @@ const ARGS = process.argv.slice(2);
 const DRY_RUN = ARGS.includes('--dry-run') || ARGS.includes('-n');
 const KEEP_CONTENT = ARGS.includes('--no-clear-content');
 const KEEP_LANDING = ARGS.includes('--keep-landing');
+
+// --answers <file> (or --answers=<file>): non-interactive mode for CI and
+// scripted runs. The file is a JSON array of raw answers, one per prompt, in
+// the exact order the CLI asks them ("" = press enter, i.e. the default).
+// Walks the SAME ask/askBool code path — only the answer source changes.
+const answersIdx = ARGS.indexOf('--answers');
+const ANSWERS_FILE =
+  answersIdx >= 0 ? ARGS[answersIdx + 1] : ARGS.find((a) => a.startsWith('--answers='))?.split('=').slice(1).join('=');
+let scripted: string[] | null = null;
+if (ANSWERS_FILE) {
+  const parsed: unknown = JSON.parse(fs.readFileSync(path.resolve(ROOT, ANSWERS_FILE), 'utf8'));
+  if (!Array.isArray(parsed) || parsed.some((a) => typeof a !== 'string')) {
+    console.error('❌ --answers file must be a JSON array of strings (one per prompt, in order).');
+    process.exit(1);
+  }
+  scripted = parsed as string[];
+}
+
+/**
+ * Consume the next scripted answer. Empty string means "pressed enter" —
+ * ask/askBool apply their own fallbacks, so return the raw value.
+ */
+function takeScriptedAnswer(question: string): string {
+  if (!scripted || scripted.length === 0) {
+    console.error(`❌ Ran out of scripted answers at prompt: "${question}" — the CLI has more prompts than the answers file has entries.`);
+    process.exit(1);
+  }
+  const answer = scripted.shift() as string;
+  console.log(`${question}: ${answer === '' ? '(enter)' : answer}`);
+  return answer.trim();
+}
+
+// Leftover answers mean the file no longer matches the prompt sequence (a
+// prompt was added or removed upstream) — warn instead of failing, but make
+// it impossible to miss.
+function warnOnLeftoverAnswers(): void {
+  if (scripted && scripted.length > 0) {
+    console.warn(`⚠️  ${scripted.length} scripted answer(s) left over — the answers file has MORE entries than the CLI has prompts. Update the file to match the prompt order.`);
+  }
+}
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -128,14 +171,16 @@ const dim = (s: string) => `\x1b[2m${s}\x1b[0m`;
 
 async function ask(rl: readline.Interface, question: string, fallback?: string): Promise<string> {
   const suffix = fallback !== undefined ? ` [${fallback}]: ` : ': ';
-  const answer = (await rl.question(question + suffix)).trim();
+  const answer = scripted
+    ? takeScriptedAnswer(question)
+    : (await rl.question(question + suffix)).trim();
   return answer || (fallback ?? '');
 }
 
 async function askBool(rl: readline.Interface, question: string, fallback = false): Promise<boolean> {
-  const answer = (await rl.question(`${question} [${fallback ? 'Y/n' : 'y/N'}]: `))
-    .trim()
-    .toLowerCase();
+  const answer = scripted
+    ? takeScriptedAnswer(question)
+    : (await rl.question(`${question} [${fallback ? 'Y/n' : 'y/N'}]: `)).trim().toLowerCase();
   if (!answer) return fallback;
   return answer === 'y' || answer === 'yes';
 }
@@ -969,6 +1014,8 @@ async function main() {
   console.log('   • After deploy, run `pnpm check-sitemap` to verify all URLs.');
   console.log('\n   Then: pnpm dev    (preview)');
   console.log('         pnpm build  (verify production build)\n');
+
+  warnOnLeftoverAnswers();
 }
 
 main().catch((err) => {

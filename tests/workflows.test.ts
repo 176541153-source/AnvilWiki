@@ -101,6 +101,18 @@ describe('ci.yml uses the shared gates + runs the ops toolkit', () => {
     const gatesStep = job?.steps?.find((s) => /typecheck/.test(s.run ?? ''));
     expect(gatesStep?.run).toContain('pnpm typecheck && pnpm test && pnpm build');
   });
+
+  test('e2e-template job drives apply-template in real mode', () => {
+    // apply-template has zero vitest coverage and its bugs only fire in real
+    // (non-dry-run) mode — PR #10 (ENOENT) and the home-template schema drift
+    // both shipped through all eight gates. Deleting this job must fail here,
+    // not re-open the fork's first-build crash window.
+    const ci = readWorkflow(CI) as { jobs?: Record<string, { steps?: Step[] }> };
+    const job = ci.jobs?.['e2e-template'];
+    expect(job).toBeDefined();
+    const e2e = job?.steps?.find((s) => /test:e2e/.test(s.run ?? ''));
+    expect(e2e?.run).toContain('pnpm test:e2e');
+  });
 });
 
 describe('auto-content pipeline safety contract', () => {

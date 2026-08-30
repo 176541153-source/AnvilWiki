@@ -91,6 +91,7 @@ pnpm build            # includes Content schema validation — fails on bad fron
 pnpm typecheck        # astro check (0 errors expected)
 pnpm lint             # ESLint (eslint-plugin-astro)
 pnpm test             # Vitest — 9 suites (url, seo, tags, i18n-smoke, content-utils, handbook, workflows, covers, affiliates)
+pnpm test:e2e         # apply-template real-mode E2E (git archive → scratch copy → pipe answers → assert shape → build; CI job e2e-template runs it; tests the COMMITTED tree)
 pnpm check-config     # scripts/check-config.ts — nav/locale 3-place consistency
 pnpm new-locale       # scripts/new-locale.ts — scaffold a new language
 pnpm check-sitemap    # scripts/check-sitemap.ts — verify all sitemap URLs return 200
