@@ -174,20 +174,31 @@ function buildHomePreset(input: SkinInput): Record<string, unknown> | null {
   if (input.homePreset === 'keep') return null;
   const cats = input.categories.map((c) => c.key);
   const first = cats[0] ?? 'guides';
+  const cap = (c: string) => c[0].toUpperCase() + c.slice(1);
 
+  // Field shapes MUST match what the home components render (HomePage reads
+  // meta.title/meta.description, CTA fields are plain strings rendered as link
+  // text, start.cards carry number/icon/href). A shape drift here crashes the
+  // fork's first build — the demo JSON in src/locales/en.json is the contract.
   const common = {
-    meta: { watermark: input.gameName },
-    updates: { badge: 'Fresh', title: 'Recent updates' },
+    meta: {
+      title:
+        input.homePreset === 'codes'
+          ? `${input.gameName} Wiki — Codes, Guides & Tier Lists`
+          : `${input.gameName} Wiki — Guides, Bosses & Progression`,
+      description: input.description,
+    },
+    updates: { title: 'Recent updates' },
     popular: {
       badge: 'Popular',
       title: 'Most read',
-      quickLinks: cats.slice(0, 3).map((c) => ({ label: c, href: `/${c}` })),
+      quickLinks: cats.slice(0, 3).map((c) => ({ label: cap(c), href: `/${c}` })),
     },
     closingCta: {
       title: `Start your ${input.gameName} journey`,
       description: `Bookmark this wiki and check back after every game update.`,
-      primary: { label: 'Browse all', href: `/${first}` },
-      secondary: { label: 'Official site', href: input.officialUrl },
+      primary: 'Browse all',
+      secondary: 'Join the community',
     },
   };
 
@@ -198,16 +209,16 @@ function buildHomePreset(input: SkinInput): Record<string, unknown> | null {
         badge: 'Updated daily',
         title: `${input.gameName} Codes`,
         description: `All working ${input.gameName} codes, tested daily. Plus guides and tier lists.`,
-        ctaPrimary: { label: 'All codes', href: '/codes' },
-        ctaSecondary: { label: 'Guides', href: '/guides' },
+        ctaPrimary: 'Play now',
+        ctaSecondary: 'Browse guides',
       },
       start: {
         badge: 'Quick start',
         title: 'Jump straight in',
         cards: [
-          { title: 'Codes', description: 'Free gold, XP, cosmetics', icon: 'lucide:gift', href: '/codes' },
-          { title: 'Bosses', description: 'Phase-by-phase strategy', icon: 'lucide:swords', href: '/bosses' },
-          { title: 'Tier list', description: 'Best weapons ranked', icon: 'lucide:bar-chart-3', href: `/${cats.find((c) => c !== 'codes') ?? first}` },
+          { number: '1', title: 'Codes', description: 'Free gold, XP, cosmetics', icon: 'lucide:gift', href: '/codes' },
+          { number: '2', title: 'Bosses', description: 'Phase-by-phase strategy', icon: 'lucide:swords', href: '/bosses' },
+          { number: '3', title: 'Tier list', description: 'Best weapons ranked', icon: 'lucide:bar-chart-3', href: `/${cats.find((c) => c !== 'codes') ?? first}` },
         ],
       },
       explore: {
@@ -237,14 +248,15 @@ function buildHomePreset(input: SkinInput): Record<string, unknown> | null {
       badge: input.gameName,
       title: `${input.gameName} Wiki`,
       description: `Complete ${input.gameName} guides — bosses, items, and progression.`,
-      ctaPrimary: { label: 'Beginner guide', href: '/guides' },
-      ctaSecondary: { label: 'Browse all', href: `/${first}` },
+      ctaPrimary: 'Start reading',
+      ctaSecondary: 'Browse all',
     },
     start: {
       badge: 'Quick start',
       title: 'New here?',
-      cards: cats.slice(0, 4).map((c) => ({
-        title: c[0].toUpperCase() + c.slice(1),
+      cards: cats.slice(0, 4).map((c, i) => ({
+        number: String(i + 1),
+        title: cap(c),
         description: `Browse ${c}`,
         icon: 'lucide:book-open',
         href: `/${c}`,
@@ -911,9 +923,14 @@ async function main() {
   // Reset the demo author registry so fork sites don't inherit demo authors.
   const authorsPath = 'src/config/authors.ts';
   if (fs.existsSync(path.resolve(ROOT, authorsPath))) {
-    const src = read(authorsPath).replace(/\n\s*\/\/ DEMO .*?\n\s*'[^']+'.*?\{[^}]*\},\n/, '\n');
-    write(authorsPath, src);
-    console.log('   ✅ src/config/authors.ts (demo author removed)');
+    const src = read(authorsPath);
+    const cleaned = src.replace(/\n\s*\/\/ DEMO .*?\n\s*'[^']+'.*?\{[^}]*\},\n/, '\n');
+    // Only claim success when the demo block actually matched — an upstream
+    // authors.ts format change must not print a false ✅.
+    if (cleaned !== src) {
+      write(authorsPath, cleaned);
+      console.log('   ✅ src/config/authors.ts (demo author removed)');
+    }
   }
 
   if (clearContent) {

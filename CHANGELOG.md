@@ -5,6 +5,14 @@ All notable changes to AnvilWiki are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- **`apply-template` 真实模式删 landing 目录 ENOENT 崩溃**(社区 PR #10, oyjq0000):`removeLandingPage()` 先 `rmSync` 删目录再 `readdirSync` 同路径数条目,非 dry-run 必抛 ENOENT 中断初始化(dry-run 不触发、测试套件零覆盖该 CLI,故自 v1.12 存活);改为先计数后删除,dry-run 行为与计数不变。
+- **`apply-template` home 模板 schema 漂移——fork 首次 build 必崩**(全仓同类排查发现,同属「仅真实模式触发」的 CI 盲区):CLI 写出的 `home.meta` 仅 `{watermark}`(无 title/description),`HomePage` 将 undefined title 传入 BaseLayout 的 `title.includes()` 崩溃;`hero.ctaPrimary/ctaSecondary`、`closingCta.primary/secondary` 写成 `{label,href}` 对象而组件按字符串渲染。模板全量对齐 demo `en.json` 形态(meta 补 title/description、四处 CTA 改字符串、`start.cards` 补 `number`、popular 标签首字母大写、移除无消费者的 watermark);`HomePage.astro` meta 改逐字段兜底(`home.meta?.title ?? site.name`),单一坏字段不再炸构建。新增 E2E 验证:codes/guides 双预设真实模式(expect 驱动)跑通 + 产物 build 全绿。
+- **`apply-template` authors.ts demo 清理虚报成功**:demo 作者正则不匹配时也打印 ✅,改为仅在确实移除时输出。
+
 ## [2.4.0] — 2026-08-29
 
 **三站踩坑复盘加固批:依据《Aniimo / No Man's Sky / Steal An Egg 三站生产事故复盘》(48 类问题)对照模板全量审计,落地 16 项缺口修复。⚠️ 含一个行为变更(trailingSlash `never`→`always`),fork 站合并本批后需全站内链跟随翻转(check-content 新规则会拦)。**

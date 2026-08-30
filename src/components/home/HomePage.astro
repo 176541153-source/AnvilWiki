@@ -42,7 +42,13 @@ const shared = ui.shared as unknown as Record<string, any>;
 
 const recent = await getRecentEntries(locale, 6);
 
-const meta = home.meta ?? { title: site.name, description: site.description };
+// Per-field fallbacks: a locale JSON whose meta object exists but lacks
+// title/description must not pass undefined into BaseLayout (title.includes
+// crashes the build) — same spirit as the ?? defaults below.
+const meta = {
+  title: home.meta?.title ?? site.name,
+  description: home.meta?.description ?? site.description,
+};
 const hero = home.hero ?? {};
 // Shape-only defaults: getUi() deep-merges over en.json, so titles/labels are
 // guaranteed present — no hardcoded English fallbacks (UI text lives in the
