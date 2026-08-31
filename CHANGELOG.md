@@ -5,6 +5,12 @@ All notable changes to AnvilWiki are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- **文档一致性清扫**：`AGENTS.md` 测试套件描述 9→10（v2.6.2 新增 `tests/prompt.test.ts` 后漏更）、`docs/PRD.md` 架构树运维脚本数 12→14（v2.4.0 新增 `gen-assets` / `submit-indexnow` 后漏更）、`docs/apply-template.md` 补记 `--answers answers.json` 非交互模式（v2.4.1 引入，此前未进配置手册）。
+
 ## [2.6.2] — 2026-08-31
 
 **CLI 输入层修复(用户报障 issue #12)+ demo ja codes 页保鲜(自动审计 issue #11)。**
