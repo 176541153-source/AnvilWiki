@@ -11,7 +11,7 @@
  */
 
 /** Keep in sync with package.json "version" (used by the announcement bar). */
-export const PROJECT_VERSION = '2.4.1';
+export const PROJECT_VERSION = '2.5.0';
 
 export type LandingLocale = 'en' | 'zh';
 
@@ -165,7 +165,14 @@ export interface LandingContent {
     buttonAria: string;
     closeAria: string;
   };
-  footer: { tagline: string; license: string; madeWith: string; author: string };
+  footer: {
+    tagline: string;
+    license: string;
+    madeWith: string;
+    author: string;
+    creditsLabel: string;
+    credits: { name: string; href: string; note: string }[];
+  };
 }
 
 const RELEASES = 'https://github.com/PNGTRID/AnvilWiki/releases';
@@ -264,7 +271,7 @@ const en: LandingContent = {
   description:
     'An open-source game wiki template with an AI-native content workflow: pick the right game, generate pages by talking to your AI tool, codes pages stay fresh on autopilot. Lighthouse 4×100, free on Cloudflare, 100% ad revenue yours.',
   announcement: {
-    text: `v${PROJECT_VERSION} — fork onboarding hardening: apply-template's real-mode crash and homepage-template drift are fixed (a fork's first build can no longer break), and a new CI E2E job drives the CLI for real so this bug class ships no more. Plus a non-interactive --answers mode.`,
+    text: `v${PROJECT_VERSION} ecosystem batch — a new /anvil-adsense-audit skill (item-by-item AdSense pre-application audit), an opportunity-scoring framework for game selection (dual-track scoring + KD action table), a "verify your backlinks are real" section in the SEO doc, and credits to the open-source skills that inspired them: yan-skills and adsense-site-auditor.`,
     href: RELEASES,
   },
   hero: {
@@ -698,6 +705,19 @@ pnpm install && pnpm dev`,
     license: 'MIT License',
     madeWith: 'Built with Astro · Deployed on Cloudflare Pages',
     author: 'Open-sourced by 袁锐钦 (Yuan Ruiqin), lead of the PNGTRIBE team',
+    creditsLabel: 'Credits:',
+    credits: [
+      {
+        name: 'yan-labs/yan-skills',
+        href: 'https://github.com/yan-labs/yan-skills',
+        note: 'game-opportunity methodology behind our opportunity-scoring framework (MIT)',
+      },
+      {
+        name: 'yantoumu/adsense-site-auditor-skill',
+        href: 'https://github.com/yantoumu/adsense-site-auditor-skill',
+        note: 'inspiration for the AdSense pre-application audit skill',
+      },
+    ],
   },
 };
 
@@ -707,7 +727,7 @@ const zh: LandingContent = {
   description:
     '开源游戏 wiki 模板 + AI 原生内容工作流:选对游戏、和 AI 对话就能产页、codes 页自动保鲜。Lighthouse 4×100、Cloudflare 免费部署、广告收入 100% 归你。',
   announcement: {
-    text: `v${PROJECT_VERSION} 加固——apply-template 真实模式 bug 清零(删目录 ENOENT 崩溃、首页模板字段漂移致 fork 首次 build 必崩、清理虚报),新增 --answers 非交互模式与 CI E2E job,同类问题上线前即被拦下。`,
+    text: `v${PROJECT_VERSION} 生态批——新增 /anvil-adsense-audit 技能(AdSense 申请前逐项体检),选品文档引入机会判决框架(双轨打分 + KD 分档动作表 + 复查节奏),外链章补「怎么验证外链真的生效」;并向启发我们的两个开源技能项目致谢:yan-skills 与 adsense-site-auditor。`,
     href: RELEASES,
   },
   hero: {
@@ -1108,6 +1128,19 @@ pnpm install && pnpm dev`,
     license: 'MIT 协议',
     madeWith: '基于 Astro 构建 · 部署于 Cloudflare Pages',
     author: '由 PNG 部落团队主理人 袁锐钦 开源',
+    creditsLabel: '致谢:',
+    credits: [
+      {
+        name: 'yan-labs/yan-skills',
+        href: 'https://github.com/yan-labs/yan-skills',
+        note: '选品判决框架的方法论来源 game-opportunity(MIT)',
+      },
+      {
+        name: 'yantoumu/adsense-site-auditor-skill',
+        href: 'https://github.com/yantoumu/adsense-site-auditor-skill',
+        note: 'AdSense 申请前审计技能的灵感来源',
+      },
+    ],
   },
 };
 

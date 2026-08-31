@@ -5,6 +5,18 @@ All notable changes to AnvilWiki are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.5.0] — 2026-08-31
+
+**生态技能吸收批:向两个开源技能项目致谢并吸收其方法论——新增 AdSense 申请前体检技能(灵感致谢 yantoumu/adsense-site-auditor-skill,清单为模板特化重写),选品文档引入机会判决框架(参考 yan-labs/yan-skills 的 game-opportunity,MIT),外链章补验证纪律。零代码行为变更(仅 landing footer 渲染致谢行,该层 fork 时整体移除)。**
+
+### Added
+
+- **`/anvil-adsense-audit` 技能**(`.agent/skills/`,随模板分发给 fork 用户):按 Google 官方政策(计划政策/发布商政策)对站点做 AdSense 申请前逐项体检——22 项 AD-\* 清单四态判定(Pass/Fail/Unknown/N/A)+ Blocker/High/Medium 分级 + 完整性门(收尾数项,少一行即未完成)+ Blocker 未清零不许建议提交。AnvilWiki 特化:模板已解决项(ads.txt 占位/法律页路由/env 门控零广告/noindex 空分类)预填证据直接核对,审计火力集中在 fork 用户侧(内容原创度/隐私页广告 cookie 声明/过期码/空分类);主动提示模板已知缺口(自带无 robots.txt,用户自加时不得挡 `Mediapartners-Google`)。审计框架受 [yantoumu/adsense-site-auditor-skill](https://github.com/yantoumu/adsense-site-auditor-skill) 启发(该仓库无 LICENSE,未复制其文本,清单自 Google 公开文档重写),文末致谢。
+- **选品判决框架**([docs/sourcing.md](docs/sourcing.md) 第四节,并从 [game-selection.md](game-selection.md) 第 3 层互链):搜索需求轨七项打分参考表(量/KD/SERP 弱位/趋势/意图/供给/交叉)+ KD 分档动作表(<20 直进 / 20-39 新站主战场 / 40-49 深查触发线 / ≥50 不做主攻)+ 早期爆发轨(新游无搜索量时看传播信号)+ 两条防自欺判据(**平台内流量 ≠ 独立需求;未测 ≠ 零**)+ 新词第 3/7/14/28 天复查节奏(决策管理表加「下次复查日」列,候选池不再堵死)。框架参考 [yan-labs/yan-skills](https://github.com/yan-labs/yan-skills) 的 game-opportunity 技能(MIT,有裁剪改写),节末致谢。
+- **外链验证纪律**([docs/seo.md](docs/seo.md) 外链章新节「怎么验证外链真的生效」):已提交 ≠ 已公开 ≠ 已收录三态台账 + 公开页两暗坑(跳转计数链/`rel` 属性核对)+ 现实校准(743 条社区清单实测仅 5.5% 可直接提交、两成死站)+ 推荐 yan-skills `backlink` 机读提交入口库(MIT,持续实测回写)作为最新数据源。
+- **手册证据落盘纪律**(中英同步,零 tldr 改动):第 7 章 enable-ads「懒人通道」小节接 `/anvil-adsense-audit`(口头「应该没问题」不算过,有 Blocker 别交申请——被拒记录跟着账户走);第 8 章 weekly-ops「复盘纪律:只认面板上的数」(结论要有出处/动作不是成果/旧结论被推翻当场改口)。
+- **致谢三处**(中英同步):README 中英两区「致谢 / Credits」段;官网落地页 footer(en/zh)新增致谢行(`landing.ts` footer 接口加 `creditsLabel`+`credits` 字段,`LandingLayout.astro` 渲染——fork 时 landing 层整体移除,fork 站不受影响);docs/README.md 新增「致谢」节。
+
 ## [2.4.1] — 2026-08-31
 
 **CLI 真实模式 E2E 加固批:合并首个外部代码贡献(PR #10),并全仓同类排查清掉 apply-template 的真实模式 bug 全家——它们全部只在非 dry-run 模式触发,而测试套件对该 CLI 零覆盖、demo 仓永远不跑它,故八个门禁全军漏过。**
@@ -677,6 +689,7 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Build: 27 pages, typecheck 0 errors
 
 [Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.4.0...HEAD
+[2.5.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.4.1...v2.5.0
 [2.4.1]: https://github.com/PNGTRID/AnvilWiki/compare/v2.4.0...v2.4.1
 [2.4.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.3.1...v2.4.0
 [2.3.1]: https://github.com/PNGTRID/AnvilWiki/compare/v2.3.0...v2.3.1
