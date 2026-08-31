@@ -595,16 +595,23 @@ PUBLIC_CF_BEACON_TOKEN = ""
 #PUBLIC_ADSENSE_SLOT_INCONTENT = ""
 #PUBLIC_GA_ID = ""
 #PUBLIC_GSC_VERIFICATION = ""`;
-  // Anchor [vars] at LINE START: the demo file's intro comment contains the
-  // literal text "[vars]" mid-line, and an unanchored match rewrote the
-  // comment instead of the real section — leaving the demo Giscus values in
-  // a SECOND [vars] block below (duplicate TOML table, demo identity leak).
-  const varsRe = /^\[vars\][\s\S]*?(?=^\[|\s*\Z)/m;
+  // Anchor [vars] at LINE START (the demo file's intro comment contains the
+  // literal text "[vars]" mid-line — an unanchored match rewrote the comment
+  // and left the real demo Giscus section below). Two JS regex traps here:
+  // no `m` flag (with it, `$` means line-end, not file-end) and no `\Z`
+  // (JS treats that as the literal character "Z" — the match silently fails
+  // and the file ships unrewritten).
+  const varsRe = /(^|\n)\[vars\]\n[\s\S]*?(?=\n\[|$)/;
   if (!varsRe.test(src)) {
     console.warn(`⚠️ Could not find [vars] section in ${filePath} — edit it manually.`);
     return null;
   }
-  return src.replace(varsRe, newVars);
+  // Remove the demo-intro warning block: after the [vars] rewrite it would
+  // claim "this file contains the DEMO SITE config" about values that are
+  // now the forker's own — a stale, misleading comment.
+  const out = src.replace(varsRe, (_match, pre) => `${pre}${newVars}\n`);
+  const demoIntroRe = /# ⚠️+ FORKERS READ THIS FIRST[\s\S]*?# ⚠️+ END FORKER WARNING\n?/;
+  return demoIntroRe.test(out) ? out.replace(demoIntroRe, '') : out;
 }
 
 function rewriteManifest(input: SkinInput): string {

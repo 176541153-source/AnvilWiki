@@ -129,7 +129,8 @@ const checks = [
   })()],
   ['site.description makes no community/update promise it cannot keep', !/by the community|updated daily|tested daily/i.test(en.site?.description ?? '')],
   ['wrangler.toml has exactly one [vars] section (line-anchored rewrite)', (readFileSync(join(scratch, 'wrangler.toml'), 'utf8').match(/^\[vars\]/gm) || []).length === 1],
-  ['wrangler.toml carries no demo Giscus values', !readFileSync(join(scratch, 'wrangler.toml'), 'utf8').includes('PNGTRID/AnvilWiki')],
+  ['wrangler.toml carries no demo Giscus VALUES', !readFileSync(join(scratch, 'wrangler.toml'), 'utf8').includes('PUBLIC_GISCUS_REPO = "PNGTRID')],
+  ['wrangler.toml demo-intro warning block removed', !readFileSync(join(scratch, 'wrangler.toml'), 'utf8').includes('FORKERS READ THIS FIRST')],
 ];
 for (const [name, ok] of checks) {
   console.log(`  ${ok ? '✅' : '❌'} ${name}`);
