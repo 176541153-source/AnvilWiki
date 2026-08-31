@@ -11,7 +11,7 @@
  */
 
 /** Keep in sync with package.json "version" (used by the announcement bar). */
-export const PROJECT_VERSION = '2.5.1';
+export const PROJECT_VERSION = '2.6.0';
 
 export type LandingLocale = 'en' | 'zh';
 
@@ -271,7 +271,7 @@ const en: LandingContent = {
   description:
     'An open-source game wiki template with an AI-native content workflow: pick the right game, generate pages by talking to your AI tool, codes pages stay fresh on autopilot. Lighthouse 4×100, free on Cloudflare, 100% ad revenue yours.',
   announcement: {
-    text: `v${PROJECT_VERSION} audit batch — ran the full /anvil-adsense-audit checklist against the demo site: template mechanics all pass, the gaps are content operations (article count, codes freshness, one empty category). Skill verdicts corrected against evidence (privacy disclosure ships built-in), and docs/ads.md gains a 22-item pre-application quick checklist.`,
+    text: `v${PROJECT_VERSION} demo content overhaul — every wiki article rewritten to 800-1500 word depth (4 brand-new pages including an items category), footer now links all trust pages including Contact, ads.txt ships a ready-to-uncomment AdSense line, and the "updated by the community" copy now tells the truth.`,
     href: RELEASES,
   },
   hero: {
@@ -727,7 +727,7 @@ const zh: LandingContent = {
   description:
     '开源游戏 wiki 模板 + AI 原生内容工作流:选对游戏、和 AI 对话就能产页、codes 页自动保鲜。Lighthouse 4×100、Cloudflare 免费部署、广告收入 100% 归你。',
   announcement: {
-    text: `v${PROJECT_VERSION} 审计批——对 demo 站跑了一次 /anvil-adsense-audit 全项体检:模板机制层全部 Pass,缺口集中在内容经营本身(篇数/codes 时效/一个空分类);技能判定基准按实证修正(隐私政策披露模板已内置),docs/ads.md 新增 22 项申请前体检速查表。`,
+    text: `v${PROJECT_VERSION} demo 内容整备批——全部 wiki 文章扩写到 800-1500 词深度(含 items 新分类共 4 篇全新页面),页脚补齐 Contact 等信任页入口,ads.txt 内置一行即可启用的 AdSense 授权行,「社区每日更新」等不实文案改为诚实的「逐篇标注验证日期」。`,
     href: RELEASES,
   },
   hero: {

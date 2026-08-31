@@ -3,7 +3,7 @@
   "site": {
     "name": "Anvil Quest Wiki",
     "shortName": "AQ Wiki",
-    "description": "Anvil Questの完全攻略Wiki。ボス攻略、tier list、コード、アイテムの場所、初心者向けのヒントを毎日更新。",
+    "description": "Anvil Questの完全攻略Wiki。ボス攻略、tier list、コード、アイテムの場所、初心者向けのヒントを掲載。全ガイドに最終検証日付き。",
     "tagline": "Anvil Questのすべてを鍛え上げる場所",
     "legalNotice": "Anvil Quest Wikiはファン制作のコミュニティサイトです。ゲーム開発者とは一切関係ありません。"
   },
@@ -138,7 +138,7 @@
   "home": {
     "meta": {
       "title": "Anvil Quest Wiki - ボス攻略・コード・tier list",
-      "description": "Anvil Questの最も完全なWiki。ボス攻略、有効なコード、アイテムの場所、tier list、初心者ガイドを毎日更新。"
+      "description": "Anvil Questの最も完全なWiki。ボス攻略、有効なコード、アイテムの場所、tier list、初心者ガイドを掲載。全ページに最終検証日を表示。"
     },
     "hero": {
       "badge": "ファン制作コミュニティWiki",
@@ -407,6 +407,7 @@
     "privacyPolicy": "プライバシーポリシー",
     "termsOfService": "利用規約",
     "copyright": "著作権",
+    "contact": "お問い合わせ",
     "copyrightText": "© 2026 Anvil Quest Wiki. ファン制作、Forge Studiosとは関係ありません。",
     "community": "コミュニティ",
     "legal": "法的情報"

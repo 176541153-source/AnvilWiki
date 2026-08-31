@@ -5,6 +5,34 @@ All notable changes to AnvilWiki are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.6.0] — 2026-08-31
+
+**Demo 内容整备批:依据 seo.web.cafe AdSense 预检报告核查整改——9 篇 wiki 文章全部达到 800-1500 词深度(新增 4 篇含 items 分类),页脚补齐 Contact 信任页入口,ads.txt 内置就绪授权行,不实「社区每日更新」文案改诚实。⚠️ 面向 fork 用户的两处行为说明:页脚新增 Contact 链接(fork 受益)、footer UI 键 +1(en/ja 已同步)。**
+
+### Added
+
+- **4 篇全新成型内容页(800-1200 词,均带 gen-covers 封面 + 作者署名)**:`items/forging-materials-guide`(全材料出处/刷新时间/周常 farm 路线——**空 `items` 分类就此补齐**,v2.4.0 的 noindex 兜底不再是常态)、`items/emberforged-armor-set`(五件套造价/套装加成数值/与混搭装对比)、`bosses/frostbound-monarch`(Act 3 门槛 Boss:暴风雪叠层/罗盘火盆机动/Shatter 破甲机制,与 Stormcaller 构成元素镜像——火武器自此有实战归宿)、`guides/forging-guide`(锻造五阶/附魔重骰期望 11 次出满值/分解返还 60% 宝石的套利数学)。
+- **5 篇既有文章扩写到 800-1284 词**(原 170-665 全部不达标):codes 页补兑换排障/奖励价值分析/码源规律/过期码保留策略;Emberfang 补战前清单/备选配装/FAQ 手风琴/刷本经济;Stormcaller 补逐分钟时间轴/双打路线;beginner guide 补设置优化/金币经济/FAQ;武器 tier list 补测试方法论/元素覆盖表/每把武器的升级路径。全部配结构化 H2/H3 + 表格 + FAQ 手风琴 + ≥3 站内互链(内容簇)。
+
+### Fixed
+
+- **页脚信任页缺口**(预检 ADS-UX-05):`SiteFooter` legalLinks 缺 `contact`——联系页自 v1.x 就存在且在 sitemap 里,页脚却无入口;补上并新增 `footer.contact` UI 键(en/ja)。
+- **ads.txt 注释升级为就绪行**(预检 ADS-TXT-01/PUB-09):原注释只说「替换你的 ID」,现在直接内置 `# google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0` 标准行——过审后删一个 `#` 填 16 位 ID 即生效;注释同时写明「未过审保持注释态才是正确的」(占位 pub-ID 是无效数据行)。
+- **「Updated daily by the community」不实文案**(预检 ADS-PUB-05 证据之一):en/ja 两处站点描述改为「逐篇标注最后验证日期」的诚实口径——demo 无社区,虚称社区更新恰是审核员一票否定的身份失真。
+
+### Demo AdSense 预检整改对照(seo.web.cafe 报告 → 本批动作)
+
+| 预检发现 | 核查结论 | 本批动作 |
+| --- | --- | --- |
+| ADS-CONTENT-01/02/03 薄内容(Blocker) | ✅ 属实:5 篇文章 170-665 词 | 9 篇全部 800-1284 词 + 4 篇新页,零薄页 |
+| ADS-PUB-05/UX-02 身份漂移(Blocker/High) | ⚠️ demo 特有:landing/手册/页头模板入口 fork 时整体移除(apply-template 删除清单),fork 站无此问题 | 虚假 community 文案已修;demo 本体不建议申请 AdSense(展示站) |
+| ADS-TXT-01/PUB-09 ads.txt 无 Google 行(Blocker/High) | ⚠️ 设计使然:过审前不可能有 pub-ID | 就绪行内置,过审后一行启用 |
+| ADS-UX-05 缺 Contact 页脚链接(Medium) | ✅ 属实:页有链无 | 已修 |
+| ADS-CONTENT-08 门页风险(Medium) | ✗ 不成立:列表页链接的全是实文页,内容批次后每个 URL 有正文;首页标题为栏目枚举非堆砌 | 内容深化间接缓解 |
+| ADS-PRIV-04 无 CMP | ⚠️ 误测:CookieConsent 存在,`gaId \|\| adsenseClient` 配置即渲染并门控广告加载;demo 未配 env 故工具不可见 | 无需修改 |
+
+**八门禁全绿**(lint / typecheck / test 97 / check-config / check-content / check-i18n --strict-ui 134/134 含新 contact 键 / build / check-links,sitemap 101→120 URL)。
+
 ## [2.5.1] — 2026-08-31
 
 **AdSense 审计实证批:按 `/anvil-adsense-audit` 技能对 demo 站(anvilwiki.pages.dev)跑了一次 22 项全项体检——裁决 Not ready(demo),但全部缺口都在内容经营侧(篇数/时效/空分类/免费域名),模板机制层零 Fail;据此实证修正技能两处判定基准,并把清单落成 docs/ads.md 速查规范。**
@@ -706,6 +734,7 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Build: 27 pages, typecheck 0 errors
 
 [Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.4.0...HEAD
+[2.6.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.5.1...v2.6.0
 [2.5.1]: https://github.com/PNGTRID/AnvilWiki/compare/v2.5.0...v2.5.1
 [2.5.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.4.1...v2.5.0
 [2.4.1]: https://github.com/PNGTRID/AnvilWiki/compare/v2.4.0...v2.4.1
