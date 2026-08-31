@@ -19,8 +19,7 @@
 
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import * as readline from 'node:readline/promises';
-import { stdin as input, stdout as output } from 'node:process';
+import { createLinePrompt } from './lib/prompt';
 
 const ROOT = process.cwd();
 const read = (p: string) => fs.readFileSync(path.resolve(ROOT, p), 'utf8');
@@ -67,10 +66,10 @@ function mustReplace(
 }
 
 async function main() {
-  const rl = readline.createInterface({ input, output });
+  const rl = createLinePrompt();
   const arg = process.argv[2]?.trim();
   const locale = (
-    arg || (await rl.question('New locale code (e.g. zh, ko, es): '))
+    arg || (await rl.ask('New locale code (e.g. zh, ko, es): '))
   )
     .trim()
     .toLowerCase();

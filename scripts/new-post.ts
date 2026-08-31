@@ -12,8 +12,7 @@
 
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import * as readline from 'node:readline/promises';
-import { stdin as input, stdout as output } from 'node:process';
+import { createLinePrompt } from './lib/prompt';
 
 const CONTENT_BASE = path.resolve(process.cwd(), 'src/content/wiki');
 
@@ -57,7 +56,7 @@ function todayIso(): string {
 }
 
 async function main() {
-  const rl = readline.createInterface({ input, output });
+  const rl = createLinePrompt();
 
   const locales = readLocales();
   const categories = readCategories();
@@ -65,20 +64,20 @@ async function main() {
   console.log('\n📝 AnvilWiki — new article scaffold\n');
 
   const locale =
-    (await rl.question(`Locale [${locales.join('/')}], default "en": `)).trim() || 'en';
+    (await rl.ask(`Locale [${locales.join('/')}], default "en": `)).trim() || 'en';
   if (!locales.includes(locale)) {
     console.error(`❌ Locale "${locale}" not in routing.ts. Available: ${locales.join(', ')}`);
     process.exit(1);
   }
 
-  const category = (await rl.question(`Category [${categories.join('/')}]: `)).trim();
+  const category = (await rl.ask(`Category [${categories.join('/')}]: `)).trim();
   if (!category) {
     console.error('❌ Category is required.');
     process.exit(1);
   }
   if (!categories.includes(category)) {
     const proceed = (
-      await rl.question(
+      await rl.ask(
         `⚠️ "${category}" is not in navigation.ts. Create anyway? The build will FAIL (schema enum) until you add it to NAVIGATION_CONFIG. [y/N]: `,
       )
     )
@@ -87,20 +86,20 @@ async function main() {
     if (proceed !== 'y') process.exit(0);
   }
 
-  const titleInput = (await rl.question('Article title (e.g. "Emberfang Boss Guide"): ')).trim();
+  const titleInput = (await rl.ask('Article title (e.g. "Emberfang Boss Guide"): ')).trim();
   if (!titleInput) {
     console.error('❌ Title is required.');
     process.exit(1);
   }
 
-  const slugInput = (await rl.question(`Slug [${slugify(titleInput)}]: `)).trim();
+  const slugInput = (await rl.ask(`Slug [${slugify(titleInput)}]: `)).trim();
   const slug = slugify(slugInput || slugify(titleInput));
   if (!slug) {
     console.error('❌ Could not derive a valid slug.');
     process.exit(1);
   }
 
-  const description = (await rl.question('Description (40-165 chars, for SEO): ')).trim();
+  const description = (await rl.ask('Description (40-165 chars, for SEO): ')).trim();
   if (description.length < 40 || description.length > 165) {
     console.warn(
       `⚠️ Description is ${description.length} chars — schema requires 40-165. The build will fail until you fix it.`,
@@ -109,7 +108,7 @@ async function main() {
 
   // Draft: visible in `pnpm dev`, excluded from the production build.
   const draftAnswer = (
-    await rl.question('Create as draft? (dev-only, not built) [y/N]: ')
+    await rl.ask('Create as draft? (dev-only, not built) [y/N]: ')
   )
     .trim()
     .toLowerCase();

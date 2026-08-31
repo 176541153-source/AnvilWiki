@@ -27,14 +27,14 @@
  *   - Translation of non-English locale JSON
  *   - favicon / hero image files (binary assets, user-provided)
  *
- * Conventions match scripts/new-post.ts: only node builtins, readline/prompts
- * for input, regex-read of config files, emoji-prefixed console output.
+ * Conventions match scripts/new-post.ts: only node builtins, LinePrompt
+ * (scripts/lib/prompt.ts) for input, regex-read of config files,
+ * emoji-prefixed console output.
  */
 
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import * as readline from 'node:readline/promises';
-import { stdin as input, stdout as output } from 'node:process';
+import { createLinePrompt, type LinePrompt } from './lib/prompt';
 
 const ROOT = process.cwd();
 const ARGS = process.argv.slice(2);
@@ -169,18 +169,18 @@ const dim = (s: string) => `\x1b[2m${s}\x1b[0m`;
 // Prompt helpers
 // ---------------------------------------------------------------------------
 
-async function ask(rl: readline.Interface, question: string, fallback?: string): Promise<string> {
+async function ask(rl: LinePrompt, question: string, fallback?: string): Promise<string> {
   const suffix = fallback !== undefined ? ` [${fallback}]: ` : ': ';
   const answer = scripted
     ? takeScriptedAnswer(question)
-    : (await rl.question(question + suffix)).trim();
+    : (await rl.ask(question + suffix)).trim();
   return answer || (fallback ?? '');
 }
 
-async function askBool(rl: readline.Interface, question: string, fallback = false): Promise<boolean> {
+async function askBool(rl: LinePrompt, question: string, fallback = false): Promise<boolean> {
   const answer = scripted
     ? takeScriptedAnswer(question)
-    : (await rl.question(`${question} [${fallback ? 'Y/n' : 'y/N'}]: `)).trim().toLowerCase();
+    : (await rl.ask(`${question} [${fallback ? 'Y/n' : 'y/N'}]: `)).trim().toLowerCase();
   if (!answer) return fallback;
   return answer === 'y' || answer === 'yes';
 }
@@ -811,7 +811,7 @@ async function main() {
     `\n🎨 AnvilWiki apply-template CLI — base config (metadata, theme, nav, locales)${DRY_RUN ? ' [DRY RUN]' : ''}\n`,
   );
 
-  const rl = readline.createInterface({ input, output });
+  const rl = createLinePrompt();
 
   // --- Collect inputs -----------------------------------------------------
   console.log('━'.repeat(60));
@@ -924,8 +924,6 @@ async function main() {
     clearLanding = await askBool(rl, 'Remove the project landing page (/landing)?', true);
   }
 
-  rl.close();
-
   // --- Summarize planned changes -----------------------------------------
   const skinInput: SkinInput = {
     gameName,
@@ -969,16 +967,14 @@ async function main() {
   console.log('     - wrangler.toml ([vars] reset to your domain, demo Giscus cleared)');
 
   if (!DRY_RUN) {
-    const proceed = await (async () => {
-      const rl2 = readline.createInterface({ input, output });
-      const ok = await askBool(rl2, '\nProceed with these changes?', false);
-      rl2.close();
-      return ok;
-    })();
+    const proceed = await askBool(rl, '\nProceed with these changes?', false);
+    rl.close();
     if (!proceed) {
       console.log('\n🚫 Aborted. No files were changed.');
       process.exit(0);
     }
+  } else {
+    rl.close();
   }
 
   // --- Apply -------------------------------------------------------------
