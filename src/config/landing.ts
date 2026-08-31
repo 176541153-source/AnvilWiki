@@ -11,7 +11,7 @@
  */
 
 /** Keep in sync with package.json "version" (used by the announcement bar). */
-export const PROJECT_VERSION = '2.5.0';
+export const PROJECT_VERSION = '2.5.1';
 
 export type LandingLocale = 'en' | 'zh';
 
@@ -271,7 +271,7 @@ const en: LandingContent = {
   description:
     'An open-source game wiki template with an AI-native content workflow: pick the right game, generate pages by talking to your AI tool, codes pages stay fresh on autopilot. Lighthouse 4×100, free on Cloudflare, 100% ad revenue yours.',
   announcement: {
-    text: `v${PROJECT_VERSION} ecosystem batch — a new /anvil-adsense-audit skill (item-by-item AdSense pre-application audit), an opportunity-scoring framework for game selection (dual-track scoring + KD action table), a "verify your backlinks are real" section in the SEO doc, and credits to the open-source skills that inspired them: yan-skills and adsense-site-auditor.`,
+    text: `v${PROJECT_VERSION} audit batch — ran the full /anvil-adsense-audit checklist against the demo site: template mechanics all pass, the gaps are content operations (article count, codes freshness, one empty category). Skill verdicts corrected against evidence (privacy disclosure ships built-in), and docs/ads.md gains a 22-item pre-application quick checklist.`,
     href: RELEASES,
   },
   hero: {
@@ -727,7 +727,7 @@ const zh: LandingContent = {
   description:
     '开源游戏 wiki 模板 + AI 原生内容工作流:选对游戏、和 AI 对话就能产页、codes 页自动保鲜。Lighthouse 4×100、Cloudflare 免费部署、广告收入 100% 归你。',
   announcement: {
-    text: `v${PROJECT_VERSION} 生态批——新增 /anvil-adsense-audit 技能(AdSense 申请前逐项体检),选品文档引入机会判决框架(双轨打分 + KD 分档动作表 + 复查节奏),外链章补「怎么验证外链真的生效」;并向启发我们的两个开源技能项目致谢:yan-skills 与 adsense-site-auditor。`,
+    text: `v${PROJECT_VERSION} 审计批——对 demo 站跑了一次 /anvil-adsense-audit 全项体检:模板机制层全部 Pass,缺口集中在内容经营本身(篇数/codes 时效/一个空分类);技能判定基准按实证修正(隐私政策披露模板已内置),docs/ads.md 新增 22 项申请前体检速查表。`,
     href: RELEASES,
   },
   hero: {

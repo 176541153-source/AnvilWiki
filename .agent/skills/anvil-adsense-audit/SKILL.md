@@ -21,9 +21,9 @@ description: AdSense 申请前全站体检——按 Google 官方政策(计划�
 | 项 | 证据在哪 |
 |---|---|
 | `public/ads.txt` 占位文件存在 | 通过审核拿到 `ca-pub-` ID 后替换其中的占位说明 |
-| 隐私政策 / 服务条款 / 版权 / 联系 / 关于 5 个法律页路由存在 | `/privacy-policy` `/terms-of-service` 等直接可访问(内容是否合格归用户侧 B 组) |
-| 广告组件 env 门控,默认零广告零弹窗 | `PUBLIC_ADSENSE_*` 不填就不渲染——申请期天然干净 |
-| 空分类列表页 noindex 且不进 sitemap | build 后查 `dist/sitemap.xml` |
+| 隐私政策 / 服务条款 / 版权 / 联系 / 关于 5 个法律页**正文内置**（非空壳路由），隐私页已含 Google AdSense 广告 cookie 披露段 | `src/components/layout/LegalContent.astro`；线上 `/privacy-policy/` 应有 "Advertising partners (e.g. Google AdSense)" 段 |
+| 广告组件 env 门控，默认零广告零弹窗 | `PUBLIC_ADSENSE_*` 不填就不渲染——申请期天然干净 |
+| 空分类列表页 noindex 且不进 sitemap | build 后查 `dist/sitemap*.xml` |
 | sitemap 自动生成 + `pnpm check-links` 死链门禁 | CI 八门禁 |
 | Lighthouse 4×100(速度/体验基线) | 模板开箱契约 |
 | 内链尾斜杠 + 语言前缀规范 | `pnpm check-content` 规则 5/6 |
@@ -62,7 +62,7 @@ description: AdSense 申请前全站体检——按 Google 官方政策(计划�
 
 ### E. 隐私与合规
 
-- **AD-17 隐私政策内容**:隐私页正文**是否提到第三方广告 cookie / Google 数据使用**——模板只保证了「有这个页面」,页面内容是 fork 用户的责任,申请广告前必须补这句(这是 Fail 重灾区)。
+- **AD-17 隐私政策披露完好**:模板已内置 AdSense 广告 cookie 披露(见「模板已解决」表),**默认 Pass**;仅当 fork 用户自行改写过 `LegalContent.astro`(代码层)或隐私页渲染结果缺 "Advertising partners" 段时才复查——核对线上 `/privacy-policy/` 即可。
 - **AD-18 儿童向内容**:游戏是否面向儿童(COPPA 敏感)。是则标 Unknown 并提示用户在 AdSense 后台做标签配置,别替用户判。
 - **AD-19 版权**:站内图片/视频来源合规(封面是模板生成的没问题;用户自己扒的游戏截图注意合理使用,标 Unknown 提醒即可)。
 

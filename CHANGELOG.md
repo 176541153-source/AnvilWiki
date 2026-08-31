@@ -5,6 +5,23 @@ All notable changes to AnvilWiki are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.5.1] — 2026-08-31
+
+**AdSense 审计实证批:按 `/anvil-adsense-audit` 技能对 demo 站(anvilwiki.pages.dev)跑了一次 22 项全项体检——裁决 Not ready(demo),但全部缺口都在内容经营侧(篇数/时效/空分类/免费域名),模板机制层零 Fail;据此实证修正技能两处判定基准,并把清单落成 docs/ads.md 速查规范。**
+
+### Fixed
+
+- **技能判定基准两处按实证原地修正**(「结论被推翻就在原地改」):① AD-17「隐私政策是否提到广告 cookie」原写为"模板只保证有页面、内容是 fork 用户责任、Fail 重灾区"——实证 `LegalContent.astro` **正文内置**了 Google AdSense 广告 cookie 披露段(法律五页是代码层组件而非空壳路由,fork 用户不改代码就不会丢),线上 `/privacy-policy/` 渲染确认;改为模板已解决项,默认 Pass,仅当改写过 LegalContent.astro 才复查。② 「模板已解决」表同步补披露段证据位置;AD-08 空分类判定维持(v2.4.0 noindex 兜底在,但申请期导航挂空分类仍是未完成信号)。
+
+### Added
+
+- **docs/ads.md 新节「申请 AdSense 前的体检:22 项 AD-\* 清单」**:六组速查表(资格/内容/技术/体验/隐私/时机 + 各组高频 Fail 项),canonical 清单归 `/anvil-adsense-audit` 技能维护;附 **demo 站审计基线实例**(机制层全 Pass,Not ready 仅因 5 篇英文文章 <15、codes 页 8 天未更新、`items` 空分类、pages.dev 域名——四项正是 fork 用户申请前自己要补的内容经营功课),让 fork 用户有对照样例。
+
+### Audit record(2026-08-31,demo 站)
+
+- **证据**:`refresh-audit` P0×2(codes 页 en/ja 均 8 天未更新);en 已发文 5 篇(bosses 2/codes 1/guides 2)、ja 2 篇;navigation 含 `items` 分类但 `src/content/wiki/*/items/` 目录不存在(列表页 noindex+sitemap 缺席验证:dist sitemap 101 URL 中 items 出现 0 次);`wrangler.toml` AdSense 变量全部注释(申请期零广告)、`affiliates.ts` 默认空;playwright 线上抽查 `/privacy-policy/`(含 AdSense 披露)、`/bosses/emberfang/`、`/sitemap-index.xml` 均 200。
+- **裁决**:**Not ready**(demo 作为申请主体);Blocker×2(AD-01 免费子域 / AD-03 篇数 5<15)、High×2(AD-06 codes 时效 / AD-08 空分类),其余 18 项 Pass/N-A——**模板机制层没有需要修的 Blocker**,缺口全部属于 fork 用户的内容经营功课(已由 game-selection.md 与学习手册第 4 章覆盖方法论)。
+
 ## [2.5.0] — 2026-08-31
 
 **生态技能吸收批:向两个开源技能项目致谢并吸收其方法论——新增 AdSense 申请前体检技能(灵感致谢 yantoumu/adsense-site-auditor-skill,清单为模板特化重写),选品文档引入机会判决框架(参考 yan-labs/yan-skills 的 game-opportunity,MIT),外链章补验证纪律。零代码行为变更(仅 landing footer 渲染致谢行,该层 fork 时整体移除)。**
@@ -689,6 +706,7 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Build: 27 pages, typecheck 0 errors
 
 [Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.4.0...HEAD
+[2.5.1]: https://github.com/PNGTRID/AnvilWiki/compare/v2.5.0...v2.5.1
 [2.5.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.4.1...v2.5.0
 [2.4.1]: https://github.com/PNGTRID/AnvilWiki/compare/v2.4.0...v2.4.1
 [2.4.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.3.1...v2.4.0
