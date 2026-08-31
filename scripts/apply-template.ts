@@ -1000,6 +1000,23 @@ async function main() {
     console.log(`   ✅ ${localePath}`);
   }
 
+  // Delete locale JSONs the forker did NOT choose. The demo ships en + ja;
+  // an unchosen leftover is a double problem: it carries full demo-game
+  // translations (identity leak into the fork) and `pnpm check-config`
+  // fails on it ("locale JSON exists but not in routing.ts") — red CI on
+  // day one. The old cleanup spec called these harmless orphans; it was
+  // wrong on both counts.
+  if (!DRY_RUN && fs.existsSync(path.resolve(ROOT, 'src/locales'))) {
+    for (const file of fs.readdirSync(path.resolve(ROOT, 'src/locales'))) {
+      if (!file.endsWith('.json')) continue;
+      const key = file.replace(/\.json$/, '');
+      if (!uniqueLocales.includes(key)) {
+        fs.unlinkSync(path.resolve(ROOT, 'src/locales', file));
+        console.log(`   🗑️  Removed src/locales/${file} (locale not chosen — demo translation leftover)`);
+      }
+    }
+  }
+
   write('public/manifest.json', rewriteManifest(skinInput));
   console.log('   ✅ public/manifest.json');
 

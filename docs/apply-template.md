@@ -46,7 +46,9 @@
 | demo 凭据 | `wrangler.toml` `[vars]` 重置：`SITE_URL` 换成你的域名，Giscus/Sponsor/CF Analytics 全部清空，AdSense 等可选槽留注释位 | 不重置的话，你站的评论区会指回官方仓库的 Discussions |
 | demo 作者 | `src/config/authors.ts` 里 `// DEMO` 标记的作者条目 | 否则 Person JSON-LD 会引用虚构作者 |
 
-**保留不删（有意设计）**：favicon/hero 图等二进制资产（CLI 生成不了，脚手架下一步指引你手动换）；`docs/handbook/` 手册源码；空的语言 JSON 文件（无害孤儿，路由不再引用）。
+**保留不删（有意设计）**：favicon/hero 图等二进制资产（CLI 生成不了，脚手架下一步指引你手动换）；`docs/handbook/` 手册源码。
+
+**⚠️ 语言 JSON 不是孤儿**：未选择语言的 locale 文件（demo 自带 `ja.json`）会被**直接删除**——它们装载着完整的 demo 游戏翻译，留着是身份泄漏；且 `pnpm check-config` 会对「locale 文件存在但不在 routing.ts」报错，fork 第一天 CI 就是红的。
 
 **逃生口**：`pnpm apply-template --dry-run`（只打印不写入）、`--no-clear-content`（保留 demo 文章）、`--keep-landing`（保留项目官网）。
 
