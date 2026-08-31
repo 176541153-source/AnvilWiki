@@ -595,7 +595,11 @@ PUBLIC_CF_BEACON_TOKEN = ""
 #PUBLIC_ADSENSE_SLOT_INCONTENT = ""
 #PUBLIC_GA_ID = ""
 #PUBLIC_GSC_VERIFICATION = ""`;
-  const varsRe = /\[vars\][\s\S]*?(?=\n*\[|\n*$)/;
+  // Anchor [vars] at LINE START: the demo file's intro comment contains the
+  // literal text "[vars]" mid-line, and an unanchored match rewrote the
+  // comment instead of the real section — leaving the demo Giscus values in
+  // a SECOND [vars] block below (duplicate TOML table, demo identity leak).
+  const varsRe = /^\[vars\][\s\S]*?(?=^\[|\s*\Z)/m;
   if (!varsRe.test(src)) {
     console.warn(`⚠️ Could not find [vars] section in ${filePath} — edit it manually.`);
     return null;
