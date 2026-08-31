@@ -5,6 +5,27 @@ All notable changes to AnvilWiki are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.6.2] — 2026-08-31
+
+**CLI 输入层修复(用户报障 issue #12)+ demo ja codes 页保鲜(自动审计 issue #11)。**
+
+### Fixed
+
+- **交互式 CLI 丢行——「默认值按回车没反应,输入默认内容才能继续」(issue #12)**:根因是 `readline/promises` 的 `rl.question()` 每次调用挂一个**一次性** `'line'` 监听器,而 readline **不缓存**「没有提问挂起时」到达的行。人在真 TTY 上逐键输入永远不会触发(raw mode 逐键送达、提问总在下一次按键前挂好),但一切**缓冲型 stdin 通道必然触发**:管道、AI agent 终端、多行粘贴、CI——多行在一个数据块里到达,只有第一条被消费,其余被静默丢弃,表现为「按回车没反应」「手输默认值才能过」(空行 vs 内容行的差别只是雪上加霜)。本仓库自己的历史记忆「readline 管道驱动会丢行」(v2.4.1 E2E 为此绕道 `--answers`)正是同一个 bug,当时绕过而未根治。修复:新增 `scripts/lib/prompt.ts`——**`LinePrompt` 常驻 FIFO 行队列**,构造时挂唯一的 `'line'` 监听器,任何时序下零丢行;**EOF 视为裸回车**(返回空串→落到默认值),`printf '' | pnpm apply-template --dry-run` 可全程默认跑完,而 Proceed 门(默认 `false`)在 EOF 时仍安全中止。`apply-template` / `new-post` / `new-locale` 三个交互 CLI 全部迁移;apply-template 顺带收敛为单一 readline 实例(原「Proceed 确认框再开第二个 interface」的并列实例一并消掉)。*仓库自带教训闭环:交互式 CLI 管道驱动丢行,从「用 expect PTY 绕过」变成「修好管道驱动本身」。*
+- **CHANGELOG 引用区 `[Unreleased]` 指针停在 v2.4.0**:v2.4.1 起连续 6 个版本漏更(与 v2.2.0 那次同源),本次随发版更新至 v2.6.2 并补 `[2.6.2]` 链接行。
+
+### Added
+
+- **`tests/prompt.test.ts` 7 条**:5 条 `LinePrompt` 行为钉死(单块多行不丢/先到后问不丢/空行交错/EOF 兜底/EOF 后余量)+ 2 条**静态契约**——三个 CLI 脚本禁止再直接调 `rl.question()`、必须走 `lib/prompt`(防止未来回退把 #12 悄悄带回来;LinePrompt 单测本身抓不住接线回退)。
+
+### Changed
+
+- **demo ja codes 页保鲜(issue #11 自动审计 P0)**:v2.6.0 把 en codes 页扩写并标 `lastModified: 2026-08-31` 时,ja 页停在 2026-08-23 没同步——次日自动审计单边红(「8d unverified」)。本次把 ja 页补到 en 的完整结构(兑换步骤+排障三例/奖励解读表+三条实读/代码来源三模式/花法优先级,内链全部 `/ja/` 前缀),`lastModified` → 2026-08-31,`pnpm refresh-audit` 回到 **0 items**。*教训:双语言 demo 的内容批必须两语言同步动 `lastModified`,否则保鲜审计必然单边红。*
+
+### 验证
+
+- 八门禁全绿(lint / typecheck / **test 104**(97 + LinePrompt 5 + 静态契约 2,suites 10)/ check-config / check-content / check-i18n `--strict-ui`(UI 134/134)/ build / check-links),另有 `pnpm refresh-audit` 0 items、`pnpm test:e2e` 真实模式绿。#12 修复经三通道验证:管道 17 行逐值落位、17 个空行(纯回车)全程默认跑完、expect PTY 交互回归。
+
 ## [2.6.1] — 2026-08-31
 
 **Fork 路径加固批:回答「demo 能过,fork 用户能不能过」——用 CLI 真实模式完整模拟一次 fork(export→apply→build→产物体检),抓出并修掉五个开箱陷阱。全部由新增的 E2E 断言钉死防回归。**
@@ -754,7 +775,8 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
-[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.4.0...HEAD
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.6.2...HEAD
+[2.6.2]: https://github.com/PNGTRID/AnvilWiki/compare/v2.6.1...v2.6.2
 [2.6.1]: https://github.com/PNGTRID/AnvilWiki/compare/v2.6.0...v2.6.1
 [2.6.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.5.1...v2.6.0
 [2.5.1]: https://github.com/PNGTRID/AnvilWiki/compare/v2.5.0...v2.5.1

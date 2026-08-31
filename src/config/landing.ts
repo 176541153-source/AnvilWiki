@@ -11,7 +11,7 @@
  */
 
 /** Keep in sync with package.json "version" (used by the announcement bar). */
-export const PROJECT_VERSION = '2.6.1';
+export const PROJECT_VERSION = '2.6.2';
 
 export type LandingLocale = 'en' | 'zh';
 
@@ -271,7 +271,7 @@ const en: LandingContent = {
   description:
     'An open-source game wiki template with an AI-native content workflow: pick the right game, generate pages by talking to your AI tool, codes pages stay fresh on autopilot. Lighthouse 4×100, free on Cloudflare, 100% ad revenue yours.',
   announcement: {
-    text: `v${PROJECT_VERSION} fork-path hardening — a full fork simulation (apply-template real mode → audit the product) caught and fixed five day-one traps: a contact page with zero contact channels, fake "updated daily/community" copy in the CLI templates, an empty nav that turned the fork's first check-config run red, orphan demo locale files leaking demo identity, and a wrangler [vars] rewrite that missed its anchor. The E2E now pins check-config green for every fork.`,
+    text: `v${PROJECT_VERSION} input-layer fix — the interactive CLIs dropped any keystroke that arrived before the next prompt (root cause: readline/promises attaches a one-time listener per question, so buffered stdin — pipes, AI-agent terminals, pasted answers — silently loses lines: "pressing Enter does nothing"). All three CLIs now run on a lossless line queue, and the demo ja codes page caught up to the freshness audit.`,
     href: RELEASES,
   },
   hero: {
@@ -727,7 +727,7 @@ const zh: LandingContent = {
   description:
     '开源游戏 wiki 模板 + AI 原生内容工作流:选对游戏、和 AI 对话就能产页、codes 页自动保鲜。Lighthouse 4×100、Cloudflare 免费部署、广告收入 100% 归你。',
   announcement: {
-    text: `v${PROJECT_VERSION} fork 路径加固批——完整 fork 模拟(CLI 真实模式→产物体检)抓出并修掉五个开箱陷阱:零渠道联系页、CLI 模板里的"每日更新/社区"虚假文案、空 nav 导致 fork 第一次 check-config 就红、demo 语言文件残留泄漏身份、wrangler [vars] 重写锚点错位。E2E 现已钉死 fork 的 check-config 必绿。`,
+    text: `v${PROJECT_VERSION} 输入层修复——交互式 CLI 会静默丢弃「下一个提问还没挂出时」就到达的按键(根因:readline/promises 每次提问挂一次性监听器,缓冲型 stdin——管道、AI 终端、粘贴——必丢行,表现为"按回车没反应")。三个 CLI 全部改用零丢行队列,demo ja codes 页同步保鲜审计。`,
     href: RELEASES,
   },
   hero: {
