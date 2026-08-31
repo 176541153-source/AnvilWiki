@@ -121,6 +121,13 @@ const checks = [
   ['hero.ctaSecondary is a string', typeof en.home?.hero?.ctaSecondary === 'string'],
   ['closingCta.primary is a string', typeof en.home?.closingCta?.primary === 'string'],
   ['start.cards[].number present (QuickStart renders the number badge)', typeof en.home?.start?.cards?.[0]?.number === 'string'],
+  ['nav labels auto-filled for chosen categories (3-place rule)', ['bosses', 'guides', 'codes'].every((k) => typeof en.nav?.[k] === 'string')],
+  ['overview entries auto-filled for chosen categories', ['bosses', 'guides', 'codes'].every((k) => typeof en.overview?.[k]?.overviewTitle === 'string')],
+  ['zh locale nav labels auto-filled too (check-config checks every locale)', (() => {
+    const zh = JSON.parse(readFileSync(join(scratch, 'src/locales/zh.json'), 'utf8'));
+    return ['bosses', 'guides', 'codes'].every((k) => typeof zh.nav?.[k] === 'string');
+  })()],
+  ['site.description makes no community/update promise it cannot keep', !/by the community|updated daily|tested daily/i.test(en.site?.description ?? '')],
 ];
 for (const [name, ok] of checks) {
   console.log(`  ${ok ? '✅' : '❌'} ${name}`);
@@ -131,6 +138,11 @@ if (failed) process.exit(1);
 // 5. The fork's first build must succeed.
 step("pnpm build (the fork's first build must succeed)");
 execSync('pnpm build', { cwd: scratch, stdio: 'inherit', shell: win });
+
+// 5.5 The fork's first check-config run must be green — a fresh fork with a
+// red consistency gate is a day-one trap (empty nav broke this in v2.6.0).
+step("pnpm check-config (the fork's first CI run must be green)");
+execSync('pnpm check-config', { cwd: scratch, stdio: 'inherit', shell: win });
 
 step('Assert built pages');
 for (const p of ['dist/index.html', 'dist/zh/index.html']) {

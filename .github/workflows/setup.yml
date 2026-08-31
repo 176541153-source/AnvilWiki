@@ -108,7 +108,11 @@ jobs:
                 src/assets/covers/emberfang-cover.png \
                 src/assets/covers/stormcaller-cover.png \
                 src/assets/covers/weapon-tier-list-cover.png \
-                src/assets/covers/codes-cover.png
+                src/assets/covers/codes-cover.png \
+                src/assets/covers/en-bosses-frostbound-monarch.png \
+                src/assets/covers/en-guides-forging-guide.png \
+                src/assets/covers/en-items-emberforged-armor-set.png \
+                src/assets/covers/en-items-forging-materials-guide.png
           python3 - <<'EOF'
           import re
           p = 'src/config/authors.ts'

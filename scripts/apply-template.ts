@@ -523,9 +523,37 @@ function rewriteLocaleJson(input: SkinInput, _locale: string, existing?: string)
   };
   obj.footer = obj.footer ?? {};
   (obj.footer as Record<string, unknown>).copyrightText = `© ${new Date().getFullYear()} ${input.gameName} Wiki. All rights reserved.`;
-  // Clear nav + overview so the user re-fills them once categories are known.
-  obj.nav = {};
-  obj.overview = {};
+  // nav + overview are auto-filled for the chosen categories. Deliberately
+  // NOT left empty: an empty nav means the fork's first `pnpm check-config`
+  // run is red (3-place rule) and SiteHeader renders raw lowercase keys —
+  // both on day one, before the user has written a single label. The English
+  // defaults below are placeholders users translate/edit per locale.
+  const cap = (key: string) =>
+    key
+      .split(/[-_]/)
+      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+      .join(' ');
+  const navFixed: Record<string, string> = {
+    home: 'Home',
+    toggleTheme: 'Toggle theme',
+    menu: 'Menu',
+    close: 'Close',
+    search: 'Search',
+    language: 'Language',
+  };
+  const navCategories: Record<string, string> = {};
+  const overview: Record<string, { overviewTitle: string; overviewDescription: string }> = {};
+  for (const { key } of input.categories) {
+    navCategories[key] = cap(key);
+    overview[key] = {
+      overviewTitle: `All ${cap(key)}`,
+      overviewDescription: `${cap(key)} content for ${input.gameName}. Replace this overview text in the locale JSON — it feeds the category page title and description.`,
+    };
+  }
+  // Keep any non-fixed nav keys a previous run added, then overlay defaults.
+  const prevNav = (obj.nav ?? {}) as Record<string, unknown>;
+  obj.nav = { ...navFixed, ...prevNav, ...navCategories };
+  obj.overview = overview;
   // Homepage preset skeleton (unless 'keep').
   const home = buildHomePreset(input);
   if (home) obj.home = home;
@@ -593,10 +621,11 @@ function rewriteManifest(input: SkinInput): string {
   return JSON.stringify(obj, null, 2) + '\n';
 }
 
-function clearDemoContent() {
+function clearDemoContent(categories: { key: string }[]) {
   const base = path.resolve(ROOT, 'src/content/wiki');
   if (!fs.existsSync(base)) return 0;
   let removed = 0;
+  const chosen = new Set(categories.map((c) => c.key));
   for (const localeDir of fs.readdirSync(base)) {
     const localePath = path.join(base, localeDir);
     const stat = fs.statSync(localePath);
@@ -609,6 +638,12 @@ function clearDemoContent() {
           if (!DRY_RUN) fs.unlinkSync(path.join(catPath, file));
           removed++;
         }
+      }
+      // Prune category dirs that are now empty AND not chosen — a leftover
+      // empty dir is an unreachable category (template-audit flags it) and
+      // invites creating articles for a nav that doesn't link it.
+      if (!chosen.has(catDir) && !DRY_RUN && fs.readdirSync(catPath).length === 0) {
+        fs.rmdirSync(catPath);
       }
     }
   }
@@ -629,6 +664,12 @@ const DEMO_COVERS = [
   'stormcaller-cover.png',
   'weapon-tier-list-cover.png',
   'codes-cover.png',
+  // v2.6.0 demo content batch — same by-name rule: never delete a cover a
+  // fork user created. Keep in sync with setup.yml's rm -f list.
+  'en-bosses-frostbound-monarch.png',
+  'en-guides-forging-guide.png',
+  'en-items-emberforged-armor-set.png',
+  'en-items-forging-materials-guide.png',
 ];
 
 function clearDemoAssets() {
@@ -982,7 +1023,7 @@ async function main() {
   }
 
   if (clearContent) {
-    const n = clearDemoContent();
+    const n = clearDemoContent(categories);
     console.log(`   🗑️  Removed ${n} demo MDX file${n === 1 ? '' : 's'} under src/content/wiki/`);
     if (categories.length > 0) {
       const s = scaffoldContent(categories);
