@@ -11,7 +11,7 @@
  */
 
 /** Keep in sync with package.json "version" (used by the announcement bar). */
-export const PROJECT_VERSION = '2.6.0';
+export const PROJECT_VERSION = '2.6.1';
 
 export type LandingLocale = 'en' | 'zh';
 
@@ -271,7 +271,7 @@ const en: LandingContent = {
   description:
     'An open-source game wiki template with an AI-native content workflow: pick the right game, generate pages by talking to your AI tool, codes pages stay fresh on autopilot. Lighthouse 4×100, free on Cloudflare, 100% ad revenue yours.',
   announcement: {
-    text: `v${PROJECT_VERSION} demo content overhaul — every wiki article rewritten to 800-1500 word depth (4 brand-new pages including an items category), footer now links all trust pages including Contact, ads.txt ships a ready-to-uncomment AdSense line, and the "updated by the community" copy now tells the truth.`,
+    text: `v${PROJECT_VERSION} fork-path hardening — a full fork simulation (apply-template real mode → audit the product) caught and fixed five day-one traps: a contact page with zero contact channels, fake "updated daily/community" copy in the CLI templates, an empty nav that turned the fork's first check-config run red, orphan demo locale files leaking demo identity, and a wrangler [vars] rewrite that missed its anchor. The E2E now pins check-config green for every fork.`,
     href: RELEASES,
   },
   hero: {
@@ -727,7 +727,7 @@ const zh: LandingContent = {
   description:
     '开源游戏 wiki 模板 + AI 原生内容工作流:选对游戏、和 AI 对话就能产页、codes 页自动保鲜。Lighthouse 4×100、Cloudflare 免费部署、广告收入 100% 归你。',
   announcement: {
-    text: `v${PROJECT_VERSION} demo 内容整备批——全部 wiki 文章扩写到 800-1500 词深度(含 items 新分类共 4 篇全新页面),页脚补齐 Contact 等信任页入口,ads.txt 内置一行即可启用的 AdSense 授权行,「社区每日更新」等不实文案改为诚实的「逐篇标注验证日期」。`,
+    text: `v${PROJECT_VERSION} fork 路径加固批——完整 fork 模拟(CLI 真实模式→产物体检)抓出并修掉五个开箱陷阱:零渠道联系页、CLI 模板里的"每日更新/社区"虚假文案、空 nav 导致 fork 第一次 check-config 就红、demo 语言文件残留泄漏身份、wrangler [vars] 重写锚点错位。E2E 现已钉死 fork 的 check-config 必绿。`,
     href: RELEASES,
   },
   hero: {

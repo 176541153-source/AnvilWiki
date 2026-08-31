@@ -5,6 +5,27 @@ All notable changes to AnvilWiki are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.6.1] — 2026-08-31
+
+**Fork 路径加固批:回答「demo 能过,fork 用户能不能过」——用 CLI 真实模式完整模拟一次 fork(export→apply→build→产物体检),抓出并修掉五个开箱陷阱。全部由新增的 E2E 断言钉死防回归。**
+
+### Fixed
+
+- **联系页零联系方式**(信任页硬伤):CLI 只写 `social.official`,而联系页 Community 列表只渲染 discord/reddit/youtube——fork 用户第一天拿到的是**一个空列表**+正文写着 "reach out on Discord"(页面上没有 Discord 链接)。修复:`official` 渠道永远渲染;新增可选 `site.contactEmail`(site.ts 接口+demo 值+CLI 写出模板三处同步)渲染 mailto——不开任何社交渠道的用户填邮箱即可;硬编码 "reach out on Discord" 改为指向列表内渠道;"community-run wiki" 改 "fan-made wiki"。
+- **CLI 模板残留虚假承诺**:site description 默认值 "Updated by the community."、codes 首页徽章 "Updated daily"、hero 描述 "tested daily"——fork 用户第一天的站就挂着兑现不了的日更/社区招牌(与 v2.6.0 demo 端修正同源,当时漏了 CLI 写出模板这层)。全部改诚实口径。
+- **空 nav → fork 第一次 check-config 就红**:`rewriteLocaleJson` 原设计清空 nav/overview 让用户自己填,后果是 SiteHeader 渲染裸 key、**八门禁之一的 check-config 开箱七项全红**。改为按所选栏目自动填充 `nav.<key>` 标签 + `overview.<key>` 条目(英文默认值+固定键恢复,titleCase 与脚手架一致);用户要做的只剩翻译。
+- **demo 语言文件残留**:选 `en,zh` 后 demo 的 `ja.json`(完整 Anvil Quest 翻译)原样留在 fork——身份泄漏,且 check-config 报「locale 文件存在但不在 routing.ts」。清理规范里「空语言 JSON 是无害孤儿」的说法**两处皆错**,已推翻:CLI 现在直接删除未选语言的 locale 文件。
+- **wrangler.toml [vars] 重写锚点错位**:`/\[vars\]/` 匹配到第 7 行注释里的字样,替换块插进注释、真正的 demo Giscus 段原样留存(重复 [vars] 表+demo 身份泄漏+评论指向官方 Discussions);修复锚定行首。顺带修掉两个 JS 正则陷阱(`\Z` 在 JS 是字面量 Z 导致整段匹配静默失败;`m` 标志下 `$` 是行尾)——教训沉淀在代码注释里。demo 头部 FORKER 警示块重写后一并移除(内容已失真)。
+- **DEMO_COVERS 清单漏 v2.6.0 新增 4 张封面**(按名删除清单未随内容批同步,fork 会残留 demo 封面);`setup.yml` rm 清单同步——两通道清单必须一致的铁律。
+
+### Added
+
+- **E2E 五条新断言 + check-config 步骤**:`nav/overview` 自动填充(en+zh 双语)、site description 无虚假承诺、wrangler 单 [vars] 段、零 demo Giscus 值、警示块已移除;`pnpm check-config` 在 fork 产物上必须绿——「fork 第一次 CI 就是绿的」从口号变成契约。
+
+### 验证
+
+- 完整 fork 模拟两轮(修复前后各一):修复前 check-config ❌ 7 项 + template-audit ❌ 9/11;修复后 **check-config ✅ 0 问题 + template-audit ✅ 11/11** + E2E 全断言绿。八门禁全绿(lint/typecheck/test 97/check-config/check-content/check-i18n/build/check-links)。
+
 ## [2.6.0] — 2026-08-31
 
 **Demo 内容整备批:依据 seo.web.cafe AdSense 预检报告核查整改——9 篇 wiki 文章全部达到 800-1500 词深度(新增 4 篇含 items 分类),页脚补齐 Contact 信任页入口,ads.txt 内置就绪授权行,不实「社区每日更新」文案改诚实。⚠️ 面向 fork 用户的两处行为说明:页脚新增 Contact 链接(fork 受益)、footer UI 键 +1(en/ja 已同步)。**
@@ -734,6 +755,7 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Build: 27 pages, typecheck 0 errors
 
 [Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.4.0...HEAD
+[2.6.1]: https://github.com/PNGTRID/AnvilWiki/compare/v2.6.0...v2.6.1
 [2.6.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.5.1...v2.6.0
 [2.5.1]: https://github.com/PNGTRID/AnvilWiki/compare/v2.5.0...v2.5.1
 [2.5.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.4.1...v2.5.0
