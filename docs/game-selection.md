@@ -40,6 +40,8 @@
 用 Google Trends 对比锚定词(`{game name} codes` / `{game name} wiki` vs 一个已知基准词):
 **只有搜索量真实存在且在上升,才值得建站。** YouTube 高播放但 Trends 无搜索 = 观众在YouTube看,不搜 wiki。
 
+> **刚爆发的新游,Trends 曲线还没起来怎么办?** 搜索数据天然滞后于传播——这时改看**传播侧信号**(独立发布者数量、跨平台扩散、非官方互动增速、搜索萌芽),通过后再进本层验证。完整的早期爆发轨判据、KD 分档动作表和「平台内流量 ≠ 独立需求 / 未测 ≠ 零」两条判据,见 [sourcing.md 第四节·判决框架](sourcing.md)。
+
 ### 第 4 层 · 竞争验证(2 分钟)
 
 Google 搜 `{game name} wiki` 和 `{game name} codes`,看前 10:

@@ -78,6 +78,12 @@ Don't eyeball the data — judge it against four pass lines (sources: GSC "Perfo
 | Pages per visit | ≥ 1.5 | Below 1.5 = not enough internal links: add 1 to 2 links to related articles per page |
 | New pages per week | 10+ | **Only add, don't rewrite old pages** — new pages are the incremental signal you hand Google |
 
+**Review discipline: trust only the numbers on the dashboard.**
+
+- **Every conclusion needs a source**: "traffic grew this week" must point at an actual number in GSC or your analytics panel; a conclusion you can't point to a number for carries no weight next week.
+- **Actions aren't results**: "published 10 pages", "re-themed the site" are things you did, not results the site got — results are only CTR, clicks, and indexing actually moving on the dashboard.
+- **When data overturns an old conclusion, fix it on the spot**: if last week's note said "this term has no volume" and this week's data proves otherwise, correct the note where it stands — don't leave a stale present-tense sentence to mislead next week's you.
+
 ### Optional gear: Clarity, a free heatmap (install once, 5 minutes a week)
 
 Numbers tell you **how many people came**; Clarity tells you **what they did on the page** — free click heatmaps plus session recordings. Two things to watch weekly: where users **get stuck**, and **whether the ad slots actually get clicked**.

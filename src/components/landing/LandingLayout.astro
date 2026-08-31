@@ -184,6 +184,16 @@ const description = pageDescription ?? t.description;
       <p class="mt-1 text-center text-xs text-muted-foreground sm:text-left">
         {t.footer.author} · <a href="https://github.com/PNGTRID" class="transition hover:text-nav">GitHub @PNGTRID</a>
       </p>
+      <p class="mt-1 text-center text-xs text-muted-foreground sm:text-left">
+        {t.footer.creditsLabel}
+        {t.footer.credits.map((credit, i) => (
+          <>
+            {i > 0 && <span> · </span>}
+            <a href={credit.href} class="transition hover:text-nav" rel="noopener">{credit.name}</a>
+            <span> — {credit.note}</span>
+          </>
+        ))}
+      </p>
     </div>
   </footer>
 </BaseLayout>

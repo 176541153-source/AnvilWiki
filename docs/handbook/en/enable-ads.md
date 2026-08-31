@@ -41,6 +41,8 @@ Ads are how you monetize, not how you grow — don't reverse the order. The full
 - ☐ Privacy policy and terms of service pages (**the template already ships them built in** at `/privacy-policy` and `/terms-of-service` — nothing for you to do)
 - ☐ No dead links on the site (`pnpm check-links` passes)
 
+**Lazy route: let the AI run an item-by-item audit.** In an AI assistant that supports skills, type `/anvil-adsense-audit` — it checks your site against Google's official policies item by item (content originality, whether the privacy page mentions ad cookies, expired codes, empty categories… items the template already solves come with evidence pre-filled) and outputs a Pass/Fail/Unknown table. Two rules: **a verbal "should be fine" doesn't count** — every item needs evidence or a written note of what's missing; and **don't submit while a Blocker is open** — fix it first, because rejection records follow your account.
+
 **How to do it**: open [adsense.google.com](https://adsense.google.com) → add your site → wait for review (a few days to two weeks).
 **If you get rejected**: read the reason it gives — nine times out of ten it's "insufficient content". Go back with the Chapter 4 routine, write 5 to 10 more pages, reapply in two weeks. It doesn't count against you later.
 

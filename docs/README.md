@@ -99,3 +99,8 @@
 - 新增文档:**必须**同步加进上面的快速索引,并归入某条阅读路径
 - 文档面向 fork 用户的部分用中文为主、关键术语保留英文;面向国际社区的锚点在 README 英文区
 - 与代码强相关的规则(硬约束)优先写进 `AGENTS.md`(Agent 自动读),文档负责"为什么"和"怎么做"
+
+## 致谢
+
+- [yan-labs/yan-skills](https://github.com/yan-labs/yan-skills)(MIT)—— [sourcing.md](sourcing.md) 第四节「判决框架」参考其 game-opportunity 技能;[seo.md](seo.md) 外链验证一节引用其实测结论与提交入口库
+- [yantoumu/adsense-site-auditor-skill](https://github.com/yantoumu/adsense-site-auditor-skill) —— `/anvil-adsense-audit` 技能的审计框架(逐项四态判定 + Blocker 分级 + 完整性门)受其启发,清单为模板特化重写

@@ -157,6 +157,8 @@ fork 后用 ZCode / Claude Code / Codex / Cursor 打开仓库,直接对话即可
 
 许可:**MIT**,见 [LICENSE](LICENSE)。
 
+致谢:选品判决框架([docs/sourcing.md](docs/sourcing.md) 第四节)参考了 [yan-labs/yan-skills](https://github.com/yan-labs/yan-skills)(MIT)的 game-opportunity 技能;AdSense 申请前审计技能(`/anvil-adsense-audit`)的审计框架受 [yantoumu/adsense-site-auditor-skill](https://github.com/yantoumu/adsense-site-auditor-skill) 启发(清单为模板特化重写,未复制其文本)。感谢两个项目把方法论开源出来。
+
 ---
 
 ## 📖 English Documentation
@@ -276,6 +278,8 @@ Built a site? Open a PR appending an entry to `COMMUNITY_SITES` in `src/config/l
 ### Community & License
 
 MIT License — see [LICENSE](LICENSE).
+
+Credits: the opportunity-scoring framework in [docs/sourcing.md](docs/sourcing.md) (section 4) draws on the game-opportunity skill from [yan-labs/yan-skills](https://github.com/yan-labs/yan-skills) (MIT); the AdSense pre-application audit skill (`/anvil-adsense-audit`) is inspired by the audit framework of [yantoumu/adsense-site-auditor-skill](https://github.com/yantoumu/adsense-site-auditor-skill) (our checklist is a template-specific rewrite, not a copy). Thanks to both projects for open-sourcing their methodology.
 
 Questions, ideas, or want to chat about game content sites? Scan the WeChat QR code to join the discussion group (the [project landing page](https://anvilwiki.pages.dev/landing) has the same floating QR button in the bottom-right corner):
 
