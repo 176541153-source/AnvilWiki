@@ -608,9 +608,10 @@ PUBLIC_CF_BEACON_TOKEN = ""
   }
   // Remove the demo-intro warning block: after the [vars] rewrite it would
   // claim "this file contains the DEMO SITE config" about values that are
-  // now the forker's own — a stale, misleading comment.
+  // now the forker's own — a stale, misleading comment. Anchors are ASCII:
+  // the ⚠️ emoji is a multi-codepoint sequence that silently fails `⚠️+`.
   const out = src.replace(varsRe, (_match, pre) => `${pre}${newVars}\n`);
-  const demoIntroRe = /# ⚠️+ FORKERS READ THIS FIRST[\s\S]*?# ⚠️+ END FORKER WARNING\n?/;
+  const demoIntroRe = /# .*FORKERS READ THIS FIRST[\s\S]*?# .*END FORKER WARNING.*\n?/;
   return demoIntroRe.test(out) ? out.replace(demoIntroRe, '') : out;
 }
 
