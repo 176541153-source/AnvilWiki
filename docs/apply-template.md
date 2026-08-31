@@ -67,6 +67,7 @@ export const site = {
   domain: 'anvilwiki.pages.dev',     // → 你的域名（不带 https://）
   tagline: '...',                    // → 副标题
   legalNotice: '...',                // → 法律声明
+  contactEmail: '',                  // → 可选:公开联系邮箱(联系页渲染 mailto;没开任何社交渠道时必填)
   social: {
     official: 'https://...',         // → 游戏官网
     discord: 'https://...',          // → 没有就留 undefined

@@ -18,6 +18,12 @@ export interface SiteConfig {
   tagline: string;
   /** Copyright / legal disclaimer line shown in footer. */
   legalNotice: string;
+  /**
+   * Optional public contact email — rendered as a mailto link on the contact
+   * page when set. AdSense reviewers look for a reachable contact channel;
+   * if you run no social channels, set this.
+   */
+  contactEmail?: string;
   social: {
     /** Official game website URL (the game itself, not the wiki). */
     official: string;
@@ -64,6 +70,9 @@ export const site: SiteConfig = {
   tagline: 'Your forge for everything Anvil Quest',
   legalNotice:
     'Anvil Quest Wiki is a fan-made community site. Not affiliated with or endorsed by the game developer.',
+  // 👉 APPLY TEMPLATE: set a real address if you run no social channels —
+  // the contact page renders it as a mailto link.
+  contactEmail: '',
   social: {
     official: 'https://example.com/anvil-quest',
     discord: 'https://discord.gg/example',

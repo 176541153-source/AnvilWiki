@@ -189,11 +189,18 @@ const year = new Date().getFullYear();
       {/* h2, not h1 — LegalPage already renders the page H1 (single-H1 rule). */}
       <h2>Contact {site.name}</h2>
       <p>
-        {site.name} is a community-run wiki. The fastest way to reach us or contribute is through
-        our community channels below.
+        {site.name} is a fan-made wiki. Reach us or contribute through any of the channels below.
       </p>
       <h2>Community</h2>
       <ul>
+        {site.social.official && (
+          <li>
+            <strong>Official game website:</strong>{' '}
+            <a href={site.social.official} target="_blank" rel="noopener noreferrer">
+              {site.social.official}
+            </a>
+          </li>
+        )}
         {site.social.discord && (
           <li>
             <strong>Discord:</strong>{' '}
@@ -218,11 +225,16 @@ const year = new Date().getFullYear();
             </a>
           </li>
         )}
+        {site.contactEmail && (
+          <li>
+            <strong>Email:</strong> <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>
+          </li>
+        )}
       </ul>
       <h2>Contributing</h2>
       <p>
         Found a typo or outdated info? Want to add a guide? This wiki is open source — submit changes
-        via pull requests or reach out on Discord.
+        via pull requests or through any channel listed above.
       </p>
       <h2>Reporting Issues</h2>
       <p>

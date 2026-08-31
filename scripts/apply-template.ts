@@ -251,9 +251,9 @@ function buildHomePreset(input: SkinInput): Record<string, unknown> | null {
     return {
       ...common,
       hero: {
-        badge: 'Updated daily',
+        badge: 'Fan-made wiki',
         title: `${input.gameName} Codes`,
-        description: `All working ${input.gameName} codes, tested daily. Plus guides and tier lists.`,
+        description: `All working ${input.gameName} codes with expiry dates, plus guides and tier lists.`,
         ctaPrimary: 'Play now',
         ctaSecondary: 'Browse guides',
       },
@@ -340,6 +340,9 @@ function rewriteSiteTs(input: SkinInput): string {
   domain: '${input.domain}',
   tagline: '${input.tagline.replace(/'/g, "\\'")}',
   legalNotice: '${input.legalNotice.replace(/'/g, "\\'")}',
+  // Set a real address if you run no social channels — the contact page
+  // renders it as a mailto link.
+  contactEmail: '',
   social: {
     official: '${input.officialUrl}',
   },
@@ -769,7 +772,7 @@ async function main() {
   const description = await ask(
     rl,
     'Site description (SEO, 40-165 chars)',
-    `Complete ${gameName} wiki with guides, codes, tier lists, and tips. Updated by the community.`,
+    `Complete ${gameName} wiki with guides, codes, tier lists, and tips. Every page carries a last-verified date.`,
   );
   const legalNotice = await ask(
     rl,
