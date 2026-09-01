@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **文档一致性清扫**：`AGENTS.md` 测试套件描述 9→10（v2.6.2 新增 `tests/prompt.test.ts` 后漏更）、`docs/PRD.md` 架构树运维脚本数 12→14（v2.4.0 新增 `gen-assets` / `submit-indexnow` 后漏更）、`docs/apply-template.md` 补记 `--answers answers.json` 非交互模式（v2.4.1 引入，此前未进配置手册）。
 - **文档一致性清扫（第二轮）**：三处「内置技能 4 个」计数漏更——v2.5.0 新增 `anvil-adsense-audit` 后，`README.md` 中英两个技能表与 `docs/README.md` 路径 C 仍写 4 个，现更正为 5 个并补该技能条目（`.agent/skills/` 实有 5 个目录）；`docs/development.md` 发版清单第 3 步补记「`[Unreleased]` 指针上移到新版本」——即 [2.6.2] 记录的连续 6 版漏更事故点，原清单只写了「compare 链接加一行」。
+- **apply-template 重跑安全四连修（2026-09-01 风险审计落地）**：① **P1 locale 误删**——重跑时未选语言只自动删 demo 自带的（`DEMO_LOCALES = ['en','ja']`），用户自建 locale（上一轮 CLI 或 `pnpm new-locale` 加的）改为响亮警告保留，翻译工作不再被静默销毁（原逻辑无确认门直接 `unlinkSync`）；② **P2 资产整目录删除**——`clearDemoAssets` 废除对 `src/assets/gallery/`、`public/images/articles/` 的整目录 rm -rf（后者正是 content-format.md 让用户放**自己**内文图的目录），三个 demo 图清单（封面/画廊/内文）全部按名删除，`setup.yml` 同步改为 `rm -f` 清单，新静态契约测试钉住两通道清单零漂移；③ **P3 nav 残留**——locale 重写不再把未选 demo 分类的 `nav.<key>` 标签带进 fork（原 `{...prevNav}` 展开会泄漏 `items` 等残留键，且没有任何渲染或门禁能发现），改为只保留本次仍拥有的键，且上一轮用户已改的标签优先于英文占位符（重跑不再重置翻译）；④ **P4 wrangler 正则 CRLF 失配**——`[vars]` 重写兼容 CRLF 工作区（原 `\n` 锚点在 CRLF 文件上静默 `test()` 失败→跳过重写→demo Giscus 值残留），插入块跟随文件自身行尾。配套重构：纯重写函数抽到 `scripts/lib/apply-rewrites.ts` 供 vitest 直测（新增第 11 个测试套件 `tests/apply-template.test.ts`，共 114 tests），E2E 新增重跑断言（ja 删/ko 保留/二次运行幂等完成）。
 
 ## [2.6.2] — 2026-08-31
 

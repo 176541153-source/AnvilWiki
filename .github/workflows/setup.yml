@@ -99,12 +99,22 @@ jobs:
         run: |
           # Remove demo game articles (keep directory structure) + the demo
           # author registry entry, so no "Anvil Quest" / "Forge Master Kael"
-          # residue ships with the fork. Demo article artwork is removed BY
-          # NAME — keep this list in sync with DEMO_COVERS / DEMO_ASSET_DIRS
-          # in scripts/apply-template.ts (clearDemoAssets).
+          # residue ships with the fork. Demo artwork is removed BY NAME —
+          # never a wildcard or a whole directory (public/images/articles/ is
+          # where fork authors put their own inline images). Keep this list in
+          # sync with DEMO_COVERS / DEMO_GALLERY_IMAGES / DEMO_ARTICLE_IMAGES
+          # in scripts/lib/apply-rewrites.ts — pinned by
+          # tests/apply-template.test.ts.
           find src/content/wiki -name '*.mdx' -delete
-          rm -rf src/assets/gallery public/images/articles
-          rm -f src/assets/covers/beginner-guide-cover.png \
+          rm -f src/assets/gallery/beginner-class-picks.png \
+                src/assets/gallery/beginner-route.png \
+                src/assets/gallery/emberfang-arena.png \
+                src/assets/gallery/emberfang-mechanics.png \
+                src/assets/gallery/stormcaller-arena.png \
+                src/assets/gallery/stormcaller-mechanics.png \
+                public/images/articles/weapon-frostpike.png \
+                public/images/articles/weapon-voidforge.png \
+                src/assets/covers/beginner-guide-cover.png \
                 src/assets/covers/emberfang-cover.png \
                 src/assets/covers/stormcaller-cover.png \
                 src/assets/covers/weapon-tier-list-cover.png \

@@ -35,6 +35,16 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { createLinePrompt, type LinePrompt } from './lib/prompt';
+import {
+  DEMO_ARTICLE_IMAGES,
+  DEMO_COVERS,
+  DEMO_GALLERY_IMAGES,
+  DEMO_LOCALES,
+  rewriteLocaleJson,
+  rewriteWranglerVars,
+  slugify,
+  type SkinInput,
+} from './lib/apply-rewrites';
 
 const ROOT = process.cwd();
 const ARGS = process.argv.slice(2);
@@ -95,15 +105,6 @@ const write = (p: string, content: string) => {
   }
   fs.writeFileSync(path.resolve(ROOT, p), content, 'utf8');
 };
-
-function slugify(s: string): string {
-  return s
-    .toLowerCase()
-    .trim()
-    .replace(/[^\w\s-]/g, '')
-    .replace(/[\s_-]+/g, '-')
-    .replace(/^-+|-+$/g, '');
-}
 
 /** Convert #rrggbb → "H S% L%" (space-separated, no hsl() wrapper, as globals.css expects). */
 function hexToHsl(hex: string): { h: number; s: number; l: number } {
@@ -188,146 +189,6 @@ async function askBool(rl: LinePrompt, question: string, fallback = false): Prom
 // ---------------------------------------------------------------------------
 // Rewriters
 // ---------------------------------------------------------------------------
-
-interface SkinInput {
-  gameName: string;
-  shortName: string;
-  domain: string;
-  tagline: string;
-  description: string;
-  legalNotice: string;
-  themeHex: string;
-  platform: string;
-  developer: string;
-  genre: string;
-  releaseDate: string;
-  officialUrl: string;
-  locales: string[];
-  categories: { key: string; icon: string }[];
-  clearContent: boolean;
-  clearLanding: boolean;
-  /** Homepage preset: 'codes' | 'guides' | 'keep' */
-  homePreset: 'codes' | 'guides' | 'keep';
-}
-
-/**
- * Build a starter `home` namespace skeleton for a preset.
- * All copy uses the game name the user entered — placeholders to refine,
- * not demo-game leftovers. Module hrefs point at the categories they chose.
- */
-function buildHomePreset(input: SkinInput): Record<string, unknown> | null {
-  if (input.homePreset === 'keep') return null;
-  const cats = input.categories.map((c) => c.key);
-  const first = cats[0] ?? 'guides';
-  const cap = (c: string) => c[0].toUpperCase() + c.slice(1);
-
-  // Field shapes MUST match what the home components render (HomePage reads
-  // meta.title/meta.description, CTA fields are plain strings rendered as link
-  // text, start.cards carry number/icon/href). A shape drift here crashes the
-  // fork's first build — the demo JSON in src/locales/en.json is the contract.
-  const common = {
-    meta: {
-      title:
-        input.homePreset === 'codes'
-          ? `${input.gameName} Wiki — Codes, Guides & Tier Lists`
-          : `${input.gameName} Wiki — Guides, Bosses & Progression`,
-      description: input.description,
-    },
-    updates: { title: 'Recent updates' },
-    popular: {
-      badge: 'Popular',
-      title: 'Most read',
-      quickLinks: cats.slice(0, 3).map((c) => ({ label: cap(c), href: `/${c}` })),
-    },
-    closingCta: {
-      title: `Start your ${input.gameName} journey`,
-      description: `Bookmark this wiki and check back after every game update.`,
-      primary: 'Browse all',
-      secondary: 'Join the community',
-    },
-  };
-
-  if (input.homePreset === 'codes') {
-    return {
-      ...common,
-      hero: {
-        badge: 'Fan-made wiki',
-        title: `${input.gameName} Codes`,
-        description: `All working ${input.gameName} codes with expiry dates, plus guides and tier lists.`,
-        ctaPrimary: 'Play now',
-        ctaSecondary: 'Browse guides',
-      },
-      start: {
-        badge: 'Quick start',
-        title: 'Jump straight in',
-        cards: [
-          { number: '1', title: 'Codes', description: 'Free gold, XP, cosmetics', icon: 'lucide:gift', href: '/codes' },
-          { number: '2', title: 'Bosses', description: 'Phase-by-phase strategy', icon: 'lucide:swords', href: '/bosses' },
-          { number: '3', title: 'Tier list', description: 'Best weapons ranked', icon: 'lucide:bar-chart-3', href: `/${cats.find((c) => c !== 'codes') ?? first}` },
-        ],
-      },
-      explore: {
-        title: 'Explore',
-        description: 'The essentials',
-        modules: [
-          {
-            order: 1,
-            name: 'Active codes',
-            description: 'Redeem before they expire',
-            href: '/codes',
-            displayType: 'badge-list',
-            highlights: [
-              { label: 'CODE-PLACEHOLDER', detail: 'Tap to copy on the codes page', badge: 'NEW' },
-            ],
-          },
-        ],
-      },
-      faq: { title: 'FAQ', description: 'Common questions', items: [] },
-    };
-  }
-
-  // 'guides' preset
-  return {
-    ...common,
-    hero: {
-      badge: input.gameName,
-      title: `${input.gameName} Wiki`,
-      description: `Complete ${input.gameName} guides — bosses, items, and progression.`,
-      ctaPrimary: 'Start reading',
-      ctaSecondary: 'Browse all',
-    },
-    start: {
-      badge: 'Quick start',
-      title: 'New here?',
-      cards: cats.slice(0, 4).map((c, i) => ({
-        number: String(i + 1),
-        title: cap(c),
-        description: `Browse ${c}`,
-        icon: 'lucide:book-open',
-        href: `/${c}`,
-      })),
-    },
-    explore: {
-      title: 'Explore',
-      description: 'Content modules',
-      modules: [
-        {
-          order: 1,
-          name: 'Getting started',
-          description: 'Step-by-step progression',
-          href: '/guides',
-          displayType: 'steps',
-          highlights: [
-            { label: 'Step 1', detail: 'Finish the tutorial', badge: '5 min' },
-            { label: 'Step 2', detail: 'Claim starter codes', badge: '1 min' },
-            { label: 'Step 3', detail: 'First boss run', badge: '15 min' },
-          ],
-        },
-      ],
-    },
-    faq: { title: 'FAQ', description: 'Common questions', items: [] },
-  };
-}
 
 function rewriteSiteTs(input: SkinInput): string {
   // Rewrite the `site` object literal only. Everything else in the file stays.
@@ -503,118 +364,6 @@ function rewriteUiTs(input: SkinInput): string {
   return updated;
 }
 
-function rewriteLocaleJson(input: SkinInput, _locale: string, existing?: string): string {
-  // Start from existing (if any) or a minimal skeleton; reset site/footer/nav/overview.
-  let obj: Record<string, unknown> = {};
-  if (existing) {
-    try {
-      obj = JSON.parse(existing);
-    } catch {
-      obj = {};
-    }
-  }
-  // Always (re)write the site-level strings for this locale.
-  obj.site = {
-    name: `${input.gameName} Wiki`,
-    shortName: input.shortName,
-    description: input.description,
-    tagline: input.tagline,
-    legalNotice: input.legalNotice,
-  };
-  obj.footer = obj.footer ?? {};
-  (obj.footer as Record<string, unknown>).copyrightText = `© ${new Date().getFullYear()} ${input.gameName} Wiki. All rights reserved.`;
-  // nav + overview are auto-filled for the chosen categories. Deliberately
-  // NOT left empty: an empty nav means the fork's first `pnpm check-config`
-  // run is red (3-place rule) and SiteHeader renders raw lowercase keys —
-  // both on day one, before the user has written a single label. The English
-  // defaults below are placeholders users translate/edit per locale.
-  const cap = (key: string) =>
-    key
-      .split(/[-_]/)
-      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-      .join(' ');
-  const navFixed: Record<string, string> = {
-    home: 'Home',
-    toggleTheme: 'Toggle theme',
-    menu: 'Menu',
-    close: 'Close',
-    search: 'Search',
-    language: 'Language',
-  };
-  const navCategories: Record<string, string> = {};
-  const overview: Record<string, { overviewTitle: string; overviewDescription: string }> = {};
-  for (const { key } of input.categories) {
-    navCategories[key] = cap(key);
-    overview[key] = {
-      overviewTitle: `All ${cap(key)}`,
-      overviewDescription: `${cap(key)} content for ${input.gameName}. Replace this overview text in the locale JSON — it feeds the category page title and description.`,
-    };
-  }
-  // Keep any non-fixed nav keys a previous run added, then overlay defaults.
-  const prevNav = (obj.nav ?? {}) as Record<string, unknown>;
-  obj.nav = { ...navFixed, ...prevNav, ...navCategories };
-  obj.overview = overview;
-  // Homepage preset skeleton (unless 'keep').
-  const home = buildHomePreset(input);
-  if (home) obj.home = home;
-  return JSON.stringify(obj, null, 2) + '\n';
-}
-
-/**
- * Reset wrangler.toml [vars] for the forker's own site.
- *
- * Why: when wrangler.toml exists it is the SOLE source of truth for the
- * Cloudflare Pages project env (dashboard UI is ignored). The shipped file
- * carries the DEMO site's Giscus config — an unedited fork would silently
- * point its comment section at the original repo's GitHub Discussions.
- * We rewrite SITE_URL to the forker's domain and blank the Giscus values.
- */
-function rewriteWranglerVars(input: SkinInput): string | null {
-  const filePath = 'wrangler.toml';
-  if (!fs.existsSync(path.resolve(ROOT, filePath))) return null;
-  const src = read(filePath);
-  const newVars = `[vars]
-# Site (must include https:// protocol — Astro validates this as a URL)
-SITE_URL = "https://${input.domain}"
-# Giscus comments — blank = comments disabled until you fill your own values.
-# See docs/comments.md for how to get these from giscus.app.
-PUBLIC_GISCUS_REPO = ""
-PUBLIC_GISCUS_REPO_ID = ""
-PUBLIC_GISCUS_CATEGORY = ""
-PUBLIC_GISCUS_CATEGORY_ID = ""
-PUBLIC_GISCUS_MAPPING = "pathname"
-# Sponsor card — blank = disabled. Fill PUBLIC_SPONSOR_URL to enable.
-PUBLIC_SPONSOR_URL = ""
-PUBLIC_SPONSOR_IMAGE_URL = ""
-# Cloudflare Web Analytics — blank = disabled.
-PUBLIC_CF_BEACON_TOKEN = ""
-# Optional slots (empty = disabled) — fill HERE, not the dashboard:
-#PUBLIC_ADSENSE_CLIENT = ""
-#PUBLIC_ADSENSE_SLOT_STICKY = ""
-#PUBLIC_ADSENSE_SLOT_SIDEBAR = ""
-#PUBLIC_ADSENSE_SLOT_INCONTENT = ""
-#PUBLIC_GA_ID = ""
-#PUBLIC_GSC_VERIFICATION = ""`;
-  // Anchor [vars] at LINE START (the demo file's intro comment contains the
-  // literal text "[vars]" mid-line — an unanchored match rewrote the comment
-  // and left the real demo Giscus section below). Two JS regex traps here:
-  // no `m` flag (with it, `$` means line-end, not file-end) and no `\Z`
-  // (JS treats that as the literal character "Z" — the match silently fails
-  // and the file ships unrewritten).
-  const varsRe = /(^|\n)\[vars\]\n[\s\S]*?(?=\n\[|$)/;
-  if (!varsRe.test(src)) {
-    console.warn(`⚠️ Could not find [vars] section in ${filePath} — edit it manually.`);
-    return null;
-  }
-  // Remove the demo-intro warning block: after the [vars] rewrite it would
-  // claim "this file contains the DEMO SITE config" about values that are
-  // now the forker's own — a stale, misleading comment. Anchors are ASCII:
-  // the ⚠️ emoji is a multi-codepoint sequence that silently fails `⚠️+`.
-  const out = src.replace(varsRe, (_match, pre) => `${pre}${newVars}\n`);
-  const demoIntroRe = /# .*FORKERS READ THIS FIRST[\s\S]*?# .*END FORKER WARNING.*\n?/;
-  return demoIntroRe.test(out) ? out.replace(demoIntroRe, '') : out;
-}
-
 function rewriteManifest(input: SkinInput): string {
   const filePath = 'public/manifest.json';
   const src = read(filePath);
@@ -663,34 +412,23 @@ function clearDemoContent(categories: { key: string }[]) {
   return removed;
 }
 
-/**
- * Demo article artwork — the 5 covers, the whole demo gallery dir, and the
- * inline demo card images. Deleted BY NAME (not a wildcard) so covers a fork
- * user already replaced with their own art are never touched. Keep in sync
- * with the "Clear demo content" step in .github/workflows/setup.yml.
- */
-const DEMO_ASSET_DIRS = ['src/assets/gallery', 'public/images/articles'];
-const DEMO_COVERS = [
-  'beginner-guide-cover.png',
-  'emberfang-cover.png',
-  'stormcaller-cover.png',
-  'weapon-tier-list-cover.png',
-  'codes-cover.png',
-  // v2.6.0 demo content batch — same by-name rule: never delete a cover a
-  // fork user created. Keep in sync with setup.yml's rm -f list.
-  'en-bosses-frostbound-monarch.png',
-  'en-guides-forging-guide.png',
-  'en-items-emberforged-armor-set.png',
-  'en-items-forging-materials-guide.png',
-];
-
 function clearDemoAssets() {
   let removed = 0;
-  for (const dir of DEMO_ASSET_DIRS) {
+  // By-name everywhere, same rule as covers: public/images/articles/ is
+  // where content-format.md tells fork authors to drop their own inline
+  // card images — a wholesale rm -rf here would destroy that work on a
+  // re-run. Demo dirs are only ever emptied of demo-named files.
+  for (const [dir, demoFiles] of [
+    ['src/assets/gallery', DEMO_GALLERY_IMAGES],
+    ['public/images/articles', DEMO_ARTICLE_IMAGES],
+  ] as const) {
     const dirPath = path.resolve(ROOT, dir);
     if (!fs.existsSync(dirPath)) continue;
-    if (!DRY_RUN) fs.rmSync(dirPath, { recursive: true, force: true });
-    removed++;
+    for (const file of fs.readdirSync(dirPath)) {
+      if (!demoFiles.includes(file)) continue;
+      if (!DRY_RUN) fs.unlinkSync(path.join(dirPath, file));
+      removed++;
+    }
   }
   const covers = path.resolve(ROOT, 'src/assets/covers');
   if (fs.existsSync(covers)) {
@@ -1008,27 +746,39 @@ async function main() {
     console.log(`   ✅ ${localePath}`);
   }
 
-  // Delete locale JSONs the forker did NOT choose. The demo ships en + ja;
-  // an unchosen leftover is a double problem: it carries full demo-game
-  // translations (identity leak into the fork) and `pnpm check-config`
-  // fails on it ("locale JSON exists but not in routing.ts") — red CI on
-  // day one. The old cleanup spec called these harmless orphans; it was
-  // wrong on both counts.
+  // Delete locale JSONs the forker did NOT choose — but ONLY the demo's own
+  // leftovers (en/ja). Those carry full demo-game translations (identity
+  // leak) and make `pnpm check-config` red on day one ("locale JSON exists
+  // but not in routing.ts"). Anything else — a locale the user added via a
+  // previous run or `pnpm new-locale` — may hold their own translation work,
+  // so a re-run must report it, never delete it.
   if (!DRY_RUN && fs.existsSync(path.resolve(ROOT, 'src/locales'))) {
+    const orphanLocales: string[] = [];
     for (const file of fs.readdirSync(path.resolve(ROOT, 'src/locales'))) {
       if (!file.endsWith('.json')) continue;
       const key = file.replace(/\.json$/, '');
-      if (!uniqueLocales.includes(key)) {
+      if (uniqueLocales.includes(key)) continue;
+      if (DEMO_LOCALES.includes(key)) {
         fs.unlinkSync(path.resolve(ROOT, 'src/locales', file));
         console.log(`   🗑️  Removed src/locales/${file} (locale not chosen — demo translation leftover)`);
+      } else {
+        orphanLocales.push(file);
       }
+    }
+    if (orphanLocales.length > 0) {
+      console.warn(`\n   ⚠️  Kept ${orphanLocales.length} locale file(s) not in your chosen locales (${uniqueLocales.join(', ')}) — NOT deleted:`);
+      for (const f of orphanLocales) console.warn(`      src/locales/${f}`);
+      console.warn('      These are not demo files and may hold your own translations. Delete them');
+      console.warn('      yourself if they are leftovers — until then `pnpm check-config` stays red.');
     }
   }
 
   write('public/manifest.json', rewriteManifest(skinInput));
   console.log('   ✅ public/manifest.json');
 
-  const wrangler = rewriteWranglerVars(skinInput);
+  const wrangler = fs.existsSync(path.resolve(ROOT, 'wrangler.toml'))
+    ? rewriteWranglerVars(skinInput, read('wrangler.toml'))
+    : null;
   if (wrangler !== null) {
     write('wrangler.toml', wrangler);
     console.log('   ✅ wrangler.toml ([vars] reset — demo Giscus config cleared)');

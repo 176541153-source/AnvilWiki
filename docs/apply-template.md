@@ -40,7 +40,7 @@
 |---|---|---|
 | demo 文章 | `src/content/wiki/*/*/*.mdx` 全部（目录结构保留） | CLI 清空后**每个所选栏目自动补 1 篇英文脚手架**，保证 build 不空转；同时自动填充所选栏目的 `nav.<key>` 标签与 `overview.<key>` 条目（英文默认值，供你翻译/改写——不填的话 fork 第一次 `pnpm check-config` 就是红的） |
 | 空栏目目录 | 清空后仍为空、且不在所选栏目里的内容目录 | 未选栏目的空目录是「不可达分类」（template-audit 会拦），一并剪掉 |
-| demo 配图 | `src/assets/gallery/`、`public/images/articles/` 整目录；**9 张 demo 封面按文件名删**（`src/assets/covers/` 下，清单见 `scripts/apply-template.ts` 的 `DEMO_COVERS`） | 按名删除而非通配——你已换成自己封面时绝不会被误删 |
+| demo 配图 | **全部按文件名删**（整目录 rm -rf 已废除）：`src/assets/gallery/` 6 张画廊图、`public/images/articles/` 2 张内文图、`src/assets/covers/` 9 张封面；清单见 `scripts/lib/apply-rewrites.ts` 的 `DEMO_COVERS` / `DEMO_GALLERY_IMAGES` / `DEMO_ARTICLE_IMAGES`（`tests/apply-template.test.ts` 钉住与 setup.yml 的同步） | 按名删除而非通配——`public/images/articles/` 正是内容规范让你放**自己**内文图的地方，你的图绝不会被误删 |
 | 项目官网 | `src/components/landing/`、`src/config/landing.ts`、`src/pages/landing*`（含站内文档中心 /landing/docs）、`src/pages/zh/landing*`（中文官网）、`public/images/showcase/`、`public/images/wechat-qr.jpg` | fork 站不需要 AnvilWiki 项目自述页；`docs/handbook/` **markdown 源保留**当参考文档，只删路由 |
 | 官网回链 | `src/config/project.ts` 的 `landingLinkEnabled` 翻为 `false` | 页面 header 的"返回官网"按钮随删随关 |
 | demo 凭据 | `wrangler.toml` `[vars]` 重置：`SITE_URL` 换成你的域名，Giscus/Sponsor/CF Analytics 全部清空，AdSense 等可选槽留注释位 | 不重置的话，你站的评论区会指回官方仓库的 Discussions |
@@ -48,7 +48,7 @@
 
 **保留不删（有意设计）**：favicon/hero 图等二进制资产（CLI 生成不了，脚手架下一步指引你手动换）；`docs/handbook/` 手册源码。
 
-**⚠️ 语言 JSON 不是孤儿**：未选择语言的 locale 文件（demo 自带 `ja.json`）会被**直接删除**——它们装载着完整的 demo 游戏翻译，留着是身份泄漏；且 `pnpm check-config` 会对「locale 文件存在但不在 routing.ts」报错，fork 第一天 CI 就是红的。
+**⚠️ 语言 JSON 分两类处理（重跑安全）**：未选择的语言里，**demo 自带的**（`ja.json`）会被**直接删除**——它们装载着完整的 demo 游戏翻译，留着是身份泄漏；且 `pnpm check-config` 会对「locale 文件存在但不在 routing.ts」报错，fork 第一天 CI 就是红的。**你自己创建的** locale 文件（之前运行本 CLI 或 `pnpm new-locale` 加的）则**只警告、绝不删除**——重跑不能毁掉你的翻译工作；看到「Kept N locale file(s)」警告后自行决定删除或把该语言加进所选列表，处理前 `pnpm check-config` 会一直是红的。
 
 **逃生口**：`pnpm apply-template --dry-run`（只打印不写入）、`--no-clear-content`（保留 demo 文章）、`--keep-landing`（保留项目官网）、`--answers answers.json`（非交互模式，复制第二个站/CI 时用）。
 

@@ -138,6 +138,48 @@ for (const [name, ok] of checks) {
 }
 if (failed) process.exit(1);
 
+// 4.5 Re-run safety (2026-09-01 audit P1: apply-template used to delete ANY
+// unchosen locale — a re-run destroyed locales the user had added). Run 1
+// must have removed the demo's unchosen ja.json; a user-created ko.json must
+// survive run 2 with a loud warning. removeLandingPage/clearDemoContent/
+// wrangler rewrite are all idempotent, so run 2 must exit 0 and complete.
+if (existsSync(join(scratch, 'src/locales/ja.json'))) {
+  fail('demo ja.json still present — unchosen demo locale was not removed on run 1');
+}
+writeFileSync(join(scratch, 'src/locales/ko.json'), JSON.stringify({ nav: { home: '홈' } }, null, 2), 'utf8');
+step('apply-template re-run (idempotent, keeps user locales)');
+const rerun = spawnSync(
+  'pnpm',
+  ['apply-template', '--answers', 'e2e-answers.json'],
+  {
+    cwd: scratch,
+    encoding: 'utf8',
+    shell: win,
+    timeout: 5 * 60 * 1000,
+  },
+);
+if (rerun.status !== 0) {
+  if (rerun.stderr) console.error(rerun.stderr);
+  fail(`apply-template RE-RUN exited ${rerun.status}${rerun.error ? ` (${rerun.error.message})` : ''}`);
+  process.exit(1);
+}
+if (!/Base config complete/.test(rerun.stdout || '')) {
+  fail('re-run exited 0 but never reached its completion marker');
+  process.exit(1);
+}
+if (/left over/.test(rerun.stdout || '')) {
+  fail('re-run reports leftover answers — prompt sequence drifted');
+}
+// ⚠️ CLI warnings go to stderr (console.warn), completion markers to stdout.
+if (!/not in your chosen locales/.test((rerun.stdout || '') + (rerun.stderr || ''))) {
+  fail('re-run did not warn about the user-created locale');
+}
+if (!existsSync(join(scratch, 'src/locales/ko.json'))) {
+  fail('re-run DELETED src/locales/ko.json — user locale destroyed (audit P1 regression)');
+}
+// Heed the warning like a user would, so the gates below see a clean state.
+rmSync(join(scratch, 'src/locales/ko.json'));
+
 // 5. The fork's first build must succeed.
 step("pnpm build (the fork's first build must succeed)");
 execSync('pnpm build', { cwd: scratch, stdio: 'inherit', shell: win });
