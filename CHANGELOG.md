@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.6.3] — 2026-09-01
+
+**apply-template 重跑安全四连修（2026-09-01 风险审计 P1-P4 落地）。**
+
 ### Fixed
 
 - **文档一致性清扫**：`AGENTS.md` 测试套件描述 9→10（v2.6.2 新增 `tests/prompt.test.ts` 后漏更）、`docs/PRD.md` 架构树运维脚本数 12→14（v2.4.0 新增 `gen-assets` / `submit-indexnow` 后漏更）、`docs/apply-template.md` 补记 `--answers answers.json` 非交互模式（v2.4.1 引入，此前未进配置手册）。
@@ -783,7 +787,8 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
-[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.6.2...HEAD
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.6.3...HEAD
+[2.6.3]: https://github.com/PNGTRID/AnvilWiki/compare/v2.6.2...v2.6.3
 [2.6.2]: https://github.com/PNGTRID/AnvilWiki/compare/v2.6.1...v2.6.2
 [2.6.1]: https://github.com/PNGTRID/AnvilWiki/compare/v2.6.0...v2.6.1
 [2.6.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.5.1...v2.6.0
