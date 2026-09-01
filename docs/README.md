@@ -61,7 +61,7 @@
 
 ```
 1. AGENTS.md              ← 仓库根目录,自动加载:硬规则 + 对话式产页章节
-2. .agent/skills/         ← 自动发现的 4 个技能(anvil-new-article / batch-articles / update-codes / refresh)
+2. .agent/skills/         ← 自动发现的 5 个技能(anvil-new-article / batch-articles / update-codes / refresh / adsense-audit)
 3. docs/content-format.md ← 需要字段细节时查
 ```
 

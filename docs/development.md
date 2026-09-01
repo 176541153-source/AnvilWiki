@@ -86,7 +86,7 @@ pnpm check-i18n      # 加了 locale JSON key 后,看覆盖率报告
 2. 版本号三处同步:
    - package.json "version"
    - src/config/landing.ts PROJECT_VERSION + 中英公告文案(announcement.text)
-3. CHANGELOG.md:Unreleased 段落改日期标题 + 底部 compare 链接加一行
+3. CHANGELOG.md:Unreleased 段落改日期标题 + 底部 compare 链接加一行 + [Unreleased] 指针上移到新版本(v2.4.1 起曾连续 6 版漏更,见 CHANGELOG [2.6.2])
 4. docs/PRD.md §14.2 路线图该版本标 ✅
 5. commit:feat(vX.Y): ... 一个 + git commit --allow-empty -m "chore(release): vX.Y.0" 一个
 6. git push origin main(CI 绿 + Cloudflare Pages 自动部署)

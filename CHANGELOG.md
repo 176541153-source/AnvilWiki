@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - **文档一致性清扫**：`AGENTS.md` 测试套件描述 9→10（v2.6.2 新增 `tests/prompt.test.ts` 后漏更）、`docs/PRD.md` 架构树运维脚本数 12→14（v2.4.0 新增 `gen-assets` / `submit-indexnow` 后漏更）、`docs/apply-template.md` 补记 `--answers answers.json` 非交互模式（v2.4.1 引入，此前未进配置手册）。
+- **文档一致性清扫（第二轮）**：三处「内置技能 4 个」计数漏更——v2.5.0 新增 `anvil-adsense-audit` 后，`README.md` 中英两个技能表与 `docs/README.md` 路径 C 仍写 4 个，现更正为 5 个并补该技能条目（`.agent/skills/` 实有 5 个目录）；`docs/development.md` 发版清单第 3 步补记「`[Unreleased]` 指针上移到新版本」——即 [2.6.2] 记录的连续 6 版漏更事故点，原清单只写了「compare 链接加一行」。
 
 ## [2.6.2] — 2026-08-31
 

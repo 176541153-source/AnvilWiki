@@ -91,7 +91,7 @@ git push           # 第 5 步 Cloudflare 连的是 GitHub 远端仓库,不推�
 
 ### 用 AI 直接生成内容(无需脚本)
 
-fork 后用 ZCode / Claude Code / Codex / Cursor 打开仓库,直接对话即可产页。Agent 会自动加载仓库里的内容规范,生成后自动跑 `pnpm check-content && pnpm build` 自检。内置 4 个技能:
+fork 后用 ZCode / Claude Code / Codex / Cursor 打开仓库,直接对话即可产页。Agent 会自动加载仓库里的内容规范,生成后自动跑 `pnpm check-content && pnpm build` 自检。内置 5 个技能:
 
 | 技能 | 用途 |
 |---|---|
@@ -99,6 +99,7 @@ fork 后用 ZCode / Claude Code / Codex / Cursor 打开仓库,直接对话即可
 | `anvil-batch-articles` | 关键词清单 → 批量生成一批内页(意图归类 → `bulk-new-posts` 脚手架 → 统一提示词填充) |
 | `anvil-update-codes` | 新兑换码/过期码 → 更新 codes 页并同步多语言 |
 | `anvil-refresh` | 新鲜度巡检 → 输出「该更新什么」优先级清单 |
+| `anvil-adsense-audit` | AdSense 申请前逐项体检(22 项政策清单,模板已解决的项自动给证据) |
 
 完整的提示词库(选品分析、产页、批量产页、翻译、SEO 体检、关键词选题等 18 个模板)在[学习手册](https://anvilwiki.pages.dev/zh/landing/docs/learn)里,整段复制就能用。
 
@@ -221,7 +222,7 @@ git push           # step 5 connects Cloudflare to the REMOTE repo — skip this
 
 ### Generate content by talking to your AI (no scripts needed)
 
-After forking, open the repo in ZCode / Claude Code / Codex / Cursor and just talk. Agents auto-load the content spec shipped in the repo and self-check with `pnpm check-content && pnpm build` after generating. Four skills are built in:
+After forking, open the repo in ZCode / Claude Code / Codex / Cursor and just talk. Agents auto-load the content spec shipped in the repo and self-check with `pnpm check-content && pnpm build` after generating. Five skills are built in:
 
 | Skill | What it does |
 |---|---|
@@ -229,6 +230,7 @@ After forking, open the repo in ZCode / Claude Code / Codex / Cursor and just ta
 | `anvil-batch-articles` | A keyword list → a batch of inner pages (intent classification → `bulk-new-posts` scaffolding → one unified prompt fills them) |
 | `anvil-update-codes` | New / expired codes → update the codes page across locales |
 | `anvil-refresh` | Freshness audit → prioritized "what to update" list |
+| `anvil-adsense-audit` | AdSense pre-application audit (22-item policy checklist, template-solved items come with evidence) |
 
 The full prompt library (game selection, page generation, batch production, translation, SEO audits, keyword research — 18 templates) lives in the [Learning Manual](https://anvilwiki.pages.dev/landing/docs/learn); copy-paste ready.
 
